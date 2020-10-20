@@ -1,24 +1,15 @@
 {
   "global": {
     "files": "/src/**/*.*",
-    "exclude": [],
     "skipGeneratedGatewayClasses": true,
     "skipGeneratedPersistentClasses": true,
     "skipGeneratedFunctionGroups": true,
     "useApackDependencies": false
   },
-  "dependencies": [
-    {
-      "url": "https://github.com/abaplint/deps",
-      "folder": "/deps",
-      "files": "/src/**/*.*"
-    }
-  ],
+  "dependencies": [],
   "syntax": {
-    "version": "v751",
-    "errorNamespace": "",
-    "globalConstants": [],
-    "globalMacros": []
+    "version": "Cloud",
+    "errorNamespace": ""
   },
   "rules": {
     "7bit_ascii": true,
