@@ -1,0 +1,15 @@
+{
+  "name": "wabap-wasm",
+  "version": "1.0.0",
+  "private": true,
+  "description": "test",
+  "scripts": {
+    "test": "rm -rf output && abap_transpile && echo RUNNING && node output/index.js"
+  },
+  "author": "Lars Hvam Petersen",
+  "license": "MIT",
+  "dependencies": {
+    "@abaplint/runtime": "^0.5.30",
+    "@abaplint/transpiler-cli": "^0.5.30"
+  }
+}
