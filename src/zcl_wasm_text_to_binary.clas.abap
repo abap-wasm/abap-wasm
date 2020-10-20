@@ -16,15 +16,17 @@ ENDCLASS.
 
 
 
-CLASS ZCL_WASM_TEXT_TO_BINARY IMPLEMENTATION.
+CLASS zcl_wasm_text_to_binary IMPLEMENTATION.
 
 
   METHOD constructor.
 * todo
+    RETURN.
   ENDMETHOD.
 
 
   METHOD run.
 * todo
+    RETURN.
   ENDMETHOD.
 ENDCLASS.
