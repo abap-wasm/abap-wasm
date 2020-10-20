@@ -1,26 +1,26 @@
-CLASS zcl_wasm DEFINITION
-  PUBLIC
-  CREATE PROTECTED .
+class ZCL_WASM definition
+  public
+  create protected .
 
-  PUBLIC SECTION.
+public section.
 
-    METHODS execute_export .
-    METHODS list_exports .
-    METHODS list_imports .
-    CLASS-METHODS create_with_binary
-      IMPORTING
-        !iv_wasm TYPE xstring .
-    CLASS-METHODS create_with_text
-      IMPORTING
-        !iv_wast TYPE string .
-    METHODS constructor .
+  methods EXECUTE_EXPORT .
+  methods LIST_EXPORTS .
+  methods LIST_IMPORTS .
+  class-methods CREATE_WITH_BINARY
+    importing
+      !IV_WASM type XSTRING .
+  class-methods CREATE_WITH_TEXT
+    importing
+      !IV_WAST type STRING .
+  methods CONSTRUCTOR .
   PROTECTED SECTION.
   PRIVATE SECTION.
 ENDCLASS.
 
 
 
-CLASS zcl_wasm IMPLEMENTATION.
+CLASS ZCL_WASM IMPLEMENTATION.
 
 
   METHOD constructor.

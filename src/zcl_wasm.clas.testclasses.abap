@@ -1,0 +1,19 @@
+
+CLASS ltcl_test DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS.
+
+  PRIVATE SECTION.
+    DATA:
+      mo_cut TYPE REF TO zcl_wasm.
+
+    METHODS: list_exports FOR TESTING.
+ENDCLASS.
+
+
+CLASS ltcl_test IMPLEMENTATION.
+
+  METHOD list_exports.
+* todo
+    RETURN.
+  ENDMETHOD.
+
+ENDCLASS.
