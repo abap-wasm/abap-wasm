@@ -1,21 +1,30 @@
-CLASS zcl_wasm DEFINITION
-  PUBLIC
-  CREATE PROTECTED .
+class ZCL_WASM definition
+  public
+  create protected .
 
-  PUBLIC SECTION.
+public section.
 
-    METHODS execute_export .
-    METHODS list_exports .
-    METHODS list_imports .
-    CLASS-METHODS create_with_binary
-      IMPORTING
-        !iv_wasm TYPE xstring .
-    CLASS-METHODS create_with_text
-      IMPORTING
-        !iv_wast TYPE string .
-    METHODS constructor .
+  class-methods CREATE_WITH_WASM
+    importing
+      !IV_WASM type XSTRING
+    returning
+      value(RO_WASM) type ref to ZCL_WASM .
+  class-methods CREATE_WITH_WAST
+    importing
+      !IV_WAST type STRING
+    returning
+      value(RO_WASM) type ref to ZCL_WASM .
+  class-methods EXECUTE_WAST
+    importing
+      !IV_WAST type STRING .
+  methods CONSTRUCTOR
+    importing
+      !IV_WASM type XSTRING .
+  methods EXECUTE_EXPORT .
+  methods LIST_EXPORTS .
+  methods LIST_IMPORTS .
   PROTECTED SECTION.
-  PRIVATE SECTION.
+private section.
 ENDCLASS.
 
 
@@ -29,15 +38,17 @@ CLASS ZCL_WASM IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD create_with_binary.
-* todo
-    RETURN.
+  METHOD CREATE_WITH_WASM.
+
+    ro_wasm = NEW zcl_wasm( iv_wasm ).
+
   ENDMETHOD.
 
 
-  METHOD create_with_text.
-* todo, call new class to convert text to binary
-    RETURN.
+  METHOD create_with_wast.
+
+    ro_wasm = create_with_wasm( NEW zcl_wasm_wast( iv_wast )->to_wasm( ) ).
+
   ENDMETHOD.
 
 
@@ -45,6 +56,10 @@ CLASS ZCL_WASM IMPLEMENTATION.
 * todo
     RETURN.
   ENDMETHOD.
+
+
+  method EXECUTE_WAST.
+  endmethod.
 
 
   METHOD list_exports.
