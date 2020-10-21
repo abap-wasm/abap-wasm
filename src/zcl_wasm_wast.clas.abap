@@ -1,21 +1,21 @@
-class ZCL_WASM_WAST definition
-  public
-  create public .
+CLASS zcl_wasm_wast DEFINITION
+  PUBLIC
+  CREATE PUBLIC .
 
-public section.
+  PUBLIC SECTION.
 
-  methods TO_WASM
-    returning
-      value(RV_WASM) type XSTRING .
-  methods CONSTRUCTOR
-    importing
-      !IV_WAST type STRING .
-  methods GET_FIRST_MODULE
-    returning
-      value(RO_MODULE) type ref to ZCL_WASM_MODULE .
-  methods LIST_MODULES .
+    METHODS to_wasm
+      RETURNING
+        VALUE(rv_wasm) TYPE xstring .
+    METHODS constructor
+      IMPORTING
+        !iv_wast TYPE string .
+    METHODS get_first_module
+      RETURNING
+        VALUE(ro_module) TYPE REF TO zcl_wasm_module .
+    METHODS list_modules .
   PROTECTED SECTION.
-private section.
+  PRIVATE SECTION.
 ENDCLASS.
 
 
@@ -23,23 +23,23 @@ ENDCLASS.
 CLASS ZCL_WASM_WAST IMPLEMENTATION.
 
 
-  METHOD CONSTRUCTOR.
+  METHOD constructor.
 * todo
     RETURN.
   ENDMETHOD.
 
 
-  METHOD GET_FIRST_MODULE.
+  METHOD get_first_module.
 * todo
     RETURN.
   ENDMETHOD.
 
 
-  method LIST_MODULES.
-  endmethod.
+  METHOD list_modules.
+  ENDMETHOD.
 
 
-  METHOD TO_WASM.
+  METHOD to_wasm.
 
 * todo
     RETURN.

@@ -1,10 +1,10 @@
-class ZCL_WASM_MODULE definition
-  public
-  create public .
+CLASS zcl_wasm_module DEFINITION
+  PUBLIC
+  CREATE PUBLIC .
 
-public section.
-protected section.
-private section.
+  PUBLIC SECTION.
+  PROTECTED SECTION.
+  PRIVATE SECTION.
 ENDCLASS.
 
 

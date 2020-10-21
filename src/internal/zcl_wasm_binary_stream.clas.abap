@@ -1,18 +1,18 @@
-class ZCL_WASM_BINARY_STREAM definition
-  public
-  create public .
+CLASS zcl_wasm_binary_stream DEFINITION
+  PUBLIC
+  CREATE PUBLIC .
 
-public section.
+  PUBLIC SECTION.
 
-  methods CONSTRUCTOR .
-protected section.
-private section.
+    METHODS constructor .
+  PROTECTED SECTION.
+  PRIVATE SECTION.
 
-  methods GET_LENGTH
-    returning
-      value(RV_LENGTH) type I .
-  methods PEEK .
-  methods SHIFT .
+    METHODS get_length
+      RETURNING
+        VALUE(rv_length) TYPE i .
+    METHODS peek .
+    METHODS shift .
 ENDCLASS.
 
 
@@ -20,18 +20,18 @@ ENDCLASS.
 CLASS ZCL_WASM_BINARY_STREAM IMPLEMENTATION.
 
 
-  method CONSTRUCTOR.
-  endmethod.
+  METHOD constructor.
+  ENDMETHOD.
 
 
-  method GET_LENGTH.
-  endmethod.
+  METHOD get_length.
+  ENDMETHOD.
 
 
-  method PEEK.
-  endmethod.
+  METHOD peek.
+  ENDMETHOD.
 
 
-  method SHIFT.
-  endmethod.
+  METHOD shift.
+  ENDMETHOD.
 ENDCLASS.
