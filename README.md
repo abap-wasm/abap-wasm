@@ -8,7 +8,6 @@ Target version: Cloud and 751
 https://webassembly.github.io/spec/core/
 
 ## Testing
-
 https://webassembly.studio/
 
 https://wasdk.github.io/WasmFiddle/
