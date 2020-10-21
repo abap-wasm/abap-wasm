@@ -29,7 +29,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_WASM IMPLEMENTATION.
+CLASS zcl_wasm IMPLEMENTATION.
 
 
   METHOD constructor.
@@ -59,6 +59,8 @@ CLASS ZCL_WASM IMPLEMENTATION.
 
 
   METHOD execute_wast.
+* todo
+    RETURN.
   ENDMETHOD.
 
 
