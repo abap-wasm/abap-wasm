@@ -4,7 +4,9 @@
   "private": true,
   "description": "test",
   "scripts": {
-    "test": "rm -rf output && abap_transpile && echo RUNNING && node output/index.js"
+    "downport": "abaplint --fix abaplint_downport.json",
+    "unit": "rm -rf output && abap_transpile && echo RUNNING && node output/index.js",
+    "test": "npm run downport && npm run unit"
   },
   "author": "Lars Hvam Petersen",
   "license": "MIT",
