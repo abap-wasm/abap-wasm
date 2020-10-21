@@ -4,23 +4,32 @@ CLASS zcl_wasm DEFINITION
 
   PUBLIC SECTION.
 
+    CLASS-METHODS create_with_wasm
+      IMPORTING
+        !iv_wasm       TYPE xstring
+      RETURNING
+        VALUE(ro_wasm) TYPE REF TO zcl_wasm .
+    CLASS-METHODS create_with_wast
+      IMPORTING
+        !iv_wast       TYPE string
+      RETURNING
+        VALUE(ro_wasm) TYPE REF TO zcl_wasm .
+    CLASS-METHODS execute_wast
+      IMPORTING
+        !iv_wast TYPE string .
+    METHODS constructor
+      IMPORTING
+        !iv_wasm TYPE xstring .
     METHODS execute_export .
     METHODS list_exports .
     METHODS list_imports .
-    CLASS-METHODS create_with_binary
-      IMPORTING
-        !iv_wasm TYPE xstring .
-    CLASS-METHODS create_with_text
-      IMPORTING
-        !iv_wast TYPE string .
-    METHODS constructor .
   PROTECTED SECTION.
   PRIVATE SECTION.
 ENDCLASS.
 
 
 
-CLASS ZCL_WASM IMPLEMENTATION.
+CLASS zcl_wasm IMPLEMENTATION.
 
 
   METHOD constructor.
@@ -29,19 +38,27 @@ CLASS ZCL_WASM IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD create_with_binary.
+  METHOD create_with_wasm.
+
+    ro_wasm = NEW zcl_wasm( iv_wasm ).
+
+  ENDMETHOD.
+
+
+  METHOD create_with_wast.
+
+    ro_wasm = create_with_wasm( NEW zcl_wasm_wast( iv_wast )->to_wasm( ) ).
+
+  ENDMETHOD.
+
+
+  METHOD execute_export.
 * todo
     RETURN.
   ENDMETHOD.
 
 
-  METHOD create_with_text.
-* todo, call new class to convert text to binary
-    RETURN.
-  ENDMETHOD.
-
-
-  METHOD execute_export.
+  METHOD execute_wast.
 * todo
     RETURN.
   ENDMETHOD.

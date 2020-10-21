@@ -1,0 +1,25 @@
+{
+  "global": {
+    "files": "/src/**/*.*",
+    "skipGeneratedGatewayClasses": true,
+    "skipGeneratedPersistentClasses": true,
+    "skipGeneratedFunctionGroups": true,
+    "useApackDependencies": false
+  },
+  "dependencies": [
+    {
+      "folder": "/deps",
+      "files": "/**/*.*"
+    }
+  ],
+  "syntax": {
+    "version": "v702",
+    "errorNamespace": ""
+  },
+  "rules": {
+    "downport": true,
+    "check_syntax": true,
+    "indentation": true,
+    "parser_error": true
+  }
+}

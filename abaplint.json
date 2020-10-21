@@ -6,7 +6,12 @@
     "skipGeneratedFunctionGroups": true,
     "useApackDependencies": false
   },
-  "dependencies": [],
+  "dependencies": [
+    {
+      "folder": "/deps",
+      "files": "/**/*.*"
+    }
+  ],
   "syntax": {
     "version": "Cloud",
     "errorNamespace": ""
@@ -76,7 +81,7 @@
     "many_parenthesis": true,
     "max_one_statement": true,
     "message_exists": true,
-    "method_length": true,
+    "method_length": false,
     "method_overwrites_builtin": true,
     "method_parameter_names": true,
     "mix_returning": true,
@@ -139,9 +144,9 @@
     "types_naming": true,
     "unknown_types": true,
     "unreachable_code": true,
-    "unused_methods": true,
+    "unused_methods": false,
     "unused_types": true,
-    "unused_variables": true,
+    "unused_variables": false,
     "use_bool_expression": true,
     "use_line_exists": true,
     "use_new": true,

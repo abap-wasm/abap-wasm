@@ -1,0 +1,37 @@
+CLASS zcl_wasm_binary_stream DEFINITION
+  PUBLIC
+  CREATE PUBLIC .
+
+  PUBLIC SECTION.
+
+    METHODS constructor .
+  PROTECTED SECTION.
+  PRIVATE SECTION.
+
+    METHODS get_length
+      RETURNING
+        VALUE(rv_length) TYPE i .
+    METHODS peek .
+    METHODS shift .
+ENDCLASS.
+
+
+
+CLASS ZCL_WASM_BINARY_STREAM IMPLEMENTATION.
+
+
+  METHOD constructor.
+  ENDMETHOD.
+
+
+  METHOD get_length.
+  ENDMETHOD.
+
+
+  METHOD peek.
+  ENDMETHOD.
+
+
+  METHOD shift.
+  ENDMETHOD.
+ENDCLASS.
