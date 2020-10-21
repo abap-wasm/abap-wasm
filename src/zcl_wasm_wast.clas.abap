@@ -4,9 +4,6 @@ CLASS zcl_wasm_wast DEFINITION
 
   PUBLIC SECTION.
 
-    METHODS to_wasm
-      RETURNING
-        VALUE(rv_wasm) TYPE xstring .
     METHODS constructor
       IMPORTING
         !iv_wast TYPE string .
@@ -14,6 +11,9 @@ CLASS zcl_wasm_wast DEFINITION
       RETURNING
         VALUE(ro_module) TYPE REF TO zcl_wasm_module .
     METHODS list_modules .
+    METHODS to_wasm
+      RETURNING
+        VALUE(rv_wasm) TYPE xstring .
   PROTECTED SECTION.
   PRIVATE SECTION.
 ENDCLASS.
