@@ -19,6 +19,7 @@
   "rules": {
     "downport": true,
     "check_syntax": true,
+    "indentation": true,
     "parser_error": true
   }
 }
