@@ -14,7 +14,9 @@ CLASS ltcl_test IMPLEMENTATION.
 
   METHOD single_module.
 
-    DATA(lo_text) = NEW zcl_wast_text_stream( '(module body)' ).
+    DATA lo_text TYPE REF TO zcl_wast_text_stream.
+
+    lo_text = NEW zcl_wast_text_stream( '(module body)' ).
 
     cl_abap_unit_assert=>assert_equals(
       act = lo_text->get_length( )
