@@ -93,7 +93,7 @@ CLASS ZCL_WAST_TEXT_STREAM IMPLEMENTATION.
 
     SPLIT mv_text AT | | INTO TABLE lt_table.
 
-    READ TABLE lt_table INDEX 1 INTO rv_text.
+    READ TABLE lt_table INDEX 1 INTO rv_text. "#EC CI_SUBRC
 
   ENDMETHOD.
 
