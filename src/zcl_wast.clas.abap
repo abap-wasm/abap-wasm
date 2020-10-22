@@ -1,4 +1,4 @@
-CLASS zcl_wasm_wast DEFINITION
+CLASS zcl_wast DEFINITION
   PUBLIC
   CREATE PUBLIC .
 
@@ -20,12 +20,13 @@ ENDCLASS.
 
 
 
-CLASS ZCL_WASM_WAST IMPLEMENTATION.
+CLASS ZCL_WAST IMPLEMENTATION.
 
 
   METHOD constructor.
-* todo
-    RETURN.
+
+    NEW zcl_wast_parser( )->parse( iv_wast ).
+
   ENDMETHOD.
 
 

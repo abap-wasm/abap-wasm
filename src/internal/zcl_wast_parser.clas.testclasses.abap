@@ -3,16 +3,21 @@ CLASS ltcl_test DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS.
 
   PRIVATE SECTION.
     DATA:
-      mo_cut TYPE REF TO zcl_wasm_wast.
+      mo_cut TYPE REF TO zcl_wast_parser.
 
     METHODS:
-      get_first_module FOR TESTING.
+      setup,
+      parse FOR TESTING.
 ENDCLASS.
 
 
 CLASS ltcl_test IMPLEMENTATION.
 
-  METHOD get_first_module.
+  METHOD setup.
+    mo_cut = NEW #( ).
+  ENDMETHOD.
+
+  METHOD parse.
 
     DATA(lv_wast) =
       |(module\n| &&
@@ -21,9 +26,7 @@ CLASS ltcl_test IMPLEMENTATION.
       |    local.get 1\n| &&
       |    i32.add))|.
 
-    mo_cut = NEW #( lv_wast ).
-
-    cl_abap_unit_assert=>assert_not_initial( mo_cut->get_first_module( ) ).
+    mo_cut->parse( lv_wast ).
 
   ENDMETHOD.
 
