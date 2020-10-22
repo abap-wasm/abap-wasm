@@ -23,7 +23,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
     mo_cut = NEW #( lv_wast ).
 
-    cl_abap_unit_assert=>assert_not_initial( mo_cut->get_first_module( ) ).
+* todo    cl_abap_unit_assert=>assert_not_initial( mo_cut->get_first_module( ) ).
 
   ENDMETHOD.
 
