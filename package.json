@@ -6,7 +6,8 @@
   "scripts": {
     "downport": "abaplint --fix abaplint_downport.json",
     "unit": "rm -rf output && rm -rf open-abap && git clone https://github.com/open-abap/open-abap && cp open-abap/src/* src/ && abap_transpile && echo RUNNING && node output/index.js",
-    "test": "npm run downport && npm run unit"
+    "lint": "rm src/cl_* && rm src/cx_* && abaplint",
+    "test": "npm run lint && npm run downport && npm run unit"
   },
   "author": "Lars Hvam Petersen",
   "license": "MIT",
