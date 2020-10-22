@@ -29,7 +29,7 @@ ENDCLASS.
 
 
 
-CLASS zcl_wasm IMPLEMENTATION.
+CLASS ZCL_WASM IMPLEMENTATION.
 
 
   METHOD constructor.
@@ -47,7 +47,7 @@ CLASS zcl_wasm IMPLEMENTATION.
 
   METHOD create_with_wast.
 
-    ro_wasm = create_with_wasm( NEW zcl_wasm_wast( iv_wast )->to_wasm( ) ).
+    ro_wasm = create_with_wasm( NEW zcl_wast( iv_wast )->to_wasm( ) ).
 
   ENDMETHOD.
 
