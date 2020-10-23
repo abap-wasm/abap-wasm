@@ -13,7 +13,9 @@ CLASS zcl_wast_parser DEFINITION
 
     METHODS func
       IMPORTING
-        !io_body TYPE REF TO zcl_wast_text_stream .
+        !io_body           TYPE REF TO zcl_wast_text_stream
+      RETURNING
+        VALUE(ro_function) TYPE REF TO zcl_wasm_function .
     METHODS instructions
       IMPORTING
         !io_body               TYPE REF TO zcl_wast_text_stream
@@ -44,8 +46,8 @@ CLASS ZCL_WAST_PARSER IMPLEMENTATION.
         WHEN '(result'.
           DATA(lv_r) = io_body->pop( ).
         WHEN OTHERS.
-          instructions( io_body ).
-          RETURN.
+          ro_function = NEW #(
+            it_instructions = instructions( io_body ) ).
       ENDCASE.
     ENDWHILE.
 
@@ -53,7 +55,6 @@ CLASS ZCL_WAST_PARSER IMPLEMENTATION.
 
 
   METHOD instructions.
-
 
     WHILE io_body->get_length( ) > 0.
       DATA(lv_instruction) = io_body->pop( )->peek( ).
