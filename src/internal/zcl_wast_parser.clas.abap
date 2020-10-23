@@ -36,11 +36,11 @@ CLASS ZCL_WAST_PARSER IMPLEMENTATION.
 
       CASE lv_next.
         WHEN '(export'.
-          DATA(e) = io_body->pop( ).
+          DATA(lv_e) = io_body->pop( ).
         WHEN '(param'.
-          DATA(p) = io_body->pop( ).
+          DATA(lv_p) = io_body->pop( ).
         WHEN '(result'.
-          DATA(r) = io_body->pop( ).
+          DATA(lv_r) = io_body->pop( ).
         WHEN OTHERS.
           instructions( io_body ).
           RETURN.
