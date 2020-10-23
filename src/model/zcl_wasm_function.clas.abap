@@ -4,6 +4,8 @@ CLASS zcl_wasm_function DEFINITION
   CREATE PUBLIC .
 
   PUBLIC SECTION.
+    TYPES: ty_functions TYPE STANDARD TABLE OF REF TO zcl_wasm_function WITH DEFAULT KEY.
+
     METHODS constructor
       IMPORTING it_instructions TYPE zcl_wasm_instructions=>ty_instructions.
     METHODS get_instructions
