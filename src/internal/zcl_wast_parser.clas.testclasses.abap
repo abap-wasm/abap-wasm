@@ -26,7 +26,9 @@ CLASS ltcl_test IMPLEMENTATION.
       |    local.get 1\n| &&
       |    i32.add))|.
 
-    mo_cut->parse( lv_wast ).
+    DATA(lo_module) = mo_cut->parse( lv_wast ).
+
+    cl_abap_unit_assert=>assert_not_initial( lo_module ).
 
   ENDMETHOD.
 
