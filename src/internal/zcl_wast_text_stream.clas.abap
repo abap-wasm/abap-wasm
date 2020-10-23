@@ -114,6 +114,8 @@ CLASS ZCL_WAST_TEXT_STREAM IMPLEMENTATION.
       lv_paren = lv_paren + 1.
       mv_text = mv_text+lv_paren.
     ELSE.
+      lv_new = mv_text(lv_offset).
+      ro_body = NEW #( lv_new ).
       mv_text = mv_text+lv_offset.
     ENDIF.
 
