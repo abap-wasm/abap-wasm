@@ -43,7 +43,7 @@
     "constructor_visibility_public": true,
     "contains_tab": true,
     "cyclomatic_complexity": true,
-    "definitions_top": true,
+    "definitions_top": false,
     "description_empty": true,
     "double_space": true,
     "downport": true,

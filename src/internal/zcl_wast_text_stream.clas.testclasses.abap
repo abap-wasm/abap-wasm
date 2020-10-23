@@ -6,7 +6,8 @@ CLASS ltcl_test DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS FINAL.
       mo_cut TYPE REF TO zcl_wast_text_stream.
 
     METHODS:
-      single_module FOR TESTING.
+      single_module FOR TESTING,
+      instructions FOR TESTING.
 ENDCLASS.
 
 
@@ -14,9 +15,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
   METHOD single_module.
 
-    DATA lo_text TYPE REF TO zcl_wast_text_stream.
-
-    lo_text = NEW zcl_wast_text_stream( '(module body)' ).
+    DATA(lo_text) = NEW zcl_wast_text_stream( '(module body)' ).
 
     cl_abap_unit_assert=>assert_equals(
       act = lo_text->get_length( )
@@ -35,6 +34,26 @@ CLASS ltcl_test IMPLEMENTATION.
     cl_abap_unit_assert=>assert_equals(
       act = lo_text->get_length( )
       exp = 0 ).
+
+  ENDMETHOD.
+
+  METHOD instructions.
+
+    DATA lo_text TYPE REF TO zcl_wast_text_stream.
+
+    lo_text = NEW zcl_wast_text_stream( 'foo bar' ).
+
+    cl_abap_unit_assert=>assert_equals(
+       act = lo_text->peek( )
+       exp = 'foo' ).
+
+    DATA(lo_pop) = lo_text->pop( ).
+
+    cl_abap_unit_assert=>assert_not_initial( lo_pop ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lo_text->peek( )
+      exp = 'bar' ).
 
   ENDMETHOD.
 
