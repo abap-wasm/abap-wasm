@@ -39,9 +39,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
   METHOD instructions.
 
-    DATA lo_text TYPE REF TO zcl_wast_text_stream.
-
-    lo_text = NEW zcl_wast_text_stream( 'foo bar' ).
+    DATA(lo_text) = NEW zcl_wast_text_stream( 'foo bar' ).
 
     cl_abap_unit_assert=>assert_equals(
        act = lo_text->peek( )
