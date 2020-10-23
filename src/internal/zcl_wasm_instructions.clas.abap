@@ -4,7 +4,7 @@ CLASS zcl_wasm_instructions DEFINITION
 
   PUBLIC SECTION.
     TYPES ty_instruction TYPE x LENGTH 1.
-    TYPES ty_instructions TYPE STANDARD TABLE OF ty_instruction WITH EMPTY KEY.
+    TYPES ty_instructions TYPE STANDARD TABLE OF ty_instruction WITH DEFAULT KEY.
 
     CONSTANTS:
       BEGIN OF c_instructions,
