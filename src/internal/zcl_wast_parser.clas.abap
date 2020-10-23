@@ -63,16 +63,22 @@ CLASS ZCL_WAST_PARSER IMPLEMENTATION.
         WHEN 'drop'.
           APPEND zcl_wasm_instructions=>c_instructions-drop TO rt_instructions.
         WHEN 'select'.
+          APPEND zcl_wasm_instructions=>c_instructions-select TO rt_instructions.
 * https://webassembly.github.io/spec/core/text/instructions.html#variable-instructions
         WHEN 'local.get'.
+          APPEND zcl_wasm_instructions=>c_instructions-local_get TO rt_instructions.
           io_body->pop( ).
         WHEN 'local.set'.
+          APPEND zcl_wasm_instructions=>c_instructions-local_set TO rt_instructions.
           io_body->pop( ).
         WHEN 'local.tee'.
+          APPEND zcl_wasm_instructions=>c_instructions-local_tee TO rt_instructions.
           io_body->pop( ).
         WHEN 'global.get'.
+          APPEND zcl_wasm_instructions=>c_instructions-global_get TO rt_instructions.
           io_body->pop( ).
         WHEN 'global.set'.
+          APPEND zcl_wasm_instructions=>c_instructions-global_set TO rt_instructions.
           io_body->pop( ).
 * https://webassembly.github.io/spec/core/text/instructions.html#numeric-instructions
 * todo
