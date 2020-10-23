@@ -16,7 +16,9 @@ CLASS zcl_wast_parser DEFINITION
         !io_body TYPE REF TO zcl_wast_text_stream .
     METHODS instructions
       IMPORTING
-        !io_body TYPE REF TO zcl_wast_text_stream .
+        !io_body               TYPE REF TO zcl_wast_text_stream
+      RETURNING
+        VALUE(rt_instructions) TYPE zcl_wasm_instructions=>ty_instructions .
     METHODS module
       IMPORTING
         !io_body TYPE REF TO zcl_wast_text_stream .
@@ -59,6 +61,7 @@ CLASS ZCL_WAST_PARSER IMPLEMENTATION.
       CASE lv_instruction.
 * https://webassembly.github.io/spec/core/text/instructions.html#parametric-instructions
         WHEN 'drop'.
+          APPEND zcl_wasm_instructions=>c_instructions-drop TO rt_instructions.
         WHEN 'select'.
 * https://webassembly.github.io/spec/core/text/instructions.html#variable-instructions
         WHEN 'local.get'.
