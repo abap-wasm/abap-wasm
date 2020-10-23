@@ -7,7 +7,9 @@ CLASS zcl_wast_parser DEFINITION
 
     METHODS parse
       IMPORTING
-        !iv_wast TYPE string .
+        !iv_wast         TYPE string
+      RETURNING
+        VALUE(ro_module) TYPE REF TO zcl_wasm_module .
   PROTECTED SECTION.
   PRIVATE SECTION.
 
@@ -23,7 +25,9 @@ CLASS zcl_wast_parser DEFINITION
         VALUE(rt_instructions) TYPE zcl_wasm_instructions=>ty_instructions .
     METHODS module
       IMPORTING
-        !io_body TYPE REF TO zcl_wast_text_stream .
+        !io_body         TYPE REF TO zcl_wast_text_stream
+      RETURNING
+        VALUE(ro_module) TYPE REF TO zcl_wasm_module .
 ENDCLASS.
 
 
@@ -94,15 +98,21 @@ CLASS ZCL_WAST_PARSER IMPLEMENTATION.
 
   METHOD module.
 
-    DATA(lv_next) = io_body->peek( ).
+    DATA lt_functions TYPE zcl_wasm_function=>ty_functions.
 
-    CASE lv_next.
-      WHEN '(func'.
-        func( io_body->pop( ) ).
-      WHEN OTHERS.
+    WHILE io_body->get_length( ) > 0.
+      DATA(lv_next) = io_body->peek( ).
+
+      CASE lv_next.
+        WHEN '(func'.
+          APPEND func( io_body->pop( ) ) TO lt_functions.
+        WHEN OTHERS.
 * unknown
-        ASSERT 0 = 1.
-    ENDCASE.
+          ASSERT 0 = 1.
+      ENDCASE.
+    ENDWHILE.
+
+    ro_module = NEW #( it_functions = lt_functions ).
 
   ENDMETHOD.
 
@@ -111,9 +121,18 @@ CLASS ZCL_WAST_PARSER IMPLEMENTATION.
 
     DATA(lo_text) = NEW zcl_wast_text_stream( iv_wast ).
 
-    IF lo_text->peek( ) = '(module'.
-      module( lo_text->pop( ) ).
-    ENDIF.
+    WHILE lo_text->get_length( ) > 0.
+      DATA(lv_next) = lo_text->peek( ).
+
+      CASE lv_next.
+        WHEN '(module'.
+          ro_module = module( lo_text->pop( ) ).
+* todo, this is not correct, there might be more stuff in the text file
+          RETURN.
+        WHEN OTHERS.
+          ASSERT 0 = 1.
+      ENDCASE.
+    ENDWHILE.
 
   ENDMETHOD.
 ENDCLASS.
