@@ -99,9 +99,7 @@ CLASS ZCL_WAST_PARSER IMPLEMENTATION.
 
   METHOD parse.
 
-    DATA lo_text TYPE REF TO zcl_wast_text_stream.
-
-    lo_text = NEW zcl_wast_text_stream( iv_wast ).
+    DATA(lo_text) = NEW zcl_wast_text_stream( iv_wast ).
 
     IF lo_text->peek( ) = '(module'.
       module( lo_text->pop( ) ).
