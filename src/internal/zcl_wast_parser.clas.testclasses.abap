@@ -30,6 +30,12 @@ CLASS ltcl_test IMPLEMENTATION.
 
     cl_abap_unit_assert=>assert_not_initial( lo_module ).
 
+    DATA(lt_functions) = lo_module->get_functions( ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lines( lt_functions )
+      exp = 1 ).
+
   ENDMETHOD.
 
 ENDCLASS.
