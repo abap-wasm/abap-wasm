@@ -39,6 +39,10 @@ CLASS ltcl_test IMPLEMENTATION.
     READ TABLE lt_functions INDEX 1 INTO DATA(lo_function).
     cl_abap_unit_assert=>assert_not_initial( lo_function ).
 
+    cl_abap_unit_assert=>assert_equals(
+      act = lines( lo_function->get_instructions( ) )
+      exp = 3 ).
+
   ENDMETHOD.
 
 ENDCLASS.
