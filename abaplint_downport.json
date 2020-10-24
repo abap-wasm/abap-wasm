@@ -22,6 +22,8 @@
     "keyword_case": true,
     "indentation": true,
     "definitions_top": true,
+    "whitespace_end": true,
+    "line_break_multiple_parameters": true,
     "parser_error": true
   }
 }
