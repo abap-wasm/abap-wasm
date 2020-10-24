@@ -43,6 +43,10 @@ CLASS ltcl_test IMPLEMENTATION.
       act = lines( lo_function->get_instructions( ) )
       exp = 3 ).
 
+    cl_abap_unit_assert=>assert_equals(
+      act = lo_function->get_export_name( )
+      exp = |addTwo| ).
+
   ENDMETHOD.
 
 ENDCLASS.

@@ -44,13 +44,15 @@ CLASS ZCL_WAST_PARSER IMPLEMENTATION.
 
       CASE lv_next.
         WHEN '(export'.
-          DATA(lv_e) = io_body->pop( ).
+          DATA(lv_export_name) = io_body->pop( )->peek( ).
+          REPLACE ALL OCCURRENCES OF '"' IN lv_export_name WITH ||.
         WHEN '(param'.
           DATA(lv_p) = io_body->pop( ).
         WHEN '(result'.
           DATA(lv_r) = io_body->pop( ).
         WHEN OTHERS.
           ro_function = NEW #(
+            iv_export_name  = lv_export_name
             it_instructions = instructions( io_body ) ).
       ENDCASE.
     ENDWHILE.
