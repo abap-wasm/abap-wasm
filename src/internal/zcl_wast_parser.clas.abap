@@ -44,13 +44,15 @@ CLASS ZCL_WAST_PARSER IMPLEMENTATION.
 
       CASE lv_next.
         WHEN '(export'.
-          DATA(lv_e) = io_body->pop( ).
+          DATA(lv_export_name) = io_body->pop( )->peek( ).
+          REPLACE ALL OCCURRENCES OF '"' IN lv_export_name WITH ||.
         WHEN '(param'.
           DATA(lv_p) = io_body->pop( ).
         WHEN '(result'.
           DATA(lv_r) = io_body->pop( ).
         WHEN OTHERS.
           ro_function = NEW #(
+            iv_export_name  = lv_export_name
             it_instructions = instructions( io_body ) ).
       ENDCASE.
     ENDWHILE.
@@ -85,9 +87,125 @@ CLASS ZCL_WAST_PARSER IMPLEMENTATION.
         WHEN 'global.set'.
           APPEND zcl_wasm_instructions=>c_instructions-global_set TO rt_instructions.
           io_body->pop( ).
-* https://webassembly.github.io/spec/core/text/instructions.html#numeric-instructions
+* https://webassembly.github.io/spec/core/text/instructions.html#memory-instructions
 * todo
+* https://webassembly.github.io/spec/core/text/instructions.html#numeric-instructions
+        WHEN 'i32.const'.
+* todo,          APPEND zcl_wasm_instructions=>c_instructions- TO rt_instructions.
+          io_body->pop( ).
+        WHEN 'i64.const'.
+* todo,          APPEND zcl_wasm_instructions=>c_instructions- TO rt_instructions.
+          io_body->pop( ).
+        WHEN 'f32.const'.
+* todo,          APPEND zcl_wasm_instructions=>c_instructions- TO rt_instructions.
+          io_body->pop( ).
+        WHEN 'f64.const'.
+* todo,          APPEND zcl_wasm_instructions=>c_instructions- TO rt_instructions.
+          io_body->pop( ).
+        WHEN 'i32.eqz'.
+* todo,          APPEND zcl_wasm_instructions=>c_instructions- TO rt_instructions.
+        WHEN 'i32.eq'.
+* todo,          APPEND zcl_wasm_instructions=>c_instructions- TO rt_instructions.
+        WHEN 'i32.ne'.
+* todo,          APPEND zcl_wasm_instructions=>c_instructions- TO rt_instructions.
+        WHEN 'i32.lt_s'.
+* todo,          APPEND zcl_wasm_instructions=>c_instructions- TO rt_instructions.
+        WHEN 'i32.lt_u'.
+* todo,          APPEND zcl_wasm_instructions=>c_instructions- TO rt_instructions.
+        WHEN 'i32.gt_s'.
+* todo,          APPEND zcl_wasm_instructions=>c_instructions- TO rt_instructions.
+        WHEN 'i32.gt_u'.
+* todo,          APPEND zcl_wasm_instructions=>c_instructions- TO rt_instructions.
+        WHEN 'i32.le_s'.
+* todo,          APPEND zcl_wasm_instructions=>c_instructions- TO rt_instructions.
+        WHEN 'i32.le_u'.
+* todo,          APPEND zcl_wasm_instructions=>c_instructions- TO rt_instructions.
+        WHEN 'i32.ge_s'.
+* todo,          APPEND zcl_wasm_instructions=>c_instructions- TO rt_instructions.
+        WHEN 'i32.ge_u'.
+* todo,          APPEND zcl_wasm_instructions=>c_instructions- TO rt_instructions.
+        WHEN 'i64.eqz'.
+* todo,          APPEND zcl_wasm_instructions=>c_instructions- TO rt_instructions.
+        WHEN 'i64.eq'.
+* todo,          APPEND zcl_wasm_instructions=>c_instructions- TO rt_instructions.
+        WHEN 'i64.ne'.
+* todo,          APPEND zcl_wasm_instructions=>c_instructions- TO rt_instructions.
+        WHEN 'i64.lt_s'.
+* todo,          APPEND zcl_wasm_instructions=>c_instructions- TO rt_instructions.
+        WHEN 'i64.lt_u'.
+* todo,          APPEND zcl_wasm_instructions=>c_instructions- TO rt_instructions.
+        WHEN 'i64.gt_s'.
+* todo,          APPEND zcl_wasm_instructions=>c_instructions- TO rt_instructions.
+        WHEN 'i64.gt_u'.
+* todo,          APPEND zcl_wasm_instructions=>c_instructions- TO rt_instructions.
+        WHEN 'i64.le_s'.
+* todo,          APPEND zcl_wasm_instructions=>c_instructions- TO rt_instructions.
+        WHEN 'i64.le_u'.
+* todo,          APPEND zcl_wasm_instructions=>c_instructions- TO rt_instructions.
+        WHEN 'i64.ge_s'.
+* todo,          APPEND zcl_wasm_instructions=>c_instructions- TO rt_instructions.
+        WHEN 'i64.ge_u'.
+* todo,          APPEND zcl_wasm_instructions=>c_instructions- TO rt_instructions.
+        WHEN 'f32.eq'.
+* todo,          APPEND zcl_wasm_instructions=>c_instructions- TO rt_instructions.
+        WHEN 'f32.ne'.
+* todo,          APPEND zcl_wasm_instructions=>c_instructions- TO rt_instructions.
+        WHEN 'f32.lt'.
+* todo,          APPEND zcl_wasm_instructions=>c_instructions- TO rt_instructions.
+        WHEN 'f32.gt'.
+* todo,          APPEND zcl_wasm_instructions=>c_instructions- TO rt_instructions.
+        WHEN 'f32.le'.
+* todo,          APPEND zcl_wasm_instructions=>c_instructions- TO rt_instructions.
+        WHEN 'f32.ge'.
+* todo,          APPEND zcl_wasm_instructions=>c_instructions- TO rt_instructions.
+        WHEN 'f64.eq'.
+* todo,          APPEND zcl_wasm_instructions=>c_instructions- TO rt_instructions.
+        WHEN 'f64.ne'.
+* todo,          APPEND zcl_wasm_instructions=>c_instructions- TO rt_instructions.
+        WHEN 'f64.lt'.
+* todo,          APPEND zcl_wasm_instructions=>c_instructions- TO rt_instructions.
+        WHEN 'f64.gt'.
+* todo,          APPEND zcl_wasm_instructions=>c_instructions- TO rt_instructions.
+        WHEN 'f64.le'.
+* todo,          APPEND zcl_wasm_instructions=>c_instructions- TO rt_instructions.
+        WHEN 'f64.ge'.
+* todo,          APPEND zcl_wasm_instructions=>c_instructions- TO rt_instructions.
+        WHEN 'i32.clz'.
+* todo,          APPEND zcl_wasm_instructions=>c_instructions- TO rt_instructions.
+        WHEN 'i32.ctz'.
+* todo,          APPEND zcl_wasm_instructions=>c_instructions- TO rt_instructions.
+        WHEN 'i32.popcnt'.
+* todo,          APPEND zcl_wasm_instructions=>c_instructions- TO rt_instructions.
         WHEN 'i32.add'.
+          APPEND zcl_wasm_instructions=>c_instructions-i32_add TO rt_instructions.
+        WHEN 'i32.sub'.
+* todo,          APPEND zcl_wasm_instructions=>c_instructions- TO rt_instructions.
+        WHEN 'i32.mul'.
+* todo,          APPEND zcl_wasm_instructions=>c_instructions- TO rt_instructions.
+        WHEN 'i32.div_s'.
+* todo,          APPEND zcl_wasm_instructions=>c_instructions- TO rt_instructions.
+        WHEN 'i32.div_u'.
+* todo,          APPEND zcl_wasm_instructions=>c_instructions- TO rt_instructions.
+        WHEN 'i32.rem_s'.
+* todo,          APPEND zcl_wasm_instructions=>c_instructions- TO rt_instructions.
+        WHEN 'i32.rem_u'.
+* todo,          APPEND zcl_wasm_instructions=>c_instructions- TO rt_instructions.
+        WHEN 'i32.and'.
+* todo,          APPEND zcl_wasm_instructions=>c_instructions- TO rt_instructions.
+        WHEN 'i32.or'.
+* todo,          APPEND zcl_wasm_instructions=>c_instructions- TO rt_instructions.
+        WHEN 'i32.xor'.
+* todo,          APPEND zcl_wasm_instructions=>c_instructions- TO rt_instructions.
+        WHEN 'i32.shl'.
+* todo,          APPEND zcl_wasm_instructions=>c_instructions- TO rt_instructions.
+        WHEN 'i32.shr_s'.
+* todo,          APPEND zcl_wasm_instructions=>c_instructions- TO rt_instructions.
+        WHEN 'i32.shr_u'.
+* todo,          APPEND zcl_wasm_instructions=>c_instructions- TO rt_instructions.
+        WHEN 'i32.rotl'.
+* todo,          APPEND zcl_wasm_instructions=>c_instructions- TO rt_instructions.
+        WHEN 'i32.rotr'.
+* todo, more numeric instructions
         WHEN OTHERS.
           ASSERT 0 = 1.
       ENDCASE.
