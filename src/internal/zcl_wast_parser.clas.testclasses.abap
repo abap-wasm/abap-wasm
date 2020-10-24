@@ -36,6 +36,9 @@ CLASS ltcl_test IMPLEMENTATION.
       act = lines( lt_functions )
       exp = 1 ).
 
+    READ TABLE lt_functions INDEX 1 INTO DATA(lo_function).
+    cl_abap_unit_assert=>assert_not_initial( lo_function ).
+
   ENDMETHOD.
 
 ENDCLASS.
