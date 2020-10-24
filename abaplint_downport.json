@@ -21,6 +21,7 @@
     "check_syntax": true,
     "keyword_case": true,
     "indentation": true,
+    "definitions_top": true,
     "parser_error": true
   }
 }
