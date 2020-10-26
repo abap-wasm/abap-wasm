@@ -14,6 +14,6 @@
   "dependencies": {
     "@abaplint/cli": "^2.58.15",
     "@abaplint/runtime": "^0.5.33",
-    "@abaplint/transpiler-cli": "^0.5.33"
+    "@abaplint/transpiler-cli": "^0.5.34"
   }
 }
