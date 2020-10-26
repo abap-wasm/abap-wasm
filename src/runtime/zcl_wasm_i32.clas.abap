@@ -13,6 +13,9 @@ CLASS zcl_wasm_i32 DEFINITION
     CLASS-METHODS add
       IMPORTING
         !io_memory TYPE REF TO zcl_wasm_memory .
+    METHODS get_value
+      RETURNING
+        VALUE(rv_value) TYPE i .
   PROTECTED SECTION.
   PRIVATE SECTION.
 
@@ -31,6 +34,13 @@ CLASS ZCL_WASM_I32 IMPLEMENTATION.
 
   METHOD constructor.
     mv_value = iv_value.
+  ENDMETHOD.
+
+
+  METHOD get_value.
+
+    rv_value = mv_value.
+
   ENDMETHOD.
 
 
