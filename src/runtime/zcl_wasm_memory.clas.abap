@@ -34,13 +34,27 @@ CLASS ZCL_WASM_MEMORY IMPLEMENTATION.
 
 
   METHOD peek.
+
+    DATA(lv_last) = lines( mt_stack ).
+    READ TABLE mt_stack INDEX lv_last INTO ri_value.
+
   ENDMETHOD.
 
 
   METHOD pop.
+
+    ASSERT lines( mt_stack ) > 0.
+
+    DATA(lv_last) = lines( mt_stack ).
+    READ TABLE mt_stack INDEX lv_last INTO ri_value.
+    DELETE mt_stack INDEX lv_last.
+
   ENDMETHOD.
 
 
   METHOD push.
+
+    APPEND ii_value TO mt_stack.
+
   ENDMETHOD.
 ENDCLASS.
