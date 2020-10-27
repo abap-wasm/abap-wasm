@@ -140,7 +140,8 @@ CLASS ZCL_WAST_TEXT_STREAM IMPLEMENTATION.
       ENDIF.
     ENDLOOP.
 
-    rv_text = concat_lines_of( table = lt_rows sep = |\n| ).
+    rv_text = concat_lines_of( table = lt_rows
+                               sep   = |\n| ).
 
   ENDMETHOD.
 ENDCLASS.
