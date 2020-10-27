@@ -9,14 +9,16 @@ CLASS zcl_wasm DEFINITION
         !iv_wasm       TYPE xstring
       RETURNING
         VALUE(ro_wasm) TYPE REF TO zcl_wasm .
+    CLASS-METHODS create_with_wat
+      IMPORTING
+        !iv_wast       TYPE string
+      RETURNING
+        VALUE(ro_wasm) TYPE REF TO zcl_wasm .
     CLASS-METHODS create_with_wast
       IMPORTING
         !iv_wast       TYPE string
       RETURNING
         VALUE(ro_wasm) TYPE REF TO zcl_wasm .
-    CLASS-METHODS execute_wast
-      IMPORTING
-        !iv_wast TYPE string .
     METHODS constructor
       IMPORTING
         !iv_wasm TYPE xstring .
@@ -47,18 +49,21 @@ CLASS ZCL_WASM IMPLEMENTATION.
 
   METHOD create_with_wast.
 
-    ro_wasm = create_with_wasm( NEW zcl_wast( iv_wast )->to_wasm( ) ).
+* todo
+    RETURN.
+
+  ENDMETHOD.
+
+
+  METHOD create_with_wat.
+
+* todo
+    RETURN.
 
   ENDMETHOD.
 
 
   METHOD execute_export.
-* todo
-    RETURN.
-  ENDMETHOD.
-
-
-  METHOD execute_wast.
 * todo
     RETURN.
   ENDMETHOD.
