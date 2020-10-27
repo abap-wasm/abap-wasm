@@ -12,7 +12,7 @@
   "author": "Lars Hvam Petersen",
   "license": "MIT",
   "dependencies": {
-    "@abaplint/cli": "^2.58.17",
+    "@abaplint/cli": "^2.58.18",
     "@abaplint/runtime": "^0.5.36",
     "@abaplint/transpiler-cli": "^0.5.36"
   }
