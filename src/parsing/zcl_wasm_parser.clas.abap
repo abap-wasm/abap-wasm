@@ -3,14 +3,14 @@ CLASS zcl_wasm_parser DEFINITION
   CREATE PUBLIC .
 
   PUBLIC SECTION.
-  PROTECTED SECTION.
-  PRIVATE SECTION.
 
     METHODS parse
       IMPORTING
         !iv_wasm         TYPE xstring
       RETURNING
         VALUE(ro_module) TYPE REF TO zcl_wasm_module .
+  PROTECTED SECTION.
+  PRIVATE SECTION.
 ENDCLASS.
 
 
