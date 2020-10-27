@@ -1,11 +1,11 @@
-class ZCL_WAT_PARSER definition
-  public
-  final
-  create public .
+CLASS zcl_wat_parser DEFINITION
+  PUBLIC
+  FINAL
+  CREATE PUBLIC .
 
-public section.
-protected section.
-private section.
+  PUBLIC SECTION.
+  PROTECTED SECTION.
+  PRIVATE SECTION.
 ENDCLASS.
 
 

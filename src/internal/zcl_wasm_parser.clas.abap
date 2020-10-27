@@ -1,16 +1,16 @@
-class ZCL_WASM_PARSER definition
-  public
-  create public .
+CLASS zcl_wasm_parser DEFINITION
+  PUBLIC
+  CREATE PUBLIC .
 
-public section.
-protected section.
-private section.
+  PUBLIC SECTION.
+  PROTECTED SECTION.
+  PRIVATE SECTION.
 
-  methods PARSE
-    importing
-      !IV_WASM type XSTRING
-    returning
-      value(RO_MODULE) type ref to ZCL_WASM_MODULE .
+    METHODS parse
+      IMPORTING
+        !iv_wasm         TYPE xstring
+      RETURNING
+        VALUE(ro_module) TYPE REF TO zcl_wasm_module .
 ENDCLASS.
 
 

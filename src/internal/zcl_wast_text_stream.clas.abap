@@ -1,25 +1,25 @@
-class ZCL_WAST_TEXT_STREAM definition
-  public
-  final
-  create public .
+CLASS zcl_wast_text_stream DEFINITION
+  PUBLIC
+  FINAL
+  CREATE PUBLIC .
 
-public section.
+  PUBLIC SECTION.
 
-  methods CONSTRUCTOR
-    importing
-      !IV_TEXT type STRING .
-  methods GET_LENGTH
-    returning
-      value(RV_LENGTH) type I .
-  methods GET_TEXT
-    returning
-      value(RV_TEXT) type STRING .
-  methods PEEK
-    returning
-      value(RV_TEXT) type STRING .
-  methods POP
-    returning
-      value(RO_BODY) type ref to ZCL_WAST_TEXT_STREAM .
+    METHODS constructor
+      IMPORTING
+        !iv_text TYPE string .
+    METHODS get_length
+      RETURNING
+        VALUE(rv_length) TYPE i .
+    METHODS get_text
+      RETURNING
+        VALUE(rv_text) TYPE string .
+    METHODS peek
+      RETURNING
+        VALUE(rv_text) TYPE string .
+    METHODS pop
+      RETURNING
+        VALUE(ro_body) TYPE REF TO zcl_wast_text_stream .
   PROTECTED SECTION.
 
     METHODS remove_comments
