@@ -22,6 +22,11 @@ CLASS zcl_wast_text_stream DEFINITION
         VALUE(ro_body) TYPE REF TO zcl_wast_text_stream .
   PROTECTED SECTION.
 
+    METHODS remove_comments
+      IMPORTING
+        !iv_text       TYPE string
+      RETURNING
+        VALUE(rv_text) TYPE string .
     METHODS find_match_paren
       RETURNING
         VALUE(rv_index) TYPE i .
@@ -37,7 +42,7 @@ CLASS ZCL_WAST_TEXT_STREAM IMPLEMENTATION.
 
   METHOD constructor.
 
-    mv_text = iv_text.
+    mv_text = remove_comments( iv_text ).
 
     REPLACE ALL OCCURRENCES OF |\n| IN mv_text WITH | |.
 
@@ -93,7 +98,7 @@ CLASS ZCL_WAST_TEXT_STREAM IMPLEMENTATION.
 
     SPLIT mv_text AT | | INTO TABLE lt_table.
 
-    READ TABLE lt_table INDEX 1 INTO rv_text. "#EC CI_SUBRC
+    READ TABLE lt_table INDEX 1 INTO rv_text.
 
   ENDMETHOD.
 
@@ -120,6 +125,22 @@ CLASS ZCL_WAST_TEXT_STREAM IMPLEMENTATION.
     ENDIF.
 
     CONDENSE mv_text.
+
+  ENDMETHOD.
+
+
+  METHOD remove_comments.
+
+    SPLIT iv_text AT |\n| INTO TABLE DATA(lt_rows).
+
+    LOOP AT lt_rows ASSIGNING FIELD-SYMBOL(<lv_row>).
+      FIND FIRST OCCURRENCE OF |;;| IN <lv_row> MATCH OFFSET DATA(lv_offset).
+      IF sy-subrc = 0.
+        <lv_row> = <lv_row>(lv_offset).
+      ENDIF.
+    ENDLOOP.
+
+    rv_text = concat_lines_of( table = lt_rows sep = |\n| ).
 
   ENDMETHOD.
 ENDCLASS.
