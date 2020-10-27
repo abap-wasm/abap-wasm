@@ -7,7 +7,9 @@ CLASS ltcl_test DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS FINAL.
 
     METHODS:
       single_module FOR TESTING,
-      instructions FOR TESTING.
+      instructions FOR TESTING,
+      comments FOR TESTING.
+
 ENDCLASS.
 
 
@@ -52,6 +54,20 @@ CLASS ltcl_test IMPLEMENTATION.
     cl_abap_unit_assert=>assert_equals(
       act = lo_text->peek( )
       exp = 'bar' ).
+
+  ENDMETHOD.
+
+  METHOD comments.
+
+    DATA(lo_text) = NEW zcl_wast_text_stream( | ;;foo \n bar| ).
+
+    cl_abap_unit_assert=>assert_equals(
+       act = lo_text->pop( )->peek( )
+       exp = 'bar' ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lo_text->get_length( )
+      exp = 0 ).
 
   ENDMETHOD.
 
