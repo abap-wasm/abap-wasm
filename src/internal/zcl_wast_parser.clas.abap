@@ -210,7 +210,6 @@ CLASS ZCL_WAST_PARSER IMPLEMENTATION.
         WHEN '(return'.
 * todo
         WHEN OTHERS.
-          BREAK-POINT.
           ASSERT 0 = 1.
       ENDCASE.
     ENDWHILE.
