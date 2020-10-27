@@ -17,6 +17,20 @@ CLASS ltcl_test IMPLEMENTATION.
       act = lo_stream->get_length( )
       exp = 3 ).
 
+    cl_abap_unit_assert=>assert_equals(
+      act = lo_stream->peek( 1 )
+      exp = |11| ).
+
+    lo_stream->shift( 1 ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lo_stream->get_length( )
+      exp = 2 ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lo_stream->peek( 2 )
+      exp = |2233| ).
+
   ENDMETHOD.
 
 ENDCLASS.
