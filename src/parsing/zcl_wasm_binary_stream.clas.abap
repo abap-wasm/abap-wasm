@@ -17,7 +17,9 @@ CLASS zcl_wasm_binary_stream DEFINITION
         VALUE(rv_data) TYPE xstring .
     METHODS shift
       IMPORTING
-        !iv_length TYPE i .
+        !iv_length     TYPE i
+      RETURNING
+        VALUE(rv_data) TYPE xstring .
   PROTECTED SECTION.
   PRIVATE SECTION.
 
@@ -51,6 +53,8 @@ CLASS ZCL_WASM_BINARY_STREAM IMPLEMENTATION.
 
 
   METHOD shift.
+
+    rv_data = peek( iv_length ).
 
     mv_data = mv_data+iv_length.
 
