@@ -20,10 +20,12 @@ CLASS ZCL_WASM_PARSER IMPLEMENTATION.
 
   METHOD parse.
 
+    CONSTANTS lc_magic TYPE x LENGTH 4 VALUE '0061736D'.
+
     DATA(lo_stream) = NEW zcl_wasm_binary_stream( iv_wasm ).
 
 * https://webassembly.github.io/spec/core/binary/modules.html#binary-module
-    ASSERT lo_stream->shift( 4 ) = '0061736D'. " magic number
+    ASSERT lo_stream->shift( 4 ) = lc_magic. " magic number
     ASSERT lo_stream->shift( 4 ) = '01000000'. " version
 
 * todo
