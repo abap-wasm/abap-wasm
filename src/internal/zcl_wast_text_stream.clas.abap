@@ -113,8 +113,10 @@ CLASS ZCL_WAST_TEXT_STREAM IMPLEMENTATION.
       DATA(lv_paren) = find_match_paren( ).
       DATA(lv_body_length) = lv_paren - lv_offset.
 
-      DATA(lv_new) = mv_text+lv_offset(lv_body_length).
-      ro_body = NEW #( lv_new ).
+      IF lv_body_length > 0.
+        DATA(lv_new) = mv_text+lv_offset(lv_body_length).
+        ro_body = NEW #( lv_new ).
+      ENDIF.
 
       lv_paren = lv_paren + 1.
       mv_text = mv_text+lv_paren.
