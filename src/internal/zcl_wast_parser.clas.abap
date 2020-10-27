@@ -1,15 +1,15 @@
-CLASS zcl_wast_parser DEFINITION
-  PUBLIC
-  FINAL
-  CREATE PUBLIC .
+class ZCL_WAST_PARSER definition
+  public
+  final
+  create public .
 
-  PUBLIC SECTION.
+public section.
 
-    METHODS parse
-      IMPORTING
-        !iv_wast         TYPE string
-      RETURNING
-        VALUE(ro_module) TYPE REF TO zcl_wasm_module .
+  methods PARSE
+    importing
+      !IV_WAST type STRING
+    returning
+      value(RO_MODULE) type ref to ZCL_WASM_MODULE .
   PROTECTED SECTION.
   PRIVATE SECTION.
 

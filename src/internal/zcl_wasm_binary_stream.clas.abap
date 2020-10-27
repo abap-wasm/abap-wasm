@@ -1,10 +1,10 @@
-CLASS zcl_wasm_binary_stream DEFINITION
-  PUBLIC
-  CREATE PUBLIC .
+class ZCL_WASM_BINARY_STREAM definition
+  public
+  create public .
 
-  PUBLIC SECTION.
+public section.
 
-    METHODS constructor .
+  methods CONSTRUCTOR .
   PROTECTED SECTION.
   PRIVATE SECTION.
 

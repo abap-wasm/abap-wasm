@@ -1,28 +1,30 @@
-CLASS zcl_wasm DEFINITION
-  PUBLIC
-  CREATE PROTECTED .
+class ZCL_WASM definition
+  public
+  create protected .
 
-  PUBLIC SECTION.
+public section.
 
-    CLASS-METHODS create_with_wasm
-      IMPORTING
-        !iv_wasm       TYPE xstring
-      RETURNING
-        VALUE(ro_wasm) TYPE REF TO zcl_wasm .
-    CLASS-METHODS create_with_wast
-      IMPORTING
-        !iv_wast       TYPE string
-      RETURNING
-        VALUE(ro_wasm) TYPE REF TO zcl_wasm .
-    CLASS-METHODS execute_wast
-      IMPORTING
-        !iv_wast TYPE string .
-    METHODS constructor
-      IMPORTING
-        !iv_wasm TYPE xstring .
-    METHODS execute_export .
-    METHODS list_exports .
-    METHODS list_imports .
+  class-methods CREATE_WITH_WASM
+    importing
+      !IV_WASM type XSTRING
+    returning
+      value(RO_WASM) type ref to ZCL_WASM .
+  class-methods CREATE_WITH_WAT
+    importing
+      !IV_WAST type STRING
+    returning
+      value(RO_WASM) type ref to ZCL_WASM .
+  class-methods CREATE_WITH_WAST
+    importing
+      !IV_WAST type STRING
+    returning
+      value(RO_WASM) type ref to ZCL_WASM .
+  methods CONSTRUCTOR
+    importing
+      !IV_WASM type XSTRING .
+  methods EXECUTE_EXPORT .
+  methods LIST_EXPORTS .
+  methods LIST_IMPORTS .
   PROTECTED SECTION.
   PRIVATE SECTION.
 ENDCLASS.
@@ -47,18 +49,21 @@ CLASS ZCL_WASM IMPLEMENTATION.
 
   METHOD create_with_wast.
 
-    ro_wasm = create_with_wasm( NEW zcl_wast( iv_wast )->to_wasm( ) ).
+* todo
+    RETURN.
+
+  ENDMETHOD.
+
+
+  METHOD create_with_wat.
+
+* todo
+    RETURN.
 
   ENDMETHOD.
 
 
   METHOD execute_export.
-* todo
-    RETURN.
-  ENDMETHOD.
-
-
-  METHOD execute_wast.
 * todo
     RETURN.
   ENDMETHOD.
