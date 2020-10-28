@@ -23,6 +23,9 @@ CLASS zcl_wasm_binary_stream DEFINITION
     METHODS shift_int
       RETURNING
         VALUE(rv_int) TYPE i .
+    METHODS shift_utf8
+      RETURNING
+        VALUE(rv_name) TYPE string .
   PROTECTED SECTION.
   PRIVATE SECTION.
 
@@ -72,6 +75,20 @@ CLASS ZCL_WASM_BINARY_STREAM IMPLEMENTATION.
     DATA lv_hex TYPE x LENGTH 1.
     lv_hex = shift( 1 ).
     rv_int = CONV i( lv_hex ).
+
+  ENDMETHOD.
+
+
+  METHOD shift_utf8.
+
+    DATA conv TYPE REF TO cl_abap_conv_in_ce.
+    DATA(lv_length) = shift_int( ).
+    DATA(lv_binary) = shift( lv_length ).
+
+    conv = cl_abap_conv_in_ce=>create( encoding = 'UTF-8' ).
+    conv->convert(
+      EXPORTING input = lv_binary
+      IMPORTING data = rv_name ).
 
   ENDMETHOD.
 ENDCLASS.

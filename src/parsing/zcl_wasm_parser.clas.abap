@@ -110,8 +110,31 @@ CLASS ZCL_WASM_PARSER IMPLEMENTATION.
 
 
   METHOD parse_export.
-* todo
-    RETURN.
+
+* https://webassembly.github.io/spec/core/binary/modules.html#binary-exportsec
+
+    DATA(lv_export_count) = io_body->shift_int( ).
+
+    DO lv_export_count TIMES.
+
+      DATA(lv_name) = io_body->shift_utf8( ).
+
+      DATA(lv_type) = io_body->shift( 1 ).
+      CASE lv_type.
+        WHEN '00'.
+          DATA(lv_funcidx) = io_body->shift_int( ).
+        WHEN '01'.
+          DATA(lv_tableidx) = io_body->shift_int( ).
+        WHEN '02'.
+          DATA(lv_memidx) = io_body->shift_int( ).
+        WHEN '03'.
+          DATA(lv_globalidx) = io_body->shift_int( ).
+        WHEN OTHERS.
+          ASSERT 0 = 1.
+      ENDCASE.
+
+    ENDDO.
+
   ENDMETHOD.
 
 
