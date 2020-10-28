@@ -39,7 +39,7 @@
     "call_transaction_authority_check": true,
     "chain_mainly_declarations": true,
     "check_abstract": true,
-    "check_comments": true,
+    "check_comments": false,
     "check_ddic": true,
     "check_include": true,
     "check_no_handler_pragma": true,

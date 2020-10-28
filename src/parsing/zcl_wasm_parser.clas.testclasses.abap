@@ -34,6 +34,8 @@ CLASS ltcl_test IMPLEMENTATION.
       |0106010003616464020D01000200036C| &&
       |68730103726873| ).
 
+    mo_cut->parse( lv_xstr ).
+
   ENDMETHOD.
 
 ENDCLASS.
