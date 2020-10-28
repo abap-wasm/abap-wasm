@@ -94,8 +94,60 @@ CLASS ZCL_WASM_BINARY_STREAM IMPLEMENTATION.
     DATA(lo_stream) = NEW zcl_wasm_binary_stream( shift( shift_int( ) ) ).
 
     WHILE lo_stream->get_length( ) > 0.
-      DATA(lv_hex) = lo_stream->shift( 1 ).
-      CASE lv_hex.
+*      DATA(lv_hex) = .
+      CASE lo_stream->shift( 1 ).
+        WHEN '41'.
+          CONCATENATE rv_name 'A' INTO rv_name.
+        WHEN '42'.
+          CONCATENATE rv_name 'B' INTO rv_name.
+        WHEN '43'.
+          CONCATENATE rv_name 'C' INTO rv_name.
+        WHEN '44'.
+          CONCATENATE rv_name 'D' INTO rv_name.
+        WHEN '45'.
+          CONCATENATE rv_name 'E' INTO rv_name.
+        WHEN '46'.
+          CONCATENATE rv_name 'F' INTO rv_name.
+        WHEN '47'.
+          CONCATENATE rv_name 'G' INTO rv_name.
+        WHEN '48'.
+          CONCATENATE rv_name 'H' INTO rv_name.
+        WHEN '49'.
+          CONCATENATE rv_name 'I' INTO rv_name.
+        WHEN '4A'.
+          CONCATENATE rv_name 'J' INTO rv_name.
+        WHEN '4B'.
+          CONCATENATE rv_name 'K' INTO rv_name.
+        WHEN '4C'.
+          CONCATENATE rv_name 'L' INTO rv_name.
+        WHEN '4D'.
+          CONCATENATE rv_name 'M' INTO rv_name.
+        WHEN '4E'.
+          CONCATENATE rv_name 'N' INTO rv_name.
+        WHEN '4F'.
+          CONCATENATE rv_name 'O' INTO rv_name.
+        WHEN '50'.
+          CONCATENATE rv_name 'P' INTO rv_name.
+        WHEN '51'.
+          CONCATENATE rv_name 'Q' INTO rv_name.
+        WHEN '52'.
+          CONCATENATE rv_name 'R' INTO rv_name.
+        WHEN '53'.
+          CONCATENATE rv_name 'S' INTO rv_name.
+        WHEN '54'.
+          CONCATENATE rv_name 'T' INTO rv_name.
+        WHEN '55'.
+          CONCATENATE rv_name 'U' INTO rv_name.
+        WHEN '56'.
+          CONCATENATE rv_name 'V' INTO rv_name.
+        WHEN '57'.
+          CONCATENATE rv_name 'W' INTO rv_name.
+        WHEN '58'.
+          CONCATENATE rv_name 'X' INTO rv_name.
+        WHEN '59'.
+          CONCATENATE rv_name 'Y' INTO rv_name.
+        WHEN '5A'.
+          CONCATENATE rv_name 'Z' INTO rv_name.
         WHEN '61'.
           CONCATENATE rv_name 'a' INTO rv_name.
         WHEN '62'.
@@ -149,6 +201,10 @@ CLASS ZCL_WASM_BINARY_STREAM IMPLEMENTATION.
         WHEN '7A'.
           CONCATENATE rv_name 'z' INTO rv_name.
         WHEN OTHERS.
+* yea, so, the classes for code page conversion is different
+* in on-prem and Steampunk. Plus also sy-abcde is deprecated in
+* Steampunk :o/
+* So, only very basic UTF8 conversion is implemented
           ASSERT 0 = 1.
       ENDCASE.
     ENDWHILE.
