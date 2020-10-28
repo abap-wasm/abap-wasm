@@ -27,6 +27,17 @@ CLASS ltcl_test IMPLEMENTATION.
       act = lines( lo_module->get_codes( ) )
       exp = 1 ).
 
+    cl_abap_unit_assert=>assert_equals(
+      act = lines( lo_module->get_exports( ) )
+      exp = 1 ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lines( lo_module->get_functions( ) )
+        exp = 1 ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lines( lo_module->get_types( ) )
+      exp = 1 ).
 
   ENDMETHOD.
 
