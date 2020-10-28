@@ -10,20 +10,20 @@ CLASS zcl_wasm_parser DEFINITION
       RETURNING
         VALUE(ro_module) TYPE REF TO zcl_wasm_module .
   PROTECTED SECTION.
-    CONSTANTS: BEGIN OF gc_section,
-                 custom   TYPE x LENGTH 1 VALUE '00',
-                 type     TYPE x LENGTH 1 VALUE '01',
-                 import   TYPE x LENGTH 1 VALUE '02',
-                 function TYPE x LENGTH 1 VALUE '03',
-                 table    TYPE x LENGTH 1 VALUE '04',
-                 memory   TYPE x LENGTH 1 VALUE '05',
-                 global   TYPE x LENGTH 1 VALUE '06',
-                 export   TYPE x LENGTH 1 VALUE '07',
-                 start    TYPE x LENGTH 1 VALUE '08',
-                 element  TYPE x LENGTH 1 VALUE '09',
-                 code     TYPE x LENGTH 1 VALUE '10',
-                 data     TYPE x LENGTH 1 VALUE '11',
-               END OF gc_section.
+* Note that these constants are not structured as they contain JS keywords
+    CONSTANTS:
+      gc_section_custom   TYPE x LENGTH 1 VALUE '00',
+      gc_section_type     TYPE x LENGTH 1 VALUE '01',
+      gc_section_import   TYPE x LENGTH 1 VALUE '02',
+      gc_section_function TYPE x LENGTH 1 VALUE '03',
+      gc_section_table    TYPE x LENGTH 1 VALUE '04',
+      gc_section_memory   TYPE x LENGTH 1 VALUE '05',
+      gc_section_global   TYPE x LENGTH 1 VALUE '06',
+      gc_section_export   TYPE x LENGTH 1 VALUE '07',
+      gc_section_start    TYPE x LENGTH 1 VALUE '08',
+      gc_section_element  TYPE x LENGTH 1 VALUE '09',
+      gc_section_code     TYPE x LENGTH 1 VALUE '10',
+      gc_section_data     TYPE x LENGTH 1 VALUE '11'.
 
   PRIVATE SECTION.
 ENDCLASS.
