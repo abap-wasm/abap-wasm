@@ -20,6 +20,9 @@ CLASS zcl_wasm_binary_stream DEFINITION
         !iv_length     TYPE i
       RETURNING
         VALUE(rv_data) TYPE xstring .
+    METHODS shift_int
+      RETURNING
+        VALUE(rv_int) TYPE i .
   PROTECTED SECTION.
   PRIVATE SECTION.
 
@@ -57,6 +60,18 @@ CLASS ZCL_WASM_BINARY_STREAM IMPLEMENTATION.
     rv_data = peek( iv_length ).
 
     mv_data = mv_data+iv_length.
+
+  ENDMETHOD.
+
+
+  METHOD shift_int.
+
+* todo, this should be LEB128
+* https://webassembly.github.io/spec/core/binary/values.html#binary-int
+
+    DATA lv_hex TYPE x LENGTH 1.
+    lv_hex = shift( 1 ).
+    rv_int = CONV i( lv_hex ).
 
   ENDMETHOD.
 ENDCLASS.
