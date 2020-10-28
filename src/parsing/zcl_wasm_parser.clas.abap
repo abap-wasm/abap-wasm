@@ -44,12 +44,15 @@ CLASS zcl_wasm_parser DEFINITION
            END OF ty_export_result.
     TYPES: ty_export_results TYPE STANDARD TABLE OF ty_export_result WITH DEFAULT KEY.
 
+    TYPES: ty_function_results TYPE STANDARD TABLE OF i WITH DEFAULT KEY.
+
     METHODS:
       parse_type
         IMPORTING io_body           TYPE REF TO zcl_wasm_binary_stream
         RETURNING VALUE(rt_results) TYPE ty_type_results,
       parse_function
-        IMPORTING io_body TYPE REF TO zcl_wasm_binary_stream,
+        IMPORTING io_body           TYPE REF TO zcl_wasm_binary_stream
+        RETURNING VALUE(rt_results) TYPE ty_function_results,
       parse_export
         IMPORTING io_body           TYPE REF TO zcl_wasm_binary_stream
         RETURNING VALUE(rt_results) TYPE ty_export_results,
@@ -67,8 +70,6 @@ CLASS ZCL_WASM_PARSER IMPLEMENTATION.
 
 
   METHOD parse.
-
-
 
     CONSTANTS lc_magic TYPE x LENGTH 4 VALUE '0061736D'.
     CONSTANTS lc_version TYPE x LENGTH 4 VALUE '01000000'.
@@ -89,11 +90,11 @@ CLASS ZCL_WASM_PARSER IMPLEMENTATION.
         WHEN gc_section_custom.
           parse_custom( lo_body ).
         WHEN gc_section_type.
-          parse_type( lo_body ).
+          DATA(lt_types) = parse_type( lo_body ).
         WHEN gc_section_import.
           ASSERT 0 = 'todo'.
         WHEN gc_section_function.
-          parse_function( lo_body ).
+          DATA(lt_functions) = parse_function( lo_body ).
         WHEN gc_section_table.
           ASSERT 0 = 'todo'.
         WHEN gc_section_memory.
@@ -101,13 +102,13 @@ CLASS ZCL_WASM_PARSER IMPLEMENTATION.
         WHEN gc_section_global.
           ASSERT 0 = 'todo'.
         WHEN gc_section_export.
-          parse_export( lo_body ).
+          DATA(lt_exports) = parse_export( lo_body ).
         WHEN gc_section_start.
           ASSERT 0 = 'todo'.
         WHEN gc_section_element.
           ASSERT 0 = 'todo'.
         WHEN gc_section_code.
-          parse_code( lo_body ).
+          DATA(lt_code) = parse_code( lo_body ).
         WHEN gc_section_data.
           ASSERT 0 = 'todo'.
         WHEN OTHERS.
@@ -187,7 +188,7 @@ CLASS ZCL_WASM_PARSER IMPLEMENTATION.
     DATA(lv_function_count) = io_body->shift_int( ).
 
     DO lv_function_count TIMES.
-      DATA(lv_typeidx) = io_body->shift_int( ).
+      APPEND io_body->shift_int( ) TO rt_results.
     ENDDO.
 
   ENDMETHOD.
