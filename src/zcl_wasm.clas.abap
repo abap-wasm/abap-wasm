@@ -83,10 +83,11 @@ CLASS ZCL_WASM IMPLEMENTATION.
   METHOD execute_function_export.
 
     DATA li_value TYPE REF TO zif_wasm_value.
+    DATA ls_export TYPE zcl_wasm_module=>ty_export.
+    DATA ls_code TYPE zcl_wasm_module=>ty_code.
 
-    DATA(ls_export) = mo_module->get_export_by_name( iv_name ).
-
-    DATA(ls_code) = mo_module->get_code_by_index( ls_export-index ).
+    ls_export = mo_module->get_export_by_name( iv_name ).
+    ls_code = mo_module->get_code_by_index( ls_export-index ).
 
     DATA(lo_memory) = NEW zcl_wasm_memory( ).
     LOOP AT it_parameters INTO li_value.
