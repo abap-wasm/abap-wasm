@@ -47,6 +47,11 @@ CLASS zcl_wasm_module DEFINITION
     METHODS get_functions
       RETURNING
         VALUE(rt_result) TYPE ty_functions .
+    METHODS get_code_by_index
+      IMPORTING
+        !iv_index      TYPE i
+      RETURNING
+        VALUE(rs_code) TYPE ty_code.
     METHODS get_function_by_index
       IMPORTING
         !iv_index      TYPE i
@@ -86,6 +91,17 @@ CLASS ZCL_WASM_MODULE IMPLEMENTATION.
 
   METHOD get_codes.
     rt_result = mt_codes.
+  ENDMETHOD.
+
+
+  METHOD get_code_by_index.
+
+* index is zero based
+    DATA(lv_index) = iv_index + 1.
+
+    READ TABLE mt_codes INDEX lv_index INTO rs_code.
+    ASSERT sy-subrc = 0.
+
   ENDMETHOD.
 
 
