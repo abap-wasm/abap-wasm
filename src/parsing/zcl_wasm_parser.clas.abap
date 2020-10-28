@@ -44,10 +44,28 @@ CLASS ZCL_WASM_PARSER IMPLEMENTATION.
     ASSERT lo_stream->shift( 4 ) = lc_magic.
     ASSERT lo_stream->shift( 4 ) = lc_version.
 
+*    WHILE lo_stream->get_length( ) > 0.
 * https://webassembly.github.io/spec/core/binary/modules.html#sections
-    DATA(lv_section) = lo_stream->shift( 1 ).
-    DATA(lv_length) = lo_stream->shift( 1 ).
-* todo
+      DATA(lv_section) = lo_stream->shift( 1 ).
+      DATA(lv_length) = lo_stream->shift( 1 ).
+
+      CASE lv_section.
+        WHEN gc_section_custom.
+        WHEN gc_section_type.
+        WHEN gc_section_import.
+        WHEN gc_section_function.
+        WHEN gc_section_table.
+        WHEN gc_section_memory.
+        WHEN gc_section_global.
+        WHEN gc_section_export.
+        WHEN gc_section_start.
+        WHEN gc_section_element.
+        WHEN gc_section_code.
+        WHEN gc_section_data.
+        WHEN OTHERS.
+          ASSERT 0 = 1.
+      ENDCASE.
+*    ENDWHILE.
 
   ENDMETHOD.
 ENDCLASS.
