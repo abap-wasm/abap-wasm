@@ -91,14 +91,73 @@ CLASS ZCL_WASM_BINARY_STREAM IMPLEMENTATION.
 
   METHOD shift_utf8.
 
-    DATA lo_conv TYPE REF TO cl_abap_conv_in_ce.
     DATA(lv_length) = shift_int( ).
-    DATA(lv_binary) = shift( lv_length ).
+    DATA(lo_stream) = NEW zcl_wasm_binary_stream( shift( lv_length ) ).
 
-    lo_conv = cl_abap_conv_in_ce=>create( encoding = 'UTF-8' ).
-    lo_conv->convert(
-      EXPORTING input = lv_binary
-      IMPORTING data = rv_name ).
+    WHILE lo_stream->get_length( ) > 0.
+      DATA(lv_hex) = lo_stream->shift( 1 ).
+      CASE lv_hex.
+        WHEN '61'.
+          CONCATENATE rv_name 'a' INTO rv_name.
+        WHEN '62'.
+          CONCATENATE rv_name 'b' INTO rv_name.
+        WHEN '63'.
+          CONCATENATE rv_name 'c' INTO rv_name.
+        WHEN '64'.
+          CONCATENATE rv_name 'd' INTO rv_name.
+        WHEN '65'.
+          CONCATENATE rv_name 'e' INTO rv_name.
+        WHEN '66'.
+          CONCATENATE rv_name 'f' INTO rv_name.
+        WHEN '67'.
+          CONCATENATE rv_name 'g' INTO rv_name.
+        WHEN '68'.
+          CONCATENATE rv_name 'h' INTO rv_name.
+        WHEN '69'.
+          CONCATENATE rv_name 'i' INTO rv_name.
+        WHEN '6A'.
+          CONCATENATE rv_name 'j' INTO rv_name.
+        WHEN '6B'.
+          CONCATENATE rv_name 'k' INTO rv_name.
+        WHEN '6C'.
+          CONCATENATE rv_name 'l' INTO rv_name.
+        WHEN '6D'.
+          CONCATENATE rv_name 'm' INTO rv_name.
+        WHEN '6E'.
+          CONCATENATE rv_name 'n' INTO rv_name.
+        WHEN '6F'.
+          CONCATENATE rv_name 'o' INTO rv_name.
+        WHEN '70'.
+          CONCATENATE rv_name 'p' INTO rv_name.
+        WHEN '71'.
+          CONCATENATE rv_name 'q' INTO rv_name.
+        WHEN '72'.
+          CONCATENATE rv_name 'r' INTO rv_name.
+        WHEN '73'.
+          CONCATENATE rv_name 's' INTO rv_name.
+        WHEN '74'.
+          CONCATENATE rv_name 't' INTO rv_name.
+        WHEN '75'.
+          CONCATENATE rv_name 'u' INTO rv_name.
+        WHEN '76'.
+          CONCATENATE rv_name 'v' INTO rv_name.
+        WHEN '77'.
+          CONCATENATE rv_name 'w' INTO rv_name.
+        WHEN '78'.
+          CONCATENATE rv_name 'x' INTO rv_name.
+        WHEN '79'.
+          CONCATENATE rv_name 'y' INTO rv_name.
+        WHEN '7A'.
+          CONCATENATE rv_name 'z' INTO rv_name.
+        WHEN OTHERS.
+          ASSERT 0 = 1.
+      ENDCASE.
+    ENDWHILE.
+
+*    lo_conv = cl_abap_conv_in_ce=>create( encoding = 'UTF-8' ).
+*    lo_conv->convert(
+*      EXPORTING input = lv_binary
+*      IMPORTING data = rv_name ).
 
   ENDMETHOD.
 ENDCLASS.
