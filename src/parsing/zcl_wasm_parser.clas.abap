@@ -25,18 +25,39 @@ CLASS zcl_wasm_parser DEFINITION
       gc_section_code     TYPE x LENGTH 1 VALUE '0A',
       gc_section_data     TYPE x LENGTH 1 VALUE '0B'.
 
+    TYPES: BEGIN OF ty_type_result,
+             parameter_types TYPE xstring,
+             result_types    TYPE xstring,
+           END OF ty_type_result.
+    TYPES: ty_type_results TYPE STANDARD TABLE OF ty_type_result WITH DEFAULT KEY.
+
+    TYPES: BEGIN OF ty_code_result,
+             locals       TYPE xstring,
+             instructions TYPE xstring,
+           END OF ty_code_result.
+    TYPES: ty_code_results TYPE STANDARD TABLE OF ty_code_result WITH DEFAULT KEY.
+
+    TYPES: BEGIN OF ty_export_result,
+             name  TYPE string,
+             type  TYPE x LENGTH 1,
+             index TYPE i,
+           END OF ty_export_result.
+    TYPES: ty_export_results TYPE STANDARD TABLE OF ty_code_result WITH DEFAULT KEY.
+
     METHODS:
       parse_type
-        IMPORTING io_body TYPE REF TO zcl_wasm_binary_stream,
+        IMPORTING io_body           TYPE REF TO zcl_wasm_binary_stream
+        RETURNING VALUE(rt_results) TYPE ty_type_results,
       parse_function
         IMPORTING io_body TYPE REF TO zcl_wasm_binary_stream,
       parse_export
-        IMPORTING io_body TYPE REF TO zcl_wasm_binary_stream,
+        IMPORTING io_body           TYPE REF TO zcl_wasm_binary_stream
+        RETURNING VALUE(rt_results) TYPE ty_export_results,
       parse_code
-        IMPORTING io_body TYPE REF TO zcl_wasm_binary_stream,
+        IMPORTING io_body           TYPE REF TO zcl_wasm_binary_stream
+        RETURNING VALUE(rt_results) TYPE ty_code_results,
       parse_custom
         IMPORTING io_body TYPE REF TO zcl_wasm_binary_stream.
-
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -101,6 +122,8 @@ CLASS ZCL_WASM_PARSER IMPLEMENTATION.
 
 * https://webassembly.github.io/spec/core/binary/modules.html#binary-codesec
 
+    DATA ls_result TYPE ty_code_result.
+
     DATA(lv_code_count) = io_body->shift_int( ).
 
     DO lv_code_count TIMES.
@@ -112,7 +135,9 @@ CLASS ZCL_WASM_PARSER IMPLEMENTATION.
       DATA(lv_locals_count) = lo_code->shift_int( ).
       ASSERT lv_locals_count = 0. " todo
 
-      DATA(lv_instructions) = lo_code->get_data( ).
+      ls_result-instructions = lo_code->get_data( ).
+
+      APPEND ls_result TO rt_results.
 
     ENDDO.
 
@@ -142,7 +167,7 @@ CLASS ZCL_WASM_PARSER IMPLEMENTATION.
 
       DATA(lv_type) = io_body->shift( 1 ).
       CASE lv_type.
-        WHEN '00'.
+        WHEN '00'. " todo, refactor these types to model
           DATA(lv_funcidx) = io_body->shift_int( ).
         WHEN '01'.
           DATA(lv_tableidx) = io_body->shift_int( ).
@@ -176,6 +201,8 @@ CLASS ZCL_WASM_PARSER IMPLEMENTATION.
 
 * https://webassembly.github.io/spec/core/binary/modules.html#type-section
 
+    DATA ls_result TYPE ty_type_result.
+
     DATA(lv_type_count) = io_body->shift_int( ).
 
     DO lv_type_count TIMES.
@@ -184,11 +211,12 @@ CLASS ZCL_WASM_PARSER IMPLEMENTATION.
       ASSERT lv_type = zcl_wasm_types=>c_function_type.
 
       DATA(lv_parameter_count) = io_body->shift_int( ).
-      DATA(lv_parameter_types) = io_body->shift( lv_parameter_count ).
+      ls_result-parameter_types = io_body->shift( lv_parameter_count ).
 
       DATA(lv_result_count) = io_body->shift_int( ).
-      DATA(lv_result_types) = io_body->shift( lv_result_count ).
+      ls_result-result_types = io_body->shift( lv_result_count ).
 
+      APPEND ls_result TO rt_results.
     ENDDO.
 
   ENDMETHOD.
