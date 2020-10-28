@@ -91,8 +91,7 @@ CLASS ZCL_WASM_BINARY_STREAM IMPLEMENTATION.
 
   METHOD shift_utf8.
 
-    DATA(lv_length) = shift_int( ).
-    DATA(lo_stream) = NEW zcl_wasm_binary_stream( shift( lv_length ) ).
+    DATA(lo_stream) = NEW zcl_wasm_binary_stream( shift( shift_int( ) ) ).
 
     WHILE lo_stream->get_length( ) > 0.
       DATA(lv_hex) = lo_stream->shift( 1 ).
@@ -153,11 +152,6 @@ CLASS ZCL_WASM_BINARY_STREAM IMPLEMENTATION.
           ASSERT 0 = 1.
       ENDCASE.
     ENDWHILE.
-
-*    lo_conv = cl_abap_conv_in_ce=>create( encoding = 'UTF-8' ).
-*    lo_conv->convert(
-*      EXPORTING input = lv_binary
-*      IMPORTING data = rv_name ).
 
   ENDMETHOD.
 ENDCLASS.
