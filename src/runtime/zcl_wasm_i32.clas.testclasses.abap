@@ -26,7 +26,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
     cl_abap_unit_assert=>assert_equals(
       act = li_pop->get_type( )
-      exp = zcl_wasm_value_types=>c_type-i32 ).
+      exp = zcl_wasm_types=>c_value_type-i32 ).
 
     DATA(lo_int) = CAST zcl_wasm_i32( li_pop ).
 
