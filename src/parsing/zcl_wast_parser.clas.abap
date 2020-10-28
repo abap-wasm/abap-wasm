@@ -236,9 +236,8 @@ CLASS ZCL_WAST_PARSER IMPLEMENTATION.
       ENDCASE.
     ENDWHILE.
 
-    ro_module = NEW #(
-* todo, it_exports = lt_exports
-      it_functions = lt_functions ).
+* todo
+    ro_module = NEW #( ).
 
   ENDMETHOD.
 

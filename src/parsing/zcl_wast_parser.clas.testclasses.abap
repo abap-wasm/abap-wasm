@@ -32,22 +32,22 @@ CLASS ltcl_test IMPLEMENTATION.
 
     cl_abap_unit_assert=>assert_not_initial( lo_module ).
 
-    DATA(lt_functions) = lo_module->get_functions( ).
-
-    cl_abap_unit_assert=>assert_equals(
-      act = lines( lt_functions )
-      exp = 1 ).
-
-    READ TABLE lt_functions INDEX 1 INTO DATA(lo_function).
-    cl_abap_unit_assert=>assert_not_initial( lo_function ).
-
-    cl_abap_unit_assert=>assert_equals(
-      act = lines( lo_function->get_instructions( ) )
-      exp = 3 ).
-
-    cl_abap_unit_assert=>assert_equals(
-      act = lo_function->get_export_name( )
-      exp = |addTwo| ).
+*    DATA(lt_functions) = lo_module->get_functions( ).
+*
+*    cl_abap_unit_assert=>assert_equals(
+*      act = lines( lt_functions )
+*      exp = 1 ).
+*
+*    READ TABLE lt_functions INDEX 1 INTO DATA(lo_function).
+*    cl_abap_unit_assert=>assert_not_initial( lo_function ).
+*
+*    cl_abap_unit_assert=>assert_equals(
+*      act = lines( lo_function->get_instructions( ) )
+*      exp = 3 ).
+*
+*    cl_abap_unit_assert=>assert_equals(
+*      act = lo_function->get_export_name( )
+*      exp = |addTwo| ).
 
   ENDMETHOD.
 

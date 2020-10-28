@@ -27,16 +27,19 @@ CLASS zcl_wasm_parser DEFINITION
 
     METHODS:
       parse_type
-        IMPORTING io_body TYPE REF TO zcl_wasm_binary_stream,
+        IMPORTING io_body           TYPE REF TO zcl_wasm_binary_stream
+        RETURNING VALUE(rt_results) TYPE zcl_wasm_module=>ty_types,
       parse_function
-        IMPORTING io_body TYPE REF TO zcl_wasm_binary_stream,
+        IMPORTING io_body           TYPE REF TO zcl_wasm_binary_stream
+        RETURNING VALUE(rt_results) TYPE zcl_wasm_module=>ty_functions,
       parse_export
-        IMPORTING io_body TYPE REF TO zcl_wasm_binary_stream,
+        IMPORTING io_body           TYPE REF TO zcl_wasm_binary_stream
+        RETURNING VALUE(rt_results) TYPE zcl_wasm_module=>ty_exports,
       parse_code
-        IMPORTING io_body TYPE REF TO zcl_wasm_binary_stream,
+        IMPORTING io_body           TYPE REF TO zcl_wasm_binary_stream
+        RETURNING VALUE(rt_results) TYPE zcl_wasm_module=>ty_codes,
       parse_custom
         IMPORTING io_body TYPE REF TO zcl_wasm_binary_stream.
-
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -46,8 +49,6 @@ CLASS ZCL_WASM_PARSER IMPLEMENTATION.
 
 
   METHOD parse.
-
-
 
     CONSTANTS lc_magic TYPE x LENGTH 4 VALUE '0061736D'.
     CONSTANTS lc_version TYPE x LENGTH 4 VALUE '01000000'.
@@ -68,11 +69,11 @@ CLASS ZCL_WASM_PARSER IMPLEMENTATION.
         WHEN gc_section_custom.
           parse_custom( lo_body ).
         WHEN gc_section_type.
-          parse_type( lo_body ).
+          DATA(lt_types) = parse_type( lo_body ).
         WHEN gc_section_import.
           ASSERT 0 = 'todo'.
         WHEN gc_section_function.
-          parse_function( lo_body ).
+          DATA(lt_functions) = parse_function( lo_body ).
         WHEN gc_section_table.
           ASSERT 0 = 'todo'.
         WHEN gc_section_memory.
@@ -80,13 +81,13 @@ CLASS ZCL_WASM_PARSER IMPLEMENTATION.
         WHEN gc_section_global.
           ASSERT 0 = 'todo'.
         WHEN gc_section_export.
-          parse_export( lo_body ).
+          DATA(lt_exports) = parse_export( lo_body ).
         WHEN gc_section_start.
           ASSERT 0 = 'todo'.
         WHEN gc_section_element.
           ASSERT 0 = 'todo'.
         WHEN gc_section_code.
-          parse_code( lo_body ).
+          DATA(lt_codes) = parse_code( lo_body ).
         WHEN gc_section_data.
           ASSERT 0 = 'todo'.
         WHEN OTHERS.
@@ -94,12 +95,20 @@ CLASS ZCL_WASM_PARSER IMPLEMENTATION.
       ENDCASE.
     ENDWHILE.
 
+    ro_module = NEW #(
+      it_types     = lt_types
+      it_codes     = lt_codes
+      it_exports   = lt_exports
+      it_functions = lt_functions ).
+
   ENDMETHOD.
 
 
   METHOD parse_code.
 
 * https://webassembly.github.io/spec/core/binary/modules.html#binary-codesec
+
+    DATA ls_result TYPE zcl_wasm_module=>ty_code.
 
     DATA(lv_code_count) = io_body->shift_int( ).
 
@@ -112,7 +121,9 @@ CLASS ZCL_WASM_PARSER IMPLEMENTATION.
       DATA(lv_locals_count) = lo_code->shift_int( ).
       ASSERT lv_locals_count = 0. " todo
 
-      DATA(lv_instructions) = lo_code->get_data( ).
+      ls_result-instructions = lo_code->get_data( ).
+
+      APPEND ls_result TO rt_results.
 
     ENDDO.
 
@@ -134,26 +145,22 @@ CLASS ZCL_WASM_PARSER IMPLEMENTATION.
 
 * https://webassembly.github.io/spec/core/binary/modules.html#binary-exportsec
 
+    DATA ls_result TYPE zcl_wasm_module=>ty_export.
+
     DATA(lv_export_count) = io_body->shift_int( ).
 
     DO lv_export_count TIMES.
+      ls_result-name = io_body->shift_utf8( ).
+      ls_result-type = io_body->shift( 1 ).
 
-      DATA(lv_name) = io_body->shift_utf8( ).
+      ASSERT ls_result-type = zcl_wasm_types=>c_export_type-func
+        OR ls_result-type = zcl_wasm_types=>c_export_type-table
+        OR ls_result-type = zcl_wasm_types=>c_export_type-mem
+        OR ls_result-type = zcl_wasm_types=>c_export_type-global.
 
-      DATA(lv_type) = io_body->shift( 1 ).
-      CASE lv_type.
-        WHEN '00'.
-          DATA(lv_funcidx) = io_body->shift_int( ).
-        WHEN '01'.
-          DATA(lv_tableidx) = io_body->shift_int( ).
-        WHEN '02'.
-          DATA(lv_memidx) = io_body->shift_int( ).
-        WHEN '03'.
-          DATA(lv_globalidx) = io_body->shift_int( ).
-        WHEN OTHERS.
-          ASSERT 0 = 1.
-      ENDCASE.
+      ls_result-index = io_body->shift_int( ).
 
+      APPEND ls_result TO rt_results.
     ENDDO.
 
   ENDMETHOD.
@@ -166,7 +173,7 @@ CLASS ZCL_WASM_PARSER IMPLEMENTATION.
     DATA(lv_function_count) = io_body->shift_int( ).
 
     DO lv_function_count TIMES.
-      DATA(lv_typeidx) = io_body->shift_int( ).
+      APPEND io_body->shift_int( ) TO rt_results.
     ENDDO.
 
   ENDMETHOD.
@@ -176,19 +183,21 @@ CLASS ZCL_WASM_PARSER IMPLEMENTATION.
 
 * https://webassembly.github.io/spec/core/binary/modules.html#type-section
 
+    DATA ls_result TYPE zcl_wasm_module=>ty_type.
+
     DATA(lv_type_count) = io_body->shift_int( ).
 
     DO lv_type_count TIMES.
       DATA(lv_type) = io_body->shift( 1 ).
-
       ASSERT lv_type = zcl_wasm_types=>c_function_type.
 
       DATA(lv_parameter_count) = io_body->shift_int( ).
-      DATA(lv_parameter_types) = io_body->shift( lv_parameter_count ).
+      ls_result-parameter_types = io_body->shift( lv_parameter_count ).
 
       DATA(lv_result_count) = io_body->shift_int( ).
-      DATA(lv_result_types) = io_body->shift( lv_result_count ).
+      ls_result-result_types = io_body->shift( lv_result_count ).
 
+      APPEND ls_result TO rt_results.
     ENDDO.
 
   ENDMETHOD.
