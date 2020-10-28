@@ -94,7 +94,6 @@ CLASS ZCL_WASM_BINARY_STREAM IMPLEMENTATION.
     DATA(lo_stream) = NEW zcl_wasm_binary_stream( shift( shift_int( ) ) ).
 
     WHILE lo_stream->get_length( ) > 0.
-*      DATA(lv_hex) = .
       CASE lo_stream->shift( 1 ).
         WHEN '41'.
           CONCATENATE rv_name 'A' INTO rv_name.
