@@ -81,8 +81,6 @@ CLASS ZCL_WASM_BINARY_STREAM IMPLEMENTATION.
 
   METHOD shift_utf8.
 
-    write 'basdfsdr'.
-
     DATA lo_conv TYPE REF TO cl_abap_conv_in_ce.
     DATA(lv_length) = shift_int( ).
     DATA(lv_binary) = shift( lv_length ).
