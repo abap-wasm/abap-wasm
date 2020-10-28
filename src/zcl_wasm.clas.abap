@@ -95,7 +95,7 @@ CLASS ZCL_WASM IMPLEMENTATION.
       IF ls_export-type = zcl_wasm_types=>c_export_type-func.
         CLEAR ls_function.
         ls_function-name = ls_export-name.
-*        BREAK-POINT.
+* todo
 *        mo_module->get_function_by_index( ls_export-index ).
         APPEND ls_function TO rt_functions.
       ENDIF.
