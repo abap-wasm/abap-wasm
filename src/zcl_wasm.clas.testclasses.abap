@@ -9,8 +9,13 @@ ENDCLASS.
 CLASS ltcl_test IMPLEMENTATION.
 
   METHOD list_exports.
-* todo
-    RETURN.
+
+    DATA(lo_wasm) = zcl_wasm=>create_with_wasm( zcl_wasm_test_data=>wasm_add_two( ) ).
+
+    cl_abap_unit_assert=>assert_not_initial( lo_wasm ).
+
+* todo, more asserts
+
   ENDMETHOD.
 
 ENDCLASS.

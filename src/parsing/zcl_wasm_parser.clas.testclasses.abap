@@ -19,7 +19,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
   METHOD add_two.
 
-    DATA(lo_module) = mo_cut->parse( zcl_wasm_test_data=>get_add_two( ) ).
+    DATA(lo_module) = mo_cut->parse( zcl_wasm_test_data=>wasm_add_two( ) ).
 
     cl_abap_unit_assert=>assert_not_initial( lo_module ).
 

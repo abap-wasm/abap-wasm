@@ -5,7 +5,7 @@ CLASS zcl_wasm_test_data DEFINITION
 
   PUBLIC SECTION.
 
-    CLASS-METHODS get_add_two
+    CLASS-METHODS wasm_add_two
       RETURNING
         VALUE(rv_xstr) TYPE xstring .
   PROTECTED SECTION.
@@ -17,7 +17,7 @@ ENDCLASS.
 CLASS ZCL_WASM_TEST_DATA IMPLEMENTATION.
 
 
-  METHOD get_add_two.
+  METHOD wasm_add_two.
 
 * (module
 *   (func $add (param $lhs i32) (param $rhs i32) (result i32)
