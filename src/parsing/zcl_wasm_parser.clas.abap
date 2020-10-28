@@ -120,8 +120,13 @@ CLASS ZCL_WASM_PARSER IMPLEMENTATION.
 
 
   METHOD parse_custom.
-* todo
+
+* https://webassembly.github.io/spec/core/binary/modules.html#binary-customsec
+
+* "ignored by the WebAssembly semantics"
+
     RETURN.
+
   ENDMETHOD.
 
 
