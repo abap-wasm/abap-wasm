@@ -2,13 +2,15 @@
 CLASS ltcl_test DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS.
 
   PRIVATE SECTION.
-    METHODS: list_exports FOR TESTING.
+    METHODS: add_two FOR TESTING.
 ENDCLASS.
 
 
 CLASS ltcl_test IMPLEMENTATION.
 
-  METHOD list_exports.
+  METHOD add_two.
+
+    DATA lt_values TYPE zif_wasm_value=>ty_values.
 
     DATA(lo_wasm) = zcl_wasm=>create_with_wasm( zcl_wasm_test_data=>wasm_add_two( ) ).
 
@@ -19,6 +21,15 @@ CLASS ltcl_test IMPLEMENTATION.
     cl_abap_unit_assert=>assert_equals(
       act = lines( lt_exports )
       exp = 1 ).
+
+    APPEND NEW zcl_wasm_i32( 2 ) TO lt_values.
+    APPEND NEW zcl_wasm_i32( 3 ) TO lt_values.
+
+    DATA(lt_result) = lo_wasm->execute_function_export(
+      iv_name       = 'add'
+      it_parameters = lt_values ).
+
+* todo, assert lt_result = 5
 
   ENDMETHOD.
 
