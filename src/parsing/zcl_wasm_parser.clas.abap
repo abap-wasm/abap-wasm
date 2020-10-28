@@ -159,26 +159,22 @@ CLASS ZCL_WASM_PARSER IMPLEMENTATION.
 
 * https://webassembly.github.io/spec/core/binary/modules.html#binary-exportsec
 
+    DATA ls_result TYPE ty_export_result.
+
     DATA(lv_export_count) = io_body->shift_int( ).
 
     DO lv_export_count TIMES.
+      ls_result-name = io_body->shift_utf8( ).
+      ls_result-type = io_body->shift( 1 ).
 
-      DATA(lv_name) = io_body->shift_utf8( ).
+      ASSERT ls_result-type = zcl_wasm_types=>c_export_type-func
+        OR ls_result-type = zcl_wasm_types=>c_export_type-table
+        OR ls_result-type = zcl_wasm_types=>c_export_type-mem
+        OR ls_result-type = zcl_wasm_types=>c_export_type-global.
 
-      DATA(lv_type) = io_body->shift( 1 ).
-      CASE lv_type.
-        WHEN '00'. " todo, refactor these types to model
-          DATA(lv_funcidx) = io_body->shift_int( ).
-        WHEN '01'.
-          DATA(lv_tableidx) = io_body->shift_int( ).
-        WHEN '02'.
-          DATA(lv_memidx) = io_body->shift_int( ).
-        WHEN '03'.
-          DATA(lv_globalidx) = io_body->shift_int( ).
-        WHEN OTHERS.
-          ASSERT 0 = 1.
-      ENDCASE.
+      ls_result-index = io_body->shift_int( ).
 
+      APPEND ls_result TO rt_results.
     ENDDO.
 
   ENDMETHOD.
@@ -207,7 +203,6 @@ CLASS ZCL_WASM_PARSER IMPLEMENTATION.
 
     DO lv_type_count TIMES.
       DATA(lv_type) = io_body->shift( 1 ).
-
       ASSERT lv_type = zcl_wasm_types=>c_function_type.
 
       DATA(lv_parameter_count) = io_body->shift_int( ).
