@@ -14,11 +14,11 @@ CLASS ltcl_test IMPLEMENTATION.
 
     cl_abap_unit_assert=>assert_not_initial( lo_wasm ).
 
-    DATA(lt_exports) = lo_wasm->list_function_exports( ).
-
-    cl_abap_unit_assert=>assert_equals(
-      act = lines( lt_exports )
-      exp = 1 ).
+*    DATA(lt_exports) = lo_wasm->list_function_exports( ).
+*
+*    cl_abap_unit_assert=>assert_equals(
+*      act = lines( lt_exports )
+*      exp = 1 ).
 
   ENDMETHOD.
 

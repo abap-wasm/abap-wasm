@@ -87,18 +87,18 @@ CLASS ZCL_WASM IMPLEMENTATION.
 
   METHOD list_function_exports.
 
-    DATA ls_function TYPE ty_name_and_parameter.
-    DATA ls_export TYPE zcl_wasm_module=>ty_export.
-
-    LOOP AT mo_module->get_exports( ) INTO ls_export.
-*      IF ls_export-type = zcl_wasm_types=>c_export_type-func.
-      CLEAR ls_function.
-*        ls_function-name = ls_export-name.
-**        BREAK-POINT.
-**        mo_module->get_function_by_index( ls_export-index ).
-*        APPEND ls_function TO rt_functions.
-*      ENDIF.
-    ENDLOOP.
+*    DATA ls_function TYPE ty_name_and_parameter.
+*    DATA ls_export TYPE zcl_wasm_module=>ty_export.
+*
+*    LOOP AT mo_module->get_exports( ) INTO ls_export.
+**      IF ls_export-type = zcl_wasm_types=>c_export_type-func.
+*      CLEAR ls_function.
+**        ls_function-name = ls_export-name.
+***        BREAK-POINT.
+***        mo_module->get_function_by_index( ls_export-index ).
+**        APPEND ls_function TO rt_functions.
+**      ENDIF.
+*    ENDLOOP.
 
   ENDMETHOD.
 ENDCLASS.
