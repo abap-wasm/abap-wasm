@@ -47,7 +47,7 @@ CLASS ZCL_WASM_PARSER IMPLEMENTATION.
 *    WHILE lo_stream->get_length( ) > 0.
 * https://webassembly.github.io/spec/core/binary/modules.html#sections
     DATA(lv_section) = lo_stream->shift( 1 ).
-    DATA(lv_length) = lo_stream->shift( 1 ).
+    DATA(lv_length) = CONV i( lo_stream->shift( 1 ) ).
 
     CASE lv_section.
       WHEN gc_section_custom.
