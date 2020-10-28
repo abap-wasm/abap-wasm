@@ -22,8 +22,8 @@ CLASS zcl_wasm_parser DEFINITION
       gc_section_export   TYPE x LENGTH 1 VALUE '07',
       gc_section_start    TYPE x LENGTH 1 VALUE '08',
       gc_section_element  TYPE x LENGTH 1 VALUE '09',
-      gc_section_code     TYPE x LENGTH 1 VALUE '10',
-      gc_section_data     TYPE x LENGTH 1 VALUE '11'.
+      gc_section_code     TYPE x LENGTH 1 VALUE '0A',
+      gc_section_data     TYPE x LENGTH 1 VALUE '0B'.
 
   PRIVATE SECTION.
 ENDCLASS.
@@ -44,29 +44,30 @@ CLASS ZCL_WASM_PARSER IMPLEMENTATION.
     ASSERT lo_stream->shift( 4 ) = lc_magic.
     ASSERT lo_stream->shift( 4 ) = lc_version.
 
-*    WHILE lo_stream->get_length( ) > 0.
+    WHILE lo_stream->get_length( ) > 0.
 * https://webassembly.github.io/spec/core/binary/modules.html#sections
-    DATA(lv_section) = lo_stream->shift( 1 ).
-    DATA(lv_length) = CONV i( lo_stream->shift( 1 ) ).
-    ASSERT lv_length = 7.
+      DATA(lv_section) = lo_stream->shift( 1 ).
+      DATA(lv_hex) = lo_stream->shift( 1 ).
+      DATA(lv_length) = CONV i( lv_hex ).
+      DATA(lv_contents) = lo_stream->shift( lv_length ).
 
-    CASE lv_section.
-      WHEN gc_section_custom.
-      WHEN gc_section_type.
-      WHEN gc_section_import.
-      WHEN gc_section_function.
-      WHEN gc_section_table.
-      WHEN gc_section_memory.
-      WHEN gc_section_global.
-      WHEN gc_section_export.
-      WHEN gc_section_start.
-      WHEN gc_section_element.
-      WHEN gc_section_code.
-      WHEN gc_section_data.
-      WHEN OTHERS.
-        ASSERT 0 = 1.
-    ENDCASE.
-*    ENDWHILE.
+      CASE lv_section.
+        WHEN gc_section_custom.
+        WHEN gc_section_type.
+        WHEN gc_section_import.
+        WHEN gc_section_function.
+        WHEN gc_section_table.
+        WHEN gc_section_memory.
+        WHEN gc_section_global.
+        WHEN gc_section_export.
+        WHEN gc_section_start.
+        WHEN gc_section_element.
+        WHEN gc_section_code.
+        WHEN gc_section_data.
+        WHEN OTHERS.
+          ASSERT 0 = 1.
+      ENDCASE.
+    ENDWHILE.
 
   ENDMETHOD.
 ENDCLASS.
