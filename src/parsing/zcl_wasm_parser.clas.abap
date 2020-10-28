@@ -42,7 +42,7 @@ CLASS zcl_wasm_parser DEFINITION
              type  TYPE x LENGTH 1,
              index TYPE i,
            END OF ty_export_result.
-    TYPES: ty_export_results TYPE STANDARD TABLE OF ty_code_result WITH DEFAULT KEY.
+    TYPES: ty_export_results TYPE STANDARD TABLE OF ty_export_result WITH DEFAULT KEY.
 
     METHODS:
       parse_type
