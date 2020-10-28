@@ -97,6 +97,8 @@ CLASS ZCL_WASM IMPLEMENTATION.
     DATA(lo_vm) = NEW zcl_wasm_vm( lo_memory ).
     lo_vm->execute( ls_code-instructions ).
 
+*    APPEND lo_memory->pop( ) TO rt_results.
+
   ENDMETHOD.
 
 
