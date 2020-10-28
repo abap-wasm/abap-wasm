@@ -92,7 +92,7 @@ CLASS ZCL_WASM IMPLEMENTATION.
 
     LOOP AT mo_module->get_exports( ) INTO ls_export.
 *      IF ls_export-type = zcl_wasm_types=>c_export_type-func.
-*        CLEAR ls_function.
+      CLEAR ls_function.
 *        ls_function-name = ls_export-name.
 **        BREAK-POINT.
 **        mo_module->get_function_by_index( ls_export-index ).
