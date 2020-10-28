@@ -25,40 +25,19 @@ CLASS zcl_wasm_parser DEFINITION
       gc_section_code     TYPE x LENGTH 1 VALUE '0A',
       gc_section_data     TYPE x LENGTH 1 VALUE '0B'.
 
-    TYPES: BEGIN OF ty_type_result,
-             parameter_types TYPE xstring,
-             result_types    TYPE xstring,
-           END OF ty_type_result.
-    TYPES: ty_type_results TYPE STANDARD TABLE OF ty_type_result WITH DEFAULT KEY.
-
-    TYPES: BEGIN OF ty_code_result,
-             locals       TYPE xstring,
-             instructions TYPE xstring,
-           END OF ty_code_result.
-    TYPES: ty_code_results TYPE STANDARD TABLE OF ty_code_result WITH DEFAULT KEY.
-
-    TYPES: BEGIN OF ty_export_result,
-             name  TYPE string,
-             type  TYPE x LENGTH 1,
-             index TYPE i,
-           END OF ty_export_result.
-    TYPES: ty_export_results TYPE STANDARD TABLE OF ty_export_result WITH DEFAULT KEY.
-
-    TYPES: ty_function_results TYPE STANDARD TABLE OF i WITH DEFAULT KEY.
-
     METHODS:
       parse_type
         IMPORTING io_body           TYPE REF TO zcl_wasm_binary_stream
-        RETURNING VALUE(rt_results) TYPE ty_type_results,
+        RETURNING VALUE(rt_results) TYPE zcl_wasm_module=>ty_types,
       parse_function
         IMPORTING io_body           TYPE REF TO zcl_wasm_binary_stream
-        RETURNING VALUE(rt_results) TYPE ty_function_results,
+        RETURNING VALUE(rt_results) TYPE zcl_wasm_module=>ty_functions,
       parse_export
         IMPORTING io_body           TYPE REF TO zcl_wasm_binary_stream
-        RETURNING VALUE(rt_results) TYPE ty_export_results,
+        RETURNING VALUE(rt_results) TYPE zcl_wasm_module=>ty_exports,
       parse_code
         IMPORTING io_body           TYPE REF TO zcl_wasm_binary_stream
-        RETURNING VALUE(rt_results) TYPE ty_code_results,
+        RETURNING VALUE(rt_results) TYPE zcl_wasm_module=>ty_codes,
       parse_custom
         IMPORTING io_body TYPE REF TO zcl_wasm_binary_stream.
   PRIVATE SECTION.
@@ -123,7 +102,7 @@ CLASS ZCL_WASM_PARSER IMPLEMENTATION.
 
 * https://webassembly.github.io/spec/core/binary/modules.html#binary-codesec
 
-    DATA ls_result TYPE ty_code_result.
+    DATA ls_result TYPE zcl_wasm_module=>ty_code.
 
     DATA(lv_code_count) = io_body->shift_int( ).
 
@@ -160,7 +139,7 @@ CLASS ZCL_WASM_PARSER IMPLEMENTATION.
 
 * https://webassembly.github.io/spec/core/binary/modules.html#binary-exportsec
 
-    DATA ls_result TYPE ty_export_result.
+    DATA ls_result TYPE zcl_wasm_module=>ty_export.
 
     DATA(lv_export_count) = io_body->shift_int( ).
 
@@ -198,7 +177,7 @@ CLASS ZCL_WASM_PARSER IMPLEMENTATION.
 
 * https://webassembly.github.io/spec/core/binary/modules.html#type-section
 
-    DATA ls_result TYPE ty_type_result.
+    DATA ls_result TYPE zcl_wasm_module=>ty_type.
 
     DATA(lv_type_count) = io_body->shift_int( ).
 
