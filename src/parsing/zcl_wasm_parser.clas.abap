@@ -122,7 +122,21 @@ CLASS ZCL_WASM_PARSER IMPLEMENTATION.
 
 
   METHOD parse_type.
-* todo
-    RETURN.
+
+    DATA(lv_type_count) = io_body->shift_int( ).
+
+    DO lv_type_count TIMES.
+      DATA(lv_type) = io_body->shift( 1 ).
+
+      ASSERT lv_type = zcl_wasm_types=>c_function_type.
+
+      DATA(lv_parameter_count) = io_body->shift_int( ).
+      DATA(lv_parameter_types) = io_body->shift( lv_parameter_count ).
+
+      DATA(lv_result_count) = io_body->shift_int( ).
+      DATA(lv_result_types) = io_body->shift( lv_result_count ).
+
+    ENDDO.
+
   ENDMETHOD.
 ENDCLASS.
