@@ -48,6 +48,7 @@ CLASS ZCL_WASM_PARSER IMPLEMENTATION.
 * https://webassembly.github.io/spec/core/binary/modules.html#sections
     DATA(lv_section) = lo_stream->shift( 1 ).
     DATA(lv_length) = CONV i( lo_stream->shift( 1 ) ).
+    ASSERT lv_length = 7.
 
     CASE lv_section.
       WHEN gc_section_custom.
