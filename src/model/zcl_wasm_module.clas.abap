@@ -49,7 +49,20 @@ CLASS zcl_wasm_module DEFINITION
         VALUE(rt_result) TYPE ty_functions .
     METHODS get_function_by_index
       IMPORTING
-        !iv_index TYPE i .
+        !iv_index      TYPE i
+      RETURNING
+        VALUE(rv_type) TYPE i .
+    METHODS get_export_by_name
+      IMPORTING
+        !iv_name         TYPE string
+      RETURNING
+        VALUE(rs_export) TYPE ty_export .
+    METHODS get_type_by_index
+      IMPORTING
+        !iv_index      TYPE i
+      RETURNING
+        VALUE(rs_type) TYPE ty_type .
+  PROTECTED SECTION.
   PRIVATE SECTION.
 
     DATA mt_types TYPE ty_types .
@@ -81,6 +94,14 @@ CLASS ZCL_WASM_MODULE IMPLEMENTATION.
   ENDMETHOD.
 
 
+  METHOD get_export_by_name.
+
+    READ TABLE mt_exports WITH KEY name = iv_name INTO rs_export.
+    ASSERT sy-subrc = 0.
+
+  ENDMETHOD.
+
+
   METHOD get_functions.
     rt_result = mt_functions.
   ENDMETHOD.
@@ -89,13 +110,26 @@ CLASS ZCL_WASM_MODULE IMPLEMENTATION.
   METHOD get_function_by_index.
 
 * index is zero based
+    DATA(lv_index) = iv_index + 1.
 
-* todo
+    READ TABLE mt_functions INDEX lv_index INTO rv_type.
+    ASSERT sy-subrc = 0.
 
   ENDMETHOD.
 
 
   METHOD get_types.
     rt_result = mt_types.
+  ENDMETHOD.
+
+
+  METHOD get_type_by_index.
+
+* index is zero based
+    DATA(lv_index) = iv_index + 1.
+
+    READ TABLE mt_types INDEX lv_index INTO rs_type.
+    ASSERT sy-subrc = 0.
+
   ENDMETHOD.
 ENDCLASS.
