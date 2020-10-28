@@ -24,9 +24,18 @@ CLASS zcl_wasm_module DEFINITION
 
     TYPES: ty_functions TYPE STANDARD TABLE OF i WITH DEFAULT KEY.
 
-    METHODS constructor.
+    METHODS constructor
+      IMPORTING
+        it_types     TYPE ty_types OPTIONAL
+        it_codes     TYPE ty_codes OPTIONAL
+        it_exports   TYPE ty_exports OPTIONAL
+        it_functions TYPE ty_functions OPTIONAL.
 
   PRIVATE SECTION.
+    DATA: mt_types     TYPE ty_types,
+          mt_codes     TYPE ty_codes,
+          mt_exports   TYPE ty_exports,
+          mt_functions TYPE ty_functions.
 ENDCLASS.
 
 
@@ -35,6 +44,9 @@ CLASS ZCL_WASM_MODULE IMPLEMENTATION.
 
 
   METHOD constructor.
-
+    mt_types    = it_types.
+    mt_codes     = it_codes.
+    mt_exports   = it_exports.
+    mt_functions = it_functions.
   ENDMETHOD.
 ENDCLASS.

@@ -1,6 +1,6 @@
 CLASS zcl_wasm DEFINITION
   PUBLIC
-  CREATE PROTECTED .
+  CREATE PROTECTED.
 
   PUBLIC SECTION.
 
@@ -22,9 +22,15 @@ CLASS zcl_wasm DEFINITION
     METHODS constructor
       IMPORTING
         !iv_wasm TYPE xstring .
-    METHODS execute_export .
-    METHODS list_exports .
-    METHODS list_imports .
+    METHODS execute_function_export
+      IMPORTING
+        iv_name           TYPE string
+        it_parameters     TYPE zif_wasm_value=>ty_values
+      RETURNING
+        VALUE(rt_results) TYPE zif_wasm_value=>ty_values.
+    METHODS list_function_exports
+      RETURNING
+        VALUE(rt_functions) TYPE i.
   PROTECTED SECTION.
   PRIVATE SECTION.
 ENDCLASS.
@@ -63,19 +69,13 @@ CLASS ZCL_WASM IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD execute_export.
+  METHOD execute_function_export.
 * todo
     RETURN.
   ENDMETHOD.
 
 
-  METHOD list_exports.
-* todo
-    RETURN.
-  ENDMETHOD.
-
-
-  METHOD list_imports.
+  METHOD list_function_exports.
 * todo
     RETURN.
   ENDMETHOD.
