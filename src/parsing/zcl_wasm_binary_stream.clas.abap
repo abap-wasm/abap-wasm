@@ -10,6 +10,9 @@ CLASS zcl_wasm_binary_stream DEFINITION
     METHODS get_length
       RETURNING
         VALUE(rv_length) TYPE i .
+    METHODS get_data
+      RETURNING
+        VALUE(rv_data) TYPE xstring .
     METHODS peek
       IMPORTING
         !iv_length     TYPE i
@@ -40,6 +43,13 @@ CLASS ZCL_WASM_BINARY_STREAM IMPLEMENTATION.
   METHOD constructor.
 
     mv_data = iv_data.
+
+  ENDMETHOD.
+
+
+  METHOD get_data.
+
+    rv_data = mv_data.
 
   ENDMETHOD.
 

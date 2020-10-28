@@ -98,8 +98,24 @@ CLASS ZCL_WASM_PARSER IMPLEMENTATION.
 
 
   METHOD parse_code.
-* todo
-    RETURN.
+
+* https://webassembly.github.io/spec/core/binary/modules.html#binary-codesec
+
+    DATA(lv_code_count) = io_body->shift_int( ).
+
+    DO lv_code_count TIMES.
+
+      DATA(lv_code_size) = io_body->shift_int( ).
+
+      DATA(lo_code) = NEW zcl_wasm_binary_stream( io_body->shift( lv_code_size ) ).
+
+      DATA(lv_locals_count) = lo_code->shift_int( ).
+      ASSERT lv_locals_count = 0. " todo
+
+      DATA(lv_instructions) = lo_code->get_data( ).
+
+    ENDDO.
+
   ENDMETHOD.
 
 
