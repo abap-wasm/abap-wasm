@@ -129,7 +129,7 @@
     "omit_receiving": true,
     "parser_error": true,
     "parser_missing_space": true,
-    "prefer_inline": true,
+    "prefer_inline": false,
     "prefer_is_not": true,
     "prefer_returning_to_exporting": true,
     "prefer_xsdbool": true,
