@@ -1,6 +1,6 @@
 CLASS zcl_wasm DEFINITION
   PUBLIC
-  CREATE PROTECTED.
+  CREATE PROTECTED .
 
   PUBLIC SECTION.
 
@@ -21,18 +21,20 @@ CLASS zcl_wasm DEFINITION
         VALUE(ro_wasm) TYPE REF TO zcl_wasm .
     METHODS constructor
       IMPORTING
-        !iv_wasm TYPE xstring .
+        !io_module TYPE REF TO zcl_wasm_module .
     METHODS execute_function_export
       IMPORTING
-        iv_name           TYPE string
-        it_parameters     TYPE zif_wasm_value=>ty_values
+        !iv_name          TYPE string
+        !it_parameters    TYPE zif_wasm_value=>ty_values
       RETURNING
-        VALUE(rt_results) TYPE zif_wasm_value=>ty_values.
+        VALUE(rt_results) TYPE zif_wasm_value=>ty_values .
     METHODS list_function_exports
       RETURNING
-        VALUE(rt_functions) TYPE i.
+        VALUE(rt_functions) TYPE i .
   PROTECTED SECTION.
   PRIVATE SECTION.
+
+    DATA mo_module TYPE REF TO zcl_wasm_module .
 ENDCLASS.
 
 
@@ -41,14 +43,15 @@ CLASS ZCL_WASM IMPLEMENTATION.
 
 
   METHOD constructor.
-* todo
-    RETURN.
+
+    mo_module = io_module.
+
   ENDMETHOD.
 
 
   METHOD create_with_wasm.
 
-    ro_wasm = NEW zcl_wasm( iv_wasm ).
+    DATA(lo_module) = NEW zcl_wasm_parser( )->parse( iv_wasm ).
 
   ENDMETHOD.
 
@@ -56,7 +59,7 @@ CLASS ZCL_WASM IMPLEMENTATION.
   METHOD create_with_wast.
 
 * todo
-    RETURN.
+    ASSERT 0 = 1.
 
   ENDMETHOD.
 
@@ -64,7 +67,7 @@ CLASS ZCL_WASM IMPLEMENTATION.
   METHOD create_with_wat.
 
 * todo
-    RETURN.
+    ASSERT 0 = 1.
 
   ENDMETHOD.
 

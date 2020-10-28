@@ -87,13 +87,19 @@ CLASS ZCL_WASM_PARSER IMPLEMENTATION.
         WHEN gc_section_element.
           ASSERT 0 = 'todo'.
         WHEN gc_section_code.
-          DATA(lt_code) = parse_code( lo_body ).
+          DATA(lt_codes) = parse_code( lo_body ).
         WHEN gc_section_data.
           ASSERT 0 = 'todo'.
         WHEN OTHERS.
           ASSERT 0 = 1.
       ENDCASE.
     ENDWHILE.
+
+    ro_module = NEW #(
+      it_types     = lt_types
+      it_codes     = lt_codes
+      it_exports   = lt_exports
+      it_functions = lt_functions ).
 
   ENDMETHOD.
 
