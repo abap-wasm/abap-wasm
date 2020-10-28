@@ -36,6 +36,16 @@ CLASS zcl_wasm_module DEFINITION
           mt_codes     TYPE ty_codes,
           mt_exports   TYPE ty_exports,
           mt_functions TYPE ty_functions.
+
+    METHODS get_types
+      RETURNING VALUE(rt_result) TYPE ty_types.
+    METHODS get_codes
+      RETURNING VALUE(rt_result) TYPE ty_codes.
+    METHODS get_exports
+      RETURNING VALUE(rt_result) TYPE ty_exports.
+    METHODS get_functions
+      RETURNING VALUE(rt_result) TYPE ty_functions.
+
 ENDCLASS.
 
 
@@ -48,5 +58,25 @@ CLASS ZCL_WASM_MODULE IMPLEMENTATION.
     mt_codes     = it_codes.
     mt_exports   = it_exports.
     mt_functions = it_functions.
+  ENDMETHOD.
+
+
+  METHOD get_codes.
+    rt_result = mt_codes.
+  ENDMETHOD.
+
+
+  METHOD get_exports.
+    rt_result = mt_exports.
+  ENDMETHOD.
+
+
+  METHOD get_functions.
+    rt_result = mt_functions.
+  ENDMETHOD.
+
+
+  METHOD get_types.
+    rt_result = mt_types.
   ENDMETHOD.
 ENDCLASS.
