@@ -23,6 +23,11 @@ CLASS ltcl_test IMPLEMENTATION.
 
     cl_abap_unit_assert=>assert_not_initial( lo_module ).
 
+    cl_abap_unit_assert=>assert_equals(
+      act = lines( lo_module->get_codes( ) )
+      exp = 1 ).
+
+
   ENDMETHOD.
 
 ENDCLASS.

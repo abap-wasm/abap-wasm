@@ -31,12 +31,6 @@ CLASS zcl_wasm_module DEFINITION
         it_exports   TYPE ty_exports OPTIONAL
         it_functions TYPE ty_functions OPTIONAL.
 
-  PRIVATE SECTION.
-    DATA: mt_types     TYPE ty_types,
-          mt_codes     TYPE ty_codes,
-          mt_exports   TYPE ty_exports,
-          mt_functions TYPE ty_functions.
-
     METHODS get_types
       RETURNING VALUE(rt_result) TYPE ty_types.
     METHODS get_codes
@@ -45,6 +39,12 @@ CLASS zcl_wasm_module DEFINITION
       RETURNING VALUE(rt_result) TYPE ty_exports.
     METHODS get_functions
       RETURNING VALUE(rt_result) TYPE ty_functions.
+
+  PRIVATE SECTION.
+    DATA: mt_types     TYPE ty_types,
+          mt_codes     TYPE ty_codes,
+          mt_exports   TYPE ty_exports,
+          mt_functions TYPE ty_functions.
 
 ENDCLASS.
 
