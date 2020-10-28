@@ -57,7 +57,8 @@ CLASS ZCL_WASM IMPLEMENTATION.
 
   METHOD create_with_wasm.
 
-    ro_wasm = NEW zcl_wasm( NEW zcl_wasm_parser( )->parse( iv_wasm ) ).
+    DATA(lo_module) = NEW zcl_wasm_parser( )->parse( iv_wasm ).
+    ro_wasm = NEW zcl_wasm( lo_module ).
 
   ENDMETHOD.
 
@@ -86,17 +87,17 @@ CLASS ZCL_WASM IMPLEMENTATION.
 
   METHOD list_function_exports.
 
-    DATA: ls_function TYPE ty_name_and_parameter.
-
-    LOOP AT mo_module->get_exports( ) INTO DATA(ls_export).
-      IF ls_export-type = zcl_wasm_types=>c_export_type-func.
-        CLEAR ls_function.
-        ls_function-name = ls_export-name.
-*        BREAK-POINT.
-*        mo_module->get_function_by_index( ls_export-index ).
-        APPEND ls_function TO rt_functions.
-      ENDIF.
-    ENDLOOP.
+*    DATA: ls_function TYPE ty_name_and_parameter.
+*
+*    LOOP AT mo_module->get_exports( ) INTO DATA(ls_export).
+*      IF ls_export-type = zcl_wasm_types=>c_export_type-func.
+*        CLEAR ls_function.
+*        ls_function-name = ls_export-name.
+**        BREAK-POINT.
+**        mo_module->get_function_by_index( ls_export-index ).
+*        APPEND ls_function TO rt_functions.
+*      ENDIF.
+*    ENDLOOP.
 
   ENDMETHOD.
 ENDCLASS.
