@@ -35,6 +35,8 @@ CLASS ZCL_WASM_PARSER IMPLEMENTATION.
 
   METHOD parse.
 
+    DATA lv_hex TYPE x LENGTH 1.
+
     CONSTANTS lc_magic TYPE x LENGTH 4 VALUE '0061736D'.
     CONSTANTS lc_version TYPE x LENGTH 4 VALUE '01000000'.
 
@@ -47,7 +49,7 @@ CLASS ZCL_WASM_PARSER IMPLEMENTATION.
     WHILE lo_stream->get_length( ) > 0.
 * https://webassembly.github.io/spec/core/binary/modules.html#sections
       DATA(lv_section) = lo_stream->shift( 1 ).
-      DATA(lv_hex) = lo_stream->shift( 1 ).
+      lv_hex = lo_stream->shift( 1 ).
       DATA(lv_length) = CONV i( lv_hex ).
       DATA(lv_contents) = lo_stream->shift( lv_length ).
 
