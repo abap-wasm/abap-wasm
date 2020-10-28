@@ -116,12 +116,21 @@ CLASS ZCL_WASM_PARSER IMPLEMENTATION.
 
 
   METHOD parse_function.
-* todo
-    RETURN.
+
+* https://webassembly.github.io/spec/core/binary/modules.html#binary-funcsec
+
+    DATA(lv_function_count) = io_body->shift_int( ).
+
+    DO lv_function_count TIMES.
+      DATA(lv_typeidx) = io_body->shift_int( ).
+    ENDDO.
+
   ENDMETHOD.
 
 
   METHOD parse_type.
+
+* https://webassembly.github.io/spec/core/binary/modules.html#type-section
 
     DATA(lv_type_count) = io_body->shift_int( ).
 
