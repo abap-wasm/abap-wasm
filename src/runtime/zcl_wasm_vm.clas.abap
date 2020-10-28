@@ -35,6 +35,8 @@ CLASS ZCL_WASM_VM IMPLEMENTATION.
     CASE lv_peek.
       WHEN zcl_wasm_instructions=>c_instructions-i32_add.
         zcl_wasm_i32=>add( mo_memory ).
+      WHEN zcl_wasm_instructions=>c_instructions-i32_sub.
+*        zcl_wasm_i32=>sub( mo_memory ).
     ENDCASE.
 
   ENDMETHOD.
