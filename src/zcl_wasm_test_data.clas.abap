@@ -1,15 +1,15 @@
-class ZCL_WASM_TEST_DATA definition
-  public
-  final
-  create public .
+CLASS zcl_wasm_test_data DEFINITION
+  PUBLIC
+  FINAL
+  CREATE PUBLIC .
 
-public section.
+  PUBLIC SECTION.
 
-  class-methods GET_ADD_TWO
-    returning
-      value(RV_XSTR) type XSTRING .
-protected section.
-private section.
+    CLASS-METHODS get_add_two
+      RETURNING
+        VALUE(rv_xstr) TYPE xstring .
+  PROTECTED SECTION.
+  PRIVATE SECTION.
 ENDCLASS.
 
 
