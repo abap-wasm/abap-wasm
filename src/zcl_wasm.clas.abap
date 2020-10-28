@@ -4,6 +4,12 @@ CLASS zcl_wasm DEFINITION
 
   PUBLIC SECTION.
 
+    TYPES: BEGIN OF ty_name_and_parameter,
+             name       TYPE string,
+             parameters TYPE xstring,
+           END OF ty_name_and_parameter.
+    TYPES ty_name_and_parameters TYPE STANDARD TABLE OF ty_name_and_parameter WITH DEFAULT KEY.
+
     CLASS-METHODS create_with_wasm
       IMPORTING
         !iv_wasm       TYPE xstring
@@ -30,7 +36,7 @@ CLASS zcl_wasm DEFINITION
         VALUE(rt_results) TYPE zif_wasm_value=>ty_values .
     METHODS list_function_exports
       RETURNING
-        VALUE(rt_functions) TYPE i .
+        VALUE(rt_functions) TYPE ty_name_and_parameters.
   PROTECTED SECTION.
   PRIVATE SECTION.
 
@@ -79,7 +85,18 @@ CLASS ZCL_WASM IMPLEMENTATION.
 
 
   METHOD list_function_exports.
-* todo
-    RETURN.
+
+    DATA: ls_function TYPE ty_name_and_parameter.
+
+    LOOP AT mo_module->get_exports( ) INTO DATA(ls_export).
+      IF ls_export-type = zcl_wasm_types=>c_export_type-func.
+        CLEAR rt_functions.
+        ls_function-name = ls_export-name.
+*        BREAK-POINT.
+*        mo_module->get_function_by_index( ls_export-index ).
+        APPEND ls_function TO rt_functions.
+      ENDIF.
+    ENDLOOP.
+
   ENDMETHOD.
 ENDCLASS.
