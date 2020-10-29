@@ -78,8 +78,17 @@ CLASS ZCL_WASM_I32 IMPLEMENTATION.
 
 * signed compare
 
-* todo
-    ASSERT 0 = 1.
+    ASSERT io_memory->stack_length( ) >= 2.
+
+    DATA(lo_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
+    DATA(lo_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
+
+    DATA(lv_result) = 0.
+    IF lo_val1->get_value( ) < lo_val2->get_value( ).
+      lv_result = 1.
+    ENDIF.
+
+    io_memory->stack_push( NEW zcl_wasm_i32( lv_result ) ).
 
   ENDMETHOD.
 

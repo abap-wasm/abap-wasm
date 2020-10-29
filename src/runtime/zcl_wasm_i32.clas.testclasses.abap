@@ -5,12 +5,40 @@ CLASS ltcl_test DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS FINAL.
     METHODS:
       add FOR TESTING,
       sub FOR TESTING,
+      lt_s FOR TESTING,
       const_ FOR TESTING.
 
 ENDCLASS.
 
 
 CLASS ltcl_test IMPLEMENTATION.
+
+  METHOD lt_s.
+
+    DATA(lo_memory) = NEW zcl_wasm_memory( ).
+
+    lo_memory->stack_push( NEW zcl_wasm_i32( 3 ) ).
+    lo_memory->stack_push( NEW zcl_wasm_i32( 2 ) ).
+
+    zcl_wasm_i32=>lt_s( lo_memory ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lo_memory->stack_length( )
+      exp = 1 ).
+
+    DATA(li_pop) = lo_memory->stack_pop( ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = li_pop->get_type( )
+      exp = zcl_wasm_types=>c_value_type-i32 ).
+
+    DATA(lo_int) = CAST zcl_wasm_i32( li_pop ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lo_int->get_value( )
+      exp = 1 ).
+
+  ENDMETHOD.
 
   METHOD sub.
 * todo, add tests
