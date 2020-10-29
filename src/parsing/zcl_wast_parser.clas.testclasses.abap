@@ -87,7 +87,8 @@ CLASS ltcl_test IMPLEMENTATION.
       |)\n|.
 
     DATA(lo_module) = mo_cut->parse( lv_wast ).
-*
+
+* todo,
 *    cl_abap_unit_assert=>assert_not_initial( lo_module ).
 
   ENDMETHOD.
