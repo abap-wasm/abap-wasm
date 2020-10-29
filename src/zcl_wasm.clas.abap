@@ -82,7 +82,6 @@ CLASS ZCL_WASM IMPLEMENTATION.
 
   METHOD execute_function_export.
 
-*    DATA li_value TYPE REF TO zif_wasm_value.
     DATA ls_export TYPE zcl_wasm_module=>ty_export.
     DATA ls_code TYPE zcl_wasm_module=>ty_code.
 
@@ -98,7 +97,7 @@ CLASS ZCL_WASM IMPLEMENTATION.
     DATA(lo_vm) = NEW zcl_wasm_vm( lo_memory ).
     lo_vm->execute( ls_code-instructions ).
 
-*    APPEND lo_memory->pop( ) TO rt_results.
+    APPEND lo_memory->stack_pop( ) TO rt_results.
 
   ENDMETHOD.
 
