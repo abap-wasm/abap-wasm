@@ -56,14 +56,8 @@ CLASS ltcl_test IMPLEMENTATION.
       act = lo_memory->stack_length( )
       exp = 1 ).
 
-    DATA(lo_pop) = lo_memory->stack_pop_i32( ).
-
-*    cl_abap_unit_assert=>assert_equals(
-*      act = li_pop->get_type( )
-*      exp = zcl_wasm_types=>c_value_type-i32 ).
-
     cl_abap_unit_assert=>assert_equals(
-      act = lo_pop->get_value( )
+      act = lo_memory->stack_pop_i32( )->get_value( )
       exp = lc_value ).
 
   ENDMETHOD.
@@ -81,14 +75,8 @@ CLASS ltcl_test IMPLEMENTATION.
       act = lo_memory->stack_length( )
       exp = 1 ).
 
-    DATA(li_pop) = lo_memory->stack_pop( ).
-
     cl_abap_unit_assert=>assert_equals(
-      act = li_pop->get_type( )
-      exp = zcl_wasm_types=>c_value_type-i32 ).
-
-    cl_abap_unit_assert=>assert_equals(
-      act = CAST zcl_wasm_i32( li_pop )->get_value( )
+      act = lo_memory->stack_pop_i32( )->get_value( )
       exp = 5 ).
 
   ENDMETHOD.
