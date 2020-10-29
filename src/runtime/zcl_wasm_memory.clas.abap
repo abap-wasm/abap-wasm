@@ -74,7 +74,7 @@ CLASS ZCL_WASM_MEMORY IMPLEMENTATION.
     READ TABLE mt_stack INDEX lv_last INTO ri_value.
     DELETE mt_stack INDEX lv_last.
 
-    DATA(foo) = NEW zcl_wasm_i32( 2 ).
+    DATA(lo_foo) = NEW zcl_wasm_i32( 2 ).
 
   ENDMETHOD.
 
