@@ -1,4 +1,3 @@
-
 CLASS ltcl_test DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS.
 
   PRIVATE SECTION.
@@ -27,7 +26,6 @@ CLASS ltcl_test IMPLEMENTATION.
   METHOD add_two.
 
     DATA lt_values TYPE zif_wasm_value=>ty_values.
-*    DATA lt_result TYPE zif_wasm_value=>ty_values.
 
     DATA(lo_wasm) = zcl_wasm=>create_with_wasm( zcl_wasm_test_data=>wasm_add_two( ) ).
     cl_abap_unit_assert=>assert_not_initial( lo_wasm ).
@@ -50,14 +48,13 @@ CLASS ltcl_test IMPLEMENTATION.
   METHOD fibonacci.
 
     DATA lt_values TYPE zif_wasm_value=>ty_values.
-    DATA lt_result TYPE zif_wasm_value=>ty_values.
 
     DATA(lo_wasm) = zcl_wasm=>create_with_wasm( zcl_wasm_test_data=>wasm_fibonacci( ) ).
     cl_abap_unit_assert=>assert_not_initial( lo_wasm ).
 
     APPEND NEW zcl_wasm_i32( 1 ) TO lt_values.
 
-    lt_result = lo_wasm->execute_function_export(
+    DATA(lt_result) = lo_wasm->execute_function_export(
       iv_name       = 'fib'
       it_parameters = lt_values ).
 
