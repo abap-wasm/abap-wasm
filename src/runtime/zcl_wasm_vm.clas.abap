@@ -51,7 +51,7 @@ CLASS ZCL_WASM_VM IMPLEMENTATION.
         WHEN zcl_wasm_instructions=>c_instructions-if_.
           if_( ).
         WHEN zcl_wasm_instructions=>c_instructions-return_.
-          ASSERT 0 = 1. " todo
+          RETURN.
         WHEN zcl_wasm_instructions=>c_instructions-unreachable.
 * https://webassembly.github.io/spec/core/exec/instructions.html#xref-syntax-instructions-syntax-instr-control-mathsf-unreachable
           ASSERT 0 = 1.
@@ -70,10 +70,12 @@ CLASS ZCL_WASM_VM IMPLEMENTATION.
 
 * https://webassembly.github.io/spec/core/exec/instructions.html#control-instructions
 
+* hex '40' = empty block type
+    ASSERT mo_instructions->shift( 1 ) = '40'.
+
 * If c is non-zero, then enter
     DATA(lv_value) = mo_memory->stack_pop_i32( )->get_value( ).
-
-* hex '40' = empty block type
+    ASSERT lv_value <> 0.
 
 * todo
 

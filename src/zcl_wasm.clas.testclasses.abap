@@ -51,13 +51,13 @@ CLASS ltcl_test IMPLEMENTATION.
 
     APPEND NEW zcl_wasm_i32( 1 ) TO lt_values.
 
-*    lt_result = lo_wasm->execute_function_export(
-*      iv_name       = 'fib'
-*      it_parameters = lt_values ).
-*
-*    cl_abap_unit_assert=>assert_equals(
-*      act = lines( lt_result )
-*      exp = 1 ).
+    lt_result = lo_wasm->execute_function_export(
+      iv_name       = 'fib'
+      it_parameters = lt_values ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lines( lt_result )
+      exp = 1 ).
 
 * todo, assert lt_result = 1
 
