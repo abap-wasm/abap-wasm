@@ -56,13 +56,7 @@ CLASS ltcl_test IMPLEMENTATION.
     zcl_wasm_i32=>const_( io_memory = mo_memory
                           iv_value  = lc_value ).
 
-    cl_abap_unit_assert=>assert_equals(
-      act = mo_memory->stack_length( )
-      exp = 1 ).
-
-    cl_abap_unit_assert=>assert_equals(
-      act = mo_memory->stack_pop_i32( )->get_value( )
-      exp = lc_value ).
+    assert_sole_value( lc_value ).
 
   ENDMETHOD.
 
@@ -73,13 +67,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
     zcl_wasm_i32=>add( mo_memory ).
 
-    cl_abap_unit_assert=>assert_equals(
-      act = mo_memory->stack_length( )
-      exp = 1 ).
-
-    cl_abap_unit_assert=>assert_equals(
-      act = mo_memory->stack_pop_i32( )->get_value( )
-      exp = 5 ).
+    assert_sole_value( 5 ).
 
   ENDMETHOD.
 
