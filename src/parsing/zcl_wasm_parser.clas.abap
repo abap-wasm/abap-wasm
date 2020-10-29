@@ -190,7 +190,7 @@ CLASS ZCL_WASM_PARSER IMPLEMENTATION.
       APPEND VALUE #(
         parameter_types = io_body->shift( io_body->shift_int( ) )
         result_types    = io_body->shift( io_body->shift_int( ) )
-      ) TO rt_results.
+        ) TO rt_results.
     ENDDO.
 
   ENDMETHOD.
