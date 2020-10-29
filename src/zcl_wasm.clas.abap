@@ -57,9 +57,8 @@ CLASS ZCL_WASM IMPLEMENTATION.
 
   METHOD create_with_wasm.
 
-*    DATA(lo_parser) = .
-    DATA(lo_module) = NEW zcl_wasm_parser( )->parse( iv_wasm ).
-    ro_wasm = NEW zcl_wasm( lo_module ).
+*    DATA(lo_module) = .
+    ro_wasm = NEW zcl_wasm( NEW zcl_wasm_parser( )->parse( iv_wasm ) ).
 
   ENDMETHOD.
 
