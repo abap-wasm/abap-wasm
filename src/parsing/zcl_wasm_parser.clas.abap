@@ -108,7 +108,7 @@ CLASS ZCL_WASM_PARSER IMPLEMENTATION.
 
 * https://webassembly.github.io/spec/core/binary/modules.html#binary-codesec
 
-    DATA ls_result TYPE zcl_wasm_module=>ty_code.
+*    DATA ls_result TYPE zcl_wasm_module=>ty_code.
 
     DO io_body->shift_int( ) TIMES.
 
@@ -119,9 +119,10 @@ CLASS ZCL_WASM_PARSER IMPLEMENTATION.
       DATA(lv_locals_count) = lo_code->shift_int( ).
       ASSERT lv_locals_count = 0. " todo
 
-      ls_result-instructions = lo_code->get_data( ).
+*      ls_result-instructions = lo_code->get_data( ).
+*      APPEND ls_result TO rt_results.
 
-      APPEND ls_result TO rt_results.
+      APPEND VALUE #( instructions = lo_code->get_data( ) ) TO rt_results.
 
     ENDDO.
 
