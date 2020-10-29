@@ -40,7 +40,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
     zcl_wasm_i32=>lt_s( mo_memory ).
 
-    assert_sole_value( 2 ).
+    assert_sole_value( 1 ).
 
   ENDMETHOD.
 
