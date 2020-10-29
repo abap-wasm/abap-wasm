@@ -86,7 +86,7 @@ CLASS ZCL_WASM_MEMORY IMPLEMENTATION.
 
     ASSERT li_pop->get_type( ) = zcl_wasm_types=>c_value_type-i32.
 
-    ro_value = CAST zcl_wasm_i32( li_pop ).
+    ro_value ?= li_pop.
 
   ENDMETHOD.
 
