@@ -67,7 +67,14 @@ CLASS ZCL_WASM_TEST_DATA IMPLEMENTATION.
 *    i32.add
 *    return))
 
-* todo
+    rv_xstr =
+      |0061736D| && " magic
+      |01000000| && " version
+      |0106| && |0160017F017F| && " types
+      |0302| && |0100| && " function
+      |0707| && |01036669620000| && " export
+      |0A1F| && |011D002000410248044041010F0B200041026B1000200041016B10006A0F0B| &&
+      |0015| && |046E616D650106010003666962020601000100016E|.
 
   ENDMETHOD.
 ENDCLASS.
