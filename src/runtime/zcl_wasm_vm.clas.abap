@@ -13,6 +13,7 @@ CLASS zcl_wasm_vm DEFINITION
         iv_instructions TYPE xstring.
   PROTECTED SECTION.
     DATA mo_memory TYPE REF TO zcl_wasm_memory.
+    DATA mo_instructions TYPE REF TO zcl_wasm_binary_stream.
   PRIVATE SECTION.
 
     METHODS if_ .
@@ -30,19 +31,19 @@ CLASS ZCL_WASM_VM IMPLEMENTATION.
 
   METHOD execute.
 
-    DATA(lo_stream) = NEW zcl_wasm_binary_stream( iv_instructions ).
+    mo_instructions = NEW zcl_wasm_binary_stream( iv_instructions ).
 
-    WHILE lo_stream->get_length( ) > 0.
-      DATA(lv_instruction) = lo_stream->shift( 1 ).
+    WHILE mo_instructions->get_length( ) > 0.
+      DATA(lv_instruction) = mo_instructions->shift( 1 ).
       CASE lv_instruction.
         WHEN zcl_wasm_instructions=>c_instructions-local_get.
           zcl_wasm_local=>get( io_memory = mo_memory
-                               iv_index  = lo_stream->shift_int( ) ).
+                               iv_index  = mo_instructions->shift_int( ) ).
         WHEN zcl_wasm_instructions=>c_instructions-i32_add.
           zcl_wasm_i32=>add( mo_memory ).
         WHEN zcl_wasm_instructions=>c_instructions-i32_const.
           zcl_wasm_i32=>const_( io_memory = mo_memory
-                                iv_value  = lo_stream->shift_int( ) ).
+                                iv_value  = mo_instructions->shift_int( ) ).
         WHEN zcl_wasm_instructions=>c_instructions-i32_lt_s.
           zcl_wasm_i32=>lt_s( mo_memory ).
         WHEN zcl_wasm_instructions=>c_instructions-call.

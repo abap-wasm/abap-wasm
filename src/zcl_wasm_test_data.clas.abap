@@ -77,11 +77,12 @@ CLASS ZCL_WASM_TEST_DATA IMPLEMENTATION.
         |2000| && " get local 00
         |4102| && " const 02
         |48| && " lt_s
-        |0440| && " IF and blocktype = 40
+        |0440| && " IF, blocktype = 40
         |4101| && " const 01
         |0F| && " return
         |0B| && " block end
-        |200041026B1000200041016B10006A0F0B| &&
+        |2000| && " get local 00
+        |41026B1000200041016B10006A0F0B| &&
       |0015| && |046E616D650106010003666962020601000100016E|.
 
   ENDMETHOD.
