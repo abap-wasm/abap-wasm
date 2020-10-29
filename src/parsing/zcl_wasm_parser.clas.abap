@@ -110,8 +110,6 @@ CLASS ZCL_WASM_PARSER IMPLEMENTATION.
 
     DATA ls_result TYPE zcl_wasm_module=>ty_code.
 
-*    DATA(lv_code_count) = .
-
     DO io_body->shift_int( ) TIMES.
 
       DATA(lv_code_size) = io_body->shift_int( ).
@@ -147,9 +145,7 @@ CLASS ZCL_WASM_PARSER IMPLEMENTATION.
 
     DATA ls_result TYPE zcl_wasm_module=>ty_export.
 
-    DATA(lv_export_count) = io_body->shift_int( ).
-
-    DO lv_export_count TIMES.
+    DO io_body->shift_int( ) TIMES.
       ls_result-name = io_body->shift_utf8( ).
       ls_result-type = io_body->shift( 1 ).
 
@@ -170,9 +166,7 @@ CLASS ZCL_WASM_PARSER IMPLEMENTATION.
 
 * https://webassembly.github.io/spec/core/binary/modules.html#binary-funcsec
 
-    DATA(lv_function_count) = io_body->shift_int( ).
-
-    DO lv_function_count TIMES.
+    DO io_body->shift_int( ) TIMES.
       APPEND io_body->shift_int( ) TO rt_results.
     ENDDO.
 
@@ -185,9 +179,7 @@ CLASS ZCL_WASM_PARSER IMPLEMENTATION.
 
     DATA ls_result TYPE zcl_wasm_module=>ty_type.
 
-    DATA(lv_type_count) = io_body->shift_int( ).
-
-    DO lv_type_count TIMES.
+    DO io_body->shift_int( ) TIMES.
       DATA(lv_type) = io_body->shift( 1 ).
       ASSERT lv_type = zcl_wasm_types=>c_function_type.
 
