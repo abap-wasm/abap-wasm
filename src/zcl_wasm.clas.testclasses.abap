@@ -3,6 +3,7 @@ CLASS ltcl_test DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS.
 
   PRIVATE SECTION.
     METHODS:
+      list_function_exports FOR TESTING,
       add_two FOR TESTING,
       fibonacci FOR TESTING.
 ENDCLASS.
@@ -10,10 +11,7 @@ ENDCLASS.
 
 CLASS ltcl_test IMPLEMENTATION.
 
-  METHOD add_two.
-
-    DATA lt_values TYPE zif_wasm_value=>ty_values.
-    DATA lt_result TYPE zif_wasm_value=>ty_values.
+  METHOD list_function_exports.
 
     DATA(lo_wasm) = zcl_wasm=>create_with_wasm( zcl_wasm_test_data=>wasm_add_two( ) ).
 
@@ -24,6 +22,16 @@ CLASS ltcl_test IMPLEMENTATION.
     cl_abap_unit_assert=>assert_equals(
       act = lines( lt_exports )
       exp = 1 ).
+
+  ENDMETHOD.
+
+  METHOD add_two.
+
+    DATA lt_values TYPE zif_wasm_value=>ty_values.
+    DATA lt_result TYPE zif_wasm_value=>ty_values.
+
+    DATA(lo_wasm) = zcl_wasm=>create_with_wasm( zcl_wasm_test_data=>wasm_add_two( ) ).
+    cl_abap_unit_assert=>assert_not_initial( lo_wasm ).
 
     APPEND NEW zcl_wasm_i32( 2 ) TO lt_values.
     APPEND NEW zcl_wasm_i32( 3 ) TO lt_values.
@@ -46,7 +54,6 @@ CLASS ltcl_test IMPLEMENTATION.
     DATA lt_result TYPE zif_wasm_value=>ty_values.
 
     DATA(lo_wasm) = zcl_wasm=>create_with_wasm( zcl_wasm_test_data=>wasm_fibonacci( ) ).
-
     cl_abap_unit_assert=>assert_not_initial( lo_wasm ).
 
     APPEND NEW zcl_wasm_i32( 1 ) TO lt_values.
