@@ -57,7 +57,6 @@ CLASS ZCL_WASM IMPLEMENTATION.
 
   METHOD create_with_wasm.
 
-*    DATA(lo_module) = .
     ro_wasm = NEW zcl_wasm( NEW zcl_wasm_parser( )->parse( iv_wasm ) ).
 
   ENDMETHOD.
@@ -81,10 +80,10 @@ CLASS ZCL_WASM IMPLEMENTATION.
 
   METHOD execute_function_export.
 
-    DATA ls_export TYPE zcl_wasm_module=>ty_export.
+*    DATA ls_export TYPE zcl_wasm_module=>ty_export.
     DATA ls_code TYPE zcl_wasm_module=>ty_code.
 
-    ls_export = mo_module->get_export_by_name( iv_name ).
+    DATA(ls_export) = mo_module->get_export_by_name( iv_name ).
     ls_code = mo_module->get_code_by_index( ls_export-index ).
 
     DATA(lo_memory) = NEW zcl_wasm_memory( ).
