@@ -25,19 +25,20 @@ CLASS cl_abap_unit_assert DEFINITION PUBLIC.
 ENDCLASS.
 
 CLASS cl_abap_unit_assert IMPLEMENTATION.
-  METHOD assert_not_initial.
-    RETURN.
+
+  METHOD assert_differs.
+    ASSERT act <> exp.
   ENDMETHOD.
 
   METHOD assert_equals.
-    RETURN.
+    ASSERT act = exp.
   ENDMETHOD.
 
-  METHOD assert_differs.
-    RETURN.
+  METHOD assert_not_initial.
+    ASSERT NOT act IS INITIAL.
   ENDMETHOD.
 
   METHOD assert_initial.
-    RETURN.
+    ASSERT act IS INITIAL.
   ENDMETHOD.
 ENDCLASS.
