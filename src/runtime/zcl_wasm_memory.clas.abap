@@ -37,10 +37,7 @@ CLASS ZCL_WASM_MEMORY IMPLEMENTATION.
 
   METHOD local_get.
 
-    DATA: lv_index TYPE i.
-
-    lv_index = iv_index + 1.
-
+    DATA(lv_index) = iv_index + 1.
     READ TABLE mt_locals INDEX lv_index INTO ri_value.
     ASSERT sy-subrc = 0.
 
