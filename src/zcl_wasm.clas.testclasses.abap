@@ -2,7 +2,9 @@
 CLASS ltcl_test DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS.
 
   PRIVATE SECTION.
-    METHODS: add_two FOR TESTING.
+    METHODS:
+      add_two FOR TESTING,
+      fibonacci FOR TESTING.
 ENDCLASS.
 
 
@@ -35,6 +37,16 @@ CLASS ltcl_test IMPLEMENTATION.
       exp = 1 ).
 
 * todo, assert lt_result = 5
+
+  ENDMETHOD.
+
+  METHOD fibonacci.
+
+    DATA(lo_wasm) = zcl_wasm=>create_with_wasm( zcl_wasm_test_data=>wasm_fibonacci( ) ).
+
+    cl_abap_unit_assert=>assert_not_initial( lo_wasm ).
+
+* todo
 
   ENDMETHOD.
 
