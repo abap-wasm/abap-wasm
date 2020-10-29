@@ -89,8 +89,7 @@ CLASS ZCL_WASM IMPLEMENTATION.
       lo_memory->local_push( li_value ).
     ENDLOOP.
 
-    DATA(lo_vm) = NEW zcl_wasm_vm( lo_memory ).
-    lo_vm->execute( ls_code-instructions ).
+    NEW zcl_wasm_vm( lo_memory )->execute( ls_code-instructions ).
 
     APPEND lo_memory->stack_pop( ) TO rt_results.
 
