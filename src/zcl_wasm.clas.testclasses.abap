@@ -23,9 +23,9 @@ CLASS ltcl_test IMPLEMENTATION.
       act = lines( lt_exports )
       exp = 1 ).
 
-*    APPEND NEW zcl_wasm_i32( 2 ) TO lt_values.
-*    APPEND NEW zcl_wasm_i32( 3 ) TO lt_values.
-*
+    APPEND NEW zcl_wasm_i32( 2 ) TO lt_values.
+    APPEND NEW zcl_wasm_i32( 3 ) TO lt_values.
+
 *    lt_result = lo_wasm->execute_function_export(
 *      iv_name       = 'add'
 *      it_parameters = lt_values ).
