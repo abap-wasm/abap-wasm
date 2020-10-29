@@ -84,7 +84,7 @@ CLASS ZCL_WASM_I32 IMPLEMENTATION.
     DATA(lo_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
 
     DATA(lv_result) = 0.
-    IF lo_val1->get_value( ) < lo_val2->get_value( ).
+    IF lo_val1->get_value( ) > lo_val2->get_value( ).
       lv_result = 1.
     ENDIF.
 

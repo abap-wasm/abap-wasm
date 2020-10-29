@@ -9,7 +9,7 @@ CLASS zcl_wasm_instructions DEFINITION
     CONSTANTS:
       BEGIN OF c_instructions,
 * https://webassembly.github.io/spec/core/binary/instructions.html#control-instructions
-        unreacable    TYPE ty_instruction VALUE '00',
+        unreachable   TYPE ty_instruction VALUE '00',
         nop           TYPE ty_instruction VALUE '01',
         block         TYPE ty_instruction VALUE '02',
         loop          TYPE ty_instruction VALUE '03',

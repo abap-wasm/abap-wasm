@@ -14,6 +14,8 @@ CLASS zcl_wasm_vm DEFINITION
   PROTECTED SECTION.
     DATA mo_memory TYPE REF TO zcl_wasm_memory.
   PRIVATE SECTION.
+
+    METHODS if_ .
 ENDCLASS.
 
 
@@ -46,9 +48,12 @@ CLASS ZCL_WASM_VM IMPLEMENTATION.
         WHEN zcl_wasm_instructions=>c_instructions-call.
           ASSERT 0 = 1. " todo
         WHEN zcl_wasm_instructions=>c_instructions-if_.
-          ASSERT 0 = 1. " todo
+          if_( ).
         WHEN zcl_wasm_instructions=>c_instructions-return_.
           ASSERT 0 = 1. " todo
+        WHEN zcl_wasm_instructions=>c_instructions-unreachable.
+* https://webassembly.github.io/spec/core/exec/instructions.html#xref-syntax-instructions-syntax-instr-control-mathsf-unreachable
+          ASSERT 0 = 1.
         WHEN zcl_wasm_instructions=>c_instructions-end.
 * nothing
         WHEN OTHERS.
@@ -56,6 +61,21 @@ CLASS ZCL_WASM_VM IMPLEMENTATION.
           ASSERT 0 = 1.
       ENDCASE.
     ENDWHILE.
+
+  ENDMETHOD.
+
+
+  METHOD if_.
+
+* https://webassembly.github.io/spec/core/exec/instructions.html#control-instructions
+
+* If c is non-zero, then enter
+    DATA(lv_value) = mo_memory->stack_pop_i32( )->get_value( ).
+
+* hex '40' = empty block type
+
+* todo
+    BREAK-POINT.
 
   ENDMETHOD.
 ENDCLASS.
