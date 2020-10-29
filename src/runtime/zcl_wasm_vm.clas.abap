@@ -17,11 +17,25 @@ CLASS zcl_wasm_vm DEFINITION
   PRIVATE SECTION.
 
     METHODS if_ .
+    METHODS call.
 ENDCLASS.
 
 
 
 CLASS ZCL_WASM_VM IMPLEMENTATION.
+
+
+  METHOD call.
+
+* https://webassembly.github.io/spec/core/syntax/instructions.html#control-instructions
+
+* The call instruction invokes another function, consuming the necessary arguments from the stack
+* and returning the result values of the call
+
+* todo
+    RETURN.
+
+  ENDMETHOD.
 
 
   METHOD constructor.
@@ -41,6 +55,8 @@ CLASS ZCL_WASM_VM IMPLEMENTATION.
                                iv_index  = mo_instructions->shift_int( ) ).
         WHEN zcl_wasm_instructions=>c_instructions-i32_add.
           zcl_wasm_i32=>add( mo_memory ).
+        WHEN zcl_wasm_instructions=>c_instructions-i32_sub.
+          zcl_wasm_i32=>sub( mo_memory ).
         WHEN zcl_wasm_instructions=>c_instructions-i32_const.
           zcl_wasm_i32=>const_( io_memory = mo_memory
                                 iv_value  = mo_instructions->shift_int( ) ).
@@ -53,7 +69,6 @@ CLASS ZCL_WASM_VM IMPLEMENTATION.
         WHEN zcl_wasm_instructions=>c_instructions-return_.
           RETURN.
         WHEN zcl_wasm_instructions=>c_instructions-unreachable.
-* https://webassembly.github.io/spec/core/exec/instructions.html#xref-syntax-instructions-syntax-instr-control-mathsf-unreachable
           ASSERT 0 = 1.
         WHEN zcl_wasm_instructions=>c_instructions-end.
 * nothing
@@ -75,9 +90,14 @@ CLASS ZCL_WASM_VM IMPLEMENTATION.
 
 * If c is non-zero, then enter
     DATA(lv_value) = mo_memory->stack_pop_i32( )->get_value( ).
-    ASSERT lv_value <> 0.
+    IF lv_value <> 0.
+      RETURN.
+    ENDIF.
 
-* todo
+* else forward instrcutions to '0B', this is a wrong implementation, but will work for now
+    WHILE mo_instructions->peek( 1 ) <> '0B'.
+      mo_instructions->shift( 1 ).
+    ENDWHILE.
 
   ENDMETHOD.
 ENDCLASS.

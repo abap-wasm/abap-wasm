@@ -74,15 +74,19 @@ CLASS ZCL_WASM_TEST_DATA IMPLEMENTATION.
       |0302| && |0100| && " function
       |0707| && |01036669620000| && " export
       |0A1F| && |011D00| && " Start code section
-        |2000| && " get local 00
-        |4102| && " const 02
-        |48| && " lt_s
-        |0440| && " IF, blocktype = 40
-        |4101| && " const 01
-        |0F| && " return
-        |0B| && " block end
-        |2000| && " get local 00
-        |41026B1000200041016B10006A0F0B| &&
+        |2000| && " get local '00'
+        |4102| && " const '02'
+        |48| &&   " lt_s
+        |0440| && " IF, blocktype = '40'
+        |4101| && " const '01'
+        |0F| &&   " return
+        |0B| &&   " block end
+        |2000| && " get local '00'
+        |4102| && " const '02'
+        |6B| &&   " subtract
+        |1000| && " call '00'
+        |2000| && " get local '00'
+        |41016B10006A0F0B| &&
       |0015| && |046E616D650106010003666962020601000100016E|.
 
   ENDMETHOD.
