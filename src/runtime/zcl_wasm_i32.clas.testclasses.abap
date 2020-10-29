@@ -13,14 +13,28 @@ CLASS ltcl_test IMPLEMENTATION.
 
   METHOD const_.
 
+    CONSTANTS lc_value TYPE i VALUE 42.
+
     DATA(lo_memory) = NEW zcl_wasm_memory( ).
 
     zcl_wasm_i32=>const_( io_memory = lo_memory
-                          iv_value  = 2 ).
+                          iv_value  = lc_value ).
 
     cl_abap_unit_assert=>assert_equals(
       act = lo_memory->stack_length( )
       exp = 1 ).
+
+    DATA(li_pop) = lo_memory->stack_pop( ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = li_pop->get_type( )
+      exp = zcl_wasm_types=>c_value_type-i32 ).
+
+    DATA(lo_int) = CAST zcl_wasm_i32( li_pop ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lo_int->get_value( )
+      exp = lc_value ).
 
   ENDMETHOD.
 
