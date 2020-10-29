@@ -30,6 +30,10 @@ CLASS ltcl_test IMPLEMENTATION.
       iv_name       = 'add'
       it_parameters = lt_values ).
 
+    cl_abap_unit_assert=>assert_equals(
+      act = lines( lt_result )
+      exp = 1 ).
+
 * todo, assert lt_result = 5
 
   ENDMETHOD.
