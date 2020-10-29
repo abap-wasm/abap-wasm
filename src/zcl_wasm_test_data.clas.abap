@@ -38,7 +38,7 @@ CLASS ZCL_WASM_TEST_DATA IMPLEMENTATION.
       |0107| && |0160027F7F017F| && " types
       |0302| && |0100| &&  " function
       |0707| && |01036164640000| && " export
-      |0A09| && |010700200020016A0B| && " code
+      |0A09| && |010700| && |200020016A0B| && " code
       |001C| && |046E616D650106010003616464020D01000200036C68730103726873|.
 
   ENDMETHOD.
@@ -67,7 +67,27 @@ CLASS ZCL_WASM_TEST_DATA IMPLEMENTATION.
 *    i32.add
 *    return))
 
-* todo
+    rv_xstr =
+      |0061736D| && " magic
+      |01000000| && " version
+      |0106| && |0160017F017F| && " types
+      |0302| && |0100| && " function
+      |0707| && |01036669620000| && " export
+      |0A1F| && |011D00| && " Start code section
+        |2000| && " get local '00'
+        |4102| && " const '02'
+        |48| &&   " lt_s
+        |0440| && " IF, blocktype = '40'
+        |4101| && " const '01'
+        |0F| &&   " return
+        |0B| &&   " block end
+        |2000| && " get local '00'
+        |4102| && " const '02'
+        |6B| &&   " subtract
+        |1000| && " call '00'
+        |2000| && " get local '00'
+        |41016B10006A0F0B| &&
+      |0015| && |046E616D650106010003666962020601000100016E|.
 
   ENDMETHOD.
 ENDCLASS.

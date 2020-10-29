@@ -112,8 +112,7 @@ CLASS ZCL_WASM_MODULE IMPLEMENTATION.
 
   METHOD get_export_by_name.
 
-* todo
-*    READ TABLE mt_exports WITH KEY name = iv_name INTO rs_export.
+* todo, this should read "WITH KEY name = iv_name" instead
     READ TABLE mt_exports INDEX 1 INTO rs_export.
     ASSERT sy-subrc = 0.
 

@@ -91,6 +91,8 @@ CLASS ZCL_WASM_BINARY_STREAM IMPLEMENTATION.
 
   METHOD shift_utf8.
 
+* https://webassembly.github.io/spec/core/binary/values.html#names
+
     DATA(lo_stream) = NEW zcl_wasm_binary_stream( shift( shift_int( ) ) ).
 
     WHILE lo_stream->get_length( ) > 0.

@@ -10,6 +10,9 @@ CLASS zcl_wasm_memory DEFINITION
     METHODS stack_pop
       RETURNING
         VALUE(ri_value) TYPE REF TO zif_wasm_value .
+    METHODS stack_pop_i32
+      RETURNING
+        VALUE(ro_value) TYPE REF TO zcl_wasm_i32 .
     METHODS stack_peek
       RETURNING
         VALUE(ri_value) TYPE REF TO zif_wasm_value .
@@ -73,6 +76,17 @@ CLASS ZCL_WASM_MEMORY IMPLEMENTATION.
     DATA(lv_last) = lines( mt_stack ).
     READ TABLE mt_stack INDEX lv_last INTO ri_value.
     DELETE mt_stack INDEX lv_last.
+
+  ENDMETHOD.
+
+
+  METHOD stack_pop_i32.
+
+    DATA(li_pop) = stack_pop( ).
+
+    ASSERT li_pop->get_type( ) = zcl_wasm_types=>c_value_type-i32.
+
+    ro_value ?= li_pop.
 
   ENDMETHOD.
 

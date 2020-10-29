@@ -7,10 +7,17 @@ CLASS zcl_wasm_i32 DEFINITION
 
     INTERFACES zif_wasm_value .
 
+    CLASS-METHODS const_
+      IMPORTING
+        !io_memory TYPE REF TO zcl_wasm_memory
+        !iv_value  TYPE i .
     METHODS constructor
       IMPORTING
         !iv_value TYPE i .
     CLASS-METHODS add
+      IMPORTING
+        !io_memory TYPE REF TO zcl_wasm_memory .
+    CLASS-METHODS lt_s
       IMPORTING
         !io_memory TYPE REF TO zcl_wasm_memory .
     CLASS-METHODS sub
@@ -32,6 +39,8 @@ CLASS ZCL_WASM_I32 IMPLEMENTATION.
 
   METHOD add.
 
+* https://webassembly.github.io/spec/core/exec/instructions.html#t-mathsf-xref-syntax-instructions-syntax-binop-mathit-binop
+
     ASSERT io_memory->stack_length( ) >= 2.
 
     DATA(lo_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
@@ -47,6 +56,15 @@ CLASS ZCL_WASM_I32 IMPLEMENTATION.
   ENDMETHOD.
 
 
+  METHOD const_.
+
+* https://webassembly.github.io/spec/core/exec/instructions.html#t-mathsf-xref-syntax-instructions-syntax-instr-numeric-mathsf-const-c
+
+    io_memory->stack_push( NEW zcl_wasm_i32( iv_value ) ).
+
+  ENDMETHOD.
+
+
   METHOD get_value.
 
     rv_value = mv_value.
@@ -54,7 +72,30 @@ CLASS ZCL_WASM_I32 IMPLEMENTATION.
   ENDMETHOD.
 
 
+  METHOD lt_s.
+
+* https://webassembly.github.io/spec/core/exec/instructions.html#t-mathsf-xref-syntax-instructions-syntax-relop-mathit-relop
+
+* signed compare
+
+    ASSERT io_memory->stack_length( ) >= 2.
+
+    DATA(lo_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
+    DATA(lo_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
+
+    DATA(lv_result) = 0.
+    IF lo_val1->get_value( ) > lo_val2->get_value( ).
+      lv_result = 1.
+    ENDIF.
+
+    io_memory->stack_push( NEW zcl_wasm_i32( lv_result ) ).
+
+  ENDMETHOD.
+
+
   METHOD sub.
+
+* https://webassembly.github.io/spec/core/exec/instructions.html#t-mathsf-xref-syntax-instructions-syntax-binop-mathit-binop
 
     ASSERT io_memory->stack_length( ) >= 2.
 

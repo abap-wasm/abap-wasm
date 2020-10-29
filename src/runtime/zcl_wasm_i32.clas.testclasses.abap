@@ -2,37 +2,72 @@
 CLASS ltcl_test DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS FINAL.
 
   PRIVATE SECTION.
-    METHODS: add FOR TESTING.
+    DATA: mo_memory TYPE REF TO zcl_wasm_memory.
+
+    METHODS:
+      setup,
+      assert_sole_value IMPORTING iv_value TYPE i,
+      add FOR TESTING,
+      sub FOR TESTING,
+      lt_s FOR TESTING,
+      const_ FOR TESTING.
 
 ENDCLASS.
 
 
 CLASS ltcl_test IMPLEMENTATION.
 
-  METHOD add.
+  METHOD setup.
+    mo_memory = NEW zcl_wasm_memory( ).
+  ENDMETHOD.
 
-    DATA(lo_memory) = NEW zcl_wasm_memory( ).
-
-    lo_memory->stack_push( NEW zcl_wasm_i32( 2 ) ).
-    lo_memory->stack_push( NEW zcl_wasm_i32( 3 ) ).
-
-    zcl_wasm_i32=>add( lo_memory ).
+  METHOD assert_sole_value.
 
     cl_abap_unit_assert=>assert_equals(
-      act = lo_memory->stack_length( )
+      act = mo_memory->stack_length( )
       exp = 1 ).
 
-    DATA(li_pop) = lo_memory->stack_pop( ).
-
     cl_abap_unit_assert=>assert_equals(
-      act = li_pop->get_type( )
-      exp = zcl_wasm_types=>c_value_type-i32 ).
+      act = mo_memory->stack_pop_i32( )->get_value( )
+      exp = iv_value ).
 
-    DATA(lo_int) = CAST zcl_wasm_i32( li_pop ).
+  ENDMETHOD.
 
-    cl_abap_unit_assert=>assert_equals(
-      act = lo_int->get_value( )
-      exp = 5 ).
+  METHOD lt_s.
+
+    mo_memory->stack_push( NEW zcl_wasm_i32( 3 ) ).
+    mo_memory->stack_push( NEW zcl_wasm_i32( 2 ) ).
+
+    zcl_wasm_i32=>lt_s( mo_memory ).
+
+    assert_sole_value( 0 ).
+
+  ENDMETHOD.
+
+  METHOD sub.
+* todo, add tests
+    RETURN.
+  ENDMETHOD.
+
+  METHOD const_.
+
+    CONSTANTS lc_value TYPE i VALUE 42.
+
+    zcl_wasm_i32=>const_( io_memory = mo_memory
+                          iv_value  = lc_value ).
+
+    assert_sole_value( lc_value ).
+
+  ENDMETHOD.
+
+  METHOD add.
+
+    mo_memory->stack_push( NEW zcl_wasm_i32( 2 ) ).
+    mo_memory->stack_push( NEW zcl_wasm_i32( 3 ) ).
+
+    zcl_wasm_i32=>add( mo_memory ).
+
+    assert_sole_value( 5 ).
 
   ENDMETHOD.
 

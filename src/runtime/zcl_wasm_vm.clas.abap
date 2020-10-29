@@ -13,12 +13,29 @@ CLASS zcl_wasm_vm DEFINITION
         iv_instructions TYPE xstring.
   PROTECTED SECTION.
     DATA mo_memory TYPE REF TO zcl_wasm_memory.
+    DATA mo_instructions TYPE REF TO zcl_wasm_binary_stream.
   PRIVATE SECTION.
+
+    METHODS if_ .
+    METHODS call.
 ENDCLASS.
 
 
 
 CLASS ZCL_WASM_VM IMPLEMENTATION.
+
+
+  METHOD call.
+
+* https://webassembly.github.io/spec/core/syntax/instructions.html#control-instructions
+
+* The call instruction invokes another function, consuming the necessary arguments from the stack
+* and returning the result values of the call
+
+* todo
+    RETURN.
+
+  ENDMETHOD.
 
 
   METHOD constructor.
@@ -28,22 +45,58 @@ CLASS ZCL_WASM_VM IMPLEMENTATION.
 
   METHOD execute.
 
-    DATA(lo_stream) = NEW zcl_wasm_binary_stream( iv_instructions ).
+    mo_instructions = NEW zcl_wasm_binary_stream( iv_instructions ).
 
-    WHILE lo_stream->get_length( ) > 0.
-      DATA(lv_instruction) = lo_stream->shift( 1 ).
+    WHILE mo_instructions->get_length( ) > 0.
+      DATA(lv_instruction) = mo_instructions->shift( 1 ).
       CASE lv_instruction.
         WHEN zcl_wasm_instructions=>c_instructions-local_get.
           zcl_wasm_local=>get( io_memory = mo_memory
-                               iv_index  = lo_stream->shift_int( ) ).
+                               iv_index  = mo_instructions->shift_int( ) ).
         WHEN zcl_wasm_instructions=>c_instructions-i32_add.
           zcl_wasm_i32=>add( mo_memory ).
-        WHEN zcl_wasm_instructions=>c_block_end.
+        WHEN zcl_wasm_instructions=>c_instructions-i32_sub.
+          zcl_wasm_i32=>sub( mo_memory ).
+        WHEN zcl_wasm_instructions=>c_instructions-i32_const.
+          zcl_wasm_i32=>const_( io_memory = mo_memory
+                                iv_value  = mo_instructions->shift_int( ) ).
+        WHEN zcl_wasm_instructions=>c_instructions-i32_lt_s.
+          zcl_wasm_i32=>lt_s( mo_memory ).
+        WHEN zcl_wasm_instructions=>c_instructions-call.
+          ASSERT 0 = 1. " todo
+        WHEN zcl_wasm_instructions=>c_instructions-if_.
+          if_( ).
+        WHEN zcl_wasm_instructions=>c_instructions-return_.
+          RETURN.
+        WHEN zcl_wasm_instructions=>c_instructions-unreachable.
+          ASSERT 0 = 1.
+        WHEN zcl_wasm_instructions=>c_instructions-end.
 * nothing
         WHEN OTHERS.
 * todo, to be implemented
           ASSERT 0 = 1.
       ENDCASE.
+    ENDWHILE.
+
+  ENDMETHOD.
+
+
+  METHOD if_.
+
+* https://webassembly.github.io/spec/core/exec/instructions.html#control-instructions
+
+* hex '40' = empty block type
+    ASSERT mo_instructions->shift( 1 ) = '40'.
+
+* If c is non-zero, then enter
+    DATA(lv_value) = mo_memory->stack_pop_i32( )->get_value( ).
+    IF lv_value <> 0.
+      RETURN.
+    ENDIF.
+
+* else forward instrcutions to '0B', this is a wrong implementation, but will work for now
+    WHILE mo_instructions->peek( 1 ) <> '0B'.
+      mo_instructions->shift( 1 ).
     ENDWHILE.
 
   ENDMETHOD.
