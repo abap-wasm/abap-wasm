@@ -110,9 +110,9 @@ CLASS ZCL_WASM_PARSER IMPLEMENTATION.
 
     DATA ls_result TYPE zcl_wasm_module=>ty_code.
 
-    DATA(lv_code_count) = io_body->shift_int( ).
+*    DATA(lv_code_count) = .
 
-    DO lv_code_count TIMES.
+    DO io_body->shift_int( ) TIMES.
 
       DATA(lv_code_size) = io_body->shift_int( ).
 
