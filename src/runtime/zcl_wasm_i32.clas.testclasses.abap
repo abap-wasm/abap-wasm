@@ -32,10 +32,8 @@ CLASS ltcl_test IMPLEMENTATION.
       act = li_pop->get_type( )
       exp = zcl_wasm_types=>c_value_type-i32 ).
 
-    DATA(lo_int) = CAST zcl_wasm_i32( li_pop ).
-
     cl_abap_unit_assert=>assert_equals(
-      act = lo_int->get_value( )
+      act = CAST zcl_wasm_i32( li_pop )->get_value( )
       exp = 1 ).
 
   ENDMETHOD.
@@ -64,10 +62,8 @@ CLASS ltcl_test IMPLEMENTATION.
       act = li_pop->get_type( )
       exp = zcl_wasm_types=>c_value_type-i32 ).
 
-    DATA(lo_int) = CAST zcl_wasm_i32( li_pop ).
-
     cl_abap_unit_assert=>assert_equals(
-      act = lo_int->get_value( )
+      act = CAST zcl_wasm_i32( li_pop )->get_value( )
       exp = lc_value ).
 
   ENDMETHOD.
@@ -90,8 +86,6 @@ CLASS ltcl_test IMPLEMENTATION.
     cl_abap_unit_assert=>assert_equals(
       act = li_pop->get_type( )
       exp = zcl_wasm_types=>c_value_type-i32 ).
-
-*    DATA(lo_int) = .
 
     cl_abap_unit_assert=>assert_equals(
       act = CAST zcl_wasm_i32( li_pop )->get_value( )
