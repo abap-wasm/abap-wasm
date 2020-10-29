@@ -99,7 +99,6 @@ CLASS ZCL_WASM IMPLEMENTATION.
   METHOD list_function_exports.
 
     DATA ls_function TYPE ty_name_and_parameter.
-*    DATA ls_export TYPE zcl_wasm_module=>ty_export.
 
     DATA(lt_exports) = mo_module->get_exports( ).
     LOOP AT lt_exports INTO DATA(ls_export).
