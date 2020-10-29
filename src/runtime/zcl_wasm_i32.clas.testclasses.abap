@@ -2,7 +2,11 @@
 CLASS ltcl_test DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS FINAL.
 
   PRIVATE SECTION.
+    DATA: mo_memory TYPE REF TO zcl_wasm_memory.
+
     METHODS:
+      setup,
+      assert_sole_value IMPORTING iv_value TYPE i,
       add FOR TESTING,
       sub FOR TESTING,
       lt_s FOR TESTING,
@@ -13,27 +17,35 @@ ENDCLASS.
 
 CLASS ltcl_test IMPLEMENTATION.
 
-  METHOD lt_s.
+  METHOD setup.
+    mo_memory = NEW zcl_wasm_memory( ).
+  ENDMETHOD.
 
-    DATA(lo_memory) = NEW zcl_wasm_memory( ).
-
-    lo_memory->stack_push( NEW zcl_wasm_i32( 3 ) ).
-    lo_memory->stack_push( NEW zcl_wasm_i32( 2 ) ).
-
-    zcl_wasm_i32=>lt_s( lo_memory ).
+  METHOD assert_sole_value.
 
     cl_abap_unit_assert=>assert_equals(
-      act = lo_memory->stack_length( )
+      act = mo_memory->stack_length( )
       exp = 1 ).
 
-    DATA(li_pop) = lo_memory->stack_pop( ).
+    cl_abap_unit_assert=>assert_equals(
+      act = mo_memory->stack_pop_i32( )->get_value( )
+      exp = 1 ).
+
+  ENDMETHOD.
+
+  METHOD lt_s.
+
+    mo_memory->stack_push( NEW zcl_wasm_i32( 3 ) ).
+    mo_memory->stack_push( NEW zcl_wasm_i32( 2 ) ).
+
+    zcl_wasm_i32=>lt_s( mo_memory ).
 
     cl_abap_unit_assert=>assert_equals(
-      act = li_pop->get_type( )
-      exp = zcl_wasm_types=>c_value_type-i32 ).
+      act = mo_memory->stack_length( )
+      exp = 1 ).
 
     cl_abap_unit_assert=>assert_equals(
-      act = CAST zcl_wasm_i32( li_pop )->get_value( )
+      act = mo_memory->stack_pop_i32( )->get_value( )
       exp = 1 ).
 
   ENDMETHOD.
@@ -47,36 +59,32 @@ CLASS ltcl_test IMPLEMENTATION.
 
     CONSTANTS lc_value TYPE i VALUE 42.
 
-    DATA(lo_memory) = NEW zcl_wasm_memory( ).
-
-    zcl_wasm_i32=>const_( io_memory = lo_memory
+    zcl_wasm_i32=>const_( io_memory = mo_memory
                           iv_value  = lc_value ).
 
     cl_abap_unit_assert=>assert_equals(
-      act = lo_memory->stack_length( )
+      act = mo_memory->stack_length( )
       exp = 1 ).
 
     cl_abap_unit_assert=>assert_equals(
-      act = lo_memory->stack_pop_i32( )->get_value( )
+      act = mo_memory->stack_pop_i32( )->get_value( )
       exp = lc_value ).
 
   ENDMETHOD.
 
   METHOD add.
 
-    DATA(lo_memory) = NEW zcl_wasm_memory( ).
+    mo_memory->stack_push( NEW zcl_wasm_i32( 2 ) ).
+    mo_memory->stack_push( NEW zcl_wasm_i32( 3 ) ).
 
-    lo_memory->stack_push( NEW zcl_wasm_i32( 2 ) ).
-    lo_memory->stack_push( NEW zcl_wasm_i32( 3 ) ).
-
-    zcl_wasm_i32=>add( lo_memory ).
+    zcl_wasm_i32=>add( mo_memory ).
 
     cl_abap_unit_assert=>assert_equals(
-      act = lo_memory->stack_length( )
+      act = mo_memory->stack_length( )
       exp = 1 ).
 
     cl_abap_unit_assert=>assert_equals(
-      act = lo_memory->stack_pop_i32( )->get_value( )
+      act = mo_memory->stack_pop_i32( )->get_value( )
       exp = 5 ).
 
   ENDMETHOD.
