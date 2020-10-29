@@ -183,11 +183,8 @@ CLASS ZCL_WASM_PARSER IMPLEMENTATION.
       DATA(lv_type) = io_body->shift( 1 ).
       ASSERT lv_type = zcl_wasm_types=>c_function_type.
 
-      DATA(lv_parameter_count) = io_body->shift_int( ).
-      ls_result-parameter_types = io_body->shift( lv_parameter_count ).
-
-      DATA(lv_result_count) = io_body->shift_int( ).
-      ls_result-result_types = io_body->shift( lv_result_count ).
+      ls_result-parameter_types = io_body->shift( io_body->shift_int( ) ).
+      ls_result-result_types = io_body->shift( io_body->shift_int( ) ).
 
       APPEND ls_result TO rt_results.
     ENDDO.
