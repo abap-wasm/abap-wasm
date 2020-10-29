@@ -75,7 +75,6 @@ CLASS ZCL_WASM_VM IMPLEMENTATION.
 * hex '40' = empty block type
 
 * todo
-    BREAK-POINT.
 
   ENDMETHOD.
 ENDCLASS.
