@@ -7,7 +7,12 @@ CLASS zcl_wasm_test_data DEFINITION
 
     CLASS-METHODS wasm_add_two
       RETURNING
-        VALUE(rv_xstr) TYPE xstring .
+        VALUE(rv_xstr) TYPE xstring.
+
+    CLASS-METHODS wasm_fibonacci
+      RETURNING
+        VALUE(rv_xstr) TYPE xstring.
+
   PROTECTED SECTION.
   PRIVATE SECTION.
 ENDCLASS.
@@ -35,6 +40,34 @@ CLASS ZCL_WASM_TEST_DATA IMPLEMENTATION.
       |0707| && |01036164640000| && " export
       |0A09| && |010700200020016A0B| && " code
       |001C| && |046E616D650106010003616464020D01000200036C68730103726873|.
+
+  ENDMETHOD.
+
+
+  METHOD wasm_fibonacci.
+
+*(module
+*  (type $t0 (func (param i32) (result i32)))
+*  (func $fib (export "fib") (type $t0) (param $n i32) (result i32)
+*    get_local $n
+*    i32.const 2
+*    i32.lt_s
+*    if $I0
+*      i32.const 1
+*      return
+*    end
+*    get_local $n
+*    i32.const 2
+*    i32.sub
+*    call $fib
+*    get_local $n
+*    i32.const 1
+*    i32.sub
+*    call $fib
+*    i32.add
+*    return))
+
+* todo
 
   ENDMETHOD.
 ENDCLASS.

@@ -57,9 +57,7 @@ CLASS ZCL_WASM IMPLEMENTATION.
 
   METHOD create_with_wasm.
 
-    DATA(lo_parser) = NEW zcl_wasm_parser( ).
-    DATA(lo_module) = lo_parser->parse( iv_wasm ).
-    ro_wasm = NEW zcl_wasm( lo_module ).
+    ro_wasm = NEW zcl_wasm( NEW zcl_wasm_parser( )->parse( iv_wasm ) ).
 
   ENDMETHOD.
 
@@ -82,22 +80,18 @@ CLASS ZCL_WASM IMPLEMENTATION.
 
   METHOD execute_function_export.
 
-    DATA li_value TYPE REF TO zif_wasm_value.
-    DATA ls_export TYPE zcl_wasm_module=>ty_export.
-    DATA ls_code TYPE zcl_wasm_module=>ty_code.
-
-    ls_export = mo_module->get_export_by_name( iv_name ).
-    ls_code = mo_module->get_code_by_index( ls_export-index ).
+    DATA(ls_export) = mo_module->get_export_by_name( iv_name ).
+    DATA(ls_code) = mo_module->get_code_by_index( ls_export-index ).
 
     DATA(lo_memory) = NEW zcl_wasm_memory( ).
-    LOOP AT it_parameters INTO li_value.
-      lo_memory->push( li_value ).
+
+    LOOP AT it_parameters INTO DATA(li_value).
+      lo_memory->local_push( li_value ).
     ENDLOOP.
 
-    DATA(lo_vm) = NEW zcl_wasm_vm( lo_memory ).
-    lo_vm->execute( ls_code-instructions ).
+    NEW zcl_wasm_vm( lo_memory )->execute( ls_code-instructions ).
 
-*    APPEND lo_memory->pop( ) TO rt_results.
+    APPEND lo_memory->stack_pop( ) TO rt_results.
 
   ENDMETHOD.
 
@@ -105,15 +99,13 @@ CLASS ZCL_WASM IMPLEMENTATION.
   METHOD list_function_exports.
 
     DATA ls_function TYPE ty_name_and_parameter.
-    DATA ls_export TYPE zcl_wasm_module=>ty_export.
 
-    DATA(lt_exports) = mo_module->get_exports( ).
-    LOOP AT lt_exports INTO ls_export.
+    LOOP AT mo_module->get_exports( ) INTO DATA(ls_export).
       IF ls_export-type = zcl_wasm_types=>c_export_type-func.
         CLEAR ls_function.
         ls_function-name = ls_export-name.
-* todo
-*        mo_module->get_function_by_index( ls_export-index ).
+        DATA(lv_type_index) = mo_module->get_function_by_index( ls_export-index ).
+*        ls_function-parameters =
         APPEND ls_function TO rt_functions.
       ENDIF.
     ENDLOOP.

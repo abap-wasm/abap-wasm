@@ -5,15 +5,15 @@
   "description": "test",
   "scripts": {
     "downport": "abaplint --fix abaplint_downport.json",
-    "unit": "rm -rf output && rm -rf open-abap && git clone https://github.com/open-abap/open-abap && cp open-abap/src/* src/ && rm src/cl*testclasses* && abap_transpile && echo RUNNING && node output/index.js",
+    "unit": "rm -rf output && cp deps/* src/ && abap_transpile && echo RUNNING && node output/index.js",
     "lint": "rm -f src/cl_* && rm -f src/cx_* && abaplint",
     "test": "npm run lint && npm run downport && npm run unit"
   },
   "author": "Lars Hvam Petersen",
   "license": "MIT",
   "dependencies": {
-    "@abaplint/cli": "^2.58.22",
-    "@abaplint/runtime": "^0.5.39",
-    "@abaplint/transpiler-cli": "^0.5.38"
+    "@abaplint/cli": "^2.58.24",
+    "@abaplint/runtime": "^0.5.40",
+    "@abaplint/transpiler-cli": "^0.5.40"
   }
 }

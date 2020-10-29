@@ -6,6 +6,8 @@ CLASS zcl_wasm_instructions DEFINITION
     TYPES ty_instruction TYPE x LENGTH 1.
     TYPES ty_instructions TYPE STANDARD TABLE OF ty_instruction WITH DEFAULT KEY.
 
+    CONSTANTS: c_block_end TYPE ty_instruction VALUE '0B'.
+
     CONSTANTS:
       BEGIN OF c_instructions,
 * https://webassembly.github.io/spec/core/binary/instructions.html#parametric-instructions
