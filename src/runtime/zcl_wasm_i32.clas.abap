@@ -39,6 +39,8 @@ CLASS ZCL_WASM_I32 IMPLEMENTATION.
 
   METHOD add.
 
+* https://webassembly.github.io/spec/core/exec/instructions.html#t-mathsf-xref-syntax-instructions-syntax-binop-mathit-binop
+
     ASSERT io_memory->stack_length( ) >= 2.
 
     DATA(lo_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
@@ -56,8 +58,9 @@ CLASS ZCL_WASM_I32 IMPLEMENTATION.
 
   METHOD const_.
 
-* todo
-    ASSERT 0 = 1.
+* https://webassembly.github.io/spec/core/exec/instructions.html#t-mathsf-xref-syntax-instructions-syntax-instr-numeric-mathsf-const-c
+
+    io_memory->stack_push( NEW zcl_wasm_i32( iv_value ) ).
 
   ENDMETHOD.
 
@@ -71,6 +74,10 @@ CLASS ZCL_WASM_I32 IMPLEMENTATION.
 
   METHOD lt_s.
 
+* https://webassembly.github.io/spec/core/exec/instructions.html#t-mathsf-xref-syntax-instructions-syntax-relop-mathit-relop
+
+* signed compare
+
 * todo
     ASSERT 0 = 1.
 
@@ -78,6 +85,8 @@ CLASS ZCL_WASM_I32 IMPLEMENTATION.
 
 
   METHOD sub.
+
+* https://webassembly.github.io/spec/core/exec/instructions.html#t-mathsf-xref-syntax-instructions-syntax-binop-mathit-binop
 
     ASSERT io_memory->stack_length( ) >= 2.
 
