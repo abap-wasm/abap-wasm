@@ -11,7 +11,7 @@ CLASS ltcl_test IMPLEMENTATION.
   METHOD add_two.
 
     DATA lt_values TYPE zif_wasm_value=>ty_values.
-    DATA lt_result TYPE zif_wasm_value=>ty_values.
+*    DATA lt_result TYPE zif_wasm_value=>ty_values.
 
     DATA(lo_wasm) = zcl_wasm=>create_with_wasm( zcl_wasm_test_data=>wasm_add_two( ) ).
 
@@ -26,7 +26,7 @@ CLASS ltcl_test IMPLEMENTATION.
     APPEND NEW zcl_wasm_i32( 2 ) TO lt_values.
     APPEND NEW zcl_wasm_i32( 3 ) TO lt_values.
 
-    lt_result = lo_wasm->execute_function_export(
+    DATA(lt_result) = lo_wasm->execute_function_export(
       iv_name       = 'add'
       it_parameters = lt_values ).
 
