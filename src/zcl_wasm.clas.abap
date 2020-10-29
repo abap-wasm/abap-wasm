@@ -90,8 +90,9 @@ CLASS ZCL_WASM IMPLEMENTATION.
     ls_code = mo_module->get_code_by_index( ls_export-index ).
 
     DATA(lo_memory) = NEW zcl_wasm_memory( ).
+
     LOOP AT it_parameters INTO li_value.
-      lo_memory->push( li_value ).
+      lo_memory->local_push( li_value ).
     ENDLOOP.
 
     DATA(lo_vm) = NEW zcl_wasm_vm( lo_memory ).

@@ -4,20 +4,29 @@ CLASS zcl_wasm_memory DEFINITION
 
   PUBLIC SECTION.
 
-    METHODS push
+    METHODS stack_push
       IMPORTING
         !ii_value TYPE REF TO zif_wasm_value .
-    METHODS pop
+    METHODS stack_pop
       RETURNING
         VALUE(ri_value) TYPE REF TO zif_wasm_value .
-    METHODS peek
+    METHODS stack_peek
       RETURNING
         VALUE(ri_value) TYPE REF TO zif_wasm_value .
-    METHODS get_length
+    METHODS stack_length
       RETURNING
         VALUE(rv_length) TYPE i .
+    METHODS local_push
+      IMPORTING
+        !ii_value TYPE REF TO zif_wasm_value .
+    METHODS local_get
+      IMPORTING
+        !iv_index       TYPE i
+      RETURNING
+        VALUE(ri_value) TYPE REF TO zif_wasm_value .
   PROTECTED SECTION.
     DATA mt_stack TYPE STANDARD TABLE OF REF TO zif_wasm_value WITH DEFAULT KEY.
+    DATA mt_locals TYPE STANDARD TABLE OF REF TO zif_wasm_value WITH DEFAULT KEY.
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -26,14 +35,33 @@ ENDCLASS.
 CLASS ZCL_WASM_MEMORY IMPLEMENTATION.
 
 
-  METHOD get_length.
+  METHOD local_get.
+
+    DATA: lv_index TYPE i.
+
+    lv_index = iv_index + 1.
+
+    READ TABLE mt_locals INDEX lv_index INTO ri_value.
+    ASSERT sy-subrc = 0.
+
+  ENDMETHOD.
+
+
+  METHOD local_push.
+
+    APPEND ii_value TO mt_locals.
+
+  ENDMETHOD.
+
+
+  METHOD stack_length.
 
     rv_length = lines( mt_stack ).
 
   ENDMETHOD.
 
 
-  METHOD peek.
+  METHOD stack_peek.
 
     DATA(lv_last) = lines( mt_stack ).
     READ TABLE mt_stack INDEX lv_last INTO ri_value.
@@ -41,7 +69,7 @@ CLASS ZCL_WASM_MEMORY IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD pop.
+  METHOD stack_pop.
 
     ASSERT lines( mt_stack ) > 0.
 
@@ -52,7 +80,7 @@ CLASS ZCL_WASM_MEMORY IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD push.
+  METHOD stack_push.
 
     APPEND ii_value TO mt_stack.
 

@@ -14,19 +14,19 @@ CLASS ltcl_test IMPLEMENTATION.
     DATA(lo_memory) = NEW zcl_wasm_memory( ).
 
     cl_abap_unit_assert=>assert_equals(
-      act = lo_memory->get_length( )
+      act = lo_memory->stack_length( )
       exp = 0 ).
 
-    lo_memory->push( NEW zcl_wasm_i32( 2 ) ).
+    lo_memory->stack_push( NEW zcl_wasm_i32( 2 ) ).
 
     cl_abap_unit_assert=>assert_equals(
-      act = lo_memory->get_length( )
+      act = lo_memory->stack_length( )
       exp = 1 ).
 
-    lo_memory->pop( ).
+    lo_memory->stack_pop( ).
 
     cl_abap_unit_assert=>assert_equals(
-      act = lo_memory->get_length( )
+      act = lo_memory->stack_length( )
       exp = 0 ).
 
   ENDMETHOD.

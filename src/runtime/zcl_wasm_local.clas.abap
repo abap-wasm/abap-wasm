@@ -21,5 +21,7 @@ CLASS ZCL_WASM_LOCAL IMPLEMENTATION.
 
 * https://webassembly.github.io/spec/core/exec/instructions.html#xref-syntax-instructions-syntax-instr-variable-mathsf-local-get-x
 
+    io_memory->stack_push( io_memory->local_get( iv_index ) ).
+
   ENDMETHOD.
 ENDCLASS.
