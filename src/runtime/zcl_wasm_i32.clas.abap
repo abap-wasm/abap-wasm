@@ -7,10 +7,17 @@ CLASS zcl_wasm_i32 DEFINITION
 
     INTERFACES zif_wasm_value .
 
+    CLASS-METHODS const
+      IMPORTING
+        !io_memory TYPE REF TO zcl_wasm_memory
+        !iv_value  TYPE i .
     METHODS constructor
       IMPORTING
         !iv_value TYPE i .
     CLASS-METHODS add
+      IMPORTING
+        !io_memory TYPE REF TO zcl_wasm_memory .
+    CLASS-METHODS lt_s
       IMPORTING
         !io_memory TYPE REF TO zcl_wasm_memory .
     CLASS-METHODS sub
@@ -42,6 +49,14 @@ CLASS ZCL_WASM_I32 IMPLEMENTATION.
   ENDMETHOD.
 
 
+  METHOD const.
+
+* todo
+    ASSERT 0 = 1.
+
+  ENDMETHOD.
+
+
   METHOD constructor.
     mv_value = iv_value.
   ENDMETHOD.
@@ -50,6 +65,14 @@ CLASS ZCL_WASM_I32 IMPLEMENTATION.
   METHOD get_value.
 
     rv_value = mv_value.
+
+  ENDMETHOD.
+
+
+  METHOD lt_s.
+
+* todo
+    ASSERT 0 = 1.
 
   ENDMETHOD.
 

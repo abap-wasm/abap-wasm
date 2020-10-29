@@ -38,7 +38,18 @@ CLASS ZCL_WASM_VM IMPLEMENTATION.
                                iv_index  = lo_stream->shift_int( ) ).
         WHEN zcl_wasm_instructions=>c_instructions-i32_add.
           zcl_wasm_i32=>add( mo_memory ).
-        WHEN zcl_wasm_instructions=>c_block_end.
+        WHEN zcl_wasm_instructions=>c_instructions-i32_const.
+          zcl_wasm_i32=>const( io_memory = mo_memory
+                               iv_value  = lo_stream->shift_int( ) ).
+        WHEN zcl_wasm_instructions=>c_instructions-i32_lt_s.
+          zcl_wasm_i32=>lt_s( mo_memory ).
+        WHEN zcl_wasm_instructions=>c_instructions-call.
+          ASSERT 0 = 1. " todo
+        WHEN zcl_wasm_instructions=>c_instructions-if.
+          ASSERT 0 = 1. " todo
+        WHEN zcl_wasm_instructions=>c_instructions-return.
+          ASSERT 0 = 1. " todo
+        WHEN zcl_wasm_instructions=>c_instructions-end.
 * nothing
         WHEN OTHERS.
 * todo, to be implemented
