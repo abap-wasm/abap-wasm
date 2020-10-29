@@ -4,12 +4,18 @@ CLASS ltcl_test DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS FINAL.
   PRIVATE SECTION.
     METHODS:
       add FOR TESTING,
+      sub FOR TESTING,
       const_ FOR TESTING.
 
 ENDCLASS.
 
 
 CLASS ltcl_test IMPLEMENTATION.
+
+  METHOD sub.
+* todo, add tests
+    RETURN.
+  ENDMETHOD.
 
   METHOD const_.
 
