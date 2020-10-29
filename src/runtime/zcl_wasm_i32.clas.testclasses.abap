@@ -77,7 +77,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
     cl_abap_unit_assert=>assert_equals(
       act = lo_memory->stack_pop_i32( )->get_value( )
-      exp = 7 ).
+      exp = 5 ).
 
   ENDMETHOD.
 
