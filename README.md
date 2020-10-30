@@ -6,17 +6,16 @@ Somewhat free interpretation of a very basic [WebAssembly](https://webassembly.g
 
 Install via [abapGit](https://abapgit.org)
 
-## WebAssembly
-"open a full new ecosystem"
+## WebAssembly(WASM)
+A lot of [awesome](https://github.com/mbasso/awesome-wasm) projects and programming languages can be compiled to WASM. Being able to execute WASM in ABAP would open a large new ecosystem of possibilities on the ABAP stack.
 
-might be slow to execute
-
-use-cases
-https://github.com/jussiniinikoski/wasm-pdf
-https://github.com/mbasso/awesome-wasm
+It will probably be slow to execute WASM on the ABAP application server, time will tell.
 
 ## Version Support
-Automatic downport
+abap-wasm is developed using some [new ABAP syntax](https://abaplint.app/stats/larshp/abap-wasm/statement_compatibility), in order to still support 702, the source code is automatically downported using the downport functionality in [abaplint](https://abaplint.org).
+
+Example:
+
 
 ## CI/Test Setup
 Transpiling
