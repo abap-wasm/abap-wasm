@@ -2,9 +2,10 @@ CLASS ltcl_test DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS.
 
   PRIVATE SECTION.
     METHODS:
-      assert_result IMPORTING
-                      it_result TYPE zif_wasm_value=>ty_values
-                      iv_value  TYPE i,
+      assert_result
+        IMPORTING
+          it_result TYPE zif_wasm_value=>ty_values
+          iv_value  TYPE i,
       list_function_exports FOR TESTING,
       add_two FOR TESTING,
       fibonacci FOR TESTING.
@@ -34,6 +35,7 @@ CLASS ltcl_test IMPLEMENTATION.
       exp = 1 ).
 
     READ TABLE it_result INDEX 1 INTO DATA(li_data).
+    cl_abap_unit_assert=>assert_subrc( ).
 
     cl_abap_unit_assert=>assert_equals(
       act = CAST zcl_wasm_i32( li_data )->get_value( )
