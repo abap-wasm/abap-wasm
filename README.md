@@ -20,7 +20,3 @@ Example:
 ## CI/Test Setup
 Transpiling
 unreliable, but here and now for everyone
-
-## Future Work
-WAT and WAST parser not functioning
-coverage results via CI
