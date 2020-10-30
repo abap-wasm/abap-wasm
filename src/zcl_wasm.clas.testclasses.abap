@@ -8,6 +8,7 @@ CLASS ltcl_test DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS.
       list_function_exports FOR TESTING,
       add_two FOR TESTING,
       fibonacci FOR TESTING.
+
 ENDCLASS.
 
 
@@ -57,16 +58,6 @@ CLASS ltcl_test IMPLEMENTATION.
     assert_result( it_result = lt_result
                    iv_value  = 5 ).
 
-*    cl_abap_unit_assert=>assert_equals(
-*      act = lines( lt_result )
-*      exp = 1 ).
-*
-*    READ TABLE lt_result INDEX 1 INTO DATA(li_data).
-*    DATA(val) = CAST zcl_wasm_i32( li_data ).
-*    cl_abap_unit_assert=>assert_equals(
-*      act = val->get_value( )
-*      exp = 5 ).
-
   ENDMETHOD.
 
   METHOD fibonacci.
@@ -82,11 +73,8 @@ CLASS ltcl_test IMPLEMENTATION.
       iv_name       = 'fib'
       it_parameters = lt_values ).
 
-    cl_abap_unit_assert=>assert_equals(
-      act = lines( lt_result )
-      exp = 1 ).
-
-* todo, assert lt_result = 1
+    assert_result( it_result = lt_result
+                   iv_value  = 1 ).
 
   ENDMETHOD.
 
