@@ -36,11 +36,23 @@ CLASS ZCL_WASM_VM IMPLEMENTATION.
 * The call instruction invokes another function, consuming the necessary arguments from the stack
 * and returning the result values of the call
 
+    DATA(ls_type) = mo_module->get_type_by_index( iv_index ).
     DATA(ls_code) = mo_module->get_code_by_index( iv_index ).
 
+* consume values from stack
+    DATA(lo_memory) = NEW zcl_wasm_memory( ).
+    DO xstrlen( ls_type-parameter_types ) TIMES.
+      lo_memory->local_push( mo_memory->stack_pop( ) ).
+    ENDDO.
+
     NEW zcl_wasm_vm(
-      io_memory = mo_memory
+      io_memory = lo_memory
       io_module = mo_module )->execute( ls_code-instructions ).
+
+* return to stack
+    DO xstrlen( ls_type-result_types ) TIMES.
+      mo_memory->stack_push( lo_memory->stack_pop( ) ).
+    ENDDO.
 
   ENDMETHOD.
 
@@ -71,7 +83,7 @@ CLASS ZCL_WASM_VM IMPLEMENTATION.
         WHEN zcl_wasm_instructions=>c_instructions-i32_lt_s.
           zcl_wasm_i32=>lt_s( mo_memory ).
         WHEN zcl_wasm_instructions=>c_instructions-call.
-          ASSERT 0 = 1. " todo
+          call( mo_instructions->shift_int( ) ).
         WHEN zcl_wasm_instructions=>c_instructions-if_.
           if_( ).
         WHEN zcl_wasm_instructions=>c_instructions-return_.
