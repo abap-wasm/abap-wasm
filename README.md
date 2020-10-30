@@ -21,9 +21,8 @@ For every push to this repository, static analysis and unit tests is run.
 This means every change is tested in isolation, giving a complete Continious Integration setup the way
 it is [supposed to work](https://martinfowler.com/articles/continuousIntegration.html).
 
-Static analysis is performed by [abaplint](https://abaplint.org)
+Static analysis is performed by [abaplint](https://abaplint.org).
 
-To make unit tests run, the downported(702) ABAP code is [transpiled](https://github.com/abaplint/transpiler) to javascript, which then can be run on github actions. Again, the transpiling is fragile, but works here and now
-for everyone as open source.
+To run unit tests, the downported(702) ABAP code is [transpiled](https://github.com/abaplint/transpiler) to javascript, which then can be run on [GitHub Actions](https://github.com/features/actions). Again, the transpiling is fragile, but works here and now for everyone as open source.
 
 ![transpiled example](img/transpiled.png)
