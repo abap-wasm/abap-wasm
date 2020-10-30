@@ -2,9 +2,6 @@
 CLASS ltcl_test DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS FINAL.
 
   PRIVATE SECTION.
-    DATA:
-      mo_cut TYPE REF TO zcl_wast_text_stream.
-
     METHODS:
       single_module FOR TESTING,
       instructions FOR TESTING,

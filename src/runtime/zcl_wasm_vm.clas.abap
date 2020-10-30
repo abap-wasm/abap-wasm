@@ -6,18 +6,22 @@ CLASS zcl_wasm_vm DEFINITION
 
     METHODS constructor
       IMPORTING
-        !io_memory TYPE REF TO zcl_wasm_memory.
-
-    METHODS execute
+        !io_memory TYPE REF TO zcl_wasm_memory
+        !io_module TYPE REF TO zcl_wasm_module .
+    METHODS call
       IMPORTING
-        iv_instructions TYPE xstring.
+        !iv_index TYPE i .
   PROTECTED SECTION.
-    DATA mo_memory TYPE REF TO zcl_wasm_memory.
-    DATA mo_instructions TYPE REF TO zcl_wasm_binary_stream.
+
+    DATA mo_memory TYPE REF TO zcl_wasm_memory .
+    DATA mo_instructions TYPE REF TO zcl_wasm_binary_stream .
+    DATA mo_module TYPE REF TO zcl_wasm_module .
   PRIVATE SECTION.
 
     METHODS if_ .
-    METHODS call.
+    METHODS execute
+      IMPORTING
+        !iv_instructions TYPE xstring .
 ENDCLASS.
 
 
@@ -32,14 +36,30 @@ CLASS ZCL_WASM_VM IMPLEMENTATION.
 * The call instruction invokes another function, consuming the necessary arguments from the stack
 * and returning the result values of the call
 
-* todo
-    RETURN.
+    DATA(ls_type) = mo_module->get_type_by_index( iv_index ).
+    DATA(ls_code) = mo_module->get_code_by_index( iv_index ).
+
+* consume values from stack
+    DATA(lo_memory) = NEW zcl_wasm_memory( ).
+    DO xstrlen( ls_type-parameter_types ) TIMES.
+      lo_memory->local_push( mo_memory->stack_pop( ) ).
+    ENDDO.
+
+    NEW zcl_wasm_vm(
+      io_memory = lo_memory
+      io_module = mo_module )->execute( ls_code-instructions ).
+
+* return to stack
+    DO xstrlen( ls_type-result_types ) TIMES.
+      mo_memory->stack_push( lo_memory->stack_pop( ) ).
+    ENDDO.
 
   ENDMETHOD.
 
 
   METHOD constructor.
     mo_memory = io_memory.
+    mo_module = io_module.
   ENDMETHOD.
 
 
@@ -63,7 +83,7 @@ CLASS ZCL_WASM_VM IMPLEMENTATION.
         WHEN zcl_wasm_instructions=>c_instructions-i32_lt_s.
           zcl_wasm_i32=>lt_s( mo_memory ).
         WHEN zcl_wasm_instructions=>c_instructions-call.
-          ASSERT 0 = 1. " todo
+          call( mo_instructions->shift_int( ) ).
         WHEN zcl_wasm_instructions=>c_instructions-if_.
           if_( ).
         WHEN zcl_wasm_instructions=>c_instructions-return_.

@@ -10,36 +10,53 @@ CLASS zcl_wasm_parser DEFINITION
       RETURNING
         VALUE(ro_module) TYPE REF TO zcl_wasm_module .
   PROTECTED SECTION.
-* Note that these constants are not structured as they contain JS keywords
-    CONSTANTS:
-      gc_section_custom   TYPE x LENGTH 1 VALUE '00',
-      gc_section_type     TYPE x LENGTH 1 VALUE '01',
-      gc_section_import   TYPE x LENGTH 1 VALUE '02',
-      gc_section_function TYPE x LENGTH 1 VALUE '03',
-      gc_section_table    TYPE x LENGTH 1 VALUE '04',
-      gc_section_memory   TYPE x LENGTH 1 VALUE '05',
-      gc_section_global   TYPE x LENGTH 1 VALUE '06',
-      gc_section_export   TYPE x LENGTH 1 VALUE '07',
-      gc_section_start    TYPE x LENGTH 1 VALUE '08',
-      gc_section_element  TYPE x LENGTH 1 VALUE '09',
-      gc_section_code     TYPE x LENGTH 1 VALUE '0A',
-      gc_section_data     TYPE x LENGTH 1 VALUE '0B'.
 
-    METHODS:
-      parse_type
-        IMPORTING io_body           TYPE REF TO zcl_wasm_binary_stream
-        RETURNING VALUE(rt_results) TYPE zcl_wasm_module=>ty_types,
-      parse_function
-        IMPORTING io_body           TYPE REF TO zcl_wasm_binary_stream
-        RETURNING VALUE(rt_results) TYPE zcl_wasm_module=>ty_functions,
-      parse_export
-        IMPORTING io_body           TYPE REF TO zcl_wasm_binary_stream
-        RETURNING VALUE(rt_results) TYPE zcl_wasm_module=>ty_exports,
-      parse_code
-        IMPORTING io_body           TYPE REF TO zcl_wasm_binary_stream
-        RETURNING VALUE(rt_results) TYPE zcl_wasm_module=>ty_codes,
-      parse_custom
-        IMPORTING io_body TYPE REF TO zcl_wasm_binary_stream.
+    CONSTANTS:
+* Note that these constants are not structured as they contain JS keywords
+      gc_section_custom   TYPE x LENGTH 1 VALUE '00' ##NO_TEXT.
+    CONSTANTS:
+      gc_section_type     TYPE x LENGTH 1 VALUE '01' ##NO_TEXT.
+    CONSTANTS:
+      gc_section_import   TYPE x LENGTH 1 VALUE '02' ##NO_TEXT.
+    CONSTANTS:
+      gc_section_function TYPE x LENGTH 1 VALUE '03' ##NO_TEXT.
+    CONSTANTS:
+      gc_section_table    TYPE x LENGTH 1 VALUE '04' ##NO_TEXT.
+    CONSTANTS:
+      gc_section_memory   TYPE x LENGTH 1 VALUE '05' ##NO_TEXT.
+    CONSTANTS:
+      gc_section_global   TYPE x LENGTH 1 VALUE '06' ##NO_TEXT.
+    CONSTANTS:
+      gc_section_export   TYPE x LENGTH 1 VALUE '07' ##NO_TEXT.
+    CONSTANTS:
+      gc_section_start    TYPE x LENGTH 1 VALUE '08' ##NO_TEXT.
+    CONSTANTS:
+      gc_section_element  TYPE x LENGTH 1 VALUE '09' ##NO_TEXT.
+    CONSTANTS:
+      gc_section_code     TYPE x LENGTH 1 VALUE '0A' ##NO_TEXT.
+    CONSTANTS:
+      gc_section_data     TYPE x LENGTH 1 VALUE '0B' ##NO_TEXT.
+
+    METHODS parse_type
+      IMPORTING
+        !io_body          TYPE REF TO zcl_wasm_binary_stream
+      RETURNING
+        VALUE(rt_results) TYPE zcl_wasm_module=>ty_types .
+    METHODS parse_function
+      IMPORTING
+        !io_body          TYPE REF TO zcl_wasm_binary_stream
+      RETURNING
+        VALUE(rt_results) TYPE zcl_wasm_module=>ty_functions .
+    METHODS parse_export
+      IMPORTING
+        !io_body          TYPE REF TO zcl_wasm_binary_stream
+      RETURNING
+        VALUE(rt_results) TYPE zcl_wasm_module=>ty_exports .
+    METHODS parse_code
+      IMPORTING
+        !io_body          TYPE REF TO zcl_wasm_binary_stream
+      RETURNING
+        VALUE(rt_results) TYPE zcl_wasm_module=>ty_codes .
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -67,7 +84,9 @@ CLASS ZCL_WASM_PARSER IMPLEMENTATION.
 
       CASE lv_section.
         WHEN gc_section_custom.
-          parse_custom( lo_body ).
+* https://webassembly.github.io/spec/core/binary/modules.html#binary-customsec
+* "ignored by the WebAssembly semantics"
+          CONTINUE.
         WHEN gc_section_type.
           DATA(lt_types) = parse_type( lo_body ).
         WHEN gc_section_import.
@@ -120,17 +139,6 @@ CLASS ZCL_WASM_PARSER IMPLEMENTATION.
       APPEND VALUE #( instructions = lo_code->get_data( ) ) TO rt_results.
 
     ENDDO.
-
-  ENDMETHOD.
-
-
-  METHOD parse_custom.
-
-* https://webassembly.github.io/spec/core/binary/modules.html#binary-customsec
-
-* "ignored by the WebAssembly semantics"
-
-    RETURN.
 
   ENDMETHOD.
 

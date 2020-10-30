@@ -81,17 +81,22 @@ CLASS ZCL_WASM IMPLEMENTATION.
   METHOD execute_function_export.
 
     DATA(ls_export) = mo_module->get_export_by_name( iv_name ).
-    DATA(ls_code) = mo_module->get_code_by_index( ls_export-index ).
+    DATA(ls_type) = mo_module->get_type_by_index( ls_export-index ).
 
     DATA(lo_memory) = NEW zcl_wasm_memory( ).
 
+    ASSERT lines( it_parameters ) = xstrlen( ls_type-parameter_types ).
     LOOP AT it_parameters INTO DATA(li_value).
-      lo_memory->local_push( li_value ).
+      lo_memory->stack_push( li_value ).
     ENDLOOP.
 
-    NEW zcl_wasm_vm( lo_memory )->execute( ls_code-instructions ).
+    NEW zcl_wasm_vm(
+      io_memory = lo_memory
+      io_module = mo_module )->call( ls_export-index ).
 
-    APPEND lo_memory->stack_pop( ) TO rt_results.
+    DO xstrlen( ls_type-result_types ) TIMES.
+      APPEND lo_memory->stack_pop( ) TO rt_results.
+    ENDDO.
 
   ENDMETHOD.
 
