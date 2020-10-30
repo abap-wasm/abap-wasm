@@ -41,7 +41,11 @@ CLASS ltcl_test IMPLEMENTATION.
       act = lines( lt_result )
       exp = 1 ).
 
-* todo, assert lt_result = 5
+    READ TABLE lt_result INDEX 1 INTO DATA(li_data).
+    DATA(val) = CAST zcl_wasm_i32( li_data ).
+    cl_abap_unit_assert=>assert_equals(
+      act = val->get_value( )
+      exp = 5 ).
 
   ENDMETHOD.
 
