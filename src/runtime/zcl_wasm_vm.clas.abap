@@ -6,18 +6,22 @@ CLASS zcl_wasm_vm DEFINITION
 
     METHODS constructor
       IMPORTING
-        !io_memory TYPE REF TO zcl_wasm_memory.
-
-    METHODS execute
+        !io_memory TYPE REF TO zcl_wasm_memory
+        !io_module TYPE REF TO zcl_wasm_module .
+    METHODS call
       IMPORTING
-        iv_instructions TYPE xstring.
+        !iv_index TYPE i .
   PROTECTED SECTION.
-    DATA mo_memory TYPE REF TO zcl_wasm_memory.
-    DATA mo_instructions TYPE REF TO zcl_wasm_binary_stream.
+
+    DATA mo_memory TYPE REF TO zcl_wasm_memory .
+    DATA mo_instructions TYPE REF TO zcl_wasm_binary_stream .
+    DATA mo_module TYPE REF TO zcl_wasm_module .
   PRIVATE SECTION.
 
     METHODS if_ .
-    METHODS call.
+    METHODS execute
+      IMPORTING
+        !iv_instructions TYPE xstring .
 ENDCLASS.
 
 
@@ -32,14 +36,18 @@ CLASS ZCL_WASM_VM IMPLEMENTATION.
 * The call instruction invokes another function, consuming the necessary arguments from the stack
 * and returning the result values of the call
 
-* todo
-    RETURN.
+    DATA(ls_code) = mo_module->get_code_by_index( iv_index ).
+
+    NEW zcl_wasm_vm(
+      io_memory = mo_memory
+      io_module = mo_module )->execute( ls_code-instructions ).
 
   ENDMETHOD.
 
 
   METHOD constructor.
     mo_memory = io_memory.
+    mo_module = io_module.
   ENDMETHOD.
 
 
