@@ -17,6 +17,10 @@
     "errorNamespace": ""
   },
   "rules": {
+    "intf_referencing_clas": true,
+    "method_implemented_twice": true,
+    "parser_702_chaining": true,
+    "uncaught_exception": true,
     "7bit_ascii": true,
     "abapdoc": false,
     "allowed_object_naming": true,
