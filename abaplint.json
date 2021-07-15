@@ -23,6 +23,7 @@
     "parser_702_chaining": true,
     "uncaught_exception": true,
     "7bit_ascii": true,
+    "unused_ddic": true,
     "abapdoc": false,
     "allowed_object_naming": true,
     "allowed_object_types": false,
