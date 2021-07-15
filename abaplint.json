@@ -8,8 +8,9 @@
   },
   "dependencies": [
     {
+      "url": "https://github.com/open-abap/open-abap",
       "folder": "/deps",
-      "files": "/**/*.*"
+      "files": "/src/**/*.*"
     }
   ],
   "syntax": {
@@ -28,12 +29,7 @@
     "ambiguous_statement": true,
     "avoid_use": {
       "define": true,
-      "endselect": true,
-      "execSQL": true,
-      "kernelCall": true,
-      "communication": true,
       "statics": true,
-      "systemCall": true,
       "defaultKey": false,
       "break": true,
       "describeLines": true
