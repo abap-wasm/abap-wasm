@@ -4,16 +4,16 @@
   "private": true,
   "description": "test",
   "scripts": {
-    "downport": "abaplint --fix abaplint_downport.json",
-    "unit": "rm -rf output && cp deps/* src/ && abap_transpile && echo RUNNING && node output/index.mjs",
-    "lint": "rm -f src/cl_* && rm -f src/cx_* && abaplint",
+    "downport": "rm -rf downport && cp src -r downport && abaplint --fix abaplint_downport.json",
+    "unit": "rm -rf output && abap_transpile && echo RUNNING && node output/index.mjs",
+    "lint": "abaplint",
     "test": "npm run lint && npm run downport && npm run unit"
   },
   "author": "Lars Hvam Petersen",
   "license": "MIT",
   "dependencies": {
-    "@abaplint/cli": "^2.76.7",
-    "@abaplint/runtime": "^1.5.0",
-    "@abaplint/transpiler-cli": "^1.5.0"
+    "@abaplint/cli": "^2.88.8",
+    "@abaplint/runtime": "^2.0.7",
+    "@abaplint/transpiler-cli": "^2.0.7"
   }
 }

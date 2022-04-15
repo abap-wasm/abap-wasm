@@ -1,5 +1,4 @@
 node_modules
 output
-src/cl_*
-src/cx_*
 open-abap
+downport

@@ -2,19 +2,18 @@ name: unittest
 
 on: [push, pull_request]
 
+permissions:
+  contents: read
+
 jobs:
   unittest:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
-      with:
-        fetch-depth: 2
     - name: Use Node.js
       uses: actions/setup-node@v1
       with:
-        node-version: '14.x'
+        node-version: '16'
     - name: npm install
       run: npm install
     - name: npm test
