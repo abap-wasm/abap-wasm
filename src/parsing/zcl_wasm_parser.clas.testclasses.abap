@@ -1,4 +1,3 @@
-
 CLASS ltcl_test DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS FINAL.
 
   PRIVATE SECTION.
@@ -33,7 +32,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
     cl_abap_unit_assert=>assert_equals(
       act = lines( lo_module->get_functions( ) )
-        exp = 1 ).
+      exp = 1 ).
 
     cl_abap_unit_assert=>assert_equals(
       act = lines( lo_module->get_types( ) )
