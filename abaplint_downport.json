@@ -1,6 +1,6 @@
 {
   "global": {
-    "files": "/src/**/*.*",
+    "files": "/downport/**/*.*",
     "skipGeneratedGatewayClasses": true,
     "skipGeneratedPersistentClasses": true,
     "skipGeneratedFunctionGroups": true,
@@ -8,8 +8,9 @@
   },
   "dependencies": [
     {
+      "url": "https://github.com/open-abap/open-abap",
       "folder": "/deps",
-      "files": "/**/*.*"
+      "files": "/src/**/*.*"
     }
   ],
   "syntax": {
