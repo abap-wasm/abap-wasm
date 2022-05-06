@@ -1,8 +1,6 @@
 {
   "name": "wabap-wasm",
-  "version": "1.0.0",
   "private": true,
-  "description": "test",
   "scripts": {
     "downport": "rm -rf downport && cp src -r downport && abaplint --fix abaplint_downport.json",
     "unit": "rm -rf output && abap_transpile && echo RUNNING && node output/index.mjs",
@@ -12,8 +10,8 @@
   "author": "Lars Hvam Petersen",
   "license": "MIT",
   "dependencies": {
-    "@abaplint/cli": "^2.88.8",
-    "@abaplint/runtime": "^2.0.7",
-    "@abaplint/transpiler-cli": "^2.0.7"
+    "@abaplint/cli": "^2.90.0",
+    "@abaplint/runtime": "^2.0.22",
+    "@abaplint/transpiler-cli": "^2.0.22"
   }
 }
