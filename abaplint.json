@@ -18,6 +18,12 @@
     "errorNamespace": ""
   },
   "rules": {
+    "cds_legacy_view": true,
+    "classic_exceptions_overlap": true,
+    "local_testclass_consistency": true,
+    "no_external_form_calls": true,
+    "no_inline_in_optional_branches": false,
+    "superfluous_value": true,
     "align_parameters": true,
     "cds_parser_error": true,
     "constant_classes": true,
@@ -57,6 +63,7 @@
     "avoid_use": {
       "define": true,
       "statics": true,
+      "testSeams": true,
       "defaultKey": false,
       "break": true,
       "describeLines": true
@@ -112,7 +119,6 @@
     "line_length": false,
     "line_only_punc": true,
     "local_class_naming": true,
-    "local_testclass_location": true,
     "local_variable_names": true,
     "main_file_contents": true,
     "max_one_statement": true,
