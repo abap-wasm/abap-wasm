@@ -19,6 +19,13 @@
   },
   "rules": {
     "cds_legacy_view": true,
+    "cds_comment_style": true,
+    "change_if_to_case": false,
+    "expand_macros": true,
+    "fully_type_itabs": true,
+    "select_single_full_key": true,
+    "strict_sql": true,
+    "unnecessary_return": false,
     "classic_exceptions_overlap": true,
     "local_testclass_consistency": true,
     "no_external_form_calls": true,

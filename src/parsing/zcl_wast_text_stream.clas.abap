@@ -37,7 +37,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_WAST_TEXT_STREAM IMPLEMENTATION.
+CLASS zcl_wast_text_stream IMPLEMENTATION.
 
 
   METHOD constructor.
@@ -94,7 +94,7 @@ CLASS ZCL_WAST_TEXT_STREAM IMPLEMENTATION.
 
   METHOD peek.
 
-    DATA lt_table TYPE STANDARD TABLE OF string.
+    DATA lt_table TYPE STANDARD TABLE OF string WITH EMPTY KEY.
 
     SPLIT mv_text AT | | INTO TABLE lt_table.
 
