@@ -72,6 +72,8 @@
       "statics": true,
       "testSeams": true,
       "defaultKey": false,
+      "exportToDatabase": true,
+      "exportToMemory": true,
       "break": true,
       "describeLines": true
     },
