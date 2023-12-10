@@ -2,7 +2,7 @@
 Somewhat free interpretation of a very basic [WebAssembly](https://webassembly.github.io/spec/core/) Virtual Machine in ABAP.
 
 * Works on 702 and up, including [Steampunk](https://blogs.sap.com/2019/08/20/its-steampunk-now/)
-* Complete Continious Integration(CI) setup
+* Complete Continuous Integration(CI) setup
 
 Install via [abapGit](https://abapgit.org)
 
@@ -20,7 +20,7 @@ abap-wasm is developed using some [new ABAP syntax](https://abaplint.app/stats/l
 
 ## Complete CI/Unit Test Setup
 For every push to this repository, static analysis and unit tests is run.
-This means every change is tested in isolation, giving a complete Continious Integration setup the way
+This means every change is tested in isolation, giving a complete Continuous Integration setup the way
 it is [supposed to work](https://martinfowler.com/articles/continuousIntegration.html).
 
 Static analysis is performed by [abaplint](https://abaplint.org).
