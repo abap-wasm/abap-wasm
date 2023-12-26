@@ -69,6 +69,11 @@ CLASS zcl_wasm_vm IMPLEMENTATION.
   METHOD execute2.
 
     DATA lt_instructions TYPE STANDARD TABLE OF REF TO zif_wasm_instruction WITH EMPTY KEY.
+
+    LOOP AT lt_instructions INTO DATA(lo_instruction).
+      lo_instruction->execute( mo_memory ).
+    ENDLOOP.
+
   ENDMETHOD.
 
   METHOD execute.

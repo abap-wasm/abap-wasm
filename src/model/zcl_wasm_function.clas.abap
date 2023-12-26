@@ -4,10 +4,6 @@ CLASS zcl_wasm_function DEFINITION
   CREATE PUBLIC .
 
   PUBLIC SECTION.
-
-    TYPES:
-      ty_functions TYPE STANDARD TABLE OF REF TO zcl_wasm_function WITH DEFAULT KEY .
-
     METHODS get_export_name
       RETURNING
         VALUE(rv_export_name) TYPE string .
@@ -27,7 +23,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_WASM_FUNCTION IMPLEMENTATION.
+CLASS zcl_wasm_function IMPLEMENTATION.
 
 
   METHOD constructor.
