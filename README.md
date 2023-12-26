@@ -14,9 +14,7 @@ A lot of [awesome](https://github.com/mbasso/awesome-wasm) projects and programm
 It will probably be slow to execute WASM on the ABAP application server, time will tell.
 
 ## Version Support
-abap-wasm is developed using some [new ABAP syntax](https://abaplint.app/stats/larshp/abap-wasm/statement_compatibility), in order to still support 702, the source code is automatically downported using the downport functionality in [abaplint](https://abaplint.org). The downport only works for a small subset of the ABAP language so expect problems, but it exists here and now for everyone as open source.
-
-![downport example](img/downport.png)
+abap-wasm is developed using some [new ABAP syntax](https://abaplint.app/stats/larshp/abap-wasm/statement_compatibility), in order to still support 702, the source code is automatically downported using the downport functionality in [abaplint](https://abaplint.org).
 
 ## Complete CI/Unit Test Setup
 For every push to this repository, static analysis and unit tests is run.
@@ -25,6 +23,4 @@ it is [supposed to work](https://martinfowler.com/articles/continuousIntegration
 
 Static analysis is performed by [abaplint](https://abaplint.org).
 
-To run unit tests, the downported(702) ABAP code is [transpiled](https://github.com/abaplint/transpiler) to javascript, which then can be run on [GitHub Actions](https://github.com/features/actions). Again, the transpiling is fragile, but works here and now for everyone as open source.
-
-![transpiled example](img/transpiled.png)
+To run unit tests, the downported(702) ABAP code is [transpiled](https://github.com/abaplint/transpiler) to javascript, which then can be run on [GitHub Actions](https://github.com/features/actions).

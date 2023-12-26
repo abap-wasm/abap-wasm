@@ -62,12 +62,12 @@ ENDCLASS.
 
 
 
-CLASS ZCL_WASM_PARSER IMPLEMENTATION.
+CLASS zcl_wasm_parser IMPLEMENTATION.
 
 
   METHOD parse.
 
-    CONSTANTS lc_magic TYPE x LENGTH 4 VALUE '0061736D'.
+    CONSTANTS lc_magic   TYPE x LENGTH 4 VALUE '0061736D'.
     CONSTANTS lc_version TYPE x LENGTH 4 VALUE '01000000'.
 
     DATA(lo_stream) = NEW zcl_wasm_binary_stream( iv_wasm ).

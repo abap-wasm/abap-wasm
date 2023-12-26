@@ -2,7 +2,7 @@
   "name": "abap-wasm",
   "private": true,
   "scripts": {
-    "downport": "rm -rf downport && cp src -r downport && abaplint --fix abaplint_downport.json",
+    "downport": "rm -rf downport && cp src -r downport && abaplint --fix abaplint-downport.json",
     "unit": "rm -rf output && abap_transpile && echo RUNNING && node output/index.mjs",
     "lint": "abaplint",
     "test": "npm run lint && npm run downport && npm run unit"
@@ -10,8 +10,8 @@
   "author": "Lars Hvam Petersen",
   "license": "MIT",
   "dependencies": {
-    "@abaplint/cli": "^2.104.4",
-    "@abaplint/runtime": "^2.7.136",
-    "@abaplint/transpiler-cli": "^2.7.136"
+    "@abaplint/cli": "^2.105.5",
+    "@abaplint/runtime": "^2.7.137",
+    "@abaplint/transpiler-cli": "^2.7.137"
   }
 }
