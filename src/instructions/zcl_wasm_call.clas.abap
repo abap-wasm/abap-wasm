@@ -23,7 +23,9 @@ CLASS zcl_wasm_call IMPLEMENTATION.
 
   METHOD parse.
 * todo: singletons?
-    ASSERT 1 = 'todo'.
+
+    ri_instruction = NEW zcl_wasm_call( io_body->shift_int( ) ).
+
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
