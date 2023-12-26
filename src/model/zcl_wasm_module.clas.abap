@@ -11,6 +11,7 @@ CLASS zcl_wasm_module DEFINITION
       END OF ty_type .
     TYPES:
       ty_types TYPE STANDARD TABLE OF ty_type WITH DEFAULT KEY .
+
     TYPES:
       BEGIN OF ty_code,
         locals       TYPE xstring,
@@ -18,6 +19,7 @@ CLASS zcl_wasm_module DEFINITION
       END OF ty_code .
     TYPES:
       ty_codes TYPE STANDARD TABLE OF ty_code WITH DEFAULT KEY .
+
     TYPES:
       BEGIN OF ty_export,
         name  TYPE string,
@@ -26,6 +28,7 @@ CLASS zcl_wasm_module DEFINITION
       END OF ty_export .
     TYPES:
       ty_exports TYPE STANDARD TABLE OF ty_export WITH DEFAULT KEY .
+
     TYPES:
       ty_functions TYPE STANDARD TABLE OF i WITH DEFAULT KEY .
 
@@ -78,7 +81,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_WASM_MODULE IMPLEMENTATION.
+CLASS zcl_wasm_module IMPLEMENTATION.
 
 
   METHOD constructor.

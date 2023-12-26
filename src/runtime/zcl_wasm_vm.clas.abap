@@ -105,12 +105,16 @@ CLASS zcl_wasm_vm IMPLEMENTATION.
   METHOD if_.
 
 * https://webassembly.github.io/spec/core/exec/instructions.html#control-instructions
+* https://webassembly.github.io/spec/core/binary/instructions.html#control-instructions
+* https://webassembly.github.io/spec/core/binary/instructions.html#binary-blocktype
 
-    DATA(lv_block_type) = mo_instructions->shift( 1 ).
-    WRITE: / 'if', lv_block_type.
+    DATA(lv_block_type) = mo_instructions->peek( 1 ).
+    WRITE: / 'if:', lv_block_type.
+
 
 * hex '40' = empty block type
     ASSERT lv_block_type = '40'.
+    mo_instructions->shift( 1 ).
 
 * If c is non-zero, then enter
     DATA(lv_value) = mo_memory->stack_pop_i32( )->get_value( ).
