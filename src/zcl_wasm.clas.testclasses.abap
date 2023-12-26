@@ -10,6 +10,7 @@ CLASS ltcl_test DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS.
 
     METHODS add_two FOR TESTING RAISING cx_static_check.
     METHODS fibonacci FOR TESTING RAISING cx_static_check.
+    METHODS factorial FOR TESTING RAISING cx_static_check.
 
 ENDCLASS.
 
@@ -78,6 +79,24 @@ CLASS ltcl_test IMPLEMENTATION.
 
     assert_result( it_result = lt_result
                    iv_value  = 13 ).
+
+  ENDMETHOD.
+
+  METHOD factorial.
+
+    DATA lt_values TYPE zif_wasm_value=>ty_values.
+
+    DATA(lo_wasm) = zcl_wasm=>create_with_wasm( zcl_wasm_test_data=>wasm_fibonacci( ) ).
+    cl_abap_unit_assert=>assert_not_initial( lo_wasm ).
+
+    APPEND NEW zcl_wasm_i32( 5 ) TO lt_values.
+
+    DATA(lt_result) = lo_wasm->execute_function_export(
+      iv_name       = 'fac'
+      it_parameters = lt_values ).
+
+    assert_result( it_result = lt_result
+                   iv_value  = 120 ).
 
   ENDMETHOD.
 
