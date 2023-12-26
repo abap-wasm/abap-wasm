@@ -123,7 +123,10 @@ CLASS zcl_wasm_test_data IMPLEMENTATION.
       |2000| && " get local '00'
       |4101| && " const '01'
       |48| && " i32_lt_s
-      |047F4101052000200041016B10006C0B0B0012046E616D6501060100036661630203010000|.
+      |047F| && " if int32
+      |410105| && " instructions 1
+      |2000200041016B10006C0B| && " instructions 2
+      |0B0012046E616D6501060100036661630203010000|.
 
   ENDMETHOD.
 

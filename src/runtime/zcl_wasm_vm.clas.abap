@@ -108,24 +108,28 @@ CLASS zcl_wasm_vm IMPLEMENTATION.
 * https://webassembly.github.io/spec/core/binary/instructions.html#control-instructions
 * https://webassembly.github.io/spec/core/binary/instructions.html#binary-blocktype
 
-    DATA(lv_block_type) = mo_instructions->peek( 1 ).
-    WRITE: / 'if:', lv_block_type.
+    DATA(lv_block_type) = mo_instructions->shift( 1 ).
+*    WRITE: / 'if:', lv_block_type.
 
-
+    CASE lv_block_type.
+      WHEN '40'.
 * hex '40' = empty block type
-    ASSERT lv_block_type = '40'.
-    mo_instructions->shift( 1 ).
 
 * If c is non-zero, then enter
-    DATA(lv_value) = mo_memory->stack_pop_i32( )->get_value( ).
-    IF lv_value <> 0.
-      RETURN.
-    ENDIF.
+        DATA(lv_value) = mo_memory->stack_pop_i32( )->get_value( ).
+        IF lv_value <> 0.
+          RETURN.
+        ENDIF.
 
-* else forward instrcutions to '0B', this is a wrong implementation, but will work for now
-    WHILE mo_instructions->peek( 1 ) <> '0B'.
-      mo_instructions->shift( 1 ).
-    ENDWHILE.
+* else forward instructions to '0B', this is a wrong implementation, but will work for now
+        WHILE mo_instructions->peek( 1 ) <> '0B'.
+          mo_instructions->shift( 1 ).
+        ENDWHILE.
+      WHEN zcl_wasm_types=>c_value_type-i32.
+        ASSERT 1 = 'todo'.
+      WHEN OTHERS.
+        ASSERT 1 = 'todo'.
+    ENDCASE.
 
   ENDMETHOD.
 ENDCLASS.
