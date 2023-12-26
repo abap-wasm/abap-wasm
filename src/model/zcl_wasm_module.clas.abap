@@ -14,8 +14,9 @@ CLASS zcl_wasm_module DEFINITION
 
     TYPES:
       BEGIN OF ty_code,
-        locals       TYPE xstring,
-        instructions TYPE xstring,
+        locals        TYPE xstring,
+        instructions  TYPE xstring, " todo: remove this field
+        instructions2 TYPE zif_wasm_instruction=>ty_list,
       END OF ty_code .
     TYPES:
       ty_codes TYPE STANDARD TABLE OF ty_code WITH DEFAULT KEY .

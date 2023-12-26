@@ -18,7 +18,30 @@ CLASS zcl_wasm_call IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    ASSERT 1 = 'todo'.
+
+* https://webassembly.github.io/spec/core/syntax/instructions.html#control-instructions
+
+* The call instruction invokes another function, consuming the necessary arguments from the stack
+* and returning the result values of the call
+
+    DATA(ls_type) = io_module->get_type_by_index( mv_funcidx ).
+    DATA(ls_code) = io_module->get_code_by_index( mv_funcidx ).
+
+* consume values from stack
+    DATA(lo_memory) = NEW zcl_wasm_memory( ).
+    DO xstrlen( ls_type-parameter_types ) TIMES.
+      lo_memory->local_push( io_memory->stack_pop( ) ).
+    ENDDO.
+
+    NEW zcl_wasm_vm(
+      io_memory = lo_memory
+      io_module = io_module )->execute2( ls_code-instructions2 ).
+
+* return to stack
+    DO xstrlen( ls_type-result_types ) TIMES.
+      io_memory->stack_push( lo_memory->stack_pop( ) ).
+    ENDDO.
+
   ENDMETHOD.
 
 ENDCLASS.

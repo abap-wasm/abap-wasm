@@ -25,7 +25,7 @@ CLASS zcl_wasm_vm DEFINITION
 
     METHODS execute2
       IMPORTING
-        !iv_instructions TYPE xstring .
+        !it_instructions TYPE zif_wasm_instruction=>ty_list .
 ENDCLASS.
 
 
@@ -68,9 +68,7 @@ CLASS zcl_wasm_vm IMPLEMENTATION.
 
   METHOD execute2.
 
-    DATA lt_instructions TYPE STANDARD TABLE OF REF TO zif_wasm_instruction WITH EMPTY KEY.
-
-    LOOP AT lt_instructions INTO DATA(lo_instruction).
+    LOOP AT it_instructions INTO DATA(lo_instruction).
       lo_instruction->execute(
         io_memory = mo_memory
         io_module = mo_module ).
