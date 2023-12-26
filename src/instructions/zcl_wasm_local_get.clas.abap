@@ -8,11 +8,11 @@ CLASS zcl_wasm_local_get DEFINITION
 
     METHODS constructor
       IMPORTING
-        !iv_index TYPE i.
+        !iv_localidx TYPE i.
 
   PROTECTED SECTION.
   PRIVATE SECTION.
-    DATA mv_index TYPE i.
+    DATA mv_localidx TYPE i.
 ENDCLASS.
 
 
@@ -20,14 +20,14 @@ ENDCLASS.
 CLASS zcl_wasm_local_get IMPLEMENTATION.
 
   METHOD constructor.
-    mv_index = iv_index.
+    mv_localidx = iv_localidx.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
 
 * https://webassembly.github.io/spec/core/exec/instructions.html#xref-syntax-instructions-syntax-instr-variable-mathsf-local-get-x
 
-    io_memory->stack_push( io_memory->local_get( mv_index ) ).
+    io_memory->stack_push( io_memory->local_get( mv_localidx ) ).
 
   ENDMETHOD.
 ENDCLASS.

@@ -87,7 +87,7 @@ CLASS zcl_wasm_vm IMPLEMENTATION.
         WHEN zif_wasm_opcodes=>c_opcodes-local_get.
           CAST zif_wasm_instruction( NEW zcl_wasm_local_get( mo_instructions->shift_int( ) ) )->execute( mo_memory ).
         WHEN zif_wasm_opcodes=>c_opcodes-i32_add.
-          zcl_wasm_i32=>add( mo_memory ).
+          CAST zif_wasm_instruction( NEW zcl_wasm_i32_add( ) )->execute( mo_memory ).
         WHEN zif_wasm_opcodes=>c_opcodes-i32_sub.
           CAST zif_wasm_instruction( NEW zcl_wasm_i32_sub( ) )->execute( mo_memory ).
         WHEN zif_wasm_opcodes=>c_opcodes-i32_const.
