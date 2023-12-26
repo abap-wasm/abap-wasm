@@ -71,7 +71,9 @@ CLASS zcl_wasm_vm IMPLEMENTATION.
     DATA lt_instructions TYPE STANDARD TABLE OF REF TO zif_wasm_instruction WITH EMPTY KEY.
 
     LOOP AT lt_instructions INTO DATA(lo_instruction).
-      lo_instruction->execute( mo_memory ).
+      lo_instruction->execute(
+        io_memory = mo_memory
+        io_module = mo_module ).
     ENDLOOP.
 
   ENDMETHOD.
@@ -85,15 +87,25 @@ CLASS zcl_wasm_vm IMPLEMENTATION.
       " WRITE: / 'instruction:', lv_instruction.
       CASE lv_instruction.
         WHEN zif_wasm_opcodes=>c_opcodes-local_get.
-          CAST zif_wasm_instruction( NEW zcl_wasm_local_get( mo_instructions->shift_int( ) ) )->execute( mo_memory ).
+          CAST zif_wasm_instruction( NEW zcl_wasm_local_get( mo_instructions->shift_int( ) ) )->execute(
+            io_memory = mo_memory
+            io_module = mo_module ).
         WHEN zif_wasm_opcodes=>c_opcodes-i32_add.
-          CAST zif_wasm_instruction( NEW zcl_wasm_i32_add( ) )->execute( mo_memory ).
+          CAST zif_wasm_instruction( NEW zcl_wasm_i32_add( ) )->execute(
+            io_memory = mo_memory
+            io_module = mo_module ).
         WHEN zif_wasm_opcodes=>c_opcodes-i32_sub.
-          CAST zif_wasm_instruction( NEW zcl_wasm_i32_sub( ) )->execute( mo_memory ).
+          CAST zif_wasm_instruction( NEW zcl_wasm_i32_sub( ) )->execute(
+            io_memory = mo_memory
+            io_module = mo_module ).
         WHEN zif_wasm_opcodes=>c_opcodes-i32_const.
-          CAST zif_wasm_instruction( NEW zcl_wasm_i32_const( mo_instructions->shift_int( ) ) )->execute( mo_memory ).
+          CAST zif_wasm_instruction( NEW zcl_wasm_i32_const( mo_instructions->shift_int( ) ) )->execute(
+            io_memory = mo_memory
+            io_module = mo_module ).
         WHEN zif_wasm_opcodes=>c_opcodes-i32_lt_s.
-          CAST zif_wasm_instruction( NEW zcl_wasm_i32_lt_s( ) )->execute( mo_memory ).
+          CAST zif_wasm_instruction( NEW zcl_wasm_i32_lt_s( ) )->execute(
+            io_memory = mo_memory
+            io_module = mo_module ).
         WHEN zif_wasm_opcodes=>c_opcodes-call.
           call( mo_instructions->shift_int( ) ).
         WHEN zif_wasm_opcodes=>c_opcodes-if_.
