@@ -127,6 +127,8 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
 
 * https://webassembly.github.io/spec/core/binary/modules.html#binary-codesec
 
+    DATA lt_instructions TYPE zif_wasm_instruction=>ty_list.
+
     DO io_body->shift_int( ) TIMES.
 
       DATA(lv_code_size) = io_body->shift_int( ).
@@ -136,7 +138,37 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
       DATA(lv_locals_count) = lo_code->shift_int( ).
       ASSERT lv_locals_count = 0. " todo
 
-      APPEND VALUE #( instructions = lo_code->get_data( ) ) TO rt_results.
+      WHILE lo_code->get_length( ) > 0.
+        DATA(lv_opcode) = lo_code->shift( 1 ).
+
+        CASE lv_opcode.
+          WHEN zif_wasm_opcodes=>c_opcodes-local_get.
+            APPEND zcl_wasm_local_get=>parse( lo_code ) TO lt_instructions.
+          WHEN zif_wasm_opcodes=>c_opcodes-i32_add.
+            APPEND zcl_wasm_i32_add=>parse( lo_code ) TO lt_instructions.
+          WHEN zif_wasm_opcodes=>c_opcodes-i32_sub.
+            APPEND zcl_wasm_i32_sub=>parse( lo_code ) TO lt_instructions.
+          WHEN zif_wasm_opcodes=>c_opcodes-i32_const.
+            APPEND zcl_wasm_i32_const=>parse( lo_code ) TO lt_instructions.
+          WHEN zif_wasm_opcodes=>c_opcodes-i32_lt_s.
+            APPEND zcl_wasm_i32_lt_s=>parse( lo_code ) TO lt_instructions.
+          WHEN zif_wasm_opcodes=>c_opcodes-call.
+            APPEND zcl_wasm_call=>parse( lo_code ) TO lt_instructions.
+          WHEN zif_wasm_opcodes=>c_opcodes-if_.
+            APPEND zcl_wasm_if=>parse( lo_code ) TO lt_instructions.
+          WHEN zif_wasm_opcodes=>c_opcodes-return_.
+            APPEND zcl_wasm_return=>parse( lo_code ) TO lt_instructions.
+          WHEN zif_wasm_opcodes=>c_opcodes-unreachable.
+            APPEND zcl_wasm_unreachable=>parse( lo_code ) TO lt_instructions.
+          WHEN zif_wasm_opcodes=>c_opcodes-end.
+            APPEND zcl_wasm_end=>parse( lo_code ) TO lt_instructions.
+          WHEN OTHERS.
+            WRITE / lv_opcode.
+            ASSERT 1 = 'todo'.
+        ENDCASE.
+      ENDWHILE.
+
+      APPEND VALUE #( instructions2 = lt_instructions ) TO rt_results.
 
     ENDDO.
 

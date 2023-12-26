@@ -7,6 +7,10 @@ CLASS zcl_wasm_call DEFINITION PUBLIC.
       IMPORTING
         !iv_funcidx TYPE i.
 
+    CLASS-METHODS parse
+      IMPORTING !io_body TYPE REF TO zcl_wasm_binary_stream
+      RETURNING VALUE(ri_instruction) TYPE REF TO zif_wasm_instruction.
+
   PRIVATE SECTION.
     DATA mv_funcidx TYPE i.
 ENDCLASS.
@@ -15,6 +19,11 @@ CLASS zcl_wasm_call IMPLEMENTATION.
 
   METHOD constructor.
     mv_funcidx = iv_funcidx.
+  ENDMETHOD.
+
+  METHOD parse.
+* todo: singletons?
+    ASSERT 1 = 'todo'.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
