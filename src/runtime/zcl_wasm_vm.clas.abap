@@ -22,6 +22,10 @@ CLASS zcl_wasm_vm DEFINITION
     METHODS execute
       IMPORTING
         !iv_instructions TYPE xstring .
+
+    METHODS execute2
+      IMPORTING
+        !iv_instructions TYPE xstring .
 ENDCLASS.
 
 
@@ -62,6 +66,10 @@ CLASS zcl_wasm_vm IMPLEMENTATION.
     mo_module = io_module.
   ENDMETHOD.
 
+  METHOD execute2.
+
+    DATA lt_instructions TYPE STANDARD TABLE OF REF TO zif_wasm_instruction WITH EMPTY KEY.
+  ENDMETHOD.
 
   METHOD execute.
 
@@ -69,7 +77,7 @@ CLASS zcl_wasm_vm IMPLEMENTATION.
 
     WHILE mo_instructions->get_length( ) > 0.
       DATA(lv_instruction) = mo_instructions->shift( 1 ).
-      WRITE: / 'instruction:', lv_instruction.
+      " WRITE: / 'instruction:', lv_instruction.
       CASE lv_instruction.
         WHEN zcl_wasm_instructions=>c_instructions-local_get.
           CAST zif_wasm_instruction( NEW zcl_wasm_local_get( mo_instructions->shift_int( ) ) )->execute( mo_memory ).
