@@ -18,6 +18,13 @@
     "errorNamespace": ""
   },
   "rules": {
+    "dynpro_checks": true,
+    "easy_to_find_messages": true,
+    "no_prefixes": false,
+    "prefer_pragmas": true,
+    "reduce_procedural_code": true,
+    "smim_consistency": true,
+    "sql_value_conversion": true,
     "cds_legacy_view": true,
     "cds_comment_style": true,
     "change_if_to_case": false,

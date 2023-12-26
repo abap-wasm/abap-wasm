@@ -15,25 +15,30 @@ CLASS zcl_wasm DEFINITION
         !iv_wasm       TYPE xstring
       RETURNING
         VALUE(ro_wasm) TYPE REF TO zcl_wasm .
+
     CLASS-METHODS create_with_wat
       IMPORTING
         !iv_wast       TYPE string
       RETURNING
         VALUE(ro_wasm) TYPE REF TO zcl_wasm .
+
     CLASS-METHODS create_with_wast
       IMPORTING
         !iv_wast       TYPE string
       RETURNING
         VALUE(ro_wasm) TYPE REF TO zcl_wasm .
+
     METHODS constructor
       IMPORTING
         !io_module TYPE REF TO zcl_wasm_module .
+
     METHODS execute_function_export
       IMPORTING
         !iv_name          TYPE string
         !it_parameters    TYPE zif_wasm_value=>ty_values
       RETURNING
         VALUE(rt_results) TYPE zif_wasm_value=>ty_values .
+
     METHODS list_function_exports
       RETURNING
         VALUE(rt_functions) TYPE ty_name_and_parameters.
@@ -45,7 +50,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_WASM IMPLEMENTATION.
+CLASS zcl_wasm IMPLEMENTATION.
 
 
   METHOD constructor.
