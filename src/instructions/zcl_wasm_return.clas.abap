@@ -15,7 +15,7 @@ CLASS zcl_wasm_return IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    ASSERT 1 = 'todo'.
+    rs_control-return_ = abap_true.
   ENDMETHOD.
 
 ENDCLASS.

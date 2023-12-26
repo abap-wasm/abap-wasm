@@ -13,12 +13,16 @@ CLASS zcl_wasm_if DEFINITION PUBLIC.
       RETURNING VALUE(ri_instruction) TYPE REF TO zif_wasm_instruction.
   PRIVATE SECTION.
     DATA mv_block_type TYPE xstring.
+    DATA mt_in1        TYPE zif_wasm_instruction=>ty_list.
+    DATA mt_in2        TYPE zif_wasm_instruction=>ty_list.
 ENDCLASS.
 
 CLASS zcl_wasm_if IMPLEMENTATION.
 
   METHOD constructor.
     mv_block_type = iv_block_type.
+    mt_in1        = it_in1.
+    mt_in2        = it_in2.
   ENDMETHOD.
 
   METHOD parse.
@@ -52,7 +56,26 @@ CLASS zcl_wasm_if IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    ASSERT 1 = 'todo'.
+
+* https://webassembly.github.io/spec/core/exec/instructions.html#control-instructions
+* https://webassembly.github.io/spec/core/binary/instructions.html#control-instructions
+* https://webassembly.github.io/spec/core/binary/instructions.html#binary-blocktype
+
+* If c is non-zero, then enter
+    DATA(lv_value) = io_memory->stack_pop_i32( )->get_value( ).
+    IF lv_value <> 0.
+      LOOP AT mt_in1 INTO DATA(lo_instruction).
+        rs_control = lo_instruction->execute(
+          io_memory = io_memory
+          io_module = io_module ).
+        IF rs_control-return_ = abap_true.
+          RETURN.
+        ENDIF.
+      ENDLOOP.
+    ENDIF.
+
+* todo, else part
+
   ENDMETHOD.
 
 ENDCLASS.
