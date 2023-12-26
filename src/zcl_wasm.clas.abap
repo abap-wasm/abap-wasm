@@ -4,44 +4,30 @@ CLASS zcl_wasm DEFINITION
 
   PUBLIC SECTION.
 
-    TYPES: BEGIN OF ty_name_and_parameter,
-             name       TYPE string,
-             parameters TYPE xstring,
-           END OF ty_name_and_parameter.
-    TYPES ty_name_and_parameters TYPE STANDARD TABLE OF ty_name_and_parameter WITH DEFAULT KEY.
-
     CLASS-METHODS create_with_wasm
       IMPORTING
         !iv_wasm       TYPE xstring
       RETURNING
-        VALUE(ro_wasm) TYPE REF TO zcl_wasm .
+        VALUE(ro_wasm) TYPE REF TO zif_wasm .
 
     CLASS-METHODS create_with_wat
       IMPORTING
         !iv_wast       TYPE string
       RETURNING
-        VALUE(ro_wasm) TYPE REF TO zcl_wasm .
+        VALUE(ro_wasm) TYPE REF TO zif_wasm .
 
     CLASS-METHODS create_with_wast
       IMPORTING
         !iv_wast       TYPE string
       RETURNING
-        VALUE(ro_wasm) TYPE REF TO zcl_wasm .
+        VALUE(ro_wasm) TYPE REF TO zif_wasm .
 
     METHODS constructor
       IMPORTING
         !io_module TYPE REF TO zcl_wasm_module .
 
-    METHODS execute_function_export
-      IMPORTING
-        !iv_name          TYPE string
-        !it_parameters    TYPE zif_wasm_value=>ty_values
-      RETURNING
-        VALUE(rt_results) TYPE zif_wasm_value=>ty_values .
+    INTERFACES zif_wasm.
 
-    METHODS list_function_exports
-      RETURNING
-        VALUE(rt_functions) TYPE ty_name_and_parameters.
   PROTECTED SECTION.
   PRIVATE SECTION.
 
@@ -83,7 +69,7 @@ CLASS zcl_wasm IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD execute_function_export.
+  METHOD zif_wasm~execute_function_export.
 
     DATA(ls_export) = mo_module->get_export_by_name( iv_name ).
     DATA(ls_type) = mo_module->get_type_by_index( ls_export-index ).
@@ -106,9 +92,9 @@ CLASS zcl_wasm IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD list_function_exports.
+  METHOD zif_wasm~list_function_exports.
 
-    DATA ls_function TYPE ty_name_and_parameter.
+    DATA ls_function TYPE zif_wasm=>ty_name_and_parameter.
 
     LOOP AT mo_module->get_exports( ) INTO DATA(ls_export).
       IF ls_export-type = zcl_wasm_types=>c_export_type-func.
