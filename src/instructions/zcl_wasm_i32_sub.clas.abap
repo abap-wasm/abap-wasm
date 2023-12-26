@@ -6,7 +6,7 @@ ENDCLASS.
 CLASS zcl_wasm_i32_sub IMPLEMENTATION.
 
   METHOD zif_wasm_instruction~execute.
-    ASSERT 1 = 'todo'.
+    zcl_wasm_i32=>sub( io_memory ).
   ENDMETHOD.
 
 ENDCLASS.

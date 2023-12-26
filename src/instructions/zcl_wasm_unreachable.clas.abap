@@ -6,7 +6,7 @@ ENDCLASS.
 CLASS zcl_wasm_unreachable IMPLEMENTATION.
 
   METHOD zif_wasm_instruction~execute.
-    ASSERT 1 = 'todo'.
+    ASSERT 1 = 'trap'.
   ENDMETHOD.
 
 ENDCLASS.
