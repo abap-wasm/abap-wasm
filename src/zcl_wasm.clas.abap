@@ -10,12 +10,6 @@ CLASS zcl_wasm DEFINITION
       RETURNING
         VALUE(ro_wasm) TYPE REF TO zif_wasm .
 
-    CLASS-METHODS create_with_wat
-      IMPORTING
-        !iv_wast       TYPE string
-      RETURNING
-        VALUE(ro_wasm) TYPE REF TO zif_wasm .
-
     METHODS constructor
       IMPORTING
         !io_module TYPE REF TO zcl_wasm_module .
@@ -43,15 +37,6 @@ CLASS zcl_wasm IMPLEMENTATION.
   METHOD create_with_wasm.
 
     ro_wasm = NEW zcl_wasm( NEW zcl_wasm_parser( )->parse( iv_wasm ) ).
-
-  ENDMETHOD.
-
-
-  METHOD create_with_wat.
-* https://webassembly.github.io/spec/core/text/index.html
-* https://github.com/WebAssembly/spec/tree/master/interpreter#s-expression-syntax
-
-    ASSERT 0 = 'todo'.
 
   ENDMETHOD.
 
