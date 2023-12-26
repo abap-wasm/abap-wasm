@@ -1,14 +1,15 @@
 CLASS ltcl_test DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS.
 
   PRIVATE SECTION.
-    METHODS:
-      assert_result
-        IMPORTING
-          it_result TYPE zif_wasm_value=>ty_values
-          iv_value  TYPE i,
-      list_function_exports FOR TESTING,
-      add_two FOR TESTING,
-      fibonacci FOR TESTING.
+    METHODS assert_result
+      IMPORTING
+        it_result TYPE zif_wasm_value=>ty_values
+        iv_value  TYPE i.
+
+    METHODS list_function_exports FOR TESTING RAISING cx_static_check.
+
+    METHODS add_two FOR TESTING RAISING cx_static_check.
+    METHODS fibonacci FOR TESTING RAISING cx_static_check.
 
 ENDCLASS.
 
