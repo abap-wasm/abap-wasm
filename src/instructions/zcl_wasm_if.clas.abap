@@ -44,7 +44,6 @@ CLASS zcl_wasm_if IMPLEMENTATION.
         IMPORTING
           ev_last_opcode  = lv_last_opcode
           et_instructions = DATA(lt_in2) ).
-      WRITE / lines( lt_in2 ).
     ENDIF.
 
     ASSERT lv_last_opcode = zif_wasm_opcodes=>c_opcodes-end.

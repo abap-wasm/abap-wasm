@@ -26,6 +26,9 @@ CLASS zcl_wasm_binary_stream DEFINITION
     METHODS shift_int
       RETURNING
         VALUE(rv_int) TYPE i .
+    METHODS shift_u32
+      RETURNING
+        VALUE(rv_int) TYPE i .
     METHODS shift_utf8
       RETURNING
         VALUE(rv_name) TYPE string .
@@ -37,7 +40,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_WASM_BINARY_STREAM IMPLEMENTATION.
+CLASS zcl_wasm_binary_stream IMPLEMENTATION.
 
 
   METHOD constructor.
@@ -80,11 +83,39 @@ CLASS ZCL_WASM_BINARY_STREAM IMPLEMENTATION.
   METHOD shift_int.
 
 * todo, this should be LEB128
+* todo, deprecate this method, use the typed methods instead
 * https://webassembly.github.io/spec/core/binary/values.html#binary-int
 
     DATA lv_hex TYPE x LENGTH 1.
     lv_hex = shift( 1 ).
     rv_int = CONV i( lv_hex ).
+
+  ENDMETHOD.
+
+  METHOD shift_u32.
+
+* https://webassembly.github.io/spec/core/binary/values.html#binary-int
+* https://en.wikipedia.org/wiki/LEB128
+
+    DATA lv_hex TYPE x LENGTH 1.
+    DATA lv_bit TYPE c LENGTH 1.
+    DATA lv_shift TYPE i VALUE 1.
+
+    DO.
+      lv_hex = shift( 1 ).
+
+      GET BIT 1 OF lv_hex INTO lv_bit.
+      SET BIT 1 OF lv_hex TO 0.
+
+      rv_int = rv_int + CONV i( lv_hex ) * lv_shift.
+
+      IF lv_bit = '0'.
+        RETURN.
+      ENDIF.
+
+      lv_shift = lv_shift * 128.
+
+    ENDDO.
 
   ENDMETHOD.
 
@@ -94,6 +125,8 @@ CLASS ZCL_WASM_BINARY_STREAM IMPLEMENTATION.
 * https://webassembly.github.io/spec/core/binary/values.html#names
 
     DATA(lo_stream) = NEW zcl_wasm_binary_stream( shift( shift_int( ) ) ).
+
+    WRITE / lo_stream->get_data( ).
 
     WHILE lo_stream->get_length( ) > 0.
       CASE lo_stream->shift( 1 ).

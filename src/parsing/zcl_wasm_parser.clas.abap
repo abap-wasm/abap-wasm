@@ -87,8 +87,11 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
     WHILE lo_stream->get_length( ) > 0.
 * https://webassembly.github.io/spec/core/binary/modules.html#sections
       DATA(lv_section) = lo_stream->shift( 1 ).
-      DATA(lv_length) = lo_stream->shift_int( ).
+      DATA(lv_length) = lo_stream->shift_u32( ).
       DATA(lo_body) = NEW zcl_wasm_binary_stream( lo_stream->shift( lv_length ) ).
+
+      " WRITE: / 'section:', lv_section.
+      " WRITE: / 'body:', lo_body->get_data( ).
 
       CASE lv_section.
         WHEN gc_section_custom.
@@ -186,7 +189,7 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
         WHEN zif_wasm_opcodes=>c_opcodes-else_.
           RETURN.
         WHEN OTHERS.
-          WRITE / lv_opcode.
+          WRITE: / 'todoparser:', lv_opcode.
           ASSERT 1 = 'todo'.
       ENDCASE.
     ENDWHILE.
@@ -200,7 +203,10 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
 
     DATA ls_result TYPE zcl_wasm_module=>ty_export.
 
-    DO io_body->shift_int( ) TIMES.
+    DATA(lv_count) = io_body->shift_int( ).
+    " WRITE: / 'exports:', lv_count.
+
+    DO lv_count TIMES.
       ls_result-name = io_body->shift_utf8( ).
       ls_result-type = io_body->shift( 1 ).
 
