@@ -86,17 +86,17 @@ CLASS ltcl_test IMPLEMENTATION.
 
     DATA lt_values TYPE zif_wasm_value=>ty_values.
 
-    DATA(lo_wasm) = zcl_wasm=>create_with_wasm( zcl_wasm_test_data=>wasm_fibonacci( ) ).
+    DATA(lo_wasm) = zcl_wasm=>create_with_wasm( zcl_wasm_test_data=>wasm_factorial( ) ).
     cl_abap_unit_assert=>assert_not_initial( lo_wasm ).
 
-    APPEND NEW zcl_wasm_i32( 5 ) TO lt_values.
+    APPEND NEW zcl_wasm_i32( 3 ) TO lt_values.
 
     DATA(lt_result) = lo_wasm->execute_function_export(
       iv_name       = 'fac'
       it_parameters = lt_values ).
 
     assert_result( it_result = lt_result
-                   iv_value  = 120 ).
+                   iv_value  = 6 ).
 
   ENDMETHOD.
 

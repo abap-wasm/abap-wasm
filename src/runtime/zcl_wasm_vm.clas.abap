@@ -26,7 +26,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_WASM_VM IMPLEMENTATION.
+CLASS zcl_wasm_vm IMPLEMENTATION.
 
 
   METHOD call.
@@ -69,6 +69,7 @@ CLASS ZCL_WASM_VM IMPLEMENTATION.
 
     WHILE mo_instructions->get_length( ) > 0.
       DATA(lv_instruction) = mo_instructions->shift( 1 ).
+      WRITE: / 'instruction:', lv_instruction.
       CASE lv_instruction.
         WHEN zcl_wasm_instructions=>c_instructions-local_get.
           zcl_wasm_local=>get( io_memory = mo_memory
@@ -105,8 +106,11 @@ CLASS ZCL_WASM_VM IMPLEMENTATION.
 
 * https://webassembly.github.io/spec/core/exec/instructions.html#control-instructions
 
+    DATA(lv_block_type) = mo_instructions->shift( 1 ).
+    WRITE: / 'if', lv_block_type.
+
 * hex '40' = empty block type
-    ASSERT mo_instructions->shift( 1 ) = '40'.
+    ASSERT lv_block_type = '40'.
 
 * If c is non-zero, then enter
     DATA(lv_value) = mo_memory->stack_pop_i32( )->get_value( ).
