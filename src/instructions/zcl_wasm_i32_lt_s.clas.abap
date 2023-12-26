@@ -6,7 +6,7 @@ ENDCLASS.
 CLASS zcl_wasm_i32_lt_s IMPLEMENTATION.
 
   METHOD zif_wasm_instruction~execute.
-    ASSERT 1 = 'todo'.
+    zcl_wasm_i32=>lt_s( io_memory ).
   ENDMETHOD.
 
 ENDCLASS.

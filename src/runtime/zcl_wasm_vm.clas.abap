@@ -94,7 +94,7 @@ CLASS zcl_wasm_vm IMPLEMENTATION.
           zcl_wasm_i32=>const_( io_memory = mo_memory
                                 iv_value  = mo_instructions->shift_int( ) ).
         WHEN zif_wasm_opcodes=>c_opcodes-i32_lt_s.
-          zcl_wasm_i32=>lt_s( mo_memory ).
+          CAST zif_wasm_instruction( NEW zcl_wasm_i32_lt_s( ) )->execute( mo_memory ).
         WHEN zif_wasm_opcodes=>c_opcodes-call.
           call( mo_instructions->shift_int( ) ).
         WHEN zif_wasm_opcodes=>c_opcodes-if_.
