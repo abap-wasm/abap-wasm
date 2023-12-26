@@ -44,6 +44,7 @@ CLASS zcl_wasm_if IMPLEMENTATION.
         IMPORTING
           ev_last_opcode  = lv_last_opcode
           et_instructions = DATA(lt_in2) ).
+      WRITE / lines( lt_in2 ).
     ENDIF.
 
     ASSERT lv_last_opcode = zif_wasm_opcodes=>c_opcodes-end.
@@ -61,6 +62,8 @@ CLASS zcl_wasm_if IMPLEMENTATION.
 * https://webassembly.github.io/spec/core/binary/instructions.html#control-instructions
 * https://webassembly.github.io/spec/core/binary/instructions.html#binary-blocktype
 
+* todo, more regarding block type?
+
 * If c is non-zero, then enter
     DATA(lv_value) = io_memory->stack_pop_i32( )->get_value( ).
     IF lv_value <> 0.
@@ -72,9 +75,16 @@ CLASS zcl_wasm_if IMPLEMENTATION.
           RETURN.
         ENDIF.
       ENDLOOP.
+    ELSE.
+      LOOP AT mt_in2 INTO lo_instruction.
+        rs_control = lo_instruction->execute(
+          io_memory = io_memory
+          io_module = io_module ).
+        IF rs_control-return_ = abap_true.
+          RETURN.
+        ENDIF.
+      ENDLOOP.
     ENDIF.
-
-* todo, else part
 
   ENDMETHOD.
 
