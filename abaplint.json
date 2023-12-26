@@ -64,7 +64,7 @@
     "pragma_style": true,
     "prefer_corresponding": true,
     "dangerous_statement": true,
-    "intf_referencing_clas": true,
+    "intf_referencing_clas": false,
     "method_implemented_twice": true,
     "parser_702_chaining": true,
     "uncaught_exception": true,

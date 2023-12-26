@@ -72,8 +72,7 @@ CLASS zcl_wasm_vm IMPLEMENTATION.
       WRITE: / 'instruction:', lv_instruction.
       CASE lv_instruction.
         WHEN zcl_wasm_instructions=>c_instructions-local_get.
-          zcl_wasm_local=>get( io_memory = mo_memory
-                               iv_index  = mo_instructions->shift_int( ) ).
+          CAST zif_wasm_instruction( NEW zcl_wasm_local_get( mo_instructions->shift_int( ) ) )->execute( mo_memory ).
         WHEN zcl_wasm_instructions=>c_instructions-i32_add.
           zcl_wasm_i32=>add( mo_memory ).
         WHEN zcl_wasm_instructions=>c_instructions-i32_sub.
