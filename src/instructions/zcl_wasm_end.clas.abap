@@ -15,7 +15,7 @@ CLASS zcl_wasm_end IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    ASSERT 1 = 'todo'.
+    RETURN.
   ENDMETHOD.
 
 ENDCLASS.
