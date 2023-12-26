@@ -84,26 +84,26 @@ CLASS zcl_wasm_vm IMPLEMENTATION.
       DATA(lv_instruction) = mo_instructions->shift( 1 ).
       " WRITE: / 'instruction:', lv_instruction.
       CASE lv_instruction.
-        WHEN zcl_wasm_instructions=>c_instructions-local_get.
+        WHEN zcl_wasm_instructions=>c_opcodes-local_get.
           CAST zif_wasm_instruction( NEW zcl_wasm_local_get( mo_instructions->shift_int( ) ) )->execute( mo_memory ).
-        WHEN zcl_wasm_instructions=>c_instructions-i32_add.
+        WHEN zcl_wasm_instructions=>c_opcodes-i32_add.
           zcl_wasm_i32=>add( mo_memory ).
-        WHEN zcl_wasm_instructions=>c_instructions-i32_sub.
+        WHEN zcl_wasm_instructions=>c_opcodes-i32_sub.
           zcl_wasm_i32=>sub( mo_memory ).
-        WHEN zcl_wasm_instructions=>c_instructions-i32_const.
+        WHEN zcl_wasm_instructions=>c_opcodes-i32_const.
           zcl_wasm_i32=>const_( io_memory = mo_memory
                                 iv_value  = mo_instructions->shift_int( ) ).
-        WHEN zcl_wasm_instructions=>c_instructions-i32_lt_s.
+        WHEN zcl_wasm_instructions=>c_opcodes-i32_lt_s.
           zcl_wasm_i32=>lt_s( mo_memory ).
-        WHEN zcl_wasm_instructions=>c_instructions-call.
+        WHEN zcl_wasm_instructions=>c_opcodes-call.
           call( mo_instructions->shift_int( ) ).
-        WHEN zcl_wasm_instructions=>c_instructions-if_.
+        WHEN zcl_wasm_instructions=>c_opcodes-if_.
           if_( ).
-        WHEN zcl_wasm_instructions=>c_instructions-return_.
+        WHEN zcl_wasm_instructions=>c_opcodes-return_.
           RETURN.
-        WHEN zcl_wasm_instructions=>c_instructions-unreachable.
+        WHEN zcl_wasm_instructions=>c_opcodes-unreachable.
           ASSERT 0 = 1.
-        WHEN zcl_wasm_instructions=>c_instructions-end.
+        WHEN zcl_wasm_instructions=>c_opcodes-end.
 * nothing
         WHEN OTHERS.
 * todo, to be implemented

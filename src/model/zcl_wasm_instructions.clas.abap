@@ -7,7 +7,7 @@ CLASS zcl_wasm_instructions DEFINITION
     TYPES ty_instructions TYPE STANDARD TABLE OF ty_instruction WITH DEFAULT KEY.
 
     CONSTANTS:
-      BEGIN OF c_instructions,
+      BEGIN OF c_opcodes,
 * https://webassembly.github.io/spec/core/binary/instructions.html#control-instructions
         unreachable   TYPE ty_instruction VALUE '00',
         nop           TYPE ty_instruction VALUE '01',
@@ -91,7 +91,7 @@ CLASS zcl_wasm_instructions DEFINITION
         i32_rotl      TYPE ty_instruction VALUE '77',
         i32_rotr      TYPE ty_instruction VALUE '78',
 * todo, more numeric instructions
-      END OF c_instructions.
+      END OF c_opcodes.
 
   PROTECTED SECTION.
   PRIVATE SECTION.
@@ -99,5 +99,5 @@ ENDCLASS.
 
 
 
-CLASS ZCL_WASM_INSTRUCTIONS IMPLEMENTATION.
+CLASS zcl_wasm_instructions IMPLEMENTATION.
 ENDCLASS.
