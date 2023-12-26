@@ -51,8 +51,7 @@ CLASS zcl_wasm IMPLEMENTATION.
 * https://webassembly.github.io/spec/core/text/index.html
 * https://github.com/WebAssembly/spec/tree/master/interpreter#s-expression-syntax
 
-* todo
-    ASSERT 0 = 1.
+    ASSERT 0 = 'todo'.
 
   ENDMETHOD.
 
