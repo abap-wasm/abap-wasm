@@ -122,7 +122,30 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD shift_i64.
-    ASSERT 1 = 'todo'.
+
+    DATA lv_hex   TYPE x LENGTH 1.
+    DATA lv_bit   TYPE c LENGTH 1.
+    DATA lv_shift TYPE i VALUE 1.
+
+    DO.
+      lv_hex = shift( 1 ).
+
+      GET BIT 1 OF lv_hex INTO lv_bit.
+      SET BIT 1 OF lv_hex TO 0.
+
+      rv_int = rv_int + CONV i( lv_hex ) * lv_shift.
+
+      IF lv_bit = '0'.
+        GET BIT 2 OF lv_hex INTO lv_bit.
+        IF lv_bit = '1'.
+          rv_int = 0 - rv_int.
+        ENDIF.
+        RETURN.
+      ENDIF.
+
+      lv_shift = lv_shift * 128.
+    ENDDO.
+
   ENDMETHOD.
 
   METHOD shift_utf8.
