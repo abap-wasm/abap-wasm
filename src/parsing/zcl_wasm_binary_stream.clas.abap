@@ -29,6 +29,9 @@ CLASS zcl_wasm_binary_stream DEFINITION
     METHODS shift_u32
       RETURNING
         VALUE(rv_int) TYPE i .
+    METHODS shift_i64
+      RETURNING
+        VALUE(rv_int) TYPE int8 .
     METHODS shift_utf8
       RETURNING
         VALUE(rv_name) TYPE string .
@@ -114,11 +117,13 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
       ENDIF.
 
       lv_shift = lv_shift * 128.
-
     ENDDO.
 
   ENDMETHOD.
 
+  METHOD shift_i64.
+    ASSERT 1 = 'todo'.
+  ENDMETHOD.
 
   METHOD shift_utf8.
 
