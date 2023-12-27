@@ -8,9 +8,15 @@ CLASS zcl_wasm_vm DEFINITION
       IMPORTING
         !io_memory TYPE REF TO zcl_wasm_memory
         !io_module TYPE REF TO zcl_wasm_module .
+
     METHODS call
       IMPORTING
         !iv_index TYPE i .
+
+    METHODS execute2
+      IMPORTING
+        !it_instructions TYPE zif_wasm_instruction=>ty_list .
+
   PROTECTED SECTION.
 
     DATA mo_memory TYPE REF TO zcl_wasm_memory .
@@ -18,14 +24,11 @@ CLASS zcl_wasm_vm DEFINITION
     DATA mo_module TYPE REF TO zcl_wasm_module .
   PRIVATE SECTION.
 
-    METHODS execute2
-      IMPORTING
-        !it_instructions TYPE zif_wasm_instruction=>ty_list .
 ENDCLASS.
 
 
 
-CLASS zcl_wasm_vm IMPLEMENTATION.
+CLASS ZCL_WASM_VM IMPLEMENTATION.
 
 
   METHOD call.
@@ -62,6 +65,7 @@ CLASS zcl_wasm_vm IMPLEMENTATION.
     mo_module = io_module.
   ENDMETHOD.
 
+
   METHOD execute2.
 
     LOOP AT it_instructions INTO DATA(lo_instruction).
@@ -74,5 +78,4 @@ CLASS zcl_wasm_vm IMPLEMENTATION.
     ENDLOOP.
 
   ENDMETHOD.
-
 ENDCLASS.
