@@ -165,6 +165,28 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
       CASE lv_opcode.
         WHEN zif_wasm_opcodes=>c_opcodes-local_get.
           APPEND zcl_wasm_local_get=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-i32_eqz.
+          APPEND zcl_wasm_i32_eqz=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-i32_eq.
+          APPEND zcl_wasm_i32_eq=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-i32_ne.
+          APPEND zcl_wasm_i32_ne=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-i32_lt_s.
+          APPEND zcl_wasm_i32_lt_s=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-i32_lt_u.
+          APPEND zcl_wasm_i32_lt_u=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-i32_gt_s.
+          APPEND zcl_wasm_i32_gt_s=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-i32_gt_u.
+          APPEND zcl_wasm_i32_gt_u=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-i32_le_s.
+          APPEND zcl_wasm_i32_le_s=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-i32_le_u.
+          APPEND zcl_wasm_i32_le_u=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-i32_ge_s.
+          APPEND zcl_wasm_i32_ge_s=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-i32_ge_u.
+          APPEND zcl_wasm_i32_ge_u=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-i32_add.
           APPEND zcl_wasm_i32_add=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-i32_sub.
@@ -177,8 +199,6 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
           APPEND zcl_wasm_i32_ctz=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-i32_popcnt.
           APPEND zcl_wasm_i32_popcnt=>parse( io_body ) TO et_instructions.
-        WHEN zif_wasm_opcodes=>c_opcodes-i32_lt_s.
-          APPEND zcl_wasm_i32_lt_s=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-i32_mul.
           APPEND zcl_wasm_i32_mul=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-i32_div_s.
