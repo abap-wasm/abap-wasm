@@ -88,6 +88,20 @@ INTERFACE zif_wasm_opcodes PUBLIC.
         i32_rotr       TYPE ty_opcode VALUE '78',
         i32_extend8_s  TYPE ty_opcode VALUE 'C0',
         i32_extend16_s TYPE ty_opcode VALUE 'C1',
+        i32_load       TYPE ty_opcode VALUE '28',
+        i64_load       TYPE ty_opcode VALUE '29',
+        f32_load       TYPE ty_opcode VALUE '2A',
+        f64_load       TYPE ty_opcode VALUE '2B',
+        i32_load8_s    TYPE ty_opcode VALUE '2C',
+        i32_load8_u    TYPE ty_opcode VALUE '2D',
+        i32_load16_s   TYPE ty_opcode VALUE '2E',
+        i32_load16_u   TYPE ty_opcode VALUE '2F',
+        i64_load8_s    TYPE ty_opcode VALUE '30',
+        i64_load8_u    TYPE ty_opcode VALUE '31',
+        i64_load16_s   TYPE ty_opcode VALUE '32',
+        i64_load16_u   TYPE ty_opcode VALUE '33',
+        i64_load32_s   TYPE ty_opcode VALUE '34',
+        i64_load32_u   TYPE ty_opcode VALUE '35',
       END OF c_opcodes.
 
 ENDINTERFACE.
