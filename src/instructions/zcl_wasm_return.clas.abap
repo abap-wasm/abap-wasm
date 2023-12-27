@@ -15,7 +15,7 @@ CLASS zcl_wasm_return IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    rs_control-return_ = abap_true.
+    rv_control = zif_wasm_instruction=>c_control-return_.
   ENDMETHOD.
 
 ENDCLASS.

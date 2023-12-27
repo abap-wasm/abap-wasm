@@ -65,10 +65,10 @@ CLASS zcl_wasm_vm IMPLEMENTATION.
   METHOD execute2.
 
     LOOP AT it_instructions INTO DATA(lo_instruction).
-      DATA(ls_control) = lo_instruction->execute(
+      DATA(lv_control) = lo_instruction->execute(
         io_memory = mo_memory
         io_module = mo_module ).
-      IF ls_control-return_ = abap_true.
+      IF lv_control = zif_wasm_instruction=>c_control-return_.
         RETURN.
       ENDIF.
     ENDLOOP.

@@ -67,19 +67,19 @@ CLASS zcl_wasm_if IMPLEMENTATION.
     DATA(lv_value) = io_memory->stack_pop_i32( )->get_value( ).
     IF lv_value <> 0.
       LOOP AT mt_in1 INTO DATA(lo_instruction).
-        rs_control = lo_instruction->execute(
+        rv_control = lo_instruction->execute(
           io_memory = io_memory
           io_module = io_module ).
-        IF rs_control-return_ = abap_true.
+        IF rv_control = zif_wasm_instruction=>c_control-return_.
           RETURN.
         ENDIF.
       ENDLOOP.
     ELSE.
       LOOP AT mt_in2 INTO lo_instruction.
-        rs_control = lo_instruction->execute(
+        rv_control = lo_instruction->execute(
           io_memory = io_memory
           io_module = io_module ).
-        IF rs_control-return_ = abap_true.
+        IF rv_control = zif_wasm_instruction=>c_control-return_.
           RETURN.
         ENDIF.
       ENDLOOP.
