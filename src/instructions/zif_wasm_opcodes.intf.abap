@@ -86,7 +86,8 @@ INTERFACE zif_wasm_opcodes PUBLIC.
         i32_shr_u     TYPE ty_opcode VALUE '76',
         i32_rotl      TYPE ty_opcode VALUE '77',
         i32_rotr      TYPE ty_opcode VALUE '78',
-* todo, more numeric instructions
+        i32_extend8_s TYPE ty_opcode VALUE 'C0',
+        i32_extend16_s TYPE ty_opcode VALUE 'C1',
       END OF c_opcodes.
 
 ENDINTERFACE.
