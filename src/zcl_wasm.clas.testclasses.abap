@@ -13,6 +13,7 @@ CLASS ltcl_test DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS.
     METHODS factorial FOR TESTING RAISING cx_static_check.
 
     METHODS parse_testsuite_i32 FOR TESTING RAISING cx_static_check.
+    METHODS parse_testsuite_address FOR TESTING RAISING cx_static_check.
 
 ENDCLASS.
 
@@ -103,9 +104,11 @@ CLASS ltcl_test IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD parse_testsuite_i32.
-
     zcl_wasm=>create_with_wasm( zcl_wasm_test_data=>testsuite_i32( ) ).
+  ENDMETHOD.
 
+  METHOD parse_testsuite_address.
+    zcl_wasm=>create_with_wasm( zcl_wasm_test_data=>testsuite_address( ) ).
   ENDMETHOD.
 
 ENDCLASS.
