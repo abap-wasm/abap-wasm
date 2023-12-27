@@ -97,8 +97,8 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
 * https://webassembly.github.io/spec/core/binary/values.html#binary-int
 * https://en.wikipedia.org/wiki/LEB128
 
-    DATA lv_hex TYPE x LENGTH 1.
-    DATA lv_bit TYPE c LENGTH 1.
+    DATA lv_hex   TYPE x LENGTH 1.
+    DATA lv_bit   TYPE c LENGTH 1.
     DATA lv_shift TYPE i VALUE 1.
 
     DO.
