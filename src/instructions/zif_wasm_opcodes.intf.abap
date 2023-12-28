@@ -102,6 +102,10 @@ INTERFACE zif_wasm_opcodes PUBLIC.
         i64_load16_u   TYPE ty_opcode VALUE '33',
         i64_load32_s   TYPE ty_opcode VALUE '34',
         i64_load32_u   TYPE ty_opcode VALUE '35',
+        i32_store      TYPE ty_opcode VALUE '36',
+        i64_store      TYPE ty_opcode VALUE '37',
+        f32_store      TYPE ty_opcode VALUE '38',
+        f64_store      TYPE ty_opcode VALUE '39',
       END OF c_opcodes.
 
 ENDINTERFACE.
