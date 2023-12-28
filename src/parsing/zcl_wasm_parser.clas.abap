@@ -145,15 +145,19 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
       DATA(lo_code) = NEW zcl_wasm_binary_stream( io_body->shift( lv_code_size ) ).
 
       DATA(lv_locals_count) = lo_code->shift_u32( ).
-      DO lv_locals_count TIMES.
-        ASSERT lv_locals_count = 0. " todo
-      ENDDO.
+      IF lv_locals_count > 0.
+        DATA(lv_locals) = lo_code->shift( lv_locals_count * 2 ).
+      ELSE.
+        CLEAR lv_locals.
+      ENDIF.
 
       parse_instructions(
         EXPORTING io_body         = lo_code
         IMPORTING et_instructions = DATA(lt_instructions) ).
 
-      APPEND VALUE #( instructions = lt_instructions ) TO rt_results.
+      APPEND VALUE #(
+        instructions = lt_instructions
+        locals       = lv_locals ) TO rt_results.
 
     ENDDO.
 
