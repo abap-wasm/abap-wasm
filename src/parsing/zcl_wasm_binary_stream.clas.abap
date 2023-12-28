@@ -29,6 +29,9 @@ CLASS zcl_wasm_binary_stream DEFINITION
     METHODS shift_u32
       RETURNING
         VALUE(rv_int) TYPE i .
+    METHODS shift_f32
+      RETURNING
+        VALUE(rv_f) TYPE f .
     METHODS shift_i64
       RETURNING
         VALUE(rv_int) TYPE int8 .
@@ -82,6 +85,13 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
 
   ENDMETHOD.
 
+  METHOD shift_f32.
+* https://webassembly.github.io/spec/core/binary/values.html#binary-float
+* Floating-point values are encoded directly by their IEEE 754
+
+    ASSERT 1 = 'todo'.
+
+  ENDMETHOD.
 
   METHOD shift_int.
 
