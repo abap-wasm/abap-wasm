@@ -91,6 +91,11 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
 
     ASSERT 1 = 'todo'.
 
+    DATA lv_hex TYPE x LENGTH 4.
+    lv_hex = shift( 4 ).
+
+* todo, hmm
+
   ENDMETHOD.
 
   METHOD shift_int.
