@@ -13,7 +13,7 @@ CLASS zcl_wasm_vm DEFINITION
       IMPORTING
         !iv_index TYPE i .
 
-    METHODS execute2
+    METHODS execute
       IMPORTING
         !it_instructions TYPE zif_wasm_instruction=>ty_list .
 
@@ -50,7 +50,7 @@ CLASS zcl_wasm_vm IMPLEMENTATION.
 
     NEW zcl_wasm_vm(
       io_memory = lo_memory
-      io_module = mo_module )->execute2( ls_code-instructions ).
+      io_module = mo_module )->execute( ls_code-instructions ).
 
 * return to stack
     DO xstrlen( ls_type-result_types ) TIMES.
@@ -66,7 +66,7 @@ CLASS zcl_wasm_vm IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD execute2.
+  METHOD execute.
 
     LOOP AT it_instructions INTO DATA(lo_instruction).
       DATA(lv_control) = lo_instruction->execute(

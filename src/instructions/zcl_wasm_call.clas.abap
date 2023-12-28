@@ -46,7 +46,7 @@ CLASS zcl_wasm_call IMPLEMENTATION.
 
     NEW zcl_wasm_vm(
       io_memory = lo_memory
-      io_module = io_module )->execute2( ls_code-instructions ).
+      io_module = io_module )->execute( ls_code-instructions ).
 
 * return to stack
     DO xstrlen( ls_type-result_types ) TIMES.
