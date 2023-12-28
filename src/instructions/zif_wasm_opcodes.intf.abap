@@ -106,6 +106,8 @@ INTERFACE zif_wasm_opcodes PUBLIC.
         i64_store      TYPE ty_opcode VALUE '37',
         f32_store      TYPE ty_opcode VALUE '38',
         f64_store      TYPE ty_opcode VALUE '39',
+        memory_size    TYPE ty_opcode VALUE '3F',
+        memory_grow    TYPE ty_opcode VALUE '40',
       END OF c_opcodes.
 
 ENDINTERFACE.

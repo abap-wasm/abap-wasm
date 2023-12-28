@@ -199,6 +199,10 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
           APPEND zcl_wasm_i32_add=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-br_table.
           APPEND zcl_wasm_br_table=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-memory_size.
+          APPEND zcl_wasm_memory_size=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-memory_grow.
+          APPEND zcl_wasm_memory_grow=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-call_indirect.
           APPEND zcl_wasm_call_indirect=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-i32_store.
