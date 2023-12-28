@@ -146,6 +146,7 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
 
       DATA(lv_locals_count) = lo_code->shift_u32( ).
       IF lv_locals_count > 0.
+* count and type
         DATA(lv_locals) = lo_code->shift( lv_locals_count * 2 ).
       ELSE.
         CLEAR lv_locals.
