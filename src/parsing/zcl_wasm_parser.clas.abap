@@ -172,6 +172,8 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
       CASE lv_opcode.
         WHEN zif_wasm_opcodes=>c_opcodes-local_get.
           APPEND zcl_wasm_local_get=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-local_set.
+          APPEND zcl_wasm_local_set=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-i32_eqz.
           APPEND zcl_wasm_i32_eqz=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-i32_eq.
