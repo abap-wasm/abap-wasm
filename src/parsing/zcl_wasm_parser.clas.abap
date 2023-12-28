@@ -206,6 +206,10 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
           APPEND zcl_wasm_loop=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-br_if.
           APPEND zcl_wasm_br_if=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-global_get.
+          APPEND zcl_wasm_global_get=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-global_set.
+          APPEND zcl_wasm_global_set=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-i32_add.
           APPEND zcl_wasm_i32_add=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-br_table.
