@@ -88,11 +88,39 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
   METHOD shift_f32.
 * https://webassembly.github.io/spec/core/binary/values.html#binary-float
 * Floating-point values are encoded directly by their IEEE 754
+* https://en.wikipedia.org/wiki/Single-precision_floating-point_format
+
+    DATA lv_exponentx TYPE x LENGTH 4.
+    DATA lv_exponent  TYPE i.
+    DATA lv_fractionx TYPE x LENGTH 4.
+    DATA lv_fraction  TYPE i.
+    DATA lv_index     TYPE i.
+    DATA lv_bit       TYPE c LENGTH 1.
+
 
     ASSERT 1 = 'todo'.
 
     DATA lv_hex TYPE x LENGTH 4.
     lv_hex = shift( 4 ).
+
+    GET BIT 1 OF lv_hex INTO lv_bit.
+    DATA(lv_sign) = lv_bit.
+
+    DO 8 TIMES.
+      lv_index = sy-index + 1.
+      GET BIT lv_index OF lv_hex INTO lv_bit.
+      lv_index = lv_index - 1.
+      SET BIT lv_index OF lv_exponentx TO lv_bit.
+    ENDDO.
+    lv_exponent = lv_exponentx.
+
+    DO 23 TIMES.
+      lv_index = sy-tabix + 9.
+      GET BIT lv_index OF lv_hex INTO lv_bit.
+      lv_index = lv_index - 9.
+      SET BIT lv_index OF lv_fractionx TO lv_bit.
+    ENDDO.
+    lv_fraction = lv_fractionx.
 
 * todo, hmm
 
