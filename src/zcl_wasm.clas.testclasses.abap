@@ -1,4 +1,4 @@
-CLASS ltcl_test DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS.
+CLASS ltcl_test DEFINITION FOR TESTING DURATION MEDIUM RISK LEVEL HARMLESS.
 
   PRIVATE SECTION.
     METHODS assert_result
@@ -11,6 +11,10 @@ CLASS ltcl_test DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS.
     METHODS add_two FOR TESTING RAISING cx_static_check.
     METHODS fibonacci FOR TESTING RAISING cx_static_check.
     METHODS factorial FOR TESTING RAISING cx_static_check.
+
+    METHODS parse_testsuite_i32 FOR TESTING RAISING cx_static_check.
+    METHODS parse_testsuite_address FOR TESTING RAISING cx_static_check.
+    METHODS parse_testsuite_block FOR TESTING RAISING cx_static_check.
 
 ENDCLASS.
 
@@ -91,14 +95,25 @@ CLASS ltcl_test IMPLEMENTATION.
 
     APPEND NEW zcl_wasm_i32( 3 ) TO lt_values.
 
-    " todo,
-    " DATA(lt_result) = lo_wasm->execute_function_export(
-    "   iv_name       = 'fac'
-    "   it_parameters = lt_values ).
+    DATA(lt_result) = lo_wasm->execute_function_export(
+      iv_name       = 'fac'
+      it_parameters = lt_values ).
 
-    " assert_result( it_result = lt_result
-    "                iv_value  = 6 ).
+    assert_result( it_result = lt_result
+                   iv_value  = 6 ).
 
+  ENDMETHOD.
+
+  METHOD parse_testsuite_i32.
+    zcl_wasm=>create_with_wasm( zcl_wasm_test_data=>testsuite_i32( ) ).
+  ENDMETHOD.
+
+  METHOD parse_testsuite_address.
+    zcl_wasm=>create_with_wasm( zcl_wasm_test_data=>testsuite_address( ) ).
+  ENDMETHOD.
+
+  METHOD parse_testsuite_block.
+    zcl_wasm=>create_with_wasm( zcl_wasm_test_data=>testsuite_block( ) ).
   ENDMETHOD.
 
 ENDCLASS.

@@ -26,6 +26,18 @@ CLASS zcl_wasm_binary_stream DEFINITION
     METHODS shift_int
       RETURNING
         VALUE(rv_int) TYPE i .
+    METHODS shift_u32
+      RETURNING
+        VALUE(rv_int) TYPE i .
+    METHODS shift_f32
+      RETURNING
+        VALUE(rv_f) TYPE f .
+    METHODS shift_f64
+      RETURNING
+        VALUE(rv_f) TYPE f .
+    METHODS shift_i64
+      RETURNING
+        VALUE(rv_int) TYPE int8 .
     METHODS shift_utf8
       RETURNING
         VALUE(rv_name) TYPE string .
@@ -37,7 +49,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_WASM_BINARY_STREAM IMPLEMENTATION.
+CLASS zcl_wasm_binary_stream IMPLEMENTATION.
 
 
   METHOD constructor.
@@ -76,10 +88,78 @@ CLASS ZCL_WASM_BINARY_STREAM IMPLEMENTATION.
 
   ENDMETHOD.
 
+  METHOD shift_f64.
+
+    DATA lv_hex TYPE x LENGTH 8.
+    lv_hex = shift( 8 ).
+
+* todo
+    ASSERT lv_hex = '0000000000000000'.
+
+  ENDMETHOD.
+
+  METHOD shift_f32.
+* https://webassembly.github.io/spec/core/binary/values.html#binary-float
+* Floating-point values are encoded directly by their IEEE 754
+
+* https://en.wikipedia.org/wiki/Single-precision_floating-point_format
+* https://cs.lmu.edu/~ray/demos/ieee754.html
+
+    DATA lv_exponentx TYPE x LENGTH 1.
+    DATA lv_exponent  TYPE i.
+    DATA lv_fractionx TYPE x LENGTH 3.
+    DATA lv_index     TYPE i.
+    DATA lv_half      TYPE f VALUE 1.
+    DATA lv_bit       TYPE c LENGTH 1.
+
+
+    DATA lv_hex TYPE x LENGTH 4.
+    lv_hex = shift( 4 ).
+    IF lv_hex = '00000000'.
+      RETURN.
+    ENDIF.
+    " WRITE: / 'input:', lv_hex.
+
+    GET BIT 1 OF lv_hex INTO lv_bit.
+    DATA(lv_sign) = lv_bit.
+
+    DO 8 TIMES.
+      lv_index = sy-index + 1.
+      GET BIT lv_index OF lv_hex INTO lv_bit.
+      lv_index = lv_index - 1.
+      SET BIT lv_index OF lv_exponentx TO lv_bit.
+    ENDDO.
+    lv_exponent = lv_exponentx - 127.
+    " WRITE: / 'exponent:', lv_exponent.
+
+    DO 23 TIMES.
+      lv_index = sy-index + 9.
+      GET BIT lv_index OF lv_hex INTO lv_bit.
+      lv_index = lv_index - 9 + 1.
+      SET BIT lv_index OF lv_fractionx TO lv_bit.
+    ENDDO.
+* fix implicit 24th bit
+    SET BIT 1 OF lv_fractionx TO 1.
+    " WRITE: / 'fraction,hex:', lv_fractionx.
+
+    DO 24 TIMES.
+      GET BIT sy-index OF lv_fractionx INTO lv_bit.
+      IF lv_bit = '1'.
+        rv_f = rv_f + lv_half.
+      ENDIF.
+      lv_half = lv_half / 2.
+    ENDDO.
+
+    rv_f = rv_f * ( 2 ** lv_exponent ).
+
+    " WRITE / rv_f.
+
+  ENDMETHOD.
 
   METHOD shift_int.
 
 * todo, this should be LEB128
+* todo, deprecate this method, use the typed methods instead
 * https://webassembly.github.io/spec/core/binary/values.html#binary-int
 
     DATA lv_hex TYPE x LENGTH 1.
@@ -88,127 +168,91 @@ CLASS ZCL_WASM_BINARY_STREAM IMPLEMENTATION.
 
   ENDMETHOD.
 
+  METHOD shift_u32.
+
+* https://webassembly.github.io/spec/core/binary/values.html#binary-int
+* https://en.wikipedia.org/wiki/LEB128
+
+    DATA lv_hex   TYPE x LENGTH 1.
+    DATA lv_bit   TYPE c LENGTH 1.
+    DATA lv_shift TYPE i VALUE 1.
+
+    DO.
+      lv_hex = shift( 1 ).
+
+      GET BIT 1 OF lv_hex INTO lv_bit.
+      SET BIT 1 OF lv_hex TO 0.
+
+      rv_int = rv_int + CONV i( lv_hex ) * lv_shift.
+
+      IF lv_bit = '0'.
+        RETURN.
+      ENDIF.
+
+      lv_shift = lv_shift * 128.
+    ENDDO.
+
+  ENDMETHOD.
+
+  METHOD shift_i64.
+
+    DATA lv_hex   TYPE x LENGTH 1.
+    DATA lv_bit   TYPE c LENGTH 1.
+    DATA lv_shift TYPE i VALUE 1.
+
+    DO.
+      lv_hex = shift( 1 ).
+
+      GET BIT 1 OF lv_hex INTO lv_bit.
+      SET BIT 1 OF lv_hex TO 0.
+
+      rv_int = rv_int + CONV i( lv_hex ) * lv_shift.
+
+      IF lv_bit = '0'.
+        GET BIT 2 OF lv_hex INTO lv_bit.
+        IF lv_bit = '1'.
+          rv_int = 0 - rv_int.
+        ENDIF.
+        RETURN.
+      ENDIF.
+
+      lv_shift = lv_shift * 128.
+    ENDDO.
+
+  ENDMETHOD.
 
   METHOD shift_utf8.
 
 * https://webassembly.github.io/spec/core/binary/values.html#names
 
-    DATA(lo_stream) = NEW zcl_wasm_binary_stream( shift( shift_int( ) ) ).
+    DATA lo_conv TYPE REF TO object.
 
-    WHILE lo_stream->get_length( ) > 0.
-      CASE lo_stream->shift( 1 ).
-        WHEN '41'.
-          CONCATENATE rv_name 'A' INTO rv_name.
-        WHEN '42'.
-          CONCATENATE rv_name 'B' INTO rv_name.
-        WHEN '43'.
-          CONCATENATE rv_name 'C' INTO rv_name.
-        WHEN '44'.
-          CONCATENATE rv_name 'D' INTO rv_name.
-        WHEN '45'.
-          CONCATENATE rv_name 'E' INTO rv_name.
-        WHEN '46'.
-          CONCATENATE rv_name 'F' INTO rv_name.
-        WHEN '47'.
-          CONCATENATE rv_name 'G' INTO rv_name.
-        WHEN '48'.
-          CONCATENATE rv_name 'H' INTO rv_name.
-        WHEN '49'.
-          CONCATENATE rv_name 'I' INTO rv_name.
-        WHEN '4A'.
-          CONCATENATE rv_name 'J' INTO rv_name.
-        WHEN '4B'.
-          CONCATENATE rv_name 'K' INTO rv_name.
-        WHEN '4C'.
-          CONCATENATE rv_name 'L' INTO rv_name.
-        WHEN '4D'.
-          CONCATENATE rv_name 'M' INTO rv_name.
-        WHEN '4E'.
-          CONCATENATE rv_name 'N' INTO rv_name.
-        WHEN '4F'.
-          CONCATENATE rv_name 'O' INTO rv_name.
-        WHEN '50'.
-          CONCATENATE rv_name 'P' INTO rv_name.
-        WHEN '51'.
-          CONCATENATE rv_name 'Q' INTO rv_name.
-        WHEN '52'.
-          CONCATENATE rv_name 'R' INTO rv_name.
-        WHEN '53'.
-          CONCATENATE rv_name 'S' INTO rv_name.
-        WHEN '54'.
-          CONCATENATE rv_name 'T' INTO rv_name.
-        WHEN '55'.
-          CONCATENATE rv_name 'U' INTO rv_name.
-        WHEN '56'.
-          CONCATENATE rv_name 'V' INTO rv_name.
-        WHEN '57'.
-          CONCATENATE rv_name 'W' INTO rv_name.
-        WHEN '58'.
-          CONCATENATE rv_name 'X' INTO rv_name.
-        WHEN '59'.
-          CONCATENATE rv_name 'Y' INTO rv_name.
-        WHEN '5A'.
-          CONCATENATE rv_name 'Z' INTO rv_name.
-        WHEN '61'.
-          CONCATENATE rv_name 'a' INTO rv_name.
-        WHEN '62'.
-          CONCATENATE rv_name 'b' INTO rv_name.
-        WHEN '63'.
-          CONCATENATE rv_name 'c' INTO rv_name.
-        WHEN '64'.
-          CONCATENATE rv_name 'd' INTO rv_name.
-        WHEN '65'.
-          CONCATENATE rv_name 'e' INTO rv_name.
-        WHEN '66'.
-          CONCATENATE rv_name 'f' INTO rv_name.
-        WHEN '67'.
-          CONCATENATE rv_name 'g' INTO rv_name.
-        WHEN '68'.
-          CONCATENATE rv_name 'h' INTO rv_name.
-        WHEN '69'.
-          CONCATENATE rv_name 'i' INTO rv_name.
-        WHEN '6A'.
-          CONCATENATE rv_name 'j' INTO rv_name.
-        WHEN '6B'.
-          CONCATENATE rv_name 'k' INTO rv_name.
-        WHEN '6C'.
-          CONCATENATE rv_name 'l' INTO rv_name.
-        WHEN '6D'.
-          CONCATENATE rv_name 'm' INTO rv_name.
-        WHEN '6E'.
-          CONCATENATE rv_name 'n' INTO rv_name.
-        WHEN '6F'.
-          CONCATENATE rv_name 'o' INTO rv_name.
-        WHEN '70'.
-          CONCATENATE rv_name 'p' INTO rv_name.
-        WHEN '71'.
-          CONCATENATE rv_name 'q' INTO rv_name.
-        WHEN '72'.
-          CONCATENATE rv_name 'r' INTO rv_name.
-        WHEN '73'.
-          CONCATENATE rv_name 's' INTO rv_name.
-        WHEN '74'.
-          CONCATENATE rv_name 't' INTO rv_name.
-        WHEN '75'.
-          CONCATENATE rv_name 'u' INTO rv_name.
-        WHEN '76'.
-          CONCATENATE rv_name 'v' INTO rv_name.
-        WHEN '77'.
-          CONCATENATE rv_name 'w' INTO rv_name.
-        WHEN '78'.
-          CONCATENATE rv_name 'x' INTO rv_name.
-        WHEN '79'.
-          CONCATENATE rv_name 'y' INTO rv_name.
-        WHEN '7A'.
-          CONCATENATE rv_name 'z' INTO rv_name.
-        WHEN OTHERS.
-* yea, so, the classes for code page conversion is different
-* in on-prem and Steampunk. Plus also sy-abcde is deprecated in
-* Steampunk :o/
-* So, only very basic UTF8 conversion is implemented
-          ASSERT 0 = 1.
-      ENDCASE.
-    ENDWHILE.
+    DATA(lv_xstr) = shift( shift_int( ) ).
+
+    TRY.
+        CALL METHOD ('CL_ABAP_CONV_CODEPAGE')=>create_in
+          RECEIVING
+            instance = lo_conv.
+
+        CALL METHOD lo_conv->('IF_ABAP_CONV_IN~CONVERT')
+          EXPORTING
+            source = lv_xstr
+          RECEIVING
+            result = rv_name.
+      CATCH cx_sy_dyn_call_illegal_class.
+        DATA(lv_conv_in_class) = 'CL_ABAP_CONV_IN_CE'.
+        CALL METHOD (lv_conv_in_class)=>create
+          EXPORTING
+            encoding = 'UTF-8'
+          RECEIVING
+            conv     = lo_conv.
+
+        CALL METHOD lo_conv->('CONVERT')
+          EXPORTING
+            input = lv_xstr
+          IMPORTING
+            data  = rv_name.
+    ENDTRY.
 
   ENDMETHOD.
 ENDCLASS.
