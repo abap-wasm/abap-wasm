@@ -105,6 +105,8 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
         rv_f = 3.
       WHEN '0000000000001C40'.
         rv_f = 7.
+      WHEN '0000000000002440'.
+        rv_f = 10.
       WHEN OTHERS.
         WRITE / lv_hex.
         ASSERT lv_hex = 'todo'.
