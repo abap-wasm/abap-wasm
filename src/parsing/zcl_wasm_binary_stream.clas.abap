@@ -90,11 +90,25 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
 
   METHOD shift_f64.
 
+* https://en.wikipedia.org/wiki/Double-precision_floating-point_format
+
     DATA lv_hex TYPE x LENGTH 8.
     lv_hex = shift( 8 ).
+    IF lv_hex = '0000000000000000'.
+      RETURN.
+    ENDIF.
 
-* todo
-    ASSERT lv_hex = '0000000000000000'.
+    CASE lv_hex.
+      WHEN '0000000000001040'.
+        rv_f = 4.
+      WHEN '0000000000000840'.
+        rv_f = 3.
+      WHEN '0000000000001C40'.
+        rv_f = 7.
+      WHEN OTHERS.
+        WRITE / lv_hex.
+        ASSERT lv_hex = 'todo'.
+    ENDCASE.
 
   ENDMETHOD.
 

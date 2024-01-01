@@ -45,6 +45,11 @@ INTERFACE zif_wasm_opcodes PUBLIC.
         i64_store      TYPE ty_opcode VALUE '37',
         f32_store      TYPE ty_opcode VALUE '38',
         f64_store      TYPE ty_opcode VALUE '39',
+        i32_store8     TYPE ty_opcode VALUE '3A',
+        i32_store16    TYPE ty_opcode VALUE '3B',
+        i64_store8     TYPE ty_opcode VALUE '3C',
+        i64_store16    TYPE ty_opcode VALUE '3D',
+        i64_store32    TYPE ty_opcode VALUE '3E',
         memory_size    TYPE ty_opcode VALUE '3F',
         memory_grow    TYPE ty_opcode VALUE '40',
 * https://webassembly.github.io/spec/core/binary/instructions.html#numeric-instructions
