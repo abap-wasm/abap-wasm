@@ -92,7 +92,6 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
 
     DATA lv_hex TYPE x LENGTH 8.
     lv_hex = shift( 8 ).
-    WRITE / lv_hex.
 
 * todo
     ASSERT lv_hex = '0000000000000000'.
@@ -116,6 +115,9 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
 
     DATA lv_hex TYPE x LENGTH 4.
     lv_hex = shift( 4 ).
+    IF lv_hex = '00000000'.
+      RETURN.
+    ENDIF.
     " WRITE: / 'input:', lv_hex.
 
     GET BIT 1 OF lv_hex INTO lv_bit.
