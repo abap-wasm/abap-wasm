@@ -94,7 +94,7 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
 
     DATA lv_exponentx TYPE x LENGTH 1.
     DATA lv_exponent  TYPE i.
-    DATA lv_fractionx TYPE x LENGTH 4.
+    DATA lv_fractionx TYPE x LENGTH 3.
     DATA lv_fraction  TYPE i.
     DATA lv_index     TYPE i.
     DATA lv_bit       TYPE c LENGTH 1.
@@ -116,13 +116,12 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
     WRITE / lv_exponent.
 
     DO 23 TIMES.
-      lv_index = sy-tabix + 9.
+      lv_index = sy-index + 9.
       GET BIT lv_index OF lv_hex INTO lv_bit.
-      lv_index = lv_index - 9.
+      lv_index = lv_index - 9 + 1.
       SET BIT lv_index OF lv_fractionx TO lv_bit.
     ENDDO.
-    lv_fraction = lv_fractionx.
-    WRITE / lv_fraction.
+    WRITE / lv_fractionx.
 
 * todo, hmm
 
