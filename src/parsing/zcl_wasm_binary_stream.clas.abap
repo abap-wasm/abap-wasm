@@ -95,13 +95,14 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
     DATA lv_exponentx TYPE x LENGTH 1.
     DATA lv_exponent  TYPE i.
     DATA lv_fractionx TYPE x LENGTH 3.
-    DATA lv_fraction  TYPE i.
     DATA lv_index     TYPE i.
+    DATA lv_half      TYPE f VALUE 1.
     DATA lv_bit       TYPE c LENGTH 1.
 
 
     DATA lv_hex TYPE x LENGTH 4.
     lv_hex = shift( 4 ).
+    " WRITE: / 'input:', lv_hex.
 
     GET BIT 1 OF lv_hex INTO lv_bit.
     DATA(lv_sign) = lv_bit.
@@ -112,8 +113,8 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
       lv_index = lv_index - 1.
       SET BIT lv_index OF lv_exponentx TO lv_bit.
     ENDDO.
-    lv_exponent = lv_exponentx.
-    WRITE / lv_exponent.
+    lv_exponent = lv_exponentx - 127.
+    " WRITE: / 'exponent:', lv_exponent.
 
     DO 23 TIMES.
       lv_index = sy-index + 9.
@@ -121,9 +122,21 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
       lv_index = lv_index - 9 + 1.
       SET BIT lv_index OF lv_fractionx TO lv_bit.
     ENDDO.
-    WRITE / lv_fractionx.
+* fix implicit 24th bit
+    SET BIT 1 OF lv_fractionx TO 1.
+    " WRITE: / 'fraction,hex:', lv_fractionx.
 
-* todo, hmm
+    DO 24 TIMES.
+      GET BIT sy-index OF lv_fractionx INTO lv_bit.
+      IF lv_bit = '1'.
+        rv_f = rv_f + lv_half.
+      ENDIF.
+      lv_half = lv_half / 2.
+    ENDDO.
+
+    rv_f = rv_f * ( 2 ** lv_exponent ).
+
+    " WRITE / rv_f.
 
   ENDMETHOD.
 

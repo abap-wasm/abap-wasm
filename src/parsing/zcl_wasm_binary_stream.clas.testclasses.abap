@@ -61,7 +61,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
     cl_abap_unit_assert=>assert_equals(
       act = lo_stream->shift_f32( )
-      exp = 20 ).
+      exp = 25 ).
 
   ENDMETHOD.
 
