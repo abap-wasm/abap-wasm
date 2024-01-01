@@ -4,7 +4,7 @@ CLASS ltcl_test DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS.
     METHODS test1 FOR TESTING RAISING cx_static_check.
     METHODS shift_int FOR TESTING RAISING cx_static_check.
     METHODS shift_utf8 FOR TESTING RAISING cx_static_check.
-    METHODS shift_f32_20 FOR TESTING RAISING cx_static_check.
+    METHODS shift_f32_25 FOR TESTING RAISING cx_static_check.
 
 ENDCLASS.
 
@@ -55,9 +55,9 @@ CLASS ltcl_test IMPLEMENTATION.
 
   ENDMETHOD.
 
-  METHOD shift_f32_20.
+  METHOD shift_f32_25.
 
-    DATA(lo_stream) = NEW zcl_wasm_binary_stream( CONV xstring( |41A00000| ) ).
+    DATA(lo_stream) = NEW zcl_wasm_binary_stream( CONV xstring( |41C80000| ) ).
 
     cl_abap_unit_assert=>assert_equals(
       act = lo_stream->shift_f32( )

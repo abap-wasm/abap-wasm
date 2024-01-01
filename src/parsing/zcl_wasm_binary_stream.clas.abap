@@ -92,15 +92,13 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
 * https://en.wikipedia.org/wiki/Single-precision_floating-point_format
 * https://cs.lmu.edu/~ray/demos/ieee754.html
 
-    DATA lv_exponentx TYPE x LENGTH 4.
+    DATA lv_exponentx TYPE x LENGTH 1.
     DATA lv_exponent  TYPE i.
     DATA lv_fractionx TYPE x LENGTH 4.
     DATA lv_fraction  TYPE i.
     DATA lv_index     TYPE i.
     DATA lv_bit       TYPE c LENGTH 1.
 
-
-    ASSERT 1 = 'todo'.
 
     DATA lv_hex TYPE x LENGTH 4.
     lv_hex = shift( 4 ).
@@ -115,6 +113,7 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
       SET BIT lv_index OF lv_exponentx TO lv_bit.
     ENDDO.
     lv_exponent = lv_exponentx.
+    WRITE / lv_exponent.
 
     DO 23 TIMES.
       lv_index = sy-tabix + 9.
@@ -123,6 +122,7 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
       SET BIT lv_index OF lv_fractionx TO lv_bit.
     ENDDO.
     lv_fraction = lv_fractionx.
+    WRITE / lv_fraction.
 
 * todo, hmm
 
