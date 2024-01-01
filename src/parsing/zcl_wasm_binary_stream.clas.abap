@@ -88,7 +88,9 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
   METHOD shift_f32.
 * https://webassembly.github.io/spec/core/binary/values.html#binary-float
 * Floating-point values are encoded directly by their IEEE 754
+
 * https://en.wikipedia.org/wiki/Single-precision_floating-point_format
+* https://cs.lmu.edu/~ray/demos/ieee754.html
 
     DATA lv_exponentx TYPE x LENGTH 4.
     DATA lv_exponent  TYPE i.
