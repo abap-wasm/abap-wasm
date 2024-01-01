@@ -125,6 +125,13 @@ INTERFACE zif_wasm_opcodes PUBLIC.
         f32_min        TYPE ty_opcode VALUE '96',
         f32_max        TYPE ty_opcode VALUE '97',
         f32_copysign   TYPE ty_opcode VALUE '98',
+        f64_abs        TYPE ty_opcode VALUE '99',
+        f64_neg        TYPE ty_opcode VALUE '9A',
+        f64_ceil       TYPE ty_opcode VALUE '9B',
+        f64_floor      TYPE ty_opcode VALUE '9C',
+        f64_trunc      TYPE ty_opcode VALUE '9D',
+        f64_nearest    TYPE ty_opcode VALUE '9E',
+        f64_sqrt       TYPE ty_opcode VALUE '9F',
         i32_extend8_s  TYPE ty_opcode VALUE 'C0',
         i32_extend16_s TYPE ty_opcode VALUE 'C1',
       END OF c_opcodes.
