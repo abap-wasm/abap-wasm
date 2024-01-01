@@ -74,6 +74,10 @@ CLASS zcl_wasm_parser DEFINITION
       IMPORTING
         !io_body          TYPE REF TO zcl_wasm_binary_stream.
 
+    METHODS parse_element
+      IMPORTING
+        !io_body          TYPE REF TO zcl_wasm_binary_stream.
+
     METHODS parse_memory
       IMPORTING
         !io_body          TYPE REF TO zcl_wasm_binary_stream.
@@ -136,7 +140,8 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
         WHEN gc_section_start.
           ASSERT 1 = 'todo'.
         WHEN gc_section_element.
-          ASSERT 1 = 'todo'.
+* todo
+          parse_element( lo_body ).
         WHEN gc_section_code.
           DATA(lt_codes) = parse_code( lo_body ).
         WHEN gc_section_data.
@@ -538,6 +543,55 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
           ev_last_opcode  = DATA(lv_last_opcode)
           et_instructions = DATA(lt_instructions) ).
       ASSERT lv_last_opcode = zif_wasm_opcodes=>c_opcodes-end.
+    ENDDO.
+
+  ENDMETHOD.
+
+  METHOD parse_element.
+
+* https://webassembly.github.io/spec/core/binary/modules.html#binary-elemsec
+
+    DATA(lv_count) = io_body->shift_u32( ).
+    " WRITE: / 'elements:', lv_count.
+
+    DO lv_count TIMES.
+      DATA(lv_type) = io_body->shift_u32( ).
+      " WRITE: / 'elementtype:', lv_type.
+
+      CASE lv_type.
+        WHEN 0.
+          parse_instructions(
+            EXPORTING
+              io_body         = io_body
+            IMPORTING
+              ev_last_opcode  = DATA(lv_last_opcode)
+              et_instructions = DATA(lt_instructions) ).
+          ASSERT lv_last_opcode = zif_wasm_opcodes=>c_opcodes-end.
+
+          DATA(lv_len) = io_body->shift_u32( ).
+          DO lv_len TIMES.
+            DATA(lv_funcidx) = io_body->shift_u32( ).
+            " WRITE: / 'funcidx', lv_funcidx.
+          ENDDO.
+        WHEN 1.
+          ASSERT 1 = 'todo'.
+        WHEN 2.
+          ASSERT 1 = 'todo'.
+        WHEN 3.
+          ASSERT 1 = 'todo'.
+        WHEN 4.
+          ASSERT 1 = 'todo'.
+        WHEN 5.
+          ASSERT 1 = 'todo'.
+        WHEN 6.
+          ASSERT 1 = 'todo'.
+        WHEN 7.
+          ASSERT 1 = 'todo'.
+        WHEN OTHERS.
+          WRITE / lv_type.
+          ASSERT 1 = 2.
+      ENDCASE.
+
     ENDDO.
 
   ENDMETHOD.
