@@ -62,6 +62,10 @@ CLASS zcl_wasm_parser DEFINITION
       RETURNING
         VALUE(rt_results) TYPE zcl_wasm_module=>ty_functions .
 
+    METHODS parse_table
+      IMPORTING
+        !io_body          TYPE REF TO zcl_wasm_binary_stream.
+
     METHODS parse_data
       IMPORTING
         !io_body          TYPE REF TO zcl_wasm_binary_stream.
@@ -115,7 +119,8 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
         WHEN gc_section_function.
           DATA(lt_functions) = parse_function( lo_body ).
         WHEN gc_section_table.
-          ASSERT 1 = 'todo'.
+* todo
+          parse_table( lo_body ).
         WHEN gc_section_memory.
 * todo
           parse_memory( lo_body ).
@@ -469,6 +474,43 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
         WHEN OTHERS.
           WRITE / lv_type.
           ASSERT 1 = 2.
+      ENDCASE.
+
+    ENDDO.
+
+  ENDMETHOD.
+
+  METHOD parse_table.
+
+* https://webassembly.github.io/spec/core/binary/modules.html#binary-tablesec
+
+    DATA(lv_count) = io_body->shift_u32( ).
+    " WRITE: / 'tables:', lv_count.
+
+    DO lv_count TIMES.
+      DATA(lv_reftype) = io_body->shift( 1 ).
+
+      CASE lv_reftype.
+        WHEN '70'.
+* funcref
+          DATA(lv_limit) = io_body->shift( 1 ).
+
+          CASE lv_limit.
+            WHEN '00'.
+              DATA(lv_min) = io_body->shift_u32( ).
+              DATA(lv_max) = 0.
+            WHEN '01'.
+              lv_min = io_body->shift_u32( ).
+              lv_max = io_body->shift_u32( ).
+            WHEN OTHERS.
+              ASSERT 1 = 'todo'.
+          ENDCASE.
+* todo
+        WHEN '6F'.
+* externref
+          ASSERT 1 = 'todo'.
+        WHEN OTHERS.
+          ASSERT 1 = 'todo'.
       ENDCASE.
 
     ENDDO.
