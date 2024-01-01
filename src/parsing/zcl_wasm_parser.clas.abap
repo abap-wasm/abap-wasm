@@ -55,14 +55,21 @@ CLASS zcl_wasm_parser DEFINITION
         !io_body          TYPE REF TO zcl_wasm_binary_stream
       RETURNING
         VALUE(rt_results) TYPE zcl_wasm_module=>ty_types .
+
     METHODS parse_function
       IMPORTING
         !io_body          TYPE REF TO zcl_wasm_binary_stream
       RETURNING
         VALUE(rt_results) TYPE zcl_wasm_module=>ty_functions .
+
+    METHODS parse_data
+      IMPORTING
+        !io_body          TYPE REF TO zcl_wasm_binary_stream.
+
     METHODS parse_memory
       IMPORTING
         !io_body          TYPE REF TO zcl_wasm_binary_stream.
+
     METHODS parse_export
       IMPORTING
         !io_body          TYPE REF TO zcl_wasm_binary_stream
@@ -123,7 +130,7 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
         WHEN gc_section_code.
           DATA(lt_codes) = parse_code( lo_body ).
         WHEN gc_section_data.
-          ASSERT 1 = 'todo'.
+          parse_data( lo_body ).
         WHEN OTHERS.
           ASSERT 0 = 1.
       ENDCASE.
@@ -430,6 +437,40 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
 * todo
 
       " WRITE: / 'min:', lv_min, 'max:', lv_max.
+    ENDDO.
+
+  ENDMETHOD.
+
+  METHOD parse_data.
+
+* https://webassembly.github.io/spec/core/binary/modules.html#binary-datasec
+
+    DATA(lv_count) = io_body->shift_u32( ).
+    " WRITE: / 'data:', lv_count.
+
+    DO lv_count TIMES.
+      DATA(lv_type) = io_body->shift_u32( ).
+      " WRITE: / 'type:', lv_type.
+
+      CASE lv_type.
+        WHEN 0.
+          parse_instructions(
+            EXPORTING
+              io_body         = io_body
+            IMPORTING
+              ev_last_opcode  = DATA(lv_last_opcode)
+              et_instructions = DATA(lt_instructions) ).
+          ASSERT lv_last_opcode = zif_wasm_opcodes=>c_opcodes-end.
+
+          DATA(lv_vec) = io_body->shift_u32( ).
+          DATA(lv_contents) = io_body->shift( lv_vec ).
+          " WRITE / lv_contents.
+          " WRITE / io_body->get_data( ).
+        WHEN OTHERS.
+          WRITE / lv_type.
+          ASSERT 1 = 2.
+      ENDCASE.
+
     ENDDO.
 
   ENDMETHOD.
