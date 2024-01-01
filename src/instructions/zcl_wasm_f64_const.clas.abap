@@ -1,4 +1,4 @@
-CLASS zcl_wasm_f32_const DEFINITION PUBLIC.
+CLASS zcl_wasm_f64_const DEFINITION PUBLIC.
   PUBLIC SECTION.
     INTERFACES zif_wasm_instruction.
 
@@ -13,7 +13,7 @@ CLASS zcl_wasm_f32_const DEFINITION PUBLIC.
     DATA mv_float TYPE f.
 ENDCLASS.
 
-CLASS zcl_wasm_f32_const IMPLEMENTATION.
+CLASS zcl_wasm_f64_const IMPLEMENTATION.
 
   METHOD constructor.
 * todo, ABAP float is double precision?
@@ -21,7 +21,7 @@ CLASS zcl_wasm_f32_const IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD parse.
-    ri_instruction = NEW zcl_wasm_f32_const( io_body->shift_f32( ) ).
+    ri_instruction = NEW zcl_wasm_f64_const( io_body->shift_f64( ) ).
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
