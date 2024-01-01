@@ -70,6 +70,10 @@ CLASS zcl_wasm_parser DEFINITION
       IMPORTING
         !io_body          TYPE REF TO zcl_wasm_binary_stream.
 
+    METHODS parse_global
+      IMPORTING
+        !io_body          TYPE REF TO zcl_wasm_binary_stream.
+
     METHODS parse_memory
       IMPORTING
         !io_body          TYPE REF TO zcl_wasm_binary_stream.
@@ -125,7 +129,8 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
 * todo
           parse_memory( lo_body ).
         WHEN gc_section_global.
-          ASSERT 1 = 'todo'.
+* todo
+          parse_global( lo_body ).
         WHEN gc_section_export.
           DATA(lt_exports) = parse_export( lo_body ).
         WHEN gc_section_start.
@@ -513,6 +518,26 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
           ASSERT 1 = 'todo'.
       ENDCASE.
 
+    ENDDO.
+
+  ENDMETHOD.
+
+  METHOD parse_global.
+
+* https://webassembly.github.io/spec/core/binary/modules.html#binary-globalsec
+
+    DATA(lv_count) = io_body->shift_u32( ).
+
+    DO lv_count TIMES.
+      DATA(lv_type) = io_body->shift( 1 ).
+
+      parse_instructions(
+        EXPORTING
+          io_body         = io_body
+        IMPORTING
+          ev_last_opcode  = DATA(lv_last_opcode)
+          et_instructions = DATA(lt_instructions) ).
+      ASSERT lv_last_opcode = zif_wasm_opcodes=>c_opcodes-end.
     ENDDO.
 
   ENDMETHOD.
