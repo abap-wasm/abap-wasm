@@ -108,6 +108,20 @@ INTERFACE zif_wasm_opcodes PUBLIC.
         f64_store      TYPE ty_opcode VALUE '39',
         memory_size    TYPE ty_opcode VALUE '3F',
         memory_grow    TYPE ty_opcode VALUE '40',
+        f32_abs        TYPE ty_opcode VALUE '8B',
+        f32_neg        TYPE ty_opcode VALUE '8C',
+        f32_ceil       TYPE ty_opcode VALUE '8D',
+        f32_floor      TYPE ty_opcode VALUE '8E',
+        f32_trunc      TYPE ty_opcode VALUE '8F',
+        f32_nearest    TYPE ty_opcode VALUE '90',
+        f32_sqrt       TYPE ty_opcode VALUE '91',
+        f32_add        TYPE ty_opcode VALUE '92',
+        f32_sub        TYPE ty_opcode VALUE '93',
+        f32_mul        TYPE ty_opcode VALUE '94',
+        f32_div        TYPE ty_opcode VALUE '95',
+        f32_min        TYPE ty_opcode VALUE '96',
+        f32_max        TYPE ty_opcode VALUE '97',
+        f32_copysign   TYPE ty_opcode VALUE '98',
       END OF c_opcodes.
 
 ENDINTERFACE.
