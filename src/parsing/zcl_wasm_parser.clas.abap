@@ -60,6 +60,9 @@ CLASS zcl_wasm_parser DEFINITION
         !io_body          TYPE REF TO zcl_wasm_binary_stream
       RETURNING
         VALUE(rt_results) TYPE zcl_wasm_module=>ty_functions .
+    METHODS parse_memory
+      IMPORTING
+        !io_body          TYPE REF TO zcl_wasm_binary_stream.
     METHODS parse_export
       IMPORTING
         !io_body          TYPE REF TO zcl_wasm_binary_stream
@@ -101,25 +104,26 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
         WHEN gc_section_type.
           DATA(lt_types) = parse_type( lo_body ).
         WHEN gc_section_import.
-          ASSERT 0 = 'todo'.
+          ASSERT 1 = 'todo'.
         WHEN gc_section_function.
           DATA(lt_functions) = parse_function( lo_body ).
         WHEN gc_section_table.
-          ASSERT 0 = 'todo'.
+          ASSERT 1 = 'todo'.
         WHEN gc_section_memory.
-          ASSERT 0 = 'todo'.
+* todo
+          parse_memory( lo_body ).
         WHEN gc_section_global.
-          ASSERT 0 = 'todo'.
+          ASSERT 1 = 'todo'.
         WHEN gc_section_export.
           DATA(lt_exports) = parse_export( lo_body ).
         WHEN gc_section_start.
-          ASSERT 0 = 'todo'.
+          ASSERT 1 = 'todo'.
         WHEN gc_section_element.
-          ASSERT 0 = 'todo'.
+          ASSERT 1 = 'todo'.
         WHEN gc_section_code.
           DATA(lt_codes) = parse_code( lo_body ).
         WHEN gc_section_data.
-          ASSERT 0 = 'todo'.
+          ASSERT 1 = 'todo'.
         WHEN OTHERS.
           ASSERT 0 = 1.
       ENDCASE.
@@ -401,4 +405,33 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
     ENDDO.
 
   ENDMETHOD.
+
+  METHOD parse_memory.
+
+* https://webassembly.github.io/spec/core/binary/modules.html#binary-memsec
+
+    DATA(lv_count) = io_body->shift_u32( ).
+    " WRITE: / 'memories:', lv_count.
+
+    DO lv_count TIMES.
+      DATA(lv_limit) = io_body->shift( 1 ).
+
+      CASE lv_limit.
+        WHEN '00'.
+          DATA(lv_min) = io_body->shift_u32( ).
+          DATA(lv_max) = 0.
+        WHEN '01'.
+          lv_min = io_body->shift_u32( ).
+          lv_max = io_body->shift_u32( ).
+        WHEN OTHERS.
+          ASSERT 1 = 'todo'.
+      ENDCASE.
+
+* todo
+
+      " WRITE: / 'min:', lv_min, 'max:', lv_max.
+    ENDDO.
+
+  ENDMETHOD.
+
 ENDCLASS.
