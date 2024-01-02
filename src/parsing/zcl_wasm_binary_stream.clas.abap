@@ -15,12 +15,12 @@ CLASS zcl_wasm_binary_stream DEFINITION
         VALUE(rv_data) TYPE xstring .
     METHODS peek
       IMPORTING
-        !iv_length     TYPE i
+        !iv_length     TYPE numeric
       RETURNING
         VALUE(rv_data) TYPE xstring .
     METHODS shift
       IMPORTING
-        !iv_length     TYPE i
+        !iv_length     TYPE numeric
       RETURNING
         VALUE(rv_data) TYPE xstring .
     METHODS shift_int
@@ -28,7 +28,7 @@ CLASS zcl_wasm_binary_stream DEFINITION
         VALUE(rv_int) TYPE i .
     METHODS shift_u32
       RETURNING
-        VALUE(rv_int) TYPE i .
+        VALUE(rv_int) TYPE int8 .
     METHODS shift_f32
       RETURNING
         VALUE(rv_f) TYPE f .
@@ -49,7 +49,7 @@ ENDCLASS.
 
 
 
-CLASS zcl_wasm_binary_stream IMPLEMENTATION.
+CLASS ZCL_WASM_BINARY_STREAM IMPLEMENTATION.
 
 
   METHOD constructor.
@@ -88,31 +88,6 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
 
   ENDMETHOD.
 
-  METHOD shift_f64.
-
-* https://en.wikipedia.org/wiki/Double-precision_floating-point_format
-
-    DATA lv_hex TYPE x LENGTH 8.
-    lv_hex = shift( 8 ).
-    IF lv_hex = '0000000000000000'.
-      RETURN.
-    ENDIF.
-
-    CASE lv_hex.
-      WHEN '0000000000001040'.
-        rv_f = 4.
-      WHEN '0000000000000840'.
-        rv_f = 3.
-      WHEN '0000000000001C40'.
-        rv_f = 7.
-      WHEN '0000000000002440'.
-        rv_f = 10.
-      WHEN OTHERS.
-        WRITE / lv_hex.
-        ASSERT lv_hex = 'todo'.
-    ENDCASE.
-
-  ENDMETHOD.
 
   METHOD shift_f32.
 * https://webassembly.github.io/spec/core/binary/values.html#binary-float
@@ -172,43 +147,33 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
 
   ENDMETHOD.
 
-  METHOD shift_int.
 
-* todo, this should be LEB128
-* todo, deprecate this method, use the typed methods instead
-* https://webassembly.github.io/spec/core/binary/values.html#binary-int
+  METHOD shift_f64.
 
-    DATA lv_hex TYPE x LENGTH 1.
-    lv_hex = shift( 1 ).
-    rv_int = CONV i( lv_hex ).
+* https://en.wikipedia.org/wiki/Double-precision_floating-point_format
 
-  ENDMETHOD.
+    DATA lv_hex TYPE x LENGTH 8.
+    lv_hex = shift( 8 ).
+    IF lv_hex = '0000000000000000'.
+      RETURN.
+    ENDIF.
 
-  METHOD shift_u32.
-
-* https://webassembly.github.io/spec/core/binary/values.html#binary-int
-* https://en.wikipedia.org/wiki/LEB128
-
-    DATA lv_hex   TYPE x LENGTH 1.
-    DATA lv_bit   TYPE c LENGTH 1.
-    DATA lv_shift TYPE i VALUE 1.
-
-    DO.
-      lv_hex = shift( 1 ).
-
-      GET BIT 1 OF lv_hex INTO lv_bit.
-      SET BIT 1 OF lv_hex TO 0.
-
-      rv_int = rv_int + CONV i( lv_hex ) * lv_shift.
-
-      IF lv_bit = '0'.
-        RETURN.
-      ENDIF.
-
-      lv_shift = lv_shift * 128.
-    ENDDO.
+    CASE lv_hex.
+      WHEN '0000000000001040'.
+        rv_f = 4.
+      WHEN '0000000000000840'.
+        rv_f = 3.
+      WHEN '0000000000001C40'.
+        rv_f = 7.
+      WHEN '0000000000002440'.
+        rv_f = 10.
+      WHEN OTHERS.
+        WRITE / lv_hex.
+        ASSERT lv_hex = 'todo'.
+    ENDCASE.
 
   ENDMETHOD.
+
 
   METHOD shift_i64.
 
@@ -236,6 +201,47 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
     ENDDO.
 
   ENDMETHOD.
+
+
+  METHOD shift_int.
+
+* todo, this should be LEB128
+* todo, deprecate this method, use the typed methods instead
+* https://webassembly.github.io/spec/core/binary/values.html#binary-int
+
+    DATA lv_hex TYPE x LENGTH 1.
+    lv_hex = shift( 1 ).
+    rv_int = CONV i( lv_hex ).
+
+  ENDMETHOD.
+
+
+  METHOD shift_u32.
+
+* https://webassembly.github.io/spec/core/binary/values.html#binary-int
+* https://en.wikipedia.org/wiki/LEB128
+
+    DATA lv_hex   TYPE x LENGTH 1.
+    DATA lv_bit   TYPE c LENGTH 1.
+    DATA lv_shift TYPE int8 VALUE 1.
+
+    DO.
+      lv_hex = shift( 1 ).
+
+      GET BIT 1 OF lv_hex INTO lv_bit.
+      SET BIT 1 OF lv_hex TO 0.
+
+      rv_int = rv_int + CONV i( lv_hex ) * lv_shift.
+
+      IF lv_bit = '0'.
+        RETURN.
+      ENDIF.
+
+      lv_shift = lv_shift * 128.
+    ENDDO.
+
+  ENDMETHOD.
+
 
   METHOD shift_utf8.
 

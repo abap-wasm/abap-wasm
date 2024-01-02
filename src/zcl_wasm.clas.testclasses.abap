@@ -16,6 +16,7 @@ CLASS ltcl_test DEFINITION FOR TESTING DURATION MEDIUM RISK LEVEL HARMLESS.
     METHODS parse_testsuite_address FOR TESTING RAISING cx_static_check.
     METHODS parse_testsuite_block FOR TESTING RAISING cx_static_check.
     METHODS parse_testsuite_return FOR TESTING RAISING cx_static_check.
+    METHODS parse_testsuite_func FOR TESTING RAISING cx_static_check.
 
 ENDCLASS.
 
@@ -119,6 +120,10 @@ CLASS ltcl_test IMPLEMENTATION.
 
   METHOD parse_testsuite_return.
     zcl_wasm=>create_with_wasm( zcl_wasm_test_data=>testsuite_return( ) ).
+  ENDMETHOD.
+
+  METHOD parse_testsuite_func.
+    " zcl_wasm=>create_with_wasm( zcl_wasm_test_data=>testsuite_func( ) ).
   ENDMETHOD.
 
 ENDCLASS.
