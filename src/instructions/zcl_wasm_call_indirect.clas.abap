@@ -5,15 +5,15 @@ CLASS zcl_wasm_call_indirect DEFINITION PUBLIC.
 
     METHODS constructor
       IMPORTING
-        iv_typeidx  TYPE i
-        iv_tableidx TYPE i.
+        iv_typeidx  TYPE int8
+        iv_tableidx TYPE int8.
 
     CLASS-METHODS parse
       IMPORTING !io_body TYPE REF TO zcl_wasm_binary_stream
       RETURNING VALUE(ri_instruction) TYPE REF TO zif_wasm_instruction.
   PRIVATE SECTION.
-    DATA mv_typeidx  TYPE i.
-    DATA mv_tableidx TYPE i.
+    DATA mv_typeidx  TYPE int8.
+    DATA mv_tableidx TYPE int8.
 ENDCLASS.
 
 CLASS zcl_wasm_call_indirect IMPLEMENTATION.

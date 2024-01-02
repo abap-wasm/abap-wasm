@@ -20,7 +20,7 @@ CLASS zcl_wasm_binary_stream DEFINITION
         VALUE(rv_data) TYPE xstring .
     METHODS shift
       IMPORTING
-        !iv_length     TYPE i
+        !iv_length     TYPE numeric
       RETURNING
         VALUE(rv_data) TYPE xstring .
     METHODS shift_int

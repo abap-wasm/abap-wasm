@@ -4,16 +4,16 @@ CLASS zcl_wasm_i64_store16 DEFINITION PUBLIC.
 
     METHODS constructor
       IMPORTING
-        iv_align  TYPE i
-        iv_offset TYPE i.
+        iv_align  TYPE int8
+        iv_offset TYPE int8.
 
     CLASS-METHODS parse
       IMPORTING !io_body TYPE REF TO zcl_wasm_binary_stream
       RETURNING VALUE(ri_instruction) TYPE REF TO zif_wasm_instruction.
 
   PRIVATE SECTION.
-    DATA mv_align TYPE i.
-    DATA mv_offset TYPE i.
+    DATA mv_align TYPE int8.
+    DATA mv_offset TYPE int8.
 ENDCLASS.
 
 CLASS zcl_wasm_i64_store16 IMPLEMENTATION.

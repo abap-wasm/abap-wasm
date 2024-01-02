@@ -2,7 +2,7 @@ CLASS zcl_wasm_br DEFINITION PUBLIC.
   PUBLIC SECTION.
     METHODS constructor
       IMPORTING
-        iv_labelidx TYPE i.
+        iv_labelidx TYPE int8.
 
     INTERFACES zif_wasm_instruction.
 
@@ -11,7 +11,7 @@ CLASS zcl_wasm_br DEFINITION PUBLIC.
       RETURNING VALUE(ri_instruction) TYPE REF TO zif_wasm_instruction.
 
   PRIVATE SECTION.
-    DATA mv_labelidx TYPE i.
+    DATA mv_labelidx TYPE int8.
 ENDCLASS.
 
 CLASS zcl_wasm_br IMPLEMENTATION.
