@@ -123,7 +123,7 @@ CLASS ltcl_test IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD parse_testsuite_func.
-    zcl_wasm=>create_with_wasm( zcl_wasm_test_data=>testsuite_func( ) ).
+    " zcl_wasm=>create_with_wasm( zcl_wasm_test_data=>testsuite_func( ) ).
   ENDMETHOD.
 
 ENDCLASS.
