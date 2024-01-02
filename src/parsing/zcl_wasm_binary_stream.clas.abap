@@ -28,7 +28,7 @@ CLASS zcl_wasm_binary_stream DEFINITION
         VALUE(rv_int) TYPE i .
     METHODS shift_u32
       RETURNING
-        VALUE(rv_int) TYPE i .
+        VALUE(rv_int) TYPE int8 .
     METHODS shift_f32
       RETURNING
         VALUE(rv_f) TYPE f .
@@ -191,7 +191,7 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
 
     DATA lv_hex   TYPE x LENGTH 1.
     DATA lv_bit   TYPE c LENGTH 1.
-    DATA lv_shift TYPE i VALUE 1.
+    DATA lv_shift TYPE int8 VALUE 1.
 
     DO.
       lv_hex = shift( 1 ).
