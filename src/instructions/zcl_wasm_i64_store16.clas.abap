@@ -1,4 +1,4 @@
-CLASS zcl_wasm_f32_load DEFINITION PUBLIC.
+CLASS zcl_wasm_i64_store16 DEFINITION PUBLIC.
   PUBLIC SECTION.
     INTERFACES zif_wasm_instruction.
 
@@ -16,7 +16,7 @@ CLASS zcl_wasm_f32_load DEFINITION PUBLIC.
     DATA mv_offset TYPE i.
 ENDCLASS.
 
-CLASS zcl_wasm_f32_load IMPLEMENTATION.
+CLASS zcl_wasm_i64_store16 IMPLEMENTATION.
 
   METHOD constructor.
     mv_align  = iv_align.
@@ -25,7 +25,7 @@ CLASS zcl_wasm_f32_load IMPLEMENTATION.
 
   METHOD parse.
 * todo: singletons?
-    ri_instruction = NEW zcl_wasm_i32_load(
+    ri_instruction = NEW zcl_wasm_i64_store16(
       iv_align  = io_body->shift_u32( )
       iv_offset = io_body->shift_u32( ) ).
   ENDMETHOD.

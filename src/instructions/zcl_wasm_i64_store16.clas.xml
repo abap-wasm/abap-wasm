@@ -3,9 +3,9 @@
  <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
   <asx:values>
    <VSEOCLASS>
-    <CLSNAME>ZCL_WASM_I64_LOAD32_U</CLSNAME>
+    <CLSNAME>ZCL_WASM_I64_STORE16</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>ZCL_WASM_I64_LOAD32_U</DESCRIPT>
+    <DESCRIPT>ZCL_WASM_I64_STORE16</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

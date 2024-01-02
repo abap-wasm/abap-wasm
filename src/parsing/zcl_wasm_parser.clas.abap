@@ -55,11 +55,33 @@ CLASS zcl_wasm_parser DEFINITION
         !io_body          TYPE REF TO zcl_wasm_binary_stream
       RETURNING
         VALUE(rt_results) TYPE zcl_wasm_module=>ty_types .
+
     METHODS parse_function
       IMPORTING
         !io_body          TYPE REF TO zcl_wasm_binary_stream
       RETURNING
         VALUE(rt_results) TYPE zcl_wasm_module=>ty_functions .
+
+    METHODS parse_table
+      IMPORTING
+        !io_body          TYPE REF TO zcl_wasm_binary_stream.
+
+    METHODS parse_data
+      IMPORTING
+        !io_body          TYPE REF TO zcl_wasm_binary_stream.
+
+    METHODS parse_global
+      IMPORTING
+        !io_body          TYPE REF TO zcl_wasm_binary_stream.
+
+    METHODS parse_element
+      IMPORTING
+        !io_body          TYPE REF TO zcl_wasm_binary_stream.
+
+    METHODS parse_memory
+      IMPORTING
+        !io_body          TYPE REF TO zcl_wasm_binary_stream.
+
     METHODS parse_export
       IMPORTING
         !io_body          TYPE REF TO zcl_wasm_binary_stream
@@ -101,25 +123,29 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
         WHEN gc_section_type.
           DATA(lt_types) = parse_type( lo_body ).
         WHEN gc_section_import.
-          ASSERT 0 = 'todo'.
+          ASSERT 1 = 'todo'.
         WHEN gc_section_function.
           DATA(lt_functions) = parse_function( lo_body ).
         WHEN gc_section_table.
-          ASSERT 0 = 'todo'.
+* todo
+          parse_table( lo_body ).
         WHEN gc_section_memory.
-          ASSERT 0 = 'todo'.
+* todo
+          parse_memory( lo_body ).
         WHEN gc_section_global.
-          ASSERT 0 = 'todo'.
+* todo
+          parse_global( lo_body ).
         WHEN gc_section_export.
           DATA(lt_exports) = parse_export( lo_body ).
         WHEN gc_section_start.
-          ASSERT 0 = 'todo'.
+          ASSERT 1 = 'todo'.
         WHEN gc_section_element.
-          ASSERT 0 = 'todo'.
+* todo
+          parse_element( lo_body ).
         WHEN gc_section_code.
           DATA(lt_codes) = parse_code( lo_body ).
         WHEN gc_section_data.
-          ASSERT 0 = 'todo'.
+          parse_data( lo_body ).
         WHEN OTHERS.
           ASSERT 0 = 1.
       ENDCASE.
@@ -178,14 +204,24 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
           APPEND zcl_wasm_local_tee=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-i32_eqz.
           APPEND zcl_wasm_i32_eqz=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-i32_wrap_i64.
+          APPEND zcl_wasm_i32_wrap_i64=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-i32_eq.
           APPEND zcl_wasm_i32_eq=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-i32_ne.
           APPEND zcl_wasm_i32_ne=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-f32_ne.
+          APPEND zcl_wasm_f32_ne=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-i32_lt_s.
           APPEND zcl_wasm_i32_lt_s=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-i32_lt_u.
           APPEND zcl_wasm_i32_lt_u=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-i64_store16.
+          APPEND zcl_wasm_i64_store16=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-f64_le.
+          APPEND zcl_wasm_f64_le=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-i64_sub.
+          APPEND zcl_wasm_i64_sub=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-i32_gt_s.
           APPEND zcl_wasm_i32_gt_s=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-i32_gt_u.
@@ -226,6 +262,18 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
           APPEND zcl_wasm_i32_store=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-i32_sub.
           APPEND zcl_wasm_i32_sub=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-i64_ctz.
+          APPEND zcl_wasm_i64_ctz=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-f32_neg.
+          APPEND zcl_wasm_f32_neg=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-f64_store.
+          APPEND zcl_wasm_f64_store=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-i32_store8.
+          APPEND zcl_wasm_i32_store8=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-i64_store.
+          APPEND zcl_wasm_i64_store=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-f64_neg.
+          APPEND zcl_wasm_f64_neg=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-br.
           APPEND zcl_wasm_br=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-f32_gt.
@@ -379,4 +427,173 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
     ENDDO.
 
   ENDMETHOD.
+
+  METHOD parse_memory.
+
+* https://webassembly.github.io/spec/core/binary/modules.html#binary-memsec
+
+    DATA(lv_count) = io_body->shift_u32( ).
+    " WRITE: / 'memories:', lv_count.
+
+    DO lv_count TIMES.
+      DATA(lv_limit) = io_body->shift( 1 ).
+
+      CASE lv_limit.
+        WHEN '00'.
+          DATA(lv_min) = io_body->shift_u32( ).
+          DATA(lv_max) = 0.
+        WHEN '01'.
+          lv_min = io_body->shift_u32( ).
+          lv_max = io_body->shift_u32( ).
+        WHEN OTHERS.
+          ASSERT 1 = 'todo'.
+      ENDCASE.
+
+* todo
+
+      " WRITE: / 'min:', lv_min, 'max:', lv_max.
+    ENDDO.
+
+  ENDMETHOD.
+
+  METHOD parse_data.
+
+* https://webassembly.github.io/spec/core/binary/modules.html#binary-datasec
+
+    DATA(lv_count) = io_body->shift_u32( ).
+    " WRITE: / 'data:', lv_count.
+
+    DO lv_count TIMES.
+      DATA(lv_type) = io_body->shift_u32( ).
+      " WRITE: / 'type:', lv_type.
+
+      CASE lv_type.
+        WHEN 0.
+          parse_instructions(
+            EXPORTING
+              io_body         = io_body
+            IMPORTING
+              ev_last_opcode  = DATA(lv_last_opcode)
+              et_instructions = DATA(lt_instructions) ).
+          ASSERT lv_last_opcode = zif_wasm_opcodes=>c_opcodes-end.
+
+          DATA(lv_vec) = io_body->shift_u32( ).
+          DATA(lv_contents) = io_body->shift( lv_vec ).
+          " WRITE / lv_contents.
+          " WRITE / io_body->get_data( ).
+        WHEN OTHERS.
+          WRITE / lv_type.
+          ASSERT 1 = 2.
+      ENDCASE.
+
+    ENDDO.
+
+  ENDMETHOD.
+
+  METHOD parse_table.
+
+* https://webassembly.github.io/spec/core/binary/modules.html#binary-tablesec
+
+    DATA(lv_count) = io_body->shift_u32( ).
+    " WRITE: / 'tables:', lv_count.
+
+    DO lv_count TIMES.
+      DATA(lv_reftype) = io_body->shift( 1 ).
+
+      CASE lv_reftype.
+        WHEN '70'.
+* funcref
+          DATA(lv_limit) = io_body->shift( 1 ).
+
+          CASE lv_limit.
+            WHEN '00'.
+              DATA(lv_min) = io_body->shift_u32( ).
+              DATA(lv_max) = 0.
+            WHEN '01'.
+              lv_min = io_body->shift_u32( ).
+              lv_max = io_body->shift_u32( ).
+            WHEN OTHERS.
+              ASSERT 1 = 'todo'.
+          ENDCASE.
+* todo
+        WHEN '6F'.
+* externref
+          ASSERT 1 = 'todo'.
+        WHEN OTHERS.
+          ASSERT 1 = 'todo'.
+      ENDCASE.
+
+    ENDDO.
+
+  ENDMETHOD.
+
+  METHOD parse_global.
+
+* https://webassembly.github.io/spec/core/binary/modules.html#binary-globalsec
+
+    DATA(lv_count) = io_body->shift_u32( ).
+
+    DO lv_count TIMES.
+      DATA(lv_type) = io_body->shift( 1 ).
+
+      parse_instructions(
+        EXPORTING
+          io_body         = io_body
+        IMPORTING
+          ev_last_opcode  = DATA(lv_last_opcode)
+          et_instructions = DATA(lt_instructions) ).
+      ASSERT lv_last_opcode = zif_wasm_opcodes=>c_opcodes-end.
+    ENDDO.
+
+  ENDMETHOD.
+
+  METHOD parse_element.
+
+* https://webassembly.github.io/spec/core/binary/modules.html#binary-elemsec
+
+    DATA(lv_count) = io_body->shift_u32( ).
+    " WRITE: / 'elements:', lv_count.
+
+    DO lv_count TIMES.
+      DATA(lv_type) = io_body->shift_u32( ).
+      " WRITE: / 'elementtype:', lv_type.
+
+      CASE lv_type.
+        WHEN 0.
+          parse_instructions(
+            EXPORTING
+              io_body         = io_body
+            IMPORTING
+              ev_last_opcode  = DATA(lv_last_opcode)
+              et_instructions = DATA(lt_instructions) ).
+          ASSERT lv_last_opcode = zif_wasm_opcodes=>c_opcodes-end.
+
+          DATA(lv_len) = io_body->shift_u32( ).
+          DO lv_len TIMES.
+            DATA(lv_funcidx) = io_body->shift_u32( ).
+            " WRITE: / 'funcidx', lv_funcidx.
+          ENDDO.
+        WHEN 1.
+          ASSERT 1 = 'todo'.
+        WHEN 2.
+          ASSERT 1 = 'todo'.
+        WHEN 3.
+          ASSERT 1 = 'todo'.
+        WHEN 4.
+          ASSERT 1 = 'todo'.
+        WHEN 5.
+          ASSERT 1 = 'todo'.
+        WHEN 6.
+          ASSERT 1 = 'todo'.
+        WHEN 7.
+          ASSERT 1 = 'todo'.
+        WHEN OTHERS.
+          WRITE / lv_type.
+          ASSERT 1 = 2.
+      ENDCASE.
+
+    ENDDO.
+
+  ENDMETHOD.
+
 ENDCLASS.
