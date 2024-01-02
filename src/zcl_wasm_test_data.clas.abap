@@ -282,6 +282,8 @@ CLASS zcl_wasm_test_data IMPLEMENTATION.
 
   METHOD testsuite_return.
 
+* https://github.com/WebAssembly/testsuite/blob/main/return.wast
+
     rv_xstr =
       |0061736D0100000001210760037F7F7F017F6000006000017F6000017E600001| &&
       |7D6000017C60027F7F017F033E3D010101010102030405010502020102010101| &&
@@ -345,6 +347,8 @@ CLASS zcl_wasm_test_data IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD testsuite_func.
+
+* https://github.com/WebAssembly/testsuite/blob/main/func.wast
 
     rv_xstr =
       |0061736D0100000001BC011C6000006000006000017F60017F0060037F7C7F01| &&
