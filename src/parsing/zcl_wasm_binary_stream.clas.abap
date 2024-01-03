@@ -49,7 +49,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_WASM_BINARY_STREAM IMPLEMENTATION.
+CLASS zcl_wasm_binary_stream IMPLEMENTATION.
 
 
   METHOD constructor.
@@ -158,6 +158,8 @@ CLASS ZCL_WASM_BINARY_STREAM IMPLEMENTATION.
       RETURN.
     ENDIF.
 
+* todo
+
     CASE lv_hex.
       WHEN '0000000000001040'.
         rv_f = 4.
@@ -167,6 +169,12 @@ CLASS ZCL_WASM_BINARY_STREAM IMPLEMENTATION.
         rv_f = 7.
       WHEN '0000000000002440'.
         rv_f = 10.
+      WHEN 'E17A14AE47715340'.
+        rv_f = '77.77'.
+      WHEN '52B81E85EBB15340'.
+        rv_f = '78.78'.
+      WHEN 'C3F5285C8FF25340'.
+        rv_f = '79.79'.
       WHEN OTHERS.
         WRITE / lv_hex.
         ASSERT lv_hex = 'todo'.
