@@ -2,8 +2,9 @@
   "name": "abap-wasm",
   "private": true,
   "scripts": {
-    "downport": "rm -rf downport && cp src -r downport && abaplint --fix abaplint-downport.json",
-    "unit": "rm -rf output && abap_transpile && echo RUNNING && node output/index.mjs",
+    "downport": "rm -rf downport && cp src -r downport && cp test -r downport && abaplint --fix abaplint-downport.json",
+    "testsuite": "echo RUNNING TESTSUITE && node test/testsuite.mjs",
+    "unit": "rm -rf output && abap_transpile && echo RUNNING UNIT TEST && node output/index.mjs",
     "lint": "abaplint",
     "test": "npm run lint && npm run downport && npm run unit"
   },

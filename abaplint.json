@@ -1,6 +1,6 @@
 {
   "global": {
-    "files": "/src/**/*.*",
+    "files": "/{src,test}/**/*.*",
     "skipGeneratedGatewayClasses": true,
     "skipGeneratedPersistentClasses": true,
     "skipGeneratedFunctionGroups": true,
@@ -149,6 +149,7 @@
     "newline_between_methods": true,
     "no_public_attributes": true,
     "object_naming": {
+      "exclude": ["/test/"],
       "patternKind": "required",
       "ignoreNames": [],
       "ignorePatterns": [],
