@@ -7,7 +7,7 @@ ENDCLASS.
 CLASS cl_testsuite IMPLEMENTATION.
 
   METHOD run.
-    WRITE / 'CL_TEST'.
+    WRITE / 'todo test'.
   ENDMETHOD.
 
 ENDCLASS.

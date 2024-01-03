@@ -6,7 +6,7 @@
     "testsuite": "echo RUNNING TESTSUITE && node test/testsuite.mjs",
     "unit": "rm -rf output && abap_transpile && echo RUNNING UNIT TEST && node output/index.mjs",
     "lint": "abaplint",
-    "test": "npm run lint && npm run downport && npm run unit"
+    "test": "npm run lint && npm run downport && npm run unit && npm run testsuite"
   },
   "author": "Lars Hvam Petersen",
   "license": "MIT",
