@@ -1,6 +1,8 @@
 CLASS cl_testsuite DEFINITION PUBLIC CREATE PUBLIC.
   PUBLIC SECTION.
-    CLASS-METHODS run.
+    CLASS-METHODS run
+      RETURNING
+        VALUE(rv_html) TYPE string.
   PRIVATE SECTION.
     TYPES: BEGIN OF ty_file,
              filename TYPE string,
@@ -34,7 +36,9 @@ CLASS cl_testsuite DEFINITION PUBLIC CREATE PUBLIC.
     CLASS-METHODS run_folder
       IMPORTING
         iv_folder TYPE string
-        it_files  TYPE ty_files.
+        it_files  TYPE ty_files
+      RETURNING
+        VALUE(rv_html) TYPE string.
 ENDCLASS.
 
 
@@ -62,17 +66,22 @@ CLASS cl_testsuite IMPLEMENTATION.
       hex      = lv_hex ) TO lt_files.
     WRITE / '@KERNEL   }'.
 
-    run_folder(
+    rv_html = rv_html && run_folder(
       iv_folder = lv_folder
       it_files  = lt_files ).
-
+    IF 1 = 1.
+      RETURN.
+    ENDIF.
     WRITE / '@KERNEL }'.
 
   ENDMETHOD.
 
   METHOD run_folder.
 
-    DATA ls_json TYPE ty_json.
+    DATA ls_json     TYPE ty_json.
+    DATA lv_filename TYPE string.
+    DATA lo_wasm     TYPE REF TO zif_wasm.
+    DATA lv_hex      TYPE xstring.
 
     READ TABLE it_files WITH KEY filename = |{ iv_folder }.json| INTO DATA(ls_file).
     ASSERT sy-subrc = 0.
@@ -84,6 +93,37 @@ CLASS cl_testsuite IMPLEMENTATION.
         data = ls_json ).
 
     WRITE / ls_json-source_filename.
+
+    rv_html = |<h1>{ ls_json-source_filename }</h1>\n|.
+    LOOP AT ls_json-commands INTO DATA(ls_command).
+      DATA(lv_command) = /ui2/cl_json=>serialize(
+        pretty_name = /ui2/cl_json=>pretty_mode-low_case
+        compress    = abap_true
+        data        = ls_command ).
+      rv_html = rv_html && |<pre>| && lv_command && |</pre>\n|.
+
+      TRY.
+          CASE ls_command-type.
+            WHEN 'module'.
+              lv_filename = './testsuite/' && iv_folder && '/' && ls_command-filename.
+              WRITE / '@KERNEL const fs = await import("fs");'.
+              WRITE / '@KERNEL lv_hex.set(fs.readFileSync(lv_filename.get()).toString("hex").toUpperCase());'.
+              lo_wasm = zcl_wasm=>create_with_wasm( lv_hex ).
+              rv_html = rv_html && |<p style="background-color: green">loaded</p>\n|.
+            WHEN 'assert_return'.
+              rv_html = rv_html && |<p style="background-color: yellow">todo</p>\n|.
+            WHEN 'assert_trap'.
+              rv_html = rv_html && |<p style="background-color: yellow">todo</p>\n|.
+            WHEN 'assert_malformed'.
+              rv_html = rv_html && |<p style="background-color: yellow">todo</p>\n|.
+            WHEN OTHERS.
+              WRITE / ls_command-type.
+              ASSERT 1 = 'todo'.
+          ENDCASE.
+        CATCH cx_static_check INTO DATA(lx_error).
+          rv_html = rv_html && |<p style="background-color: red">exception</p>\n|.
+      ENDTRY.
+    ENDLOOP.
 
   ENDMETHOD.
 
