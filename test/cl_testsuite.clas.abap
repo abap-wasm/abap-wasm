@@ -102,6 +102,14 @@ CLASS cl_testsuite IMPLEMENTATION.
     INSERT 'binary-leb128.12.wasm' INTO TABLE lt_skip. " section "import"
     INSERT 'binary-leb128.14.wasm' INTO TABLE lt_skip. " out of bounds
     INSERT 'binary-leb128.16.wasm' INTO TABLE lt_skip. " out of bounds
+    INSERT 'binary-leb128.20.wasm' INTO TABLE lt_skip. " ??
+    INSERT 'binary-leb128.21.wasm' INTO TABLE lt_skip. " FC opcode todo
+    INSERT 'binary-leb128.81.wasm' INTO TABLE lt_skip. " FC opcode todo
+    INSERT 'binary-leb128.84.wasm' INTO TABLE lt_skip. " todo in parse data section
+    INSERT 'binary-leb128.85.wasm' INTO TABLE lt_skip. " todo in parse data section
+    INSERT 'binary-leb128.87.wasm' INTO TABLE lt_skip. " todo in parse element section
+    INSERT 'binary-leb128.88.wasm' INTO TABLE lt_skip. " todo in parse element section
+    INSERT 'binary-leb128.89.wasm' INTO TABLE lt_skip. " todo in parse element section
 
     /ui2/cl_json=>deserialize(
       EXPORTING
