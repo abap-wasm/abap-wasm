@@ -86,6 +86,8 @@ CLASS cl_testsuite IMPLEMENTATION.
     READ TABLE it_files WITH KEY filename = |{ iv_folder }.json| INTO DATA(ls_file).
     ASSERT sy-subrc = 0.
 
+    WRITE / '@KERNEL const fs = await import("fs");'.
+
     /ui2/cl_json=>deserialize(
       EXPORTING
         json = cl_abap_codepage=>convert_from( ls_file-hex )
@@ -106,8 +108,9 @@ CLASS cl_testsuite IMPLEMENTATION.
           CASE ls_command-type.
             WHEN 'module'.
               lv_filename = './testsuite/' && iv_folder && '/' && ls_command-filename.
-              WRITE / '@KERNEL const fs = await import("fs");'.
+              WRITE: / 'load:', ls_command-filename.
               WRITE / '@KERNEL lv_hex.set(fs.readFileSync(lv_filename.get()).toString("hex").toUpperCase());'.
+*              WRITE / lv_hex.
               lo_wasm = zcl_wasm=>create_with_wasm( lv_hex ).
               rv_html = rv_html && |<p style="background-color: green">loaded</p>\n|.
             WHEN 'assert_return'.
