@@ -69,9 +69,9 @@ CLASS cl_testsuite IMPLEMENTATION.
     rv_html = rv_html && run_folder(
       iv_folder = lv_folder
       it_files  = lt_files ).
-    IF 1 = 1.
-      RETURN.
-    ENDIF.
+    " IF 1 = 1.
+    "   RETURN.
+    " ENDIF.
     WRITE / '@KERNEL }'.
 
   ENDMETHOD.
@@ -118,6 +118,8 @@ CLASS cl_testsuite IMPLEMENTATION.
             WHEN 'assert_trap'.
               rv_html = rv_html && |<p style="background-color: yellow">todo</p>\n|.
             WHEN 'assert_malformed'.
+              rv_html = rv_html && |<p style="background-color: yellow">todo</p>\n|.
+            WHEN 'assert_invalid'.
               rv_html = rv_html && |<p style="background-color: yellow">todo</p>\n|.
             WHEN OTHERS.
               WRITE / ls_command-type.

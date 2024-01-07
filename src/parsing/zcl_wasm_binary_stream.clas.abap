@@ -161,6 +161,8 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
 * todo
 
     CASE lv_hex.
+      WHEN '000000000000F03F'.
+        rv_f = 1.
       WHEN '0000000000001040'.
         rv_f = 4.
       WHEN '0000000000000840'.
