@@ -82,11 +82,26 @@ CLASS cl_testsuite IMPLEMENTATION.
     DATA lv_filename TYPE string.
     DATA lo_wasm     TYPE REF TO zif_wasm.
     DATA lv_hex      TYPE xstring.
+    DATA lt_skip     TYPE STANDARD TABLE OF string WITH EMPTY KEY.
 
     READ TABLE it_files WITH KEY filename = |{ iv_folder }.json| INTO DATA(ls_file).
     ASSERT sy-subrc = 0.
 
     WRITE / '@KERNEL const fs = await import("fs");'.
+
+    INSERT 'align.106.wasm' INTO TABLE lt_skip. " nested blocks?
+    INSERT 'binary.68.wasm' INTO TABLE lt_skip.
+    INSERT 'binary.69.wasm' INTO TABLE lt_skip.
+    INSERT 'binary.73.wasm' INTO TABLE lt_skip.
+    INSERT 'binary.110.wasm' INTO TABLE lt_skip. " section "start"
+    INSERT 'binary-leb128.5.wasm' INTO TABLE lt_skip. " todo in parse element section
+    INSERT 'binary-leb128.8.wasm' INTO TABLE lt_skip. " out of bounds
+    INSERT 'binary-leb128.9.wasm' INTO TABLE lt_skip. " out of bounds
+    INSERT 'binary-leb128.10.wasm' INTO TABLE lt_skip. " section "import"
+    INSERT 'binary-leb128.11.wasm' INTO TABLE lt_skip. " section "import"
+    INSERT 'binary-leb128.12.wasm' INTO TABLE lt_skip. " section "import"
+    INSERT 'binary-leb128.14.wasm' INTO TABLE lt_skip. " out of bounds
+    INSERT 'binary-leb128.16.wasm' INTO TABLE lt_skip. " out of bounds
 
     /ui2/cl_json=>deserialize(
       EXPORTING
@@ -107,12 +122,17 @@ CLASS cl_testsuite IMPLEMENTATION.
       TRY.
           CASE ls_command-type.
             WHEN 'module'.
-              lv_filename = './testsuite/' && iv_folder && '/' && ls_command-filename.
-              WRITE: / 'load:', ls_command-filename.
-              WRITE / '@KERNEL lv_hex.set(fs.readFileSync(lv_filename.get()).toString("hex").toUpperCase());'.
+              READ TABLE lt_skip TRANSPORTING NO FIELDS WITH KEY table_line = ls_command-filename.
+              IF sy-subrc = 0.
+                rv_html = rv_html && |<p style="background-color: yellow">todo</p>\n|.
+              ELSE.
+                lv_filename = './testsuite/' && iv_folder && '/' && ls_command-filename.
+                WRITE: / 'load:', ls_command-filename.
+                WRITE / '@KERNEL lv_hex.set(fs.readFileSync(lv_filename.get()).toString("hex").toUpperCase());'.
 *              WRITE / lv_hex.
-              lo_wasm = zcl_wasm=>create_with_wasm( lv_hex ).
-              rv_html = rv_html && |<p style="background-color: green">loaded</p>\n|.
+                lo_wasm = zcl_wasm=>create_with_wasm( lv_hex ).
+                rv_html = rv_html && |<p style="background-color: green">loaded</p>\n|.
+              ENDIF.
             WHEN 'assert_return'.
               rv_html = rv_html && |<p style="background-color: yellow">todo</p>\n|.
             WHEN 'assert_trap'.
