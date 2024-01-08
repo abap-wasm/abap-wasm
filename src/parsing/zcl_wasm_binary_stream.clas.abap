@@ -163,10 +163,14 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
     CASE lv_hex.
       WHEN '000000000000F03F'.
         rv_f = 1.
-      WHEN '0000000000001040'.
-        rv_f = 4.
       WHEN '0000000000000840'.
         rv_f = 3.
+      WHEN '0000000000001040'.
+        rv_f = 4.
+      WHEN '0000000000001440'.
+        rv_f = 5.
+      WHEN '0000000000001840'.
+        rv_f = 6.
       WHEN '0000000000001C40'.
         rv_f = 7.
       WHEN '0000000000002440'.
