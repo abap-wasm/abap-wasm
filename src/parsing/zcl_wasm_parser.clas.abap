@@ -72,6 +72,10 @@ CLASS zcl_wasm_parser DEFINITION
       IMPORTING
         !io_body          TYPE REF TO zcl_wasm_binary_stream.
 
+    METHODS parse_import
+      IMPORTING
+        !io_body          TYPE REF TO zcl_wasm_binary_stream.
+
     METHODS parse_global
       IMPORTING
         !io_body          TYPE REF TO zcl_wasm_binary_stream.
@@ -128,8 +132,8 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
         WHEN gc_section_type.
           DATA(lt_types) = parse_type( lo_body ).
         WHEN gc_section_import.
-          WRITE / 'todo, parse section import'.
-          ASSERT 1 = 'todo'.
+* todo
+          parse_import( lo_body ).
         WHEN gc_section_function.
           DATA(lt_functions) = parse_function( lo_body ).
         WHEN gc_section_table.
@@ -166,6 +170,35 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
       it_codes     = lt_codes
       it_exports   = lt_exports
       it_functions = lt_functions ).
+
+  ENDMETHOD.
+
+  METHOD parse_import.
+
+* https://webassembly.github.io/spec/core/binary/modules.html#binary-importsec
+
+    DO io_body->shift_u32( ) TIMES.
+      DATA(lv_mod) = io_body->shift_utf8( ).
+      WRITE / lv_mod.
+      DATA(lv_mn) = io_body->shift_utf8( ).
+      WRITE / lv_mn.
+
+      DATA(lv_desc) = io_body->shift( 1 ).
+      CASE lv_desc.
+        WHEN '00'.
+          DATA(lv_typeidx) = io_body->shift_u32( ).
+        WHEN '01'.
+          ASSERT 1 = 'todo'.
+        WHEN '02'.
+          ASSERT 1 = 'todo'.
+        WHEN '03'.
+          DATA(lv_valtype) = io_body->shift( 1 ).
+          DATA(lv_mut) = io_body->shift( 1 ).
+        WHEN OTHERS.
+          ASSERT 1 = 'todo'.
+      ENDCASE.
+
+    ENDDO.
 
   ENDMETHOD.
 

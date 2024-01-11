@@ -263,7 +263,7 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
 
     DATA lo_conv TYPE REF TO object.
 
-    DATA(lv_xstr) = shift( shift_int( ) ).
+    DATA(lv_xstr) = shift( shift_u32( ) ).
 
     TRY.
         CALL METHOD ('CL_ABAP_CONV_CODEPAGE')=>create_in
