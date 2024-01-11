@@ -106,9 +106,6 @@ CLASS cl_testsuite IMPLEMENTATION.
     INSERT 'binary-leb128.81.wasm' INTO TABLE lt_skip. " FC opcode todo
     INSERT 'binary-leb128.84.wasm' INTO TABLE lt_skip. " todo in parse data section
     INSERT 'binary-leb128.85.wasm' INTO TABLE lt_skip. " todo in parse data section
-    INSERT 'binary-leb128.87.wasm' INTO TABLE lt_skip. " todo in parse element section
-    INSERT 'binary-leb128.88.wasm' INTO TABLE lt_skip. " todo in parse element section
-    INSERT 'binary-leb128.89.wasm' INTO TABLE lt_skip. " todo in parse element section
     INSERT 'br_table.0.wasm' INTO TABLE lt_skip. " out of bounds, during parsing code section
     INSERT 'bulk.0.wasm' INTO TABLE lt_skip. " todo in parse data section
     INSERT 'bulk.1.wasm' INTO TABLE lt_skip. " todo in parse element section
