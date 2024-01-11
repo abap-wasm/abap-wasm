@@ -43,6 +43,8 @@ CLASS zcl_wasm_parser DEFINITION
       gc_section_code     TYPE x LENGTH 1 VALUE '0A' ##NO_TEXT.
     CONSTANTS:
       gc_section_data     TYPE x LENGTH 1 VALUE '0B' ##NO_TEXT.
+    CONSTANTS:
+      gc_section_data_count TYPE x LENGTH 1 VALUE '0C' ##NO_TEXT.
 
     METHODS parse_code
       IMPORTING
@@ -116,7 +118,6 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
       DATA(lv_length) = lo_stream->shift_u32( ).
       DATA(lo_body) = NEW zcl_wasm_binary_stream( lo_stream->shift( lv_length ) ).
 
-      " WRITE: / 'section:', lv_section.
       " WRITE: / 'body:', lo_body->get_data( ).
 
       CASE lv_section.
@@ -152,7 +153,10 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
           DATA(lt_codes) = parse_code( lo_body ).
         WHEN gc_section_data.
           parse_data( lo_body ).
+        WHEN gc_section_data_count.
+          DATA(lv_data_count) = lo_body->shift_u32( ).
         WHEN OTHERS.
+          WRITE: / 'unknown section:', lv_section.
           ASSERT 0 = 1.
       ENDCASE.
     ENDWHILE.
