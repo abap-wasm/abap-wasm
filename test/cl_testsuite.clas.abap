@@ -89,7 +89,6 @@ CLASS cl_testsuite IMPLEMENTATION.
 
     WRITE / '@KERNEL const fs = await import("fs");'.
 
-    INSERT 'align.106.wasm' INTO TABLE lt_skip. " nested blocks?
     INSERT 'binary.68.wasm' INTO TABLE lt_skip.
     INSERT 'binary.69.wasm' INTO TABLE lt_skip.
     INSERT 'binary.73.wasm' INTO TABLE lt_skip.
