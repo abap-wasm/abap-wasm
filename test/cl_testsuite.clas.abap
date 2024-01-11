@@ -93,9 +93,6 @@ CLASS cl_testsuite IMPLEMENTATION.
     INSERT 'binary.68.wasm' INTO TABLE lt_skip.
     INSERT 'binary.69.wasm' INTO TABLE lt_skip.
     INSERT 'binary.73.wasm' INTO TABLE lt_skip.
-    INSERT 'binary-leb128.8.wasm' INTO TABLE lt_skip. " out of bounds
-    INSERT 'binary-leb128.9.wasm' INTO TABLE lt_skip. " out of bounds
-    INSERT 'binary-leb128.14.wasm' INTO TABLE lt_skip. " out of bounds
     INSERT 'binary-leb128.16.wasm' INTO TABLE lt_skip. " out of bounds
     INSERT 'binary-leb128.20.wasm' INTO TABLE lt_skip. " ??
     INSERT 'binary-leb128.21.wasm' INTO TABLE lt_skip. " FC opcode todo
