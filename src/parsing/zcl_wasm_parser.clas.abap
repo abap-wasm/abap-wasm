@@ -502,7 +502,7 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
         OR ls_result-type = zcl_wasm_types=>c_export_type-mem
         OR ls_result-type = zcl_wasm_types=>c_export_type-global.
 
-      ls_result-index = io_body->shift_int( ).
+      ls_result-index = io_body->shift_u32( ).
 
       APPEND ls_result TO rt_results.
     ENDDO.
