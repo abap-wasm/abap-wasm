@@ -82,6 +82,10 @@ CLASS zcl_wasm_parser DEFINITION
       IMPORTING
         !io_body          TYPE REF TO zcl_wasm_binary_stream.
 
+    METHODS parse_start
+      IMPORTING
+        !io_body          TYPE REF TO zcl_wasm_binary_stream.
+
     METHODS parse_export
       IMPORTING
         !io_body          TYPE REF TO zcl_wasm_binary_stream
@@ -123,6 +127,7 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
         WHEN gc_section_type.
           DATA(lt_types) = parse_type( lo_body ).
         WHEN gc_section_import.
+          WRITE / 'todo, parse section import'.
           ASSERT 1 = 'todo'.
         WHEN gc_section_function.
           DATA(lt_functions) = parse_function( lo_body ).
@@ -138,7 +143,8 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
         WHEN gc_section_export.
           DATA(lt_exports) = parse_export( lo_body ).
         WHEN gc_section_start.
-          ASSERT 1 = 'todo'.
+* todo
+          parse_start( lo_body ).
         WHEN gc_section_element.
 * todo
           parse_element( lo_body ).
@@ -159,6 +165,13 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
 
   ENDMETHOD.
 
+  METHOD parse_start.
+
+* https://webassembly.github.io/spec/core/binary/modules.html#start-section
+
+    DATA(lv_funcidx) = io_body->shift_u32( ).
+
+  ENDMETHOD.
 
   METHOD parse_code.
 

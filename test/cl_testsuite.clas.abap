@@ -93,7 +93,6 @@ CLASS cl_testsuite IMPLEMENTATION.
     INSERT 'binary.68.wasm' INTO TABLE lt_skip.
     INSERT 'binary.69.wasm' INTO TABLE lt_skip.
     INSERT 'binary.73.wasm' INTO TABLE lt_skip.
-    INSERT 'binary.110.wasm' INTO TABLE lt_skip. " section "start"
     INSERT 'binary-leb128.8.wasm' INTO TABLE lt_skip. " out of bounds
     INSERT 'binary-leb128.9.wasm' INTO TABLE lt_skip. " out of bounds
     INSERT 'binary-leb128.10.wasm' INTO TABLE lt_skip. " section "import"
