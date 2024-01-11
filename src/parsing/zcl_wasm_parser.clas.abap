@@ -568,12 +568,8 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
 
 * https://webassembly.github.io/spec/core/binary/modules.html#binary-datasec
 
-    DATA(lv_count) = io_body->shift_u32( ).
-    " WRITE: / 'data:', lv_count.
-
-    DO lv_count TIMES.
+    DO io_body->shift_u32( ) TIMES.
       DATA(lv_type) = io_body->shift_u32( ).
-      " WRITE: / 'type:', lv_type.
 
       CASE lv_type.
         WHEN 0.
@@ -587,10 +583,21 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
 
           DATA(lv_vec) = io_body->shift_u32( ).
           DATA(lv_contents) = io_body->shift( lv_vec ).
-          " WRITE / lv_contents.
-          " WRITE / io_body->get_data( ).
+        WHEN 2.
+          DATA(lv_memidx) = io_body->shift_u32( ).
+
+          parse_instructions(
+            EXPORTING
+              io_body         = io_body
+            IMPORTING
+              ev_last_opcode  = lv_last_opcode
+              et_instructions = lt_instructions ).
+          ASSERT lv_last_opcode = zif_wasm_opcodes=>c_opcodes-end.
+
+          lv_vec = io_body->shift_u32( ).
+          lv_contents = io_body->shift( lv_vec ).
         WHEN OTHERS.
-          WRITE / lv_type.
+          WRITE: / 'type:', lv_type.
           ASSERT 1 = 2.
       ENDCASE.
 
