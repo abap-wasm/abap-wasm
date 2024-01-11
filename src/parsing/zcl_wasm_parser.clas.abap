@@ -583,6 +583,9 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
 
           DATA(lv_vec) = io_body->shift_u32( ).
           DATA(lv_contents) = io_body->shift( lv_vec ).
+        WHEN 1.
+          lv_vec = io_body->shift_u32( ).
+          lv_contents = io_body->shift( lv_vec ).
         WHEN 2.
           DATA(lv_memidx) = io_body->shift_u32( ).
 
