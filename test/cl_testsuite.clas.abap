@@ -108,17 +108,16 @@ CLASS cl_testsuite IMPLEMENTATION.
     INSERT 'binary-leb128.85.wasm' INTO TABLE lt_skip. " todo in parse data section
     INSERT 'br_table.0.wasm' INTO TABLE lt_skip. " out of bounds, during parsing code section
     INSERT 'bulk.0.wasm' INTO TABLE lt_skip. " todo in parse data section
-*    INSERT 'bulk.1.wasm' INTO TABLE lt_skip. " todo in parse element section
     INSERT 'bulk.2.wasm' INTO TABLE lt_skip. " FC opcode todo
     INSERT 'bulk.3.wasm' INTO TABLE lt_skip. " FC opcode todo
     INSERT 'bulk.4.wasm' INTO TABLE lt_skip. " unknown/wrong section
     INSERT 'bulk.5.wasm' INTO TABLE lt_skip. " unknown/wrong section
     INSERT 'bulk.6.wasm' INTO TABLE lt_skip. " unknown/wrong section
     INSERT 'bulk.7.wasm' INTO TABLE lt_skip. " unknown/wrong section
-    INSERT 'bulk.8.wasm' INTO TABLE lt_skip. " todo in parse element section
-    INSERT 'bulk.9.wasm' INTO TABLE lt_skip. " todo in parse element section
-    INSERT 'bulk.10.wasm' INTO TABLE lt_skip. " todo in parse element section
-    INSERT 'bulk.11.wasm' INTO TABLE lt_skip. " todo in parse element section
+    INSERT 'bulk.8.wasm' INTO TABLE lt_skip. " FC opcode todo
+    INSERT 'bulk.9.wasm' INTO TABLE lt_skip. " FC opcode todo
+    INSERT 'bulk.10.wasm' INTO TABLE lt_skip. " FC opcode todo
+    INSERT 'bulk.11.wasm' INTO TABLE lt_skip. " FC opcode todo
     INSERT 'bulk.12.wasm' INTO TABLE lt_skip. " FC opcode todo
     INSERT 'call.0.wasm' INTO TABLE lt_skip. " error in block parsing
 

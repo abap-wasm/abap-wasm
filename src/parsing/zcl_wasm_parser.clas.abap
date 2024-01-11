@@ -630,7 +630,12 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
             " WRITE: / 'funcidx', lv_funcidx.
           ENDDO.
         WHEN 1.
-          ASSERT 1 = 'todo'.
+          DATA(lv_elemkind) = io_body->shift( 1 ).
+
+          DO io_body->shift_u32( ) TIMES.
+            lv_funcidx = io_body->shift_u32( ).
+            " WRITE: / 'funcidx', lv_funcidx.
+          ENDDO.
         WHEN 2.
           DATA(lv_tableidx) = io_body->shift_u32( ).
 
@@ -642,7 +647,7 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
               et_instructions = lt_instructions ).
           ASSERT lv_last_opcode = zif_wasm_opcodes=>c_opcodes-end.
 
-          DATA(lv_elemkind) = io_body->shift( 1 ).
+          lv_elemkind = io_body->shift( 1 ).
 
           DO io_body->shift_u32( ) TIMES.
             lv_funcidx = io_body->shift_u32( ).
