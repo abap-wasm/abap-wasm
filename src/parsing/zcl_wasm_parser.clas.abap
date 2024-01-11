@@ -608,7 +608,6 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
 
     DO lv_count TIMES.
       DATA(lv_type) = io_body->shift_u32( ).
-*      WRITE: / 'elementtype:', lv_type.
 
       CASE lv_type.
         WHEN 0.
@@ -620,8 +619,7 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
               et_instructions = DATA(lt_instructions) ).
           ASSERT lv_last_opcode = zif_wasm_opcodes=>c_opcodes-end.
 
-          DATA(lv_len) = io_body->shift_u32( ).
-          DO lv_len TIMES.
+          DO io_body->shift_u32( ) TIMES.
             DATA(lv_funcidx) = io_body->shift_u32( ).
             " WRITE: / 'funcidx', lv_funcidx.
           ENDDO.
@@ -640,8 +638,7 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
 
           DATA(lv_elemkind) = io_body->shift( 1 ).
 
-          lv_len = io_body->shift_u32( ).
-          DO lv_len TIMES.
+          DO io_body->shift_u32( ) TIMES.
             lv_funcidx = io_body->shift_u32( ).
             " WRITE: / 'funcidx', lv_funcidx.
           ENDDO.
@@ -650,13 +647,23 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
         WHEN 4.
           ASSERT 1 = 'todo'.
         WHEN 5.
-          ASSERT 1 = 'todo'.
+          DATA(lv_reftype) = io_body->shift( 1 ).
+
+          DO io_body->shift_u32( ) TIMES.
+            parse_instructions(
+              EXPORTING
+                io_body         = io_body
+              IMPORTING
+                ev_last_opcode  = lv_last_opcode
+                et_instructions = lt_instructions ).
+            ASSERT lv_last_opcode = zif_wasm_opcodes=>c_opcodes-end.
+          ENDDO.
         WHEN 6.
           ASSERT 1 = 'todo'.
         WHEN 7.
           ASSERT 1 = 'todo'.
         WHEN OTHERS.
-          WRITE / lv_type.
+          WRITE: / 'elementtype:', lv_type.
           ASSERT 1 = 2.
       ENDCASE.
 

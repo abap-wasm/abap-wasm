@@ -176,8 +176,11 @@ INTERFACE zif_wasm_opcodes PUBLIC.
         f64_convert_s_i64 TYPE ty_opcode VALUE 'B9',
         f64_convert_u_i64 TYPE ty_opcode VALUE 'BA',
         f64_promote_f32   TYPE ty_opcode VALUE 'BB',
-        i32_extend8_s  TYPE ty_opcode VALUE 'C0',
-        i32_extend16_s TYPE ty_opcode VALUE 'C1',
+        i32_extend8_s     TYPE ty_opcode VALUE 'C0',
+        i32_extend16_s    TYPE ty_opcode VALUE 'C1',
+        ref_null          TYPE ty_opcode VALUE 'D0',
+        ref_is_null       TYPE ty_opcode VALUE 'D1',
+        ref_func          TYPE ty_opcode VALUE 'D2',
       END OF c_opcodes.
 
 ENDINTERFACE.
