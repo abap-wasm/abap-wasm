@@ -214,9 +214,9 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
 
 * https://webassembly.github.io/spec/core/binary/modules.html#binary-codesec
 
-    DO io_body->shift_int( ) TIMES.
+    DO io_body->shift_u32( ) TIMES.
 
-      DATA(lv_code_size) = io_body->shift_int( ).
+      DATA(lv_code_size) = io_body->shift_u32( ).
 
       DATA(lo_code) = NEW zcl_wasm_binary_stream( io_body->shift( lv_code_size ) ).
 
@@ -490,7 +490,7 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
 
     DATA ls_result TYPE zcl_wasm_module=>ty_export.
 
-    DATA(lv_count) = io_body->shift_int( ).
+    DATA(lv_count) = io_body->shift_u32( ).
     " WRITE: / 'exports:', lv_count.
 
     DO lv_count TIMES.
