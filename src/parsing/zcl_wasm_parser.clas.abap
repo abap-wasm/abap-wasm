@@ -649,10 +649,12 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
 
 * https://webassembly.github.io/spec/core/binary/modules.html#binary-globalsec
 
-    DATA(lv_count) = io_body->shift_u32( ).
-
-    DO lv_count TIMES.
+    DO io_body->shift_u32( ) TIMES.
       DATA(lv_type) = io_body->shift( 1 ).
+      DATA(lv_mut) = io_body->shift( 1 ).
+
+      " WRITE: / 'type:', lv_type.
+      " WRITE: / 'mut:', lv_mut.
 
       parse_instructions(
         EXPORTING

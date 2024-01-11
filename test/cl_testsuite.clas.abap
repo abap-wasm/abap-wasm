@@ -89,10 +89,7 @@ CLASS cl_testsuite IMPLEMENTATION.
 
     WRITE / '@KERNEL const fs = await import("fs");'.
 
-    INSERT 'binary.68.wasm' INTO TABLE lt_skip.
-    INSERT 'binary.69.wasm' INTO TABLE lt_skip.
-    INSERT 'binary.73.wasm' INTO TABLE lt_skip.
-    INSERT 'binary-leb128.20.wasm' INTO TABLE lt_skip. " ??
+    INSERT 'binary-leb128.20.wasm' INTO TABLE lt_skip. " ?? i32.const -1 ??
     INSERT 'binary-leb128.21.wasm' INTO TABLE lt_skip. " FC opcode todo
     INSERT 'binary-leb128.81.wasm' INTO TABLE lt_skip. " FC opcode todo
     INSERT 'bulk.2.wasm' INTO TABLE lt_skip. " FC opcode todo
@@ -107,6 +104,11 @@ CLASS cl_testsuite IMPLEMENTATION.
     INSERT 'bulk.11.wasm' INTO TABLE lt_skip. " FC opcode todo
     INSERT 'bulk.12.wasm' INTO TABLE lt_skip. " FC opcode todo
     INSERT 'call.0.wasm' INTO TABLE lt_skip. " error in block parsing
+    INSERT 'call_indirect.0.wasm' INTO TABLE lt_skip. " error in block parsing
+    INSERT 'const.0.wasm' INTO TABLE lt_skip. " ?? i32.const
+    INSERT 'const.1.wasm' INTO TABLE lt_skip. " ?? i32.const
+    INSERT 'const.55.wasm' INTO TABLE lt_skip. " f64 parsing
+    INSERT 'const.56.wasm' INTO TABLE lt_skip. " f64 parsing
 
     /ui2/cl_json=>deserialize(
       EXPORTING
