@@ -96,6 +96,7 @@ CLASS cl_testsuite IMPLEMENTATION.
       CHANGING
         data = ls_json ).
 
+    WRITE / '================================'.
     WRITE / ls_json-source_filename.
 
     rv_html = |<h1>{ ls_json-source_filename }</h1>\n|.
