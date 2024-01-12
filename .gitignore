@@ -4,3 +4,4 @@ open-abap
 downport
 testsuite.html
 deps
+foo.txt
