@@ -23,9 +23,6 @@ CLASS zcl_wasm_binary_stream DEFINITION
         !iv_length     TYPE numeric
       RETURNING
         VALUE(rv_data) TYPE xstring .
-    METHODS shift_int
-      RETURNING
-        VALUE(rv_int) TYPE i .
     METHODS shift_u32
       RETURNING
         VALUE(rv_int) TYPE int8 .
@@ -38,6 +35,9 @@ CLASS zcl_wasm_binary_stream DEFINITION
     METHODS shift_i64
       RETURNING
         VALUE(rv_int) TYPE int8 .
+    METHODS shift_i32
+      RETURNING
+        VALUE(rv_int) TYPE i .
     METHODS shift_utf8
       RETURNING
         VALUE(rv_name) TYPE string .
@@ -217,15 +217,16 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD shift_int.
+  METHOD shift_i32.
 
 * todo, this should be LEB128
-* todo, deprecate this method, use the typed methods instead
 * https://webassembly.github.io/spec/core/binary/values.html#binary-int
 
-    DATA lv_hex TYPE x LENGTH 1.
-    lv_hex = shift( 1 ).
-    rv_int = CONV i( lv_hex ).
+    " DATA lv_hex TYPE x LENGTH 1.
+    " lv_hex = shift( 1 ).
+    " rv_int = CONV i( lv_hex ).
+
+    rv_int = shift_i64( ).
 
   ENDMETHOD.
 
