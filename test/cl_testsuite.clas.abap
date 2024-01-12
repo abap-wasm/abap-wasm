@@ -89,7 +89,6 @@ CLASS cl_testsuite IMPLEMENTATION.
 
     WRITE / '@KERNEL const fs = await import("fs");'.
 
-    INSERT 'bulk.2.wasm' INTO TABLE lt_skip. " FC opcode todo
     INSERT 'bulk.3.wasm' INTO TABLE lt_skip. " FC opcode todo
     INSERT 'bulk.4.wasm' INTO TABLE lt_skip. " FC opcode todo
     INSERT 'bulk.5.wasm' INTO TABLE lt_skip. " FC opcode todo

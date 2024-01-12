@@ -489,8 +489,16 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
               APPEND zcl_wasm_i64_trunc_sat_f64_s=>parse( io_body ) TO et_instructions.
             WHEN zif_wasm_opcodes=>c_opcodes-i64_trunc_sat_f64_u.
               APPEND zcl_wasm_i64_trunc_sat_f64_u=>parse( io_body ) TO et_instructions.
+            WHEN zif_wasm_opcodes=>c_opcodes-memory_init.
+              APPEND zcl_wasm_memory_init=>parse( io_body ) TO et_instructions.
+            WHEN zif_wasm_opcodes=>c_opcodes-data_drop.
+              APPEND zcl_wasm_data_drop=>parse( io_body ) TO et_instructions.
+            WHEN zif_wasm_opcodes=>c_opcodes-memory_copy.
+              APPEND zcl_wasm_memory_copy=>parse( io_body ) TO et_instructions.
+            WHEN zif_wasm_opcodes=>c_opcodes-memory_fill.
+              APPEND zcl_wasm_memory_fill=>parse( io_body ) TO et_instructions.
             WHEN OTHERS.
-              WRITE: / 'todoparser:', lv_opcode.
+              WRITE: / 'todoparser FC:', lv_opcodei.
               ASSERT 1 = 'todo'.
           ENDCASE.
         WHEN zif_wasm_opcodes=>c_opcodes-end.

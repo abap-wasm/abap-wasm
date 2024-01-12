@@ -182,6 +182,7 @@ INTERFACE zif_wasm_opcodes PUBLIC.
         ref_null            TYPE ty_opcode VALUE 'D0',
         ref_is_null         TYPE ty_opcode VALUE 'D1',
         ref_func            TYPE ty_opcode VALUE 'D2',
+* FC opcodes:
         i32_trunc_sat_f32_s TYPE ty_opcodei VALUE 0,
         i32_trunc_sat_f32_u TYPE ty_opcodei VALUE 1,
         i32_trunc_sat_f64_s TYPE ty_opcodei VALUE 2,
@@ -190,6 +191,10 @@ INTERFACE zif_wasm_opcodes PUBLIC.
         i64_trunc_sat_f32_u TYPE ty_opcodei VALUE 5,
         i64_trunc_sat_f64_s TYPE ty_opcodei VALUE 6,
         i64_trunc_sat_f64_u TYPE ty_opcodei VALUE 7,
+        memory_init         TYPE ty_opcodei VALUE 8,
+        data_drop           TYPE ty_opcodei VALUE 9,
+        memory_copy         TYPE ty_opcodei VALUE 10,
+        memory_fill         TYPE ty_opcodei VALUE 11,
       END OF c_opcodes.
 
 ENDINTERFACE.
