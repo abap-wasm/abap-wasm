@@ -188,15 +188,25 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
         WHEN '00'.
           DATA(lv_typeidx) = io_body->shift_u32( ).
         WHEN '01'.
-          WRITE / '01'.
-          ASSERT 1 = 'todo'.
-        WHEN '02'.
-          DATA(lv_limit) = io_body->shift( 1 ).
+          DATA(lv_reftype) = io_body->shift( 1 ).
 
+          DATA(lv_limit) = io_body->shift( 1 ).
           CASE lv_limit.
             WHEN '00'.
               DATA(lv_min) = io_body->shift_u32( ).
               DATA(lv_max) = 0.
+            WHEN '01'.
+              lv_min = io_body->shift_u32( ).
+              lv_max = io_body->shift_u32( ).
+            WHEN OTHERS.
+              ASSERT 1 = 'todo'.
+          ENDCASE.
+        WHEN '02'.
+          lv_limit = io_body->shift( 1 ).
+          CASE lv_limit.
+            WHEN '00'.
+              lv_min = io_body->shift_u32( ).
+              lv_max = 0.
             WHEN '01'.
               lv_min = io_body->shift_u32( ).
               lv_max = io_body->shift_u32( ).
@@ -729,15 +739,11 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
 
 * https://webassembly.github.io/spec/core/binary/modules.html#binary-tablesec
 
-    DATA(lv_count) = io_body->shift_u32( ).
-    " WRITE: / 'tables:', lv_count.
-
-    DO lv_count TIMES.
+    DO io_body->shift_u32( ) TIMES.
       DATA(lv_reftype) = io_body->shift( 1 ).
 
       CASE lv_reftype.
-        WHEN '70'.
-* funcref
+        WHEN '70' OR '6F'.
           DATA(lv_limit) = io_body->shift( 1 ).
 
           CASE lv_limit.
@@ -750,10 +756,6 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
             WHEN OTHERS.
               ASSERT 1 = 'todo'.
           ENDCASE.
-* todo
-        WHEN '6F'.
-* externref
-          ASSERT 1 = 'todo'.
         WHEN OTHERS.
           ASSERT 1 = 'todo'.
       ENDCASE.
@@ -788,10 +790,7 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
 
 * https://webassembly.github.io/spec/core/binary/modules.html#binary-elemsec
 
-    DATA(lv_count) = io_body->shift_u32( ).
-    " WRITE: / 'elements:', lv_count.
-
-    DO lv_count TIMES.
+    DO io_body->shift_u32( ) TIMES.
       DATA(lv_type) = io_body->shift_u32( ).
 
       CASE lv_type.
@@ -833,9 +832,29 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
             " WRITE: / 'funcidx', lv_funcidx.
           ENDDO.
         WHEN 3.
-          ASSERT 1 = 'todo'.
+          lv_elemkind = io_body->shift( 1 ).
+
+          DO io_body->shift_u32( ) TIMES.
+            lv_funcidx = io_body->shift_u32( ).
+          ENDDO.
         WHEN 4.
-          ASSERT 1 = 'todo'.
+          parse_instructions(
+            EXPORTING
+              io_body         = io_body
+            IMPORTING
+              ev_last_opcode  = lv_last_opcode
+              et_instructions = lt_instructions ).
+          ASSERT lv_last_opcode = zif_wasm_opcodes=>c_opcodes-end.
+
+          DO io_body->shift_u32( ) TIMES.
+            parse_instructions(
+              EXPORTING
+                io_body         = io_body
+              IMPORTING
+                ev_last_opcode  = lv_last_opcode
+                et_instructions = lt_instructions ).
+            ASSERT lv_last_opcode = zif_wasm_opcodes=>c_opcodes-end.
+          ENDDO.
         WHEN 5.
           DATA(lv_reftype) = io_body->shift( 1 ).
 
@@ -851,7 +870,17 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
         WHEN 6.
           ASSERT 1 = 'todo'.
         WHEN 7.
-          ASSERT 1 = 'todo'.
+          lv_reftype = io_body->shift( 1 ).
+
+          DO io_body->shift_u32( ) TIMES.
+            parse_instructions(
+              EXPORTING
+                io_body         = io_body
+              IMPORTING
+                ev_last_opcode  = lv_last_opcode
+                et_instructions = lt_instructions ).
+            ASSERT lv_last_opcode = zif_wasm_opcodes=>c_opcodes-end.
+          ENDDO.
         WHEN OTHERS.
           WRITE: / 'elementtype:', lv_type.
           ASSERT 1 = 2.

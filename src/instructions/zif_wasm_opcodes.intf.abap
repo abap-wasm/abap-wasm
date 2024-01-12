@@ -28,6 +28,8 @@ INTERFACE zif_wasm_opcodes PUBLIC.
         local_tee     TYPE ty_opcode VALUE '22',
         global_get    TYPE ty_opcode VALUE '23',
         global_set    TYPE ty_opcode VALUE '24',
+        table_get     TYPE ty_opcode VALUE '25',
+        table_set     TYPE ty_opcode VALUE '26',
         i32_load       TYPE ty_opcode VALUE '28',
         i64_load       TYPE ty_opcode VALUE '29',
         f32_load       TYPE ty_opcode VALUE '2A',

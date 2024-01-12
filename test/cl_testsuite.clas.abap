@@ -138,6 +138,8 @@ CLASS cl_testsuite IMPLEMENTATION.
               rv_html = rv_html && |<p style="background-color: yellow">todo</p>\n|.
             WHEN 'assert_uninstantiable'.
               rv_html = rv_html && |<p style="background-color: yellow">todo</p>\n|.
+            WHEN 'register'.
+              rv_html = rv_html && |<p style="background-color: yellow">todo</p>\n|.
             WHEN OTHERS.
               WRITE / ls_command-type.
               ASSERT 1 = 'todo'.
