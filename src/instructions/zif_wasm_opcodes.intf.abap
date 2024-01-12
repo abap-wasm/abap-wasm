@@ -1,7 +1,7 @@
 INTERFACE zif_wasm_opcodes PUBLIC.
 
   TYPES ty_opcode TYPE x LENGTH 1.
-  TYPES ty_opcode2 TYPE x LENGTH 2.
+  TYPES ty_opcodei TYPE int8.
 
   CONSTANTS:
       BEGIN OF c_opcodes,
@@ -182,14 +182,14 @@ INTERFACE zif_wasm_opcodes PUBLIC.
         ref_null            TYPE ty_opcode VALUE 'D0',
         ref_is_null         TYPE ty_opcode VALUE 'D1',
         ref_func            TYPE ty_opcode VALUE 'D2',
-        i32_trunc_sat_f32_s TYPE ty_opcode2 VALUE 'FC00',
-        i32_trunc_sat_f32_u TYPE ty_opcode2 VALUE 'FC01',
-        i32_trunc_sat_f64_s TYPE ty_opcode2 VALUE 'FC02',
-        i32_trunc_sat_f64_u TYPE ty_opcode2 VALUE 'FC03',
-        i64_trunc_sat_f32_s TYPE ty_opcode2 VALUE 'FC04',
-        i64_trunc_sat_f32_u TYPE ty_opcode2 VALUE 'FC05',
-        i64_trunc_sat_f64_s TYPE ty_opcode2 VALUE 'FC06',
-        i64_trunc_sat_f64_u TYPE ty_opcode2 VALUE 'FC07',
+        i32_trunc_sat_f32_s TYPE ty_opcodei VALUE 0,
+        i32_trunc_sat_f32_u TYPE ty_opcodei VALUE 1,
+        i32_trunc_sat_f64_s TYPE ty_opcodei VALUE 2,
+        i32_trunc_sat_f64_u TYPE ty_opcodei VALUE 3,
+        i64_trunc_sat_f32_s TYPE ty_opcodei VALUE 4,
+        i64_trunc_sat_f32_u TYPE ty_opcodei VALUE 5,
+        i64_trunc_sat_f64_s TYPE ty_opcodei VALUE 6,
+        i64_trunc_sat_f64_u TYPE ty_opcodei VALUE 7,
       END OF c_opcodes.
 
 ENDINTERFACE.

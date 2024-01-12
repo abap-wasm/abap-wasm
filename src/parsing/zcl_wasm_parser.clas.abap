@@ -471,8 +471,8 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
         WHEN zif_wasm_opcodes=>c_opcodes-drop.
           APPEND zcl_wasm_drop=>parse( io_body ) TO et_instructions.
         WHEN 'FC'.
-          lv_opcode = lv_opcode && io_body->shift( 1 ). " todo, is this valid ABAP syntax?
-          CASE lv_opcode.
+          DATA(lv_opcodei) = io_body->shift_u32( ).
+          CASE lv_opcodei.
             WHEN zif_wasm_opcodes=>c_opcodes-i32_trunc_sat_f32_s.
               APPEND zcl_wasm_i32_trunc_sat_f32_s=>parse( io_body ) TO et_instructions.
             WHEN zif_wasm_opcodes=>c_opcodes-i32_trunc_sat_f32_u.
