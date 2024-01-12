@@ -296,6 +296,8 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
           APPEND zcl_wasm_i32_le_s=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-f32_sqrt.
           APPEND zcl_wasm_f32_sqrt=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-f32_eq.
+          APPEND zcl_wasm_f32_eq=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-i32_le_u.
           APPEND zcl_wasm_i32_le_u=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-i32_ge_s.
