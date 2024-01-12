@@ -82,7 +82,6 @@ CLASS cl_testsuite IMPLEMENTATION.
     DATA lv_filename TYPE string.
     DATA lo_wasm     TYPE REF TO zif_wasm.
     DATA lv_hex      TYPE xstring.
-    DATA lt_skip     TYPE STANDARD TABLE OF string WITH EMPTY KEY.
 
 
     READ TABLE it_files WITH KEY filename = |{ iv_folder }.json| INTO DATA(ls_file).
@@ -110,17 +109,11 @@ CLASS cl_testsuite IMPLEMENTATION.
       TRY.
           CASE ls_command-type.
             WHEN 'module'.
-              READ TABLE lt_skip TRANSPORTING NO FIELDS WITH KEY table_line = ls_command-filename.
-              IF sy-subrc = 0.
-                rv_html = rv_html && |<p style="background-color: yellow">todo</p>\n|.
-              ELSE.
-                lv_filename = './testsuite/' && iv_folder && '/' && ls_command-filename.
-                WRITE / |load: { ls_command-filename }|.
-                WRITE / '@KERNEL lv_hex.set(fs.readFileSync(lv_filename.get()).toString("hex").toUpperCase());'.
-*              WRITE / lv_hex.
-                lo_wasm = zcl_wasm=>create_with_wasm( lv_hex ).
-                rv_html = rv_html && |<p style="background-color: green">loaded</p>\n|.
-              ENDIF.
+              lv_filename = './testsuite/' && iv_folder && '/' && ls_command-filename.
+              WRITE / |load: { ls_command-filename }|.
+              WRITE / '@KERNEL lv_hex.set(fs.readFileSync(lv_filename.get()).toString("hex").toUpperCase());'.
+              lo_wasm = zcl_wasm=>create_with_wasm( lv_hex ).
+              rv_html = rv_html && |<p style="background-color: green">loaded</p>\n|.
             WHEN 'assert_return'.
               rv_html = rv_html && |<p style="background-color: yellow">todo</p>\n|.
             WHEN 'assert_trap'.
@@ -144,7 +137,7 @@ CLASS cl_testsuite IMPLEMENTATION.
               ASSERT 1 = 'todo'.
           ENDCASE.
         CATCH cx_static_check INTO DATA(lx_error).
-          rv_html = rv_html && |<p style="background-color: red">exception</p>\n|.
+          rv_html = rv_html && |<p style="background-color: red">exception: { lx_error->get_text( ) }</p>\n|.
       ENDTRY.
     ENDLOOP.
 
