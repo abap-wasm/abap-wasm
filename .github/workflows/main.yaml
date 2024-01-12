@@ -22,7 +22,7 @@ jobs:
       run: npm test
     - name: deploy-merged-build
       uses: peaceiris/actions-gh-pages@v3
-      if: github.ref == 'refs/heads/main' && github.repository == 'abapGit/abapGit'
+      if: github.ref == 'refs/heads/main' && github.repository == 'larshp/abap-wasm'
       with:
         deploy_key: ${{ secrets.DEPLOY_WEB }}
         external_repository: larshp/abap-wasm-web
