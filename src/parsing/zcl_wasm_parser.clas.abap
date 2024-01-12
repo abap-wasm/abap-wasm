@@ -497,6 +497,18 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
               APPEND zcl_wasm_memory_copy=>parse( io_body ) TO et_instructions.
             WHEN zif_wasm_opcodes=>c_opcodes-memory_fill.
               APPEND zcl_wasm_memory_fill=>parse( io_body ) TO et_instructions.
+            WHEN zif_wasm_opcodes=>c_opcodes-table_init.
+              APPEND zcl_wasm_table_init=>parse( io_body ) TO et_instructions.
+            WHEN zif_wasm_opcodes=>c_opcodes-elem_drop.
+              APPEND zcl_wasm_elem_drop=>parse( io_body ) TO et_instructions.
+            WHEN zif_wasm_opcodes=>c_opcodes-table_copy.
+              APPEND zcl_wasm_table_copy=>parse( io_body ) TO et_instructions.
+            WHEN zif_wasm_opcodes=>c_opcodes-table_grow.
+              APPEND zcl_wasm_table_grow=>parse( io_body ) TO et_instructions.
+            WHEN zif_wasm_opcodes=>c_opcodes-table_size.
+              APPEND zcl_wasm_table_size=>parse( io_body ) TO et_instructions.
+            WHEN zif_wasm_opcodes=>c_opcodes-table_fill.
+              APPEND zcl_wasm_table_fill=>parse( io_body ) TO et_instructions.
             WHEN OTHERS.
               WRITE: / 'todoparser FC:', lv_opcodei.
               ASSERT 1 = 'todo'.

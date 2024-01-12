@@ -195,6 +195,12 @@ INTERFACE zif_wasm_opcodes PUBLIC.
         data_drop           TYPE ty_opcodei VALUE 9,
         memory_copy         TYPE ty_opcodei VALUE 10,
         memory_fill         TYPE ty_opcodei VALUE 11,
+        table_init        TYPE ty_opcodei VALUE 12,
+        elem_drop      TYPE ty_opcodei VALUE 13,
+        table_copy      TYPE ty_opcodei VALUE 14,
+        table_grow      TYPE ty_opcodei VALUE 15,
+        table_size      TYPE ty_opcodei VALUE 16,
+        table_fill      TYPE ty_opcodei VALUE 17,
       END OF c_opcodes.
 
 ENDINTERFACE.
