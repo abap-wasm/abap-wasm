@@ -89,11 +89,6 @@ CLASS cl_testsuite IMPLEMENTATION.
 
     WRITE / '@KERNEL const fs = await import("fs");'.
 
-    INSERT 'bulk.8.wasm' INTO TABLE lt_skip. " FC opcode todo
-    INSERT 'bulk.9.wasm' INTO TABLE lt_skip. " FC opcode todo
-    INSERT 'bulk.10.wasm' INTO TABLE lt_skip. " FC opcode todo
-    INSERT 'bulk.11.wasm' INTO TABLE lt_skip. " FC opcode todo
-    INSERT 'bulk.12.wasm' INTO TABLE lt_skip. " FC opcode todo
     INSERT 'call.0.wasm' INTO TABLE lt_skip. " error in block parsing
     INSERT 'call_indirect.0.wasm' INTO TABLE lt_skip. " error in block parsing
     INSERT 'const.0.wasm' INTO TABLE lt_skip. " ?? i32.const
