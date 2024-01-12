@@ -360,10 +360,14 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
           APPEND zcl_wasm_i64_ctz=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-f32_neg.
           APPEND zcl_wasm_f32_neg=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-f32_abs.
+          APPEND zcl_wasm_f32_abs=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-f64_store.
           APPEND zcl_wasm_f64_store=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-i32_store8.
           APPEND zcl_wasm_i32_store8=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-f32_copysign.
+          APPEND zcl_wasm_f32_copysign=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-i64_store.
           APPEND zcl_wasm_i64_store=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-f64_neg.
