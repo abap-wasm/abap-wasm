@@ -89,7 +89,7 @@ CLASS cl_testsuite IMPLEMENTATION.
 
     WRITE / '@KERNEL const fs = await import("fs");'.
 
-    INSERT 'binary-leb128.20.wasm' INTO TABLE lt_skip. " ?? i32.const -1 ??
+*    INSERT 'binary-leb128.20.wasm' INTO TABLE lt_skip. " ?? i32.const -1 ??
     INSERT 'binary-leb128.21.wasm' INTO TABLE lt_skip. " FC opcode todo
     INSERT 'binary-leb128.81.wasm' INTO TABLE lt_skip. " FC opcode todo
     INSERT 'bulk.2.wasm' INTO TABLE lt_skip. " FC opcode todo

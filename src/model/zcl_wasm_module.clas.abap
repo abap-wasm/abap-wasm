@@ -24,7 +24,7 @@ CLASS zcl_wasm_module DEFINITION
       BEGIN OF ty_export,
         name  TYPE string,
         type  TYPE x LENGTH 1,
-        index TYPE i,
+        index TYPE int8,
       END OF ty_export .
     TYPES:
       ty_exports TYPE STANDARD TABLE OF ty_export WITH DEFAULT KEY .
@@ -52,12 +52,12 @@ CLASS zcl_wasm_module DEFINITION
         VALUE(rt_result) TYPE ty_functions .
     METHODS get_code_by_index
       IMPORTING
-        !iv_index      TYPE i
+        !iv_index      TYPE int8
       RETURNING
         VALUE(rs_code) TYPE ty_code.
     METHODS get_function_by_index
       IMPORTING
-        !iv_index      TYPE i
+        !iv_index      TYPE int8
       RETURNING
         VALUE(rv_type) TYPE i .
     METHODS get_export_by_name
@@ -67,7 +67,7 @@ CLASS zcl_wasm_module DEFINITION
         VALUE(rs_export) TYPE ty_export .
     METHODS get_type_by_index
       IMPORTING
-        !iv_index      TYPE i
+        !iv_index      TYPE int8
       RETURNING
         VALUE(rs_type) TYPE ty_type .
   PROTECTED SECTION.
