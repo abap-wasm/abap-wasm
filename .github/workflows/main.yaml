@@ -24,7 +24,7 @@ jobs:
       uses: peaceiris/actions-gh-pages@v3
       if: github.ref == 'refs/heads/main' && github.repository == 'abapGit/abapGit'
       with:
-        deploy_key: ${{ secrets.DEPLOY_HTML }}
+        deploy_key: ${{ secrets.DEPLOY_WEB }}
         external_repository: larshp/abap-wasm-web
         user_name: 'github-actions[bot]'
         user_email: 'github-actions[bot]@users.noreply.github.com'
