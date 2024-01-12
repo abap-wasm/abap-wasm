@@ -2,3 +2,7 @@ node_modules
 output
 open-abap
 downport
+testsuite.html
+deps
+foo.txt
+web

@@ -1,0 +1,32 @@
+name: main
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+    - uses: actions/checkout@v4
+    - name: Use Node.js
+      uses: actions/setup-node@v4
+    - name: npm ci
+      run: npm ci
+    - name: npm test
+      run: npm test
+    - name: deploy-merged-build
+      uses: peaceiris/actions-gh-pages@v3
+      if: github.ref == 'refs/heads/main' && github.repository == 'larshp/abap-wasm'
+      with:
+        deploy_key: ${{ secrets.DEPLOY_WEB }}
+        external_repository: larshp/abap-wasm-web
+        user_name: 'github-actions[bot]'
+        user_email: 'github-actions[bot]@users.noreply.github.com'
+        publish_branch: main
+        publish_dir: ../web

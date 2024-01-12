@@ -43,6 +43,8 @@ CLASS zcl_wasm_parser DEFINITION
       gc_section_code     TYPE x LENGTH 1 VALUE '0A' ##NO_TEXT.
     CONSTANTS:
       gc_section_data     TYPE x LENGTH 1 VALUE '0B' ##NO_TEXT.
+    CONSTANTS:
+      gc_section_data_count TYPE x LENGTH 1 VALUE '0C' ##NO_TEXT.
 
     METHODS parse_code
       IMPORTING
@@ -70,6 +72,10 @@ CLASS zcl_wasm_parser DEFINITION
       IMPORTING
         !io_body          TYPE REF TO zcl_wasm_binary_stream.
 
+    METHODS parse_import
+      IMPORTING
+        !io_body          TYPE REF TO zcl_wasm_binary_stream.
+
     METHODS parse_global
       IMPORTING
         !io_body          TYPE REF TO zcl_wasm_binary_stream.
@@ -79,6 +85,10 @@ CLASS zcl_wasm_parser DEFINITION
         !io_body          TYPE REF TO zcl_wasm_binary_stream.
 
     METHODS parse_memory
+      IMPORTING
+        !io_body          TYPE REF TO zcl_wasm_binary_stream.
+
+    METHODS parse_start
       IMPORTING
         !io_body          TYPE REF TO zcl_wasm_binary_stream.
 
@@ -112,7 +122,6 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
       DATA(lv_length) = lo_stream->shift_u32( ).
       DATA(lo_body) = NEW zcl_wasm_binary_stream( lo_stream->shift( lv_length ) ).
 
-      " WRITE: / 'section:', lv_section.
       " WRITE: / 'body:', lo_body->get_data( ).
 
       CASE lv_section.
@@ -123,7 +132,8 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
         WHEN gc_section_type.
           DATA(lt_types) = parse_type( lo_body ).
         WHEN gc_section_import.
-          ASSERT 1 = 'todo'.
+* todo
+          parse_import( lo_body ).
         WHEN gc_section_function.
           DATA(lt_functions) = parse_function( lo_body ).
         WHEN gc_section_table.
@@ -138,7 +148,8 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
         WHEN gc_section_export.
           DATA(lt_exports) = parse_export( lo_body ).
         WHEN gc_section_start.
-          ASSERT 1 = 'todo'.
+* todo
+          parse_start( lo_body ).
         WHEN gc_section_element.
 * todo
           parse_element( lo_body ).
@@ -146,7 +157,10 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
           DATA(lt_codes) = parse_code( lo_body ).
         WHEN gc_section_data.
           parse_data( lo_body ).
+        WHEN gc_section_data_count.
+          DATA(lv_data_count) = lo_body->shift_u32( ).
         WHEN OTHERS.
+          WRITE: / 'unknown section:', lv_section.
           ASSERT 0 = 1.
       ENDCASE.
     ENDWHILE.
@@ -159,14 +173,72 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
 
   ENDMETHOD.
 
+  METHOD parse_import.
+
+* https://webassembly.github.io/spec/core/binary/modules.html#binary-importsec
+
+    DO io_body->shift_u32( ) TIMES.
+      DATA(lv_mod) = io_body->shift_utf8( ).
+      " WRITE / lv_mod.
+      DATA(lv_mn) = io_body->shift_utf8( ).
+      " WRITE / lv_mn.
+
+      DATA(lv_desc) = io_body->shift( 1 ).
+      CASE lv_desc.
+        WHEN '00'.
+          DATA(lv_typeidx) = io_body->shift_u32( ).
+        WHEN '01'.
+          DATA(lv_reftype) = io_body->shift( 1 ).
+
+          DATA(lv_limit) = io_body->shift( 1 ).
+          CASE lv_limit.
+            WHEN '00'.
+              DATA(lv_min) = io_body->shift_u32( ).
+              DATA(lv_max) = 0.
+            WHEN '01'.
+              lv_min = io_body->shift_u32( ).
+              lv_max = io_body->shift_u32( ).
+            WHEN OTHERS.
+              ASSERT 1 = 'todo'.
+          ENDCASE.
+        WHEN '02'.
+          lv_limit = io_body->shift( 1 ).
+          CASE lv_limit.
+            WHEN '00'.
+              lv_min = io_body->shift_u32( ).
+              lv_max = 0.
+            WHEN '01'.
+              lv_min = io_body->shift_u32( ).
+              lv_max = io_body->shift_u32( ).
+            WHEN OTHERS.
+              ASSERT 1 = 'todo'.
+          ENDCASE.
+        WHEN '03'.
+          DATA(lv_valtype) = io_body->shift( 1 ).
+          DATA(lv_mut) = io_body->shift( 1 ).
+        WHEN OTHERS.
+          ASSERT 1 = 'todo'.
+      ENDCASE.
+
+    ENDDO.
+
+  ENDMETHOD.
+
+  METHOD parse_start.
+
+* https://webassembly.github.io/spec/core/binary/modules.html#start-section
+
+    DATA(lv_funcidx) = io_body->shift_u32( ).
+
+  ENDMETHOD.
 
   METHOD parse_code.
 
 * https://webassembly.github.io/spec/core/binary/modules.html#binary-codesec
 
-    DO io_body->shift_int( ) TIMES.
+    DO io_body->shift_u32( ) TIMES.
 
-      DATA(lv_code_size) = io_body->shift_int( ).
+      DATA(lv_code_size) = io_body->shift_u32( ).
 
       DATA(lo_code) = NEW zcl_wasm_binary_stream( io_body->shift( lv_code_size ) ).
 
@@ -218,16 +290,64 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
           APPEND zcl_wasm_i32_lt_u=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-i64_store16.
           APPEND zcl_wasm_i64_store16=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-f64_ne.
+          APPEND zcl_wasm_f64_ne=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-f64_lt.
+          APPEND zcl_wasm_f64_lt=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-f64_gt.
+          APPEND zcl_wasm_f64_gt=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-f64_ge.
+          APPEND zcl_wasm_f64_ge=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-f64_le.
           APPEND zcl_wasm_f64_le=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-i64_mul.
+          APPEND zcl_wasm_i64_mul=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-f32_sub.
+          APPEND zcl_wasm_f32_sub=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-f64_eq.
+          APPEND zcl_wasm_f64_eq=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-f32_le.
+          APPEND zcl_wasm_f32_le=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-i64_sub.
           APPEND zcl_wasm_i64_sub=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-i32_gt_s.
           APPEND zcl_wasm_i32_gt_s=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-i64_le_u.
+          APPEND zcl_wasm_i64_le_u=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-i32_gt_u.
           APPEND zcl_wasm_i32_gt_u=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-i32_le_s.
           APPEND zcl_wasm_i32_le_s=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-f32_sqrt.
+          APPEND zcl_wasm_f32_sqrt=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-i64_eq.
+          APPEND zcl_wasm_i64_eq=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-i64_ne.
+          APPEND zcl_wasm_i64_ne=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-i64_lt_s.
+          APPEND zcl_wasm_i64_lt_s=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-i64_lt_u.
+          APPEND zcl_wasm_i64_lt_u=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-i64_gt_s.
+          APPEND zcl_wasm_i64_gt_s=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-i64_gt_u.
+          APPEND zcl_wasm_i64_gt_u=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-i64_le_s.
+          APPEND zcl_wasm_i64_le_s=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-i64_ge_s.
+          APPEND zcl_wasm_i64_ge_s=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-i64_ge_u.
+          APPEND zcl_wasm_i64_ge_u=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-f32_ceil.
+          APPEND zcl_wasm_f32_ceil=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-f32_floor.
+          APPEND zcl_wasm_f32_floor=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-f32_trunc.
+          APPEND zcl_wasm_f32_trunc=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-f32_nearest.
+          APPEND zcl_wasm_f32_nearest=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-f32_eq.
+          APPEND zcl_wasm_f32_eq=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-i32_le_u.
           APPEND zcl_wasm_i32_le_u=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-i32_ge_s.
@@ -264,12 +384,32 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
           APPEND zcl_wasm_i32_sub=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-i64_ctz.
           APPEND zcl_wasm_i64_ctz=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-f64_abs.
+          APPEND zcl_wasm_f64_abs=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-f64_ceil.
+          APPEND zcl_wasm_f64_ceil=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-f64_floor.
+          APPEND zcl_wasm_f64_floor=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-f64_trunc.
+          APPEND zcl_wasm_f64_trunc=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-f64_nearest.
+          APPEND zcl_wasm_f64_nearest=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-f64_sqrt.
+          APPEND zcl_wasm_f64_sqrt=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-f32_neg.
           APPEND zcl_wasm_f32_neg=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-f32_abs.
+          APPEND zcl_wasm_f32_abs=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-f64_store.
           APPEND zcl_wasm_f64_store=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-i32_store8.
           APPEND zcl_wasm_i32_store8=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-f32_copysign.
+          APPEND zcl_wasm_f32_copysign=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-f32_lt.
+          APPEND zcl_wasm_f32_lt=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-f32_ge.
+          APPEND zcl_wasm_f32_ge=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-i64_store.
           APPEND zcl_wasm_i64_store=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-f64_neg.
@@ -282,6 +422,12 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
           APPEND zcl_wasm_f64_const=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-f32_mul.
           APPEND zcl_wasm_f32_mul=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-f32_min.
+          APPEND zcl_wasm_f32_min=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-f32_max.
+          APPEND zcl_wasm_f32_max=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-f32_div.
+          APPEND zcl_wasm_f32_div=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-i32_const.
           APPEND zcl_wasm_i32_const=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-i64_const.
@@ -300,6 +446,30 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
           APPEND zcl_wasm_i32_div_s=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-i32_div_u.
           APPEND zcl_wasm_i32_div_u=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-i64_div_s.
+          APPEND zcl_wasm_i64_div_s=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-i64_div_u.
+          APPEND zcl_wasm_i64_div_u=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-i64_rem_s.
+          APPEND zcl_wasm_i64_rem_s=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-i64_rem_u.
+          APPEND zcl_wasm_i64_rem_u=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-i64_and.
+          APPEND zcl_wasm_i64_and=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-i64_or.
+          APPEND zcl_wasm_i64_or=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-i64_xor.
+          APPEND zcl_wasm_i64_xor=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-i64_shl.
+          APPEND zcl_wasm_i64_shl=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-i64_shr_s.
+          APPEND zcl_wasm_i64_shr_s=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-i64_shr_u.
+          APPEND zcl_wasm_i64_shr_u=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-i64_rotl.
+          APPEND zcl_wasm_i64_rotl=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-i64_rotr.
+          APPEND zcl_wasm_i64_rotr=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-i32_rem_s.
           APPEND zcl_wasm_i32_rem_s=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-i32_rem_u.
@@ -334,6 +504,54 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
           APPEND zcl_wasm_unreachable=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-i32_load.
           APPEND zcl_wasm_i32_load=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-i32_trunc_f32_s.
+          APPEND zcl_wasm_i32_trunc_f32_s=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-i32_trunc_f32_u.
+          APPEND zcl_wasm_i32_trunc_f32_u=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-i32_trunc_f64_s.
+          APPEND zcl_wasm_i32_trunc_f64_s=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-i32_trunc_f64_u.
+          APPEND zcl_wasm_i32_trunc_f64_u=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-i64_extend_i32_s.
+          APPEND zcl_wasm_i64_extend_i32_s=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-i32_reinterpret_f32.
+          APPEND zcl_wasm_i32_reinterpret_f32=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-i64_reinterpret_f64.
+          APPEND zcl_wasm_i64_reinterpret_f64=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-f32_reinterpret_i32.
+          APPEND zcl_wasm_f32_reinterpret_i32=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-f64_reinterpret_i64.
+          APPEND zcl_wasm_f64_reinterpret_i64=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-i64_extend_i32_u.
+          APPEND zcl_wasm_i64_extend_i32_u=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-i64_trunc_f32_s.
+          APPEND zcl_wasm_i64_trunc_f32_s=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-i64_trunc_f32_u.
+          APPEND zcl_wasm_i64_trunc_f32_u=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-i64_trunc_f64_s.
+          APPEND zcl_wasm_i64_trunc_f64_s=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-i64_trunc_f64_u.
+          APPEND zcl_wasm_i64_trunc_f64_u=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-f32_convert_i32_s.
+          APPEND zcl_wasm_f32_convert_i32_s=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-f32_convert_i32_u.
+          APPEND zcl_wasm_f32_convert_i32_u=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-f32_convert_i64_s.
+          APPEND zcl_wasm_f32_convert_i64_s=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-f32_convert_i64_u.
+          APPEND zcl_wasm_f32_convert_i64_u=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-f32_demote_f64.
+          APPEND zcl_wasm_f32_demote_f64=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-f64_convert_i32_s.
+          APPEND zcl_wasm_f64_convert_i32_s=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-f64_convert_i32_u.
+          APPEND zcl_wasm_f64_convert_i32_u=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-f64_convert_i64_s.
+          APPEND zcl_wasm_f64_convert_i64_s=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-f64_convert_i64_u.
+          APPEND zcl_wasm_f64_convert_i64_u=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-f64_promote_f32.
+          APPEND zcl_wasm_f64_promote_f32=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-i64_load.
           APPEND zcl_wasm_i64_load=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-f32_load.
@@ -344,10 +562,40 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
           APPEND zcl_wasm_i32_load8_s=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-i32_load8_u.
           APPEND zcl_wasm_i32_load8_u=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-f64_add.
+          APPEND zcl_wasm_f64_add=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-f64_sub.
+          APPEND zcl_wasm_f64_sub=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-f64_mul.
+          APPEND zcl_wasm_f64_mul=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-f64_div.
+          APPEND zcl_wasm_f64_div=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-f64_min.
+          APPEND zcl_wasm_f64_min=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-f64_max.
+          APPEND zcl_wasm_f64_max=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-f64_copysign.
+          APPEND zcl_wasm_f64_copysign=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-i32_load16_s.
           APPEND zcl_wasm_i32_load16_s=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-i32_load16_u.
           APPEND zcl_wasm_i32_load16_u=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-f32_add.
+          APPEND zcl_wasm_f32_add=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-i64_clz.
+          APPEND zcl_wasm_i64_clz=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-i64_popcnt.
+          APPEND zcl_wasm_i64_popcnt=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-select_star.
+          APPEND zcl_wasm_select_star=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-i64_extend8_s.
+          APPEND zcl_wasm_i64_extend8_s=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-i64_extend16_s.
+          APPEND zcl_wasm_i64_extend16_s=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-i64_extend32_s.
+          APPEND zcl_wasm_i64_extend32_s=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-i64_add.
+          APPEND zcl_wasm_i64_add=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-i64_load8_s.
           APPEND zcl_wasm_i64_load8_s=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-i64_load8_u.
@@ -356,14 +604,75 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
           APPEND zcl_wasm_i64_eqz=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-i64_load16_s.
           APPEND zcl_wasm_i64_load16_s=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-table_get.
+          APPEND zcl_wasm_table_get=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-table_set.
+          APPEND zcl_wasm_table_set=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-f32_store.
+          APPEND zcl_wasm_f32_store=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-i32_store16.
+          APPEND zcl_wasm_i32_store16=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-i64_store8.
+          APPEND zcl_wasm_i64_store8=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-i64_store32.
+          APPEND zcl_wasm_i64_store32=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-i64_load16_u.
           APPEND zcl_wasm_i64_load16_u=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-ref_null.
+          APPEND zcl_wasm_ref_null=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-ref_is_null.
+          APPEND zcl_wasm_ref_is_null=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-ref_func.
+          APPEND zcl_wasm_ref_func=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-i64_load32_s.
           APPEND zcl_wasm_i64_load32_s=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-i64_load32_u.
           APPEND zcl_wasm_i64_load32_u=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-drop.
           APPEND zcl_wasm_drop=>parse( io_body ) TO et_instructions.
+        WHEN 'FC'.
+          DATA(lv_opcodei) = io_body->shift_u32( ).
+          CASE lv_opcodei.
+            WHEN zif_wasm_opcodes=>c_opcodes-i32_trunc_sat_f32_s.
+              APPEND zcl_wasm_i32_trunc_sat_f32_s=>parse( io_body ) TO et_instructions.
+            WHEN zif_wasm_opcodes=>c_opcodes-i32_trunc_sat_f32_u.
+              APPEND zcl_wasm_i32_trunc_sat_f32_u=>parse( io_body ) TO et_instructions.
+            WHEN zif_wasm_opcodes=>c_opcodes-i32_trunc_sat_f64_s.
+              APPEND zcl_wasm_i32_trunc_sat_f64_s=>parse( io_body ) TO et_instructions.
+            WHEN zif_wasm_opcodes=>c_opcodes-i32_trunc_sat_f64_u.
+              APPEND zcl_wasm_i32_trunc_sat_f64_u=>parse( io_body ) TO et_instructions.
+            WHEN zif_wasm_opcodes=>c_opcodes-i64_trunc_sat_f32_s.
+              APPEND zcl_wasm_i64_trunc_sat_f32_s=>parse( io_body ) TO et_instructions.
+            WHEN zif_wasm_opcodes=>c_opcodes-i64_trunc_sat_f32_u.
+              APPEND zcl_wasm_i64_trunc_sat_f32_u=>parse( io_body ) TO et_instructions.
+            WHEN zif_wasm_opcodes=>c_opcodes-i64_trunc_sat_f64_s.
+              APPEND zcl_wasm_i64_trunc_sat_f64_s=>parse( io_body ) TO et_instructions.
+            WHEN zif_wasm_opcodes=>c_opcodes-i64_trunc_sat_f64_u.
+              APPEND zcl_wasm_i64_trunc_sat_f64_u=>parse( io_body ) TO et_instructions.
+            WHEN zif_wasm_opcodes=>c_opcodes-memory_init.
+              APPEND zcl_wasm_memory_init=>parse( io_body ) TO et_instructions.
+            WHEN zif_wasm_opcodes=>c_opcodes-data_drop.
+              APPEND zcl_wasm_data_drop=>parse( io_body ) TO et_instructions.
+            WHEN zif_wasm_opcodes=>c_opcodes-memory_copy.
+              APPEND zcl_wasm_memory_copy=>parse( io_body ) TO et_instructions.
+            WHEN zif_wasm_opcodes=>c_opcodes-memory_fill.
+              APPEND zcl_wasm_memory_fill=>parse( io_body ) TO et_instructions.
+            WHEN zif_wasm_opcodes=>c_opcodes-table_init.
+              APPEND zcl_wasm_table_init=>parse( io_body ) TO et_instructions.
+            WHEN zif_wasm_opcodes=>c_opcodes-elem_drop.
+              APPEND zcl_wasm_elem_drop=>parse( io_body ) TO et_instructions.
+            WHEN zif_wasm_opcodes=>c_opcodes-table_copy.
+              APPEND zcl_wasm_table_copy=>parse( io_body ) TO et_instructions.
+            WHEN zif_wasm_opcodes=>c_opcodes-table_grow.
+              APPEND zcl_wasm_table_grow=>parse( io_body ) TO et_instructions.
+            WHEN zif_wasm_opcodes=>c_opcodes-table_size.
+              APPEND zcl_wasm_table_size=>parse( io_body ) TO et_instructions.
+            WHEN zif_wasm_opcodes=>c_opcodes-table_fill.
+              APPEND zcl_wasm_table_fill=>parse( io_body ) TO et_instructions.
+            WHEN OTHERS.
+              WRITE: / 'todoparser FC:', lv_opcodei.
+              ASSERT 1 = 'todo'.
+          ENDCASE.
         WHEN zif_wasm_opcodes=>c_opcodes-end.
           APPEND zcl_wasm_end=>parse( io_body ) TO et_instructions.
           RETURN.
@@ -384,7 +693,7 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
 
     DATA ls_result TYPE zcl_wasm_module=>ty_export.
 
-    DATA(lv_count) = io_body->shift_int( ).
+    DATA(lv_count) = io_body->shift_u32( ).
     " WRITE: / 'exports:', lv_count.
 
     DO lv_count TIMES.
@@ -396,7 +705,7 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
         OR ls_result-type = zcl_wasm_types=>c_export_type-mem
         OR ls_result-type = zcl_wasm_types=>c_export_type-global.
 
-      ls_result-index = io_body->shift_int( ).
+      ls_result-index = io_body->shift_u32( ).
 
       APPEND ls_result TO rt_results.
     ENDDO.
@@ -408,8 +717,8 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
 
 * https://webassembly.github.io/spec/core/binary/modules.html#binary-funcsec
 
-    DO io_body->shift_int( ) TIMES.
-      APPEND io_body->shift_int( ) TO rt_results.
+    DO io_body->shift_u32( ) TIMES.
+      APPEND io_body->shift_u32( ) TO rt_results.
     ENDDO.
 
   ENDMETHOD.
@@ -419,12 +728,12 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
 
 * https://webassembly.github.io/spec/core/binary/modules.html#type-section
 
-    DO io_body->shift_int( ) TIMES.
+    DO io_body->shift_u32( ) TIMES.
       ASSERT io_body->shift( 1 ) = zcl_wasm_types=>c_function_type.
 
       APPEND VALUE #(
-        parameter_types = io_body->shift( io_body->shift_int( ) )
-        result_types    = io_body->shift( io_body->shift_int( ) )
+        parameter_types = io_body->shift( io_body->shift_u32( ) )
+        result_types    = io_body->shift( io_body->shift_u32( ) )
         ) TO rt_results.
     ENDDO.
 
@@ -462,12 +771,8 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
 
 * https://webassembly.github.io/spec/core/binary/modules.html#binary-datasec
 
-    DATA(lv_count) = io_body->shift_u32( ).
-    " WRITE: / 'data:', lv_count.
-
-    DO lv_count TIMES.
+    DO io_body->shift_u32( ) TIMES.
       DATA(lv_type) = io_body->shift_u32( ).
-      " WRITE: / 'type:', lv_type.
 
       CASE lv_type.
         WHEN 0.
@@ -481,10 +786,24 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
 
           DATA(lv_vec) = io_body->shift_u32( ).
           DATA(lv_contents) = io_body->shift( lv_vec ).
-          " WRITE / lv_contents.
-          " WRITE / io_body->get_data( ).
+        WHEN 1.
+          lv_vec = io_body->shift_u32( ).
+          lv_contents = io_body->shift( lv_vec ).
+        WHEN 2.
+          DATA(lv_memidx) = io_body->shift_u32( ).
+
+          parse_instructions(
+            EXPORTING
+              io_body         = io_body
+            IMPORTING
+              ev_last_opcode  = lv_last_opcode
+              et_instructions = lt_instructions ).
+          ASSERT lv_last_opcode = zif_wasm_opcodes=>c_opcodes-end.
+
+          lv_vec = io_body->shift_u32( ).
+          lv_contents = io_body->shift( lv_vec ).
         WHEN OTHERS.
-          WRITE / lv_type.
+          WRITE: / 'type:', lv_type.
           ASSERT 1 = 2.
       ENDCASE.
 
@@ -496,15 +815,11 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
 
 * https://webassembly.github.io/spec/core/binary/modules.html#binary-tablesec
 
-    DATA(lv_count) = io_body->shift_u32( ).
-    " WRITE: / 'tables:', lv_count.
-
-    DO lv_count TIMES.
+    DO io_body->shift_u32( ) TIMES.
       DATA(lv_reftype) = io_body->shift( 1 ).
 
       CASE lv_reftype.
-        WHEN '70'.
-* funcref
+        WHEN '70' OR '6F'.
           DATA(lv_limit) = io_body->shift( 1 ).
 
           CASE lv_limit.
@@ -517,10 +832,6 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
             WHEN OTHERS.
               ASSERT 1 = 'todo'.
           ENDCASE.
-* todo
-        WHEN '6F'.
-* externref
-          ASSERT 1 = 'todo'.
         WHEN OTHERS.
           ASSERT 1 = 'todo'.
       ENDCASE.
@@ -533,10 +844,12 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
 
 * https://webassembly.github.io/spec/core/binary/modules.html#binary-globalsec
 
-    DATA(lv_count) = io_body->shift_u32( ).
-
-    DO lv_count TIMES.
+    DO io_body->shift_u32( ) TIMES.
       DATA(lv_type) = io_body->shift( 1 ).
+      DATA(lv_mut) = io_body->shift( 1 ).
+
+      " WRITE: / 'type:', lv_type.
+      " WRITE: / 'mut:', lv_mut.
 
       parse_instructions(
         EXPORTING
@@ -553,12 +866,8 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
 
 * https://webassembly.github.io/spec/core/binary/modules.html#binary-elemsec
 
-    DATA(lv_count) = io_body->shift_u32( ).
-    " WRITE: / 'elements:', lv_count.
-
-    DO lv_count TIMES.
+    DO io_body->shift_u32( ) TIMES.
       DATA(lv_type) = io_body->shift_u32( ).
-      " WRITE: / 'elementtype:', lv_type.
 
       CASE lv_type.
         WHEN 0.
@@ -570,27 +879,106 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
               et_instructions = DATA(lt_instructions) ).
           ASSERT lv_last_opcode = zif_wasm_opcodes=>c_opcodes-end.
 
-          DATA(lv_len) = io_body->shift_u32( ).
-          DO lv_len TIMES.
+          DO io_body->shift_u32( ) TIMES.
             DATA(lv_funcidx) = io_body->shift_u32( ).
             " WRITE: / 'funcidx', lv_funcidx.
           ENDDO.
         WHEN 1.
-          ASSERT 1 = 'todo'.
+          DATA(lv_elemkind) = io_body->shift( 1 ).
+
+          DO io_body->shift_u32( ) TIMES.
+            lv_funcidx = io_body->shift_u32( ).
+            " WRITE: / 'funcidx', lv_funcidx.
+          ENDDO.
         WHEN 2.
-          ASSERT 1 = 'todo'.
+          DATA(lv_tableidx) = io_body->shift_u32( ).
+
+          parse_instructions(
+            EXPORTING
+              io_body         = io_body
+            IMPORTING
+              ev_last_opcode  = lv_last_opcode
+              et_instructions = lt_instructions ).
+          ASSERT lv_last_opcode = zif_wasm_opcodes=>c_opcodes-end.
+
+          lv_elemkind = io_body->shift( 1 ).
+
+          DO io_body->shift_u32( ) TIMES.
+            lv_funcidx = io_body->shift_u32( ).
+            " WRITE: / 'funcidx', lv_funcidx.
+          ENDDO.
         WHEN 3.
-          ASSERT 1 = 'todo'.
+          lv_elemkind = io_body->shift( 1 ).
+
+          DO io_body->shift_u32( ) TIMES.
+            lv_funcidx = io_body->shift_u32( ).
+          ENDDO.
         WHEN 4.
-          ASSERT 1 = 'todo'.
+          parse_instructions(
+            EXPORTING
+              io_body         = io_body
+            IMPORTING
+              ev_last_opcode  = lv_last_opcode
+              et_instructions = lt_instructions ).
+          ASSERT lv_last_opcode = zif_wasm_opcodes=>c_opcodes-end.
+
+          DO io_body->shift_u32( ) TIMES.
+            parse_instructions(
+              EXPORTING
+                io_body         = io_body
+              IMPORTING
+                ev_last_opcode  = lv_last_opcode
+                et_instructions = lt_instructions ).
+            ASSERT lv_last_opcode = zif_wasm_opcodes=>c_opcodes-end.
+          ENDDO.
         WHEN 5.
-          ASSERT 1 = 'todo'.
+          DATA(lv_reftype) = io_body->shift( 1 ).
+
+          DO io_body->shift_u32( ) TIMES.
+            parse_instructions(
+              EXPORTING
+                io_body         = io_body
+              IMPORTING
+                ev_last_opcode  = lv_last_opcode
+                et_instructions = lt_instructions ).
+            ASSERT lv_last_opcode = zif_wasm_opcodes=>c_opcodes-end.
+          ENDDO.
         WHEN 6.
-          ASSERT 1 = 'todo'.
+          lv_tableidx = io_body->shift_u32( ).
+
+          parse_instructions(
+            EXPORTING
+              io_body         = io_body
+            IMPORTING
+              ev_last_opcode  = lv_last_opcode
+              et_instructions = lt_instructions ).
+          ASSERT lv_last_opcode = zif_wasm_opcodes=>c_opcodes-end.
+
+          lv_reftype = io_body->shift( 1 ).
+
+          DO io_body->shift_u32( ) TIMES.
+            parse_instructions(
+              EXPORTING
+                io_body         = io_body
+              IMPORTING
+                ev_last_opcode  = lv_last_opcode
+                et_instructions = lt_instructions ).
+            ASSERT lv_last_opcode = zif_wasm_opcodes=>c_opcodes-end.
+          ENDDO.
         WHEN 7.
-          ASSERT 1 = 'todo'.
+          lv_reftype = io_body->shift( 1 ).
+
+          DO io_body->shift_u32( ) TIMES.
+            parse_instructions(
+              EXPORTING
+                io_body         = io_body
+              IMPORTING
+                ev_last_opcode  = lv_last_opcode
+                et_instructions = lt_instructions ).
+            ASSERT lv_last_opcode = zif_wasm_opcodes=>c_opcodes-end.
+          ENDDO.
         WHEN OTHERS.
-          WRITE / lv_type.
+          WRITE: / 'elementtype:', lv_type.
           ASSERT 1 = 2.
       ENDCASE.
 

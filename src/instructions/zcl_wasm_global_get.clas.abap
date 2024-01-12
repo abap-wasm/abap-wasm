@@ -5,7 +5,7 @@ CLASS zcl_wasm_global_get DEFINITION PUBLIC.
 
     METHODS constructor
       IMPORTING
-        !iv_globalidx TYPE i.
+        !iv_globalidx TYPE int8.
 
     CLASS-METHODS parse
       IMPORTING !io_body TYPE REF TO zcl_wasm_binary_stream
@@ -13,7 +13,7 @@ CLASS zcl_wasm_global_get DEFINITION PUBLIC.
 
   PROTECTED SECTION.
   PRIVATE SECTION.
-    DATA mv_globalidx TYPE i.
+    DATA mv_globalidx TYPE int8.
 ENDCLASS.
 
 CLASS zcl_wasm_global_get IMPLEMENTATION.
@@ -24,7 +24,7 @@ CLASS zcl_wasm_global_get IMPLEMENTATION.
 
   METHOD parse.
 * todo, singletons?
-    ri_instruction = NEW zcl_wasm_global_get( io_body->shift_int( ) ).
+    ri_instruction = NEW zcl_wasm_global_get( io_body->shift_u32( ) ).
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.

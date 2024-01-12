@@ -11,7 +11,7 @@ CLASS zcl_wasm_i64_ctz IMPLEMENTATION.
 
   METHOD parse.
 * todo: singletons?
-    ri_instruction = NEW zcl_wasm_i32_xor( ).
+    ri_instruction = NEW zcl_wasm_i64_ctz( ).
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.

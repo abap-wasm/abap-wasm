@@ -36,7 +36,15 @@ CLASS zcl_wasm_block IMPLEMENTATION.
         ev_last_opcode  = DATA(lv_last_opcode)
         et_instructions = DATA(lt_in) ).
 
-    ASSERT lv_last_opcode = zif_wasm_opcodes=>c_opcodes-end.
+    " IF lv_last_opcode = zif_wasm_opcodes=>c_opcodes-else_.
+    "   WRITE / 'todo, else part'.
+    "   ASSERT 1 = 'todo'.
+    " ENDIF.
+
+    IF lv_last_opcode <> zif_wasm_opcodes=>c_opcodes-end.
+      WRITE: / 'last opcode:', lv_last_opcode.
+      ASSERT lv_last_opcode = zif_wasm_opcodes=>c_opcodes-end.
+    ENDIF.
 
     ri_instruction = NEW zcl_wasm_block(
       iv_block_type = lv_block_type

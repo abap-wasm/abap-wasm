@@ -23,9 +23,6 @@ CLASS zcl_wasm_binary_stream DEFINITION
         !iv_length     TYPE numeric
       RETURNING
         VALUE(rv_data) TYPE xstring .
-    METHODS shift_int
-      RETURNING
-        VALUE(rv_int) TYPE i .
     METHODS shift_u32
       RETURNING
         VALUE(rv_int) TYPE int8 .
@@ -38,6 +35,9 @@ CLASS zcl_wasm_binary_stream DEFINITION
     METHODS shift_i64
       RETURNING
         VALUE(rv_int) TYPE int8 .
+    METHODS shift_i32
+      RETURNING
+        VALUE(rv_int) TYPE i .
     METHODS shift_utf8
       RETURNING
         VALUE(rv_name) TYPE string .
@@ -45,6 +45,12 @@ CLASS zcl_wasm_binary_stream DEFINITION
   PRIVATE SECTION.
 
     DATA mv_data TYPE xstring .
+
+    METHODS reverse_hex
+      IMPORTING
+        iv_hex        TYPE xsequence
+      RETURNING
+        VALUE(rv_hex) TYPE xstring.
 ENDCLASS.
 
 
@@ -143,14 +149,34 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
 
     rv_f = rv_f * ( 2 ** lv_exponent ).
 
-    " WRITE / rv_f.
+  ENDMETHOD.
+
+  METHOD reverse_hex.
+
+    DATA lv_hex TYPE x LENGTH 1.
+    DATA lv_char TYPE c LENGTH 1.
+    DATA lv_len  TYPE i.
+    DATA lv_offset TYPE i.
+
+    lv_len = xstrlen( iv_hex ).
+    DO lv_len TIMES.
+      lv_offset = lv_len - sy-index.
+      lv_hex = iv_hex+lv_offset(1).
+      CONCATENATE rv_hex lv_hex INTO rv_hex IN BYTE MODE.
+    ENDDO.
 
   ENDMETHOD.
 
-
   METHOD shift_f64.
-
+* in little endian order
 * https://en.wikipedia.org/wiki/Double-precision_floating-point_format
+
+    DATA lv_exponentx TYPE x LENGTH 2. " 11 bits
+    DATA lv_exponent  TYPE i.
+    DATA lv_fractionx TYPE x LENGTH 7. " 52 bits
+    DATA lv_index     TYPE i.
+    DATA lv_half      TYPE f VALUE 1.
+    DATA lv_bit       TYPE c LENGTH 1.
 
     DATA lv_hex TYPE x LENGTH 8.
     lv_hex = shift( 8 ).
@@ -158,27 +184,67 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-* todo
+    lv_hex = reverse_hex( lv_hex ).
+    " WRITE: / 'reversed:', lv_hex.
 
-    CASE lv_hex.
-      WHEN '0000000000001040'.
-        rv_f = 4.
-      WHEN '0000000000000840'.
-        rv_f = 3.
-      WHEN '0000000000001C40'.
-        rv_f = 7.
-      WHEN '0000000000002440'.
-        rv_f = 10.
-      WHEN 'E17A14AE47715340'.
-        rv_f = '77.77'.
-      WHEN '52B81E85EBB15340'.
-        rv_f = '78.78'.
-      WHEN 'C3F5285C8FF25340'.
-        rv_f = '79.79'.
-      WHEN OTHERS.
-        WRITE / lv_hex.
-        ASSERT lv_hex = 'todo'.
-    ENDCASE.
+    GET BIT 1 OF lv_hex INTO lv_bit.
+    DATA(lv_sign) = lv_bit.
+
+    DO 11 TIMES.
+      lv_index = sy-index + 1.
+      GET BIT lv_index OF lv_hex INTO lv_bit.
+      lv_index = lv_index - 1 + 5.
+      SET BIT lv_index OF lv_exponentx TO lv_bit.
+    ENDDO.
+    " WRITE: / 'exponentx:', lv_exponentx.
+    lv_exponent = lv_exponentx - 1023.
+    " WRITE: / 'exponent:', lv_exponent.
+
+    DO 52 TIMES.
+      lv_index = sy-index + 12.
+      GET BIT lv_index OF lv_hex INTO lv_bit.
+      lv_index = lv_index - 12 + 1.
+      SET BIT lv_index OF lv_fractionx TO lv_bit.
+    ENDDO.
+* fix implicit 24th bit
+    SET BIT 1 OF lv_fractionx TO 1.
+    " WRITE: / 'fraction,hex:', lv_fractionx.
+
+    DO 24 TIMES.
+      GET BIT sy-index OF lv_fractionx INTO lv_bit.
+      IF lv_bit = '1'.
+        rv_f = rv_f + lv_half.
+      ENDIF.
+      lv_half = lv_half / 2.
+    ENDDO.
+
+    rv_f = rv_f * ( 2 ** lv_exponent ).
+
+    " CASE lv_hex.
+    "   WHEN '000000000000F03F'.
+    "     rv_f = 1.
+    "   WHEN '0000000000000840'.
+    "     rv_f = 3.
+    "   WHEN '0000000000001040'.
+    "     rv_f = 4.
+    "   WHEN '0000000000001440'.
+    "     rv_f = 5.
+    "   WHEN '0000000000001840'.
+    "     rv_f = 6.
+    "   WHEN '0000000000001C40'.
+    "     rv_f = 7.
+    "   WHEN '0000000000002440'.
+    "     rv_f = 10.
+    "   WHEN 'E17A14AE47715340'.
+    "     rv_f = '77.77'.
+    "   WHEN '52B81E85EBB15340'.
+    "     rv_f = '78.78'.
+    "   WHEN 'C3F5285C8FF25340'.
+    "     rv_f = '79.79'.
+    "   WHEN OTHERS.
+    "     WRITE / lv_hex.
+    "     ASSERT lv_hex = 'todo'.
+    " ENDCASE.
 
   ENDMETHOD.
 
@@ -211,15 +277,16 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD shift_int.
+  METHOD shift_i32.
 
 * todo, this should be LEB128
-* todo, deprecate this method, use the typed methods instead
 * https://webassembly.github.io/spec/core/binary/values.html#binary-int
 
-    DATA lv_hex TYPE x LENGTH 1.
-    lv_hex = shift( 1 ).
-    rv_int = CONV i( lv_hex ).
+    " DATA lv_hex TYPE x LENGTH 1.
+    " lv_hex = shift( 1 ).
+    " rv_int = CONV i( lv_hex ).
+
+    rv_int = shift_i64( ).
 
   ENDMETHOD.
 
@@ -257,7 +324,7 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
 
     DATA lo_conv TYPE REF TO object.
 
-    DATA(lv_xstr) = shift( shift_int( ) ).
+    DATA(lv_xstr) = shift( shift_u32( ) ).
 
     TRY.
         CALL METHOD ('CL_ABAP_CONV_CODEPAGE')=>create_in

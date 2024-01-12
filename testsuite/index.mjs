@@ -12,11 +12,12 @@ for (const filename of fs.readdirSync('.')) {
     fs.mkdirSync(name);
   }
 
+  child_process.execSync(`rm -f ${name}/*.*`);
+
   // todo, wast2sjon doesnt handle these 2 properly
   if (name === "comments" || name === "if") {
     continue;
   }
 
-  child_process.execSync(`rm -f ${name}/*.*`);
   child_process.execSync(`wast2json ${filename} -o ${name}/${name}.json`);
 }

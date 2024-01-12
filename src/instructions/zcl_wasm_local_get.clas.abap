@@ -8,7 +8,7 @@ CLASS zcl_wasm_local_get DEFINITION
 
     METHODS constructor
       IMPORTING
-        !iv_localidx TYPE i.
+        !iv_localidx TYPE int8.
 
     CLASS-METHODS parse
       IMPORTING !io_body TYPE REF TO zcl_wasm_binary_stream
@@ -16,7 +16,7 @@ CLASS zcl_wasm_local_get DEFINITION
 
   PROTECTED SECTION.
   PRIVATE SECTION.
-    DATA mv_localidx TYPE i.
+    DATA mv_localidx TYPE int8.
 ENDCLASS.
 
 
@@ -29,7 +29,7 @@ CLASS zcl_wasm_local_get IMPLEMENTATION.
 
   METHOD parse.
 * todo, singletons?
-    ri_instruction = NEW zcl_wasm_local_get( io_body->shift_int( ) ).
+    ri_instruction = NEW zcl_wasm_local_get( io_body->shift_u32( ) ).
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.

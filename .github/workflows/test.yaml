@@ -8,7 +8,7 @@ permissions:
 jobs:
   test:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
     steps:
     - uses: actions/checkout@v4
     - name: Use Node.js
@@ -17,3 +17,9 @@ jobs:
       run: npm ci
     - name: npm test
       run: npm test
+    - name: Upload build artifact
+      uses: actions/upload-artifact@main
+      with:
+        name: testsuite.html
+        path: ./web/testsuite.html
+        retention-days: 7

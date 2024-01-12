@@ -11,7 +11,7 @@ CLASS zcl_wasm_vm DEFINITION
 
     METHODS call
       IMPORTING
-        !iv_index TYPE i .
+        !iv_index TYPE int8.
 
     METHODS execute
       IMPORTING

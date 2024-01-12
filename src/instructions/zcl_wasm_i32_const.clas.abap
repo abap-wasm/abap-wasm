@@ -16,8 +16,7 @@ ENDCLASS.
 CLASS zcl_wasm_i32_const IMPLEMENTATION.
 
   METHOD parse.
-* todo: singletons?
-    ri_instruction = NEW zcl_wasm_i32_const( io_body->shift_int( ) ).
+    ri_instruction = NEW zcl_wasm_i32_const( io_body->shift_i32( ) ).
   ENDMETHOD.
 
   METHOD constructor.

@@ -1,6 +1,6 @@
 {
   "global": {
-    "files": "/src/**/*.*",
+    "files": "/{src,test}/**/*.*",
     "skipGeneratedGatewayClasses": true,
     "skipGeneratedPersistentClasses": true,
     "skipGeneratedFunctionGroups": true,
@@ -149,6 +149,7 @@
     "newline_between_methods": true,
     "no_public_attributes": true,
     "object_naming": {
+      "exclude": ["/test/"],
       "patternKind": "required",
       "ignoreNames": [],
       "ignorePatterns": [],
@@ -206,7 +207,7 @@
     "unused_types": true,
     "unused_variables": false,
     "use_bool_expression": true,
-    "use_line_exists": true,
+    "use_line_exists": false,
     "use_new": true,
     "when_others_last": true,
     "whitespace_end": true,
