@@ -22,6 +22,7 @@ INTERFACE zif_wasm_opcodes PUBLIC.
 * https://webassembly.github.io/spec/core/binary/instructions.html#parametric-instructions
         drop          TYPE ty_opcode VALUE '1A',
         select        TYPE ty_opcode VALUE '1B',
+        select_star   TYPE ty_opcode VALUE '1C',
 * https://webassembly.github.io/spec/core/binary/instructions.html#variable-instructions
         local_get     TYPE ty_opcode VALUE '20',
         local_set     TYPE ty_opcode VALUE '21',
