@@ -24,7 +24,7 @@ CLASS zcl_wasm_memory DEFINITION
         !ii_value TYPE REF TO zif_wasm_value .
     METHODS local_get
       IMPORTING
-        !iv_index       TYPE i
+        !iv_index       TYPE int8
       RETURNING
         VALUE(ri_value) TYPE REF TO zif_wasm_value .
   PROTECTED SECTION.
@@ -35,7 +35,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_WASM_MEMORY IMPLEMENTATION.
+CLASS zcl_wasm_memory IMPLEMENTATION.
 
 
   METHOD local_get.
