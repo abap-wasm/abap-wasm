@@ -17,3 +17,9 @@ jobs:
       run: npm ci
     - name: npm test
       run: npm test
+    - name: Upload build artifact
+      uses: actions/upload-artifact@main
+      with:
+        name: testsuite.html
+        path: ./web/testsuite.html
+        retention-days: 7

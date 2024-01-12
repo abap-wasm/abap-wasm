@@ -5,4 +5,7 @@ await initializeABAP();
 
 const html = await abap.Classes["CL_TESTSUITE"].run();
 
-fs.writeFileSync("testsuite.html", html.get());
+if (fs.existsSync("web") === false) {
+  fs.mkdirSync("web");
+}
+fs.writeFileSync("web/testsuite.html", html.get());
