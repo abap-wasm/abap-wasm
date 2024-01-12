@@ -149,7 +149,7 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
 
 
   METHOD shift_f64.
-
+* in little endian order
 * https://en.wikipedia.org/wiki/Double-precision_floating-point_format
 
     DATA lv_hex TYPE x LENGTH 8.
