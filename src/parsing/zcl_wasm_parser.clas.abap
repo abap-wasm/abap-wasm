@@ -418,6 +418,14 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
           APPEND zcl_wasm_i32_trunc_f64_u=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-i64_extend_i32_s.
           APPEND zcl_wasm_i64_extend_i32_s=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-i32_reinterpret_f32.
+          APPEND zcl_wasm_i32_reinterpret_f32=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-i64_reinterpret_f64.
+          APPEND zcl_wasm_i64_reinterpret_f64=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-f32_reinterpret_i32.
+          APPEND zcl_wasm_f32_reinterpret_i32=>parse( io_body ) TO et_instructions.
+        WHEN zif_wasm_opcodes=>c_opcodes-f64_reinterpret_i64.
+          APPEND zcl_wasm_f64_reinterpret_i64=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-i64_extend_i32_u.
           APPEND zcl_wasm_i64_extend_i32_u=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-i64_trunc_f32_s.
