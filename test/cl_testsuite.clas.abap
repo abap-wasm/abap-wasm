@@ -89,10 +89,8 @@ CLASS cl_testsuite IMPLEMENTATION.
 
     WRITE / '@KERNEL const fs = await import("fs");'.
 
-    INSERT 'call.0.wasm' INTO TABLE lt_skip. " error in block parsing
-    INSERT 'call_indirect.0.wasm' INTO TABLE lt_skip. " error in block parsing
-    INSERT 'const.0.wasm' INTO TABLE lt_skip. " ?? i32.const
-    INSERT 'const.1.wasm' INTO TABLE lt_skip. " ?? i32.const
+    INSERT 'call.0.wasm' INTO TABLE lt_skip. " f64 parsing
+    INSERT 'call_indirect.0.wasm' INTO TABLE lt_skip. " f64 parsing
     INSERT 'const.55.wasm' INTO TABLE lt_skip. " f64 parsing
     INSERT 'const.56.wasm' INTO TABLE lt_skip. " f64 parsing
 
