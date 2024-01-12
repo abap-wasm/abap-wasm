@@ -470,6 +470,29 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
           APPEND zcl_wasm_i64_load32_u=>parse( io_body ) TO et_instructions.
         WHEN zif_wasm_opcodes=>c_opcodes-drop.
           APPEND zcl_wasm_drop=>parse( io_body ) TO et_instructions.
+        WHEN 'FC'.
+          lv_opcode = lv_opcode && io_body->shift( 1 ). " todo, is this valid ABAP syntax?
+          CASE lv_opcode.
+            WHEN zif_wasm_opcodes=>c_opcodes-i32_trunc_sat_f32_s.
+              APPEND zcl_wasm_i32_trunc_sat_f32_s=>parse( io_body ) TO et_instructions.
+            WHEN zif_wasm_opcodes=>c_opcodes-i32_trunc_sat_f32_u.
+              APPEND zcl_wasm_i32_trunc_sat_f32_u=>parse( io_body ) TO et_instructions.
+            WHEN zif_wasm_opcodes=>c_opcodes-i32_trunc_sat_f64_s.
+              APPEND zcl_wasm_i32_trunc_sat_f64_s=>parse( io_body ) TO et_instructions.
+            WHEN zif_wasm_opcodes=>c_opcodes-i32_trunc_sat_f64_u.
+              APPEND zcl_wasm_i32_trunc_sat_f64_u=>parse( io_body ) TO et_instructions.
+            WHEN zif_wasm_opcodes=>c_opcodes-i64_trunc_sat_f32_s.
+              APPEND zcl_wasm_i64_trunc_sat_f32_s=>parse( io_body ) TO et_instructions.
+            WHEN zif_wasm_opcodes=>c_opcodes-i64_trunc_sat_f32_u.
+              APPEND zcl_wasm_i64_trunc_sat_f32_u=>parse( io_body ) TO et_instructions.
+            WHEN zif_wasm_opcodes=>c_opcodes-i64_trunc_sat_f64_s.
+              APPEND zcl_wasm_i64_trunc_sat_f64_s=>parse( io_body ) TO et_instructions.
+            WHEN zif_wasm_opcodes=>c_opcodes-i64_trunc_sat_f64_u.
+              APPEND zcl_wasm_i64_trunc_sat_f64_u=>parse( io_body ) TO et_instructions.
+            WHEN OTHERS.
+              WRITE: / 'todoparser:', lv_opcode.
+              ASSERT 1 = 'todo'.
+          ENDCASE.
         WHEN zif_wasm_opcodes=>c_opcodes-end.
           APPEND zcl_wasm_end=>parse( io_body ) TO et_instructions.
           RETURN.
