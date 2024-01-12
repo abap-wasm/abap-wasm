@@ -157,7 +157,6 @@ INTERFACE zif_wasm_opcodes PUBLIC.
         f64_max        TYPE ty_opcode VALUE 'A5',
         f64_copysign   TYPE ty_opcode VALUE 'A6',
         i32_wrap_i64        TYPE ty_opcode VALUE 'A7',
-
         i32_trunc_f32_s     TYPE ty_opcode VALUE 'A8',
         i32_trunc_f32_u     TYPE ty_opcode VALUE 'A9',
         i32_trunc_f64_s     TYPE ty_opcode VALUE 'AA',
@@ -178,7 +177,6 @@ INTERFACE zif_wasm_opcodes PUBLIC.
         f64_convert_i64_s   TYPE ty_opcode VALUE 'B9',
         f64_convert_i64_u   TYPE ty_opcode VALUE 'BA',
         f64_promote_f32     TYPE ty_opcode VALUE 'BB',
-
         i32_extend8_s       TYPE ty_opcode VALUE 'C0',
         i32_extend16_s      TYPE ty_opcode VALUE 'C1',
         ref_null            TYPE ty_opcode VALUE 'D0',
