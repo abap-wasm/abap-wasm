@@ -82,6 +82,7 @@ CLASS cl_testsuite IMPLEMENTATION.
     DATA lv_filename TYPE string.
     DATA lo_wasm     TYPE REF TO zif_wasm.
     DATA lv_hex      TYPE xstring.
+    DATA lt_values   TYPE zif_wasm_value=>ty_values.
 
 
     READ TABLE it_files WITH KEY filename = |{ iv_folder }.json| INTO DATA(ls_file).
@@ -115,7 +116,26 @@ CLASS cl_testsuite IMPLEMENTATION.
               lo_wasm = zcl_wasm=>create_with_wasm( lv_hex ).
               rv_html = rv_html && |<p style="background-color: green">loaded</p>\n|.
             WHEN 'assert_return'.
-              rv_html = rv_html && |<p style="background-color: yellow">todo</p>\n|.
+              IF ls_command-action-type = 'invoke'.
+                CLEAR lt_values.
+                LOOP AT ls_command-action-args INTO DATA(ls_arg).
+                  CASE ls_arg-type.
+                    WHEN 'i32'.
+                      APPEND NEW zcl_wasm_i32( CONV #( ls_arg-value ) ) TO lt_values.
+                    WHEN OTHERS.
+                      rv_html = rv_html && |<p style="background-color: yellow">unknown type, { ls_arg-type }</p>\n|.
+                  ENDCASE.
+                ENDLOOP.
+
+                WRITE / |excecute { ls_command-action-field }|.
+                DATA(lt_result) = lo_wasm->execute_function_export(
+                  iv_name       = ls_command-action-field
+                  it_parameters = lt_values ).
+
+                rv_html = rv_html && |<p style="background-color: yellow">invoke, todo, check result</p>\n|.
+              ELSE.
+                rv_html = rv_html && |<p style="background-color: yellow">todo, { ls_command-action-type }</p>\n|.
+              ENDIF.
             WHEN 'assert_trap'.
               rv_html = rv_html && |<p style="background-color: yellow">todo</p>\n|.
             WHEN 'assert_malformed'.
