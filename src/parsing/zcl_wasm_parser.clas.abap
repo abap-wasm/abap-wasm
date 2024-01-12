@@ -179,18 +179,30 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
 
     DO io_body->shift_u32( ) TIMES.
       DATA(lv_mod) = io_body->shift_utf8( ).
-      WRITE / lv_mod.
+      " WRITE / lv_mod.
       DATA(lv_mn) = io_body->shift_utf8( ).
-      WRITE / lv_mn.
+      " WRITE / lv_mn.
 
       DATA(lv_desc) = io_body->shift( 1 ).
       CASE lv_desc.
         WHEN '00'.
           DATA(lv_typeidx) = io_body->shift_u32( ).
         WHEN '01'.
+          WRITE / '01'.
           ASSERT 1 = 'todo'.
         WHEN '02'.
-          ASSERT 1 = 'todo'.
+          DATA(lv_limit) = io_body->shift( 1 ).
+
+          CASE lv_limit.
+            WHEN '00'.
+              DATA(lv_min) = io_body->shift_u32( ).
+              DATA(lv_max) = 0.
+            WHEN '01'.
+              lv_min = io_body->shift_u32( ).
+              lv_max = io_body->shift_u32( ).
+            WHEN OTHERS.
+              ASSERT 1 = 'todo'.
+          ENDCASE.
         WHEN '03'.
           DATA(lv_valtype) = io_body->shift( 1 ).
           DATA(lv_mut) = io_body->shift( 1 ).
