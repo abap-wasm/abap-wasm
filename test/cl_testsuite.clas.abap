@@ -84,15 +84,11 @@ CLASS cl_testsuite IMPLEMENTATION.
     DATA lv_hex      TYPE xstring.
     DATA lt_skip     TYPE STANDARD TABLE OF string WITH EMPTY KEY.
 
+
     READ TABLE it_files WITH KEY filename = |{ iv_folder }.json| INTO DATA(ls_file).
     ASSERT sy-subrc = 0.
 
     WRITE / '@KERNEL const fs = await import("fs");'.
-
-    " INSERT 'call.0.wasm' INTO TABLE lt_skip. " f64 parsing
-    " INSERT 'call_indirect.0.wasm' INTO TABLE lt_skip. " f64 parsing
-    " INSERT 'const.55.wasm' INTO TABLE lt_skip. " f64 parsing
-    " INSERT 'const.56.wasm' INTO TABLE lt_skip. " f64 parsing
 
     /ui2/cl_json=>deserialize(
       EXPORTING
@@ -118,7 +114,7 @@ CLASS cl_testsuite IMPLEMENTATION.
                 rv_html = rv_html && |<p style="background-color: yellow">todo</p>\n|.
               ELSE.
                 lv_filename = './testsuite/' && iv_folder && '/' && ls_command-filename.
-                WRITE: / 'load:', ls_command-filename.
+                WRITE / |load: { ls_command-filename }|.
                 WRITE / '@KERNEL lv_hex.set(fs.readFileSync(lv_filename.get()).toString("hex").toUpperCase());'.
 *              WRITE / lv_hex.
                 lo_wasm = zcl_wasm=>create_with_wasm( lv_hex ).
@@ -139,6 +135,8 @@ CLASS cl_testsuite IMPLEMENTATION.
             WHEN 'assert_uninstantiable'.
               rv_html = rv_html && |<p style="background-color: yellow">todo</p>\n|.
             WHEN 'register'.
+              rv_html = rv_html && |<p style="background-color: yellow">todo</p>\n|.
+            WHEN 'assert_unlinkable'.
               rv_html = rv_html && |<p style="background-color: yellow">todo</p>\n|.
             WHEN OTHERS.
               WRITE / ls_command-type.
