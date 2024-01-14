@@ -15,7 +15,7 @@ CLASS zcl_wasm_unreachable IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    ASSERT 1 = 'trap'.
+    RAISE EXCEPTION NEW zcx_wasm( text = 'instruction zcl_wasm_unreachable' ).
   ENDMETHOD.
 
 ENDCLASS.

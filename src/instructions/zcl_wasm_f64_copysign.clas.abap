@@ -15,7 +15,7 @@ CLASS zcl_wasm_f64_copysign IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    ASSERT 1 = 'todo'.
+    RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_f64_copysign' ).
   ENDMETHOD.
 
 ENDCLASS.

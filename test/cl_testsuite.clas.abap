@@ -82,6 +82,7 @@ CLASS cl_testsuite IMPLEMENTATION.
     DATA lv_filename TYPE string.
     DATA lo_wasm     TYPE REF TO zif_wasm.
     DATA lv_hex      TYPE xstring.
+    DATA lt_values   TYPE zif_wasm_value=>ty_values.
 
 
     READ TABLE it_files WITH KEY filename = |{ iv_folder }.json| INTO DATA(ls_file).
@@ -115,23 +116,48 @@ CLASS cl_testsuite IMPLEMENTATION.
               lo_wasm = zcl_wasm=>create_with_wasm( lv_hex ).
               rv_html = rv_html && |<p style="background-color: green">loaded</p>\n|.
             WHEN 'assert_return'.
-              rv_html = rv_html && |<p style="background-color: yellow">todo</p>\n|.
+              IF ls_command-action-type = 'invoke'.
+                CLEAR lt_values.
+                LOOP AT ls_command-action-args INTO DATA(ls_arg).
+                  CASE ls_arg-type.
+                    WHEN 'i32'.
+                      APPEND NEW zcl_wasm_i32( CONV #( ls_arg-value ) ) TO lt_values.
+                    WHEN OTHERS.
+                      rv_html = rv_html && |<p style="background-color: yellow">unknown type, { ls_arg-type }</p>\n|.
+                  ENDCASE.
+                ENDLOOP.
+
+                IF ls_command-action-field = 'call'
+                    OR ls_command-action-field = 'call Mf.call'
+                    OR ls_command-action-field = 'Mf.call'.
+                  RAISE EXCEPTION NEW zcx_wasm( text = 'call todo' ).
+                ENDIF.
+
+                WRITE / |excecute { ls_command-action-field }|.
+                DATA(lt_result) = lo_wasm->execute_function_export(
+                  iv_name       = ls_command-action-field
+                  it_parameters = lt_values ).
+
+                rv_html = rv_html && |<p style="background-color: yellow">invoke, todo, check result</p>\n|.
+              ELSE.
+                rv_html = rv_html && |<p style="background-color: yellow">todo, { ls_command-action-type }</p>\n|.
+              ENDIF.
             WHEN 'assert_trap'.
-              rv_html = rv_html && |<p style="background-color: yellow">todo</p>\n|.
+              rv_html = rv_html && |<p style="background-color: yellow">todo, assert_trap</p>\n|.
             WHEN 'assert_malformed'.
-              rv_html = rv_html && |<p style="background-color: yellow">todo</p>\n|.
+              rv_html = rv_html && |<p style="background-color: yellow">todo, assert_malformed</p>\n|.
             WHEN 'assert_invalid'.
-              rv_html = rv_html && |<p style="background-color: yellow">todo</p>\n|.
+              rv_html = rv_html && |<p style="background-color: yellow">todo, assert_invalid</p>\n|.
             WHEN 'action'.
-              rv_html = rv_html && |<p style="background-color: yellow">todo</p>\n|.
+              rv_html = rv_html && |<p style="background-color: yellow">todo, action</p>\n|.
             WHEN 'assert_exhaustion'.
-              rv_html = rv_html && |<p style="background-color: yellow">todo</p>\n|.
+              rv_html = rv_html && |<p style="background-color: yellow">todo, assert_exhaustion</p>\n|.
             WHEN 'assert_uninstantiable'.
-              rv_html = rv_html && |<p style="background-color: yellow">todo</p>\n|.
+              rv_html = rv_html && |<p style="background-color: yellow">todo, assert_uninstantiable</p>\n|.
             WHEN 'register'.
-              rv_html = rv_html && |<p style="background-color: yellow">todo</p>\n|.
+              rv_html = rv_html && |<p style="background-color: yellow">todo, register</p>\n|.
             WHEN 'assert_unlinkable'.
-              rv_html = rv_html && |<p style="background-color: yellow">todo</p>\n|.
+              rv_html = rv_html && |<p style="background-color: yellow">todo, assert_unlinkable</p>\n|.
             WHEN OTHERS.
               WRITE / ls_command-type.
               ASSERT 1 = 'todo'.

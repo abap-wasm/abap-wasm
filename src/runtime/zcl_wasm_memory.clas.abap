@@ -42,7 +42,9 @@ CLASS zcl_wasm_memory IMPLEMENTATION.
 
     DATA(lv_index) = iv_index + 1.
     READ TABLE mt_locals INDEX lv_index INTO ri_value.
-    ASSERT sy-subrc = 0.
+    IF sy-subrc <> 0.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: not foundin local memory' ).
+    ENDIF.
 
   ENDMETHOD.
 
@@ -71,7 +73,9 @@ CLASS zcl_wasm_memory IMPLEMENTATION.
 
   METHOD stack_pop.
 
-    ASSERT lines( mt_stack ) > 0.
+    IF lines( mt_stack ) = 0.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: nothing to pop' ).
+    ENDIF.
 
     DATA(lv_last) = lines( mt_stack ).
     READ TABLE mt_stack INDEX lv_last INTO ri_value.

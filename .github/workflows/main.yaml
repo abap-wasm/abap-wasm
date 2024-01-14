@@ -20,7 +20,7 @@ jobs:
       run: npm ci
     - name: npm test
       run: npm test
-    - name: deploy-merged-build
+    - name: deploy-web
       uses: peaceiris/actions-gh-pages@v3
       if: github.ref == 'refs/heads/main' && github.repository == 'larshp/abap-wasm'
       with:
