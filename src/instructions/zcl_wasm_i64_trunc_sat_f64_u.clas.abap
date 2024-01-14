@@ -16,7 +16,7 @@ CLASS zcl_wasm_i64_trunc_sat_f64_u IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    ASSERT 1 = 'todo'.
+    RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction ' ).
   ENDMETHOD.
 
 ENDCLASS.

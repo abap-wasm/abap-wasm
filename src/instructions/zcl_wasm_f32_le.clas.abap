@@ -15,7 +15,7 @@ CLASS zcl_wasm_f32_le IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    ASSERT 1 = 'todo'.
+    RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction ' ).
   ENDMETHOD.
 
 ENDCLASS.
