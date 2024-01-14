@@ -31,7 +31,7 @@ CLASS zcl_wasm_i64_load32_u IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction ' ).
+    RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_i64_load32_u' ).
   ENDMETHOD.
 
 ENDCLASS.

@@ -15,7 +15,7 @@ CLASS zcl_wasm_f32_reinterpret_i32 IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction ' ).
+    RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_f32_reinterpret_i32' ).
   ENDMETHOD.
 
 ENDCLASS.

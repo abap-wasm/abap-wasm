@@ -28,7 +28,7 @@ CLASS zcl_wasm_global_get IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction ' ).
+    RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_global_get' ).
   ENDMETHOD.
 
 ENDCLASS.
