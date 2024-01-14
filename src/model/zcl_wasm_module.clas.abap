@@ -103,7 +103,9 @@ CLASS zcl_wasm_module IMPLEMENTATION.
     DATA(lv_index) = iv_index + 1.
 
     READ TABLE mt_codes INDEX lv_index INTO rs_code.
-    ASSERT sy-subrc = 0.
+    IF sy-subrc <> 0.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'get_code_by_index: not found' ).
+    ENDIF.
 
   ENDMETHOD.
 
@@ -117,7 +119,9 @@ CLASS zcl_wasm_module IMPLEMENTATION.
 
 * todo, this should read "WITH KEY name = iv_name" instead
     READ TABLE mt_exports INDEX 1 INTO rs_export.
-    ASSERT sy-subrc = 0.
+    IF sy-subrc <> 0.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'get_export_by_name: not found' ).
+    ENDIF.
 
   ENDMETHOD.
 
@@ -149,7 +153,9 @@ CLASS zcl_wasm_module IMPLEMENTATION.
     DATA(lv_index) = iv_index + 1.
 
     READ TABLE mt_types INDEX lv_index INTO rs_type.
-    ASSERT sy-subrc = 0.
+    IF sy-subrc <> 0.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'get_type_by_index: not found' ).
+    ENDIF.
 
   ENDMETHOD.
 ENDCLASS.

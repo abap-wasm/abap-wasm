@@ -48,7 +48,10 @@ CLASS zcl_wasm IMPLEMENTATION.
 
     DATA(lo_memory) = NEW zcl_wasm_memory( ).
 
-    ASSERT lines( it_parameters ) = xstrlen( ls_type-parameter_types ).
+    IF lines( it_parameters ) <> xstrlen( ls_type-parameter_types ).
+      RAISE EXCEPTION NEW zcx_wasm( text = 'execute_function_export: number of parameters doesnt match' ).
+    ENDIF.
+
     LOOP AT it_parameters INTO DATA(li_value).
       lo_memory->stack_push( li_value ).
     ENDLOOP.
