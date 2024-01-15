@@ -108,7 +108,41 @@ CLASS cl_testsuite IMPLEMENTATION.
         iv_name       = is_command-action-field
         it_parameters = lt_values ).
 
-      rv_html = rv_html && |<p style="background-color: yellow">invoke, todo, check result</p>\n|.
+      IF lines( lt_result ) <> lines( is_command-expected ).
+        rv_html = rv_html && |<p style="background-color: yellow">error, wrong number of results</p>\n|.
+        RETURN.
+      ENDIF.
+
+      DATA(lv_error) = abap_false.
+      DO lines( lt_result ) TIMES.
+        DATA(lv_index) = sy-index.
+        READ TABLE is_command-expected INDEX lv_index INTO DATA(ls_expected).
+        ASSERT sy-subrc = 0.
+        READ TABLE lt_result INDEX lv_index INTO DATA(ls_result).
+        ASSERT sy-subrc = 0.
+
+        CASE ls_expected-type.
+          WHEN 'i32'.
+            DATA(lv_expected) = CONV i( ls_expected-value ).
+            DATA(lv_result)   = CAST zcl_wasm_i32( ls_result )->get_value( ).
+            IF lv_expected <> lv_result.
+              lv_error = abap_true.
+              rv_html = rv_html && |<p style="background-color: yellow">error, wrong result, expected { lv_expected }, got { lv_result }</p>\n|.
+            ELSE.
+              rv_html = rv_html && |<p style="background-color: green">ok</p>\n|.
+            ENDIF.
+          " WHEN 'f32'.
+          "   APPEND NEW zcl_wasm_f32( CONV #( ls_arg-value ) ) TO lt_values.
+          WHEN OTHERS.
+            rv_html = rv_html && |<p style="background-color: yellow">unknown type, assert_return: { ls_arg-type }</p>\n|.
+        ENDCASE.
+      ENDDO.
+
+      IF lv_error = abap_false.
+        rv_html = rv_html && |<p style="background-color: green">ok, result</p>\n|.
+      ELSE.
+        rv_html = rv_html && |<p style="background-color: red">error, result</p>\n|.
+      ENDIF.
     ELSE.
       rv_html = rv_html && |<p style="background-color: yellow">todo, { is_command-action-type }</p>\n|.
     ENDIF.
