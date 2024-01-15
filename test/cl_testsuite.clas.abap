@@ -39,6 +39,13 @@ CLASS cl_testsuite DEFINITION PUBLIC CREATE PUBLIC.
         it_files  TYPE ty_files
       RETURNING
         VALUE(rv_html) TYPE string.
+
+    CLASS-METHODS assert_return
+      IMPORTING
+        is_command TYPE ty_json_commands
+        io_wasm    TYPE REF TO zif_wasm
+      RETURNING
+        VALUE(rv_html) TYPE string.
 ENDCLASS.
 
 
@@ -69,10 +76,42 @@ CLASS cl_testsuite IMPLEMENTATION.
     rv_html = rv_html && run_folder(
       iv_folder = lv_folder
       it_files  = lt_files ).
-    " IF 1 = 1.
-    "   RETURN.
-    " ENDIF.
+
     WRITE / '@KERNEL }'.
+
+  ENDMETHOD.
+
+  METHOD assert_return.
+
+    DATA lt_values   TYPE zif_wasm_value=>ty_values.
+
+    IF is_command-action-type = 'invoke'.
+      LOOP AT is_command-action-args INTO DATA(ls_arg).
+        CASE ls_arg-type.
+          WHEN 'i32'.
+            APPEND NEW zcl_wasm_i32( CONV #( ls_arg-value ) ) TO lt_values.
+          " WHEN 'f32'.
+          "   APPEND NEW zcl_wasm_f32( CONV #( ls_arg-value ) ) TO lt_values.
+          WHEN OTHERS.
+            rv_html = rv_html && |<p style="background-color: yellow">unknown type, { ls_arg-type }</p>\n|.
+        ENDCASE.
+      ENDLOOP.
+
+      IF is_command-action-field = 'call'
+          OR is_command-action-field = 'call Mf.call'
+          OR is_command-action-field = 'Mf.call'.
+        RAISE EXCEPTION NEW zcx_wasm( text = 'call todo' ).
+      ENDIF.
+
+      WRITE / |excecute { is_command-action-field }|.
+      DATA(lt_result) = io_wasm->execute_function_export(
+        iv_name       = is_command-action-field
+        it_parameters = lt_values ).
+
+      rv_html = rv_html && |<p style="background-color: yellow">invoke, todo, check result</p>\n|.
+    ELSE.
+      rv_html = rv_html && |<p style="background-color: yellow">todo, { is_command-action-type }</p>\n|.
+    ENDIF.
 
   ENDMETHOD.
 
@@ -82,7 +121,6 @@ CLASS cl_testsuite IMPLEMENTATION.
     DATA lv_filename TYPE string.
     DATA lo_wasm     TYPE REF TO zif_wasm.
     DATA lv_hex      TYPE xstring.
-    DATA lt_values   TYPE zif_wasm_value=>ty_values.
 
 
     READ TABLE it_files WITH KEY filename = |{ iv_folder }.json| INTO DATA(ls_file).
@@ -116,32 +154,9 @@ CLASS cl_testsuite IMPLEMENTATION.
               lo_wasm = zcl_wasm=>create_with_wasm( lv_hex ).
               rv_html = rv_html && |<p style="background-color: green">loaded</p>\n|.
             WHEN 'assert_return'.
-              IF ls_command-action-type = 'invoke'.
-                CLEAR lt_values.
-                LOOP AT ls_command-action-args INTO DATA(ls_arg).
-                  CASE ls_arg-type.
-                    WHEN 'i32'.
-                      APPEND NEW zcl_wasm_i32( CONV #( ls_arg-value ) ) TO lt_values.
-                    WHEN OTHERS.
-                      rv_html = rv_html && |<p style="background-color: yellow">unknown type, { ls_arg-type }</p>\n|.
-                  ENDCASE.
-                ENDLOOP.
-
-                IF ls_command-action-field = 'call'
-                    OR ls_command-action-field = 'call Mf.call'
-                    OR ls_command-action-field = 'Mf.call'.
-                  RAISE EXCEPTION NEW zcx_wasm( text = 'call todo' ).
-                ENDIF.
-
-                WRITE / |excecute { ls_command-action-field }|.
-                DATA(lt_result) = lo_wasm->execute_function_export(
-                  iv_name       = ls_command-action-field
-                  it_parameters = lt_values ).
-
-                rv_html = rv_html && |<p style="background-color: yellow">invoke, todo, check result</p>\n|.
-              ELSE.
-                rv_html = rv_html && |<p style="background-color: yellow">todo, { ls_command-action-type }</p>\n|.
-              ENDIF.
+              rv_html = rv_html && assert_return(
+                is_command = ls_command
+                io_wasm    = lo_wasm ).
             WHEN 'assert_trap'.
               rv_html = rv_html && |<p style="background-color: yellow">todo, assert_trap</p>\n|.
             WHEN 'assert_malformed'.
