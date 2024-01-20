@@ -33,19 +33,17 @@ CLASS cl_testsuite DEFINITION PUBLIC CREATE PUBLIC.
              commands        TYPE STANDARD TABLE OF ty_json_commands WITH DEFAULT KEY,
            END OF ty_json.
 
+    CLASS-DATA go_html TYPE REF TO cl_html.
+
     CLASS-METHODS run_folder
       IMPORTING
         iv_folder TYPE string
-        it_files  TYPE ty_files
-      RETURNING
-        VALUE(rv_html) TYPE string.
+        it_files  TYPE ty_files.
 
     CLASS-METHODS assert_return
       IMPORTING
         is_command TYPE ty_json_commands
-        io_wasm    TYPE REF TO zif_wasm
-      RETURNING
-        VALUE(rv_html) TYPE string.
+        io_wasm    TYPE REF TO zif_wasm.
 ENDCLASS.
 
 
@@ -58,6 +56,7 @@ CLASS cl_testsuite IMPLEMENTATION.
     DATA lv_hex      TYPE xstring.
     DATA lt_files    TYPE ty_files.
 
+    go_html = NEW #( ).
 
     WRITE / '@KERNEL const fs = await import("fs");'.
     WRITE / '@KERNEL const folders = fs.readdirSync("./testsuite/").filter(a => a.includes(".") === false);'.
@@ -79,11 +78,13 @@ CLASS cl_testsuite IMPLEMENTATION.
 
     WRITE / '@KERNEL }'.
 
+    rv_html = go_html->render( ).
+
   ENDMETHOD.
 
   METHOD assert_return.
 
-    DATA lt_values   TYPE zif_wasm_value=>ty_values.
+    DATA lt_values TYPE zif_wasm_value=>ty_values.
 
     IF is_command-action-type = 'invoke'.
       LOOP AT is_command-action-args INTO DATA(ls_arg).
@@ -93,7 +94,7 @@ CLASS cl_testsuite IMPLEMENTATION.
           " WHEN 'f32'.
           "   APPEND NEW zcl_wasm_f32( CONV #( ls_arg-value ) ) TO lt_values.
           WHEN OTHERS.
-            rv_html = rv_html && |<p style="background-color: yellow">unknown type, { ls_arg-type }</p>\n|.
+            go_html->add_warning( |unknown type, { ls_arg-type }| ).
         ENDCASE.
       ENDLOOP.
 
@@ -109,7 +110,7 @@ CLASS cl_testsuite IMPLEMENTATION.
         it_parameters = lt_values ).
 
       IF lines( lt_result ) <> lines( is_command-expected ).
-        rv_html = rv_html && |<p style="background-color: yellow">error, wrong number of results</p>\n|.
+        go_html->add_warning( |error, wrong number of results| ).
         RETURN.
       ENDIF.
 
@@ -127,24 +128,24 @@ CLASS cl_testsuite IMPLEMENTATION.
             DATA(lv_result)   = CAST zcl_wasm_i32( ls_result )->get_value( ).
             IF lv_expected <> lv_result.
               lv_error = abap_true.
-              rv_html = rv_html && |<p style="background-color: yellow">error, wrong result, expected { lv_expected }, got { lv_result }</p>\n|.
+              go_html->add_warning( |error, wrong result, expected { lv_expected }, got { lv_result }| ).
             ELSE.
-              rv_html = rv_html && |<p style="background-color: green">ok</p>\n|.
+              go_html->add_success( |ok| ).
             ENDIF.
           " WHEN 'f32'.
           "   APPEND NEW zcl_wasm_f32( CONV #( ls_arg-value ) ) TO lt_values.
           WHEN OTHERS.
-            rv_html = rv_html && |<p style="background-color: yellow">unknown type, assert_return: { ls_arg-type }</p>\n|.
+            go_html->add_warning( |unknown type, assert_return: { ls_arg-type }| ).
         ENDCASE.
       ENDDO.
 
       IF lv_error = abap_false.
-        rv_html = rv_html && |<p style="background-color: green">ok, result</p>\n|.
+        go_html->add_success( |ok, result| ).
       ELSE.
-        rv_html = rv_html && |<p style="background-color: red">error, result</p>\n|.
+        go_html->add_error( |error, result| ).
       ENDIF.
     ELSE.
-      rv_html = rv_html && |<p style="background-color: yellow">todo, { is_command-action-type }</p>\n|.
+      go_html->add_warning( |todo, { is_command-action-type }| ).
     ENDIF.
 
   ENDMETHOD.
@@ -186,33 +187,33 @@ CLASS cl_testsuite IMPLEMENTATION.
               WRITE / |load: { ls_command-filename }|.
               WRITE / '@KERNEL lv_hex.set(fs.readFileSync(lv_filename.get()).toString("hex").toUpperCase());'.
               lo_wasm = zcl_wasm=>create_with_wasm( lv_hex ).
-              rv_html = rv_html && |<p style="background-color: green">loaded</p>\n|.
+              go_html->add_success( |loaded| ).
             WHEN 'assert_return'.
-              rv_html = rv_html && assert_return(
+              assert_return(
                 is_command = ls_command
                 io_wasm    = lo_wasm ).
             WHEN 'assert_trap'.
-              rv_html = rv_html && |<p style="background-color: yellow">todo, assert_trap</p>\n|.
+              go_html->add_warning( |todo, assert_trap| ).
             WHEN 'assert_malformed'.
-              rv_html = rv_html && |<p style="background-color: yellow">todo, assert_malformed</p>\n|.
+              go_html->add_warning( |todo, assert_malformed| ).
             WHEN 'assert_invalid'.
-              rv_html = rv_html && |<p style="background-color: yellow">todo, assert_invalid</p>\n|.
+              go_html->add_warning( |todo, assert_invalid| ).
             WHEN 'action'.
-              rv_html = rv_html && |<p style="background-color: yellow">todo, action</p>\n|.
+              go_html->add_warning( |todo, action| ).
             WHEN 'assert_exhaustion'.
-              rv_html = rv_html && |<p style="background-color: yellow">todo, assert_exhaustion</p>\n|.
+              go_html->add_warning( |todo, assert_exhaustion| ).
             WHEN 'assert_uninstantiable'.
-              rv_html = rv_html && |<p style="background-color: yellow">todo, assert_uninstantiable</p>\n|.
+              go_html->add_warning( |todo, assert_uninstantiable| ).
             WHEN 'register'.
-              rv_html = rv_html && |<p style="background-color: yellow">todo, register</p>\n|.
+              go_html->add_warning( |todo, register| ).
             WHEN 'assert_unlinkable'.
-              rv_html = rv_html && |<p style="background-color: yellow">todo, assert_unlinkable</p>\n|.
+              go_html->add_warning( |todo, assert_unlinkable| ).
             WHEN OTHERS.
               WRITE / ls_command-type.
               ASSERT 1 = 'todo'.
           ENDCASE.
-        CATCH cx_static_check INTO DATA(lx_error).
-          rv_html = rv_html && |<p style="background-color: red">exception: { lx_error->get_text( ) }</p>\n|.
+        CATCH cx_root INTO DATA(lx_error).
+          go_html->add_error( |exception: { lx_error->get_text( ) }| ).
       ENDTRY.
     ENDLOOP.
 
