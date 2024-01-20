@@ -72,7 +72,7 @@ CLASS cl_testsuite IMPLEMENTATION.
       hex      = lv_hex ) TO lt_files.
     WRITE / '@KERNEL   }'.
 
-    rv_html = rv_html && run_folder(
+    run_folder(
       iv_folder = lv_folder
       it_files  = lt_files ).
 
@@ -172,13 +172,10 @@ CLASS cl_testsuite IMPLEMENTATION.
     WRITE / '================================'.
     WRITE / ls_json-source_filename.
 
-    rv_html = |<h1>{ ls_json-source_filename }</h1>\n|.
+    go_html->add_suite( ls_json-source_filename ).
+
     LOOP AT ls_json-commands INTO DATA(ls_command).
-      DATA(lv_command) = /ui2/cl_json=>serialize(
-        pretty_name = /ui2/cl_json=>pretty_mode-low_case
-        compress    = abap_true
-        data        = ls_command ).
-      rv_html = rv_html && |<pre>| && lv_command && |</pre>\n|.
+      go_html->add_command( ls_command ).
 
       TRY.
           CASE ls_command-type.

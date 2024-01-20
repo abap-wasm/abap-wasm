@@ -14,6 +14,14 @@ CLASS cl_html DEFINITION PUBLIC.
       IMPORTING
         iv_error TYPE string.
 
+    METHODS add_command
+      IMPORTING
+        is_command TYPE cl_testsuite=>ty_json_commands.
+
+    METHODS add_suite
+      IMPORTING
+        iv_suite TYPE string.
+
   PRIVATE SECTION.
     DATA mv_html TYPE string.
 ENDCLASS.
@@ -21,7 +29,20 @@ ENDCLASS.
 CLASS cl_html IMPLEMENTATION.
 
   METHOD render.
-    rv_html = '<html><body><h1>Hello World</h1></body></html>'.
+    rv_html = mv_html.
+  ENDMETHOD.
+
+  METHOD add_suite.
+    mv_html = mv_html && |<h1>{ iv_suite }</h1>\n|.
+  ENDMETHOD.
+
+  METHOD add_command.
+    DATA(lv_command) = /ui2/cl_json=>serialize(
+      pretty_name = /ui2/cl_json=>pretty_mode-low_case
+      compress    = abap_true
+      data        = is_command ).
+
+    mv_html = mv_html && |<pre>| && lv_command && |</pre>\n|.
   ENDMETHOD.
 
   METHOD add_warning.
