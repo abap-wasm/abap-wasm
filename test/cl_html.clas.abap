@@ -24,11 +24,20 @@ CLASS cl_html DEFINITION PUBLIC.
 
   PRIVATE SECTION.
     DATA mv_html TYPE string.
+
+    DATA mv_errors TYPE i.
+    DATA mv_warnings TYPE i.
+    DATA mv_success TYPE i.
 ENDCLASS.
 
 CLASS cl_html IMPLEMENTATION.
 
   METHOD render.
+    mv_html = mv_html && |<br>\n|.
+    mv_html = mv_html && |<h2>Errors: { mv_errors }</h2>\n|.
+    mv_html = mv_html && |<h2>Warnings: { mv_warnings }</h2>\n|.
+    mv_html = mv_html && |<h2>Successes: { mv_success }</h2>\n|.
+
     rv_html = mv_html.
   ENDMETHOD.
 
@@ -46,14 +55,17 @@ CLASS cl_html IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD add_warning.
+    mv_warnings = mv_warnings + 1.
     mv_html = mv_html && '<p style="background-color: yellow">' && iv_warning && |</p>\n|.
   ENDMETHOD.
 
   METHOD add_success.
+    mv_success = mv_success + 1.
     mv_html = mv_html && '<p style="background-color: green">' && iv_success && |</p>\n|.
   ENDMETHOD.
 
   METHOD add_error.
+    mv_errors = mv_errors + 1.
     mv_html = mv_html && '<p style="background-color: red">' && iv_error && |</p>\n|.
   ENDMETHOD.
 
