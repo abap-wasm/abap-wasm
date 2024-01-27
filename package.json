@@ -6,6 +6,7 @@
     "testsuite": "echo RUNNING TESTSUITE && node test/testsuite.mjs",
     "unit": "rm -rf output && abap_transpile && echo RUNNING UNIT TEST && node output/index.mjs",
     "lint": "abaplint",
+    "flame-graph": "0x -o test/testsuite.mjs",
     "test": "npm run lint && npm run downport && npm run unit && npm run testsuite"
   },
   "author": "Lars Hvam Petersen",
@@ -14,5 +15,8 @@
     "@abaplint/cli": "^2.105.13",
     "@abaplint/runtime": "^2.7.149",
     "@abaplint/transpiler-cli": "^2.7.149"
+  },
+  "devDependencies": {
+    "0x": "^5.7.0"
   }
 }
