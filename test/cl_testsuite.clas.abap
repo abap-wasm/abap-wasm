@@ -158,14 +158,14 @@ CLASS cl_testsuite IMPLEMENTATION.
     DATA lv_hex      TYPE xstring.
 
 
-    READ TABLE it_files WITH KEY filename = |{ iv_folder }.json| INTO DATA(ls_file).
+    READ TABLE it_files WITH KEY filename = |{ iv_folder }.json| ASSIGNING FIELD-SYMBOL(<ls_file>).
     ASSERT sy-subrc = 0.
 
     WRITE / '@KERNEL const fs = await import("fs");'.
 
     /ui2/cl_json=>deserialize(
       EXPORTING
-        json = cl_abap_codepage=>convert_from( ls_file-hex )
+        json = cl_abap_codepage=>convert_from( <ls_file>-hex )
       CHANGING
         data = ls_json ).
 
@@ -174,20 +174,20 @@ CLASS cl_testsuite IMPLEMENTATION.
 
     go_html->add_suite( ls_json-source_filename ).
 
-    LOOP AT ls_json-commands INTO DATA(ls_command).
-      go_html->add_command( ls_command ).
+    LOOP AT ls_json-commands ASSIGNING FIELD-SYMBOL(<ls_command>).
+      go_html->add_command( <ls_command> ).
 
       TRY.
-          CASE ls_command-type.
+          CASE <ls_command>-type.
             WHEN 'module'.
-              lv_filename = './testsuite/' && iv_folder && '/' && ls_command-filename.
-              WRITE / |load: { ls_command-filename }|.
+              lv_filename = './testsuite/' && iv_folder && '/' && <ls_command>-filename.
+              WRITE / |load: { <ls_command>-filename }|.
               WRITE / '@KERNEL lv_hex.set(fs.readFileSync(lv_filename.get()).toString("hex").toUpperCase());'.
               lo_wasm = zcl_wasm=>create_with_wasm( lv_hex ).
               go_html->add_success( |loaded| ).
             WHEN 'assert_return'.
               assert_return(
-                is_command = ls_command
+                is_command = <ls_command>
                 io_wasm    = lo_wasm ).
             WHEN 'assert_trap'.
               go_html->add_warning( |todo, assert_trap| ).
@@ -206,7 +206,7 @@ CLASS cl_testsuite IMPLEMENTATION.
             WHEN 'assert_unlinkable'.
               go_html->add_warning( |todo, assert_unlinkable| ).
             WHEN OTHERS.
-              WRITE / ls_command-type.
+              WRITE / <ls_command>-type.
               ASSERT 1 = 'todo'.
           ENDCASE.
         CATCH cx_root INTO DATA(lx_error).
