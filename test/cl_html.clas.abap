@@ -28,6 +28,8 @@ CLASS cl_html DEFINITION PUBLIC.
     DATA mv_errors TYPE i.
     DATA mv_warnings TYPE i.
     DATA mv_success TYPE i.
+
+    DATA mo_type_descr TYPE REF TO cl_abap_typedescr.
 ENDCLASS.
 
 CLASS cl_html IMPLEMENTATION.
@@ -46,9 +48,14 @@ CLASS cl_html IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD add_command.
+    IF mo_type_descr IS INITIAL.
+      mo_type_descr = cl_abap_typedescr=>describe_by_data( is_command ).
+    ENDIF.
+
     DATA(lv_command) = /ui2/cl_json=>serialize(
       pretty_name = /ui2/cl_json=>pretty_mode-low_case
       compress    = abap_true
+      type_descr  = mo_type_descr
       data        = is_command ).
 
     mv_html = mv_html && |<pre>| && lv_command && |</pre>\n|.
