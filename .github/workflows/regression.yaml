@@ -23,4 +23,5 @@ jobs:
     - run: cp web/totals.json ../before.json
 
     - run: ls -l ../
-    - run: node test/build_comment.mjs
+    - run: ls
+    - run: node ./test/build_comment.mjs
