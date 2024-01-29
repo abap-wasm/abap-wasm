@@ -66,10 +66,11 @@ CLASS cl_result IMPLEMENTATION.
       lv_top = lv_top && |<a href="#{ ls_suite }">{ ls_suite }</a>&nbsp;\n|.
     ENDLOOP.
 
-    lv_top = lv_top && |<br>\n|.
+    lv_top = lv_top && |<hr>\n|.
     lv_top = lv_top && |<h3>Errors: { mv_errors }</h3>\n|.
     lv_top = lv_top && |<h3>Warnings: { mv_warnings }</h3>\n|.
     lv_top = lv_top && |<h3>Successes: { mv_success }</h3>\n|.
+    lv_top = lv_top && |<hr>\n|.
 
     rv_html = lv_top && mv_html.
   ENDMETHOD.
