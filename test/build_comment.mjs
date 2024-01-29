@@ -10,6 +10,7 @@ comment += "| :---      | ---:   | ---:  | ---:  |\n";
 comment += `| :green_circle: Successes | ${before.successes} | ${after.successes} | ${after.successes - before.successes} |\n`;
 comment += `| :yellow_circle: Warnings | ${before.warnings}  | ${after.warnings}  | ${after.warnings - before.warnings} |\n`;
 comment += `| :red_circle: Errors      | ${before.errors}    | ${after.errors}    | ${after.errors - before.errors} |\n`;
+comment += `| :running_man: Runtime    | ? | ?    | ? |\n`;
 
 comment += "\nUpdated: " + new Date().toISOString() + "\n";
 comment += "\nSHA: " + process.env.GITHUB_SHA + "\n";
