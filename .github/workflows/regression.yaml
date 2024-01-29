@@ -13,14 +13,14 @@ jobs:
     - uses: actions/setup-node@v4
 
     - uses: actions/checkout@v4
-    - run: npm ci && npm test
-    - run: cp web/totals.json ../after.json
-
-    - uses: actions/checkout@v4
       with:
         ref: 'main'
     - run: npm ci && npm test
     - run: cp web/totals.json ../before.json
+
+    - uses: actions/checkout@v4
+    - run: npm ci && npm test
+    - run: cp web/totals.json ../after.json
 
     - run: ls -l ../
     - run: ls
