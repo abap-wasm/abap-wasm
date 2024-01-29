@@ -31,8 +31,8 @@ CLASS zcl_wasm_i32_load8_u IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    WRITE / |  zcl_wasm_i32_load8_u, align: { mv_align }|.
-    WRITE / |  zcl_wasm_i32_load8_u, offset: { mv_offset }|.
+    " WRITE / |  zcl_wasm_i32_load8_u, align: { mv_align }|.
+    " WRITE / |  zcl_wasm_i32_load8_u, offset: { mv_offset }|.
 
     RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_i32_load8_u' ).
   ENDMETHOD.

@@ -117,8 +117,7 @@ CLASS zcl_wasm_module IMPLEMENTATION.
 
   METHOD get_export_by_name.
 
-* todo, this should read "WITH KEY name = iv_name" instead
-    READ TABLE mt_exports INDEX 1 INTO rs_export.
+    READ TABLE mt_exports WITH KEY name = iv_name INTO rs_export.
     IF sy-subrc <> 0.
       RAISE EXCEPTION NEW zcx_wasm( text = 'get_export_by_name: not found' ).
     ENDIF.
