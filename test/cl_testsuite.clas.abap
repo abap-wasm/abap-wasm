@@ -99,7 +99,7 @@ CLASS cl_testsuite IMPLEMENTATION.
           WHEN 'f64'.
             APPEND NEW zcl_wasm_f64( CONV #( ls_arg-value ) ) TO lt_values.
           WHEN OTHERS.
-            go_result->add_warning( |unknown type, invoke, { ls_arg-type }| ).
+            RAISE EXCEPTION NEW zcx_wasm( text = |unknown type, invoke, { ls_arg-type }| ).
         ENDCASE.
       ENDLOOP.
 
@@ -109,13 +109,12 @@ CLASS cl_testsuite IMPLEMENTATION.
         RAISE EXCEPTION NEW zcx_wasm( text = 'call todo' ).
       ENDIF.
 
-      WRITE / |excecute { is_command-action-field }|.
       DATA(lt_result) = io_wasm->execute_function_export(
         iv_name       = is_command-action-field
         it_parameters = lt_values ).
 
       IF lines( lt_result ) <> lines( is_command-expected ).
-        go_result->add_warning( |error, wrong number of results| ).
+        go_result->add_error( |error, wrong number of results| ).
         RETURN.
       ENDIF.
 
@@ -133,21 +132,20 @@ CLASS cl_testsuite IMPLEMENTATION.
             DATA(lv_result)   = CAST zcl_wasm_i32( ls_result )->get_value( ).
             IF lv_expected <> lv_result.
               lv_error = abap_true.
-              go_result->add_warning( |error, wrong result, expected { lv_expected }, got { lv_result }| ).
-            ELSE.
-              go_result->add_success( |ok| ).
+              go_result->add_error( |error, wrong result, expected { lv_expected }, got { lv_result }| ).
+              EXIT. " current loop
             ENDIF.
           " WHEN 'f32'.
           "   APPEND NEW zcl_wasm_f32( CONV #( ls_arg-value ) ) TO lt_values.
           WHEN OTHERS.
-            go_result->add_warning( |unknown type, assert_return: { ls_expected-type }| ).
+            lv_error = abap_true.
+            go_result->add_error( |unknown type, assert_return: { ls_expected-type }| ).
+            EXIT. " current loop
         ENDCASE.
       ENDDO.
 
       IF lv_error = abap_false.
         go_result->add_success( |ok, result| ).
-      ELSE.
-        go_result->add_error( |error, result| ).
       ENDIF.
     ELSE.
       go_result->add_warning( |todo, { is_command-action-type }| ).
