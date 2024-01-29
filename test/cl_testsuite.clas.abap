@@ -140,7 +140,7 @@ CLASS cl_testsuite IMPLEMENTATION.
           " WHEN 'f32'.
           "   APPEND NEW zcl_wasm_f32( CONV #( ls_arg-value ) ) TO lt_values.
           WHEN OTHERS.
-            go_result->add_warning( |unknown type, assert_return: { ls_arg-type }| ).
+            go_result->add_warning( |unknown type, assert_return: { ls_expected-type }| ).
         ENDCASE.
       ENDDO.
 
