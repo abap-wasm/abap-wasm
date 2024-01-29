@@ -2,7 +2,7 @@ CLASS cl_testsuite DEFINITION PUBLIC CREATE PUBLIC.
   PUBLIC SECTION.
     CLASS-METHODS run
       RETURNING
-        VALUE(rv_html) TYPE string.
+        VALUE(ro_html) TYPE REF TO cl_result.
   PRIVATE SECTION.
     TYPES: BEGIN OF ty_file,
              filename TYPE string,
@@ -33,12 +33,17 @@ CLASS cl_testsuite DEFINITION PUBLIC CREATE PUBLIC.
              commands        TYPE STANDARD TABLE OF ty_json_commands WITH DEFAULT KEY,
            END OF ty_json.
 
+    CLASS-DATA go_html TYPE REF TO cl_result.
+
     CLASS-METHODS run_folder
       IMPORTING
         iv_folder TYPE string
-        it_files  TYPE ty_files
-      RETURNING
-        VALUE(rv_html) TYPE string.
+        it_files  TYPE ty_files.
+
+    CLASS-METHODS assert_return
+      IMPORTING
+        is_command TYPE ty_json_commands
+        io_wasm    TYPE REF TO zif_wasm.
 ENDCLASS.
 
 
@@ -51,6 +56,7 @@ CLASS cl_testsuite IMPLEMENTATION.
     DATA lv_hex      TYPE xstring.
     DATA lt_files    TYPE ty_files.
 
+    go_html = NEW #( ).
 
     WRITE / '@KERNEL const fs = await import("fs");'.
     WRITE / '@KERNEL const folders = fs.readdirSync("./testsuite/").filter(a => a.includes(".") === false);'.
@@ -66,13 +72,81 @@ CLASS cl_testsuite IMPLEMENTATION.
       hex      = lv_hex ) TO lt_files.
     WRITE / '@KERNEL   }'.
 
-    rv_html = rv_html && run_folder(
+    run_folder(
       iv_folder = lv_folder
       it_files  = lt_files ).
-    " IF 1 = 1.
-    "   RETURN.
-    " ENDIF.
+
     WRITE / '@KERNEL }'.
+
+    ro_html = go_html.
+
+  ENDMETHOD.
+
+  METHOD assert_return.
+
+    DATA lt_values TYPE zif_wasm_value=>ty_values.
+
+    IF is_command-action-type = 'invoke'.
+      LOOP AT is_command-action-args INTO DATA(ls_arg).
+        CASE ls_arg-type.
+          WHEN 'i32'.
+            APPEND NEW zcl_wasm_i32( CONV #( ls_arg-value ) ) TO lt_values.
+          " WHEN 'f32'.
+          "   APPEND NEW zcl_wasm_f32( CONV #( ls_arg-value ) ) TO lt_values.
+          WHEN OTHERS.
+            go_html->add_warning( |unknown type, { ls_arg-type }| ).
+        ENDCASE.
+      ENDLOOP.
+
+      IF is_command-action-field = 'call'
+          OR is_command-action-field = 'call Mf.call'
+          OR is_command-action-field = 'Mf.call'.
+        RAISE EXCEPTION NEW zcx_wasm( text = 'call todo' ).
+      ENDIF.
+
+      WRITE / |excecute { is_command-action-field }|.
+      DATA(lt_result) = io_wasm->execute_function_export(
+        iv_name       = is_command-action-field
+        it_parameters = lt_values ).
+
+      IF lines( lt_result ) <> lines( is_command-expected ).
+        go_html->add_warning( |error, wrong number of results| ).
+        RETURN.
+      ENDIF.
+
+      DATA(lv_error) = abap_false.
+      DO lines( lt_result ) TIMES.
+        DATA(lv_index) = sy-index.
+        READ TABLE is_command-expected INDEX lv_index INTO DATA(ls_expected).
+        ASSERT sy-subrc = 0.
+        READ TABLE lt_result INDEX lv_index INTO DATA(ls_result).
+        ASSERT sy-subrc = 0.
+
+        CASE ls_expected-type.
+          WHEN 'i32'.
+            DATA(lv_expected) = CONV i( ls_expected-value ).
+            DATA(lv_result)   = CAST zcl_wasm_i32( ls_result )->get_value( ).
+            IF lv_expected <> lv_result.
+              lv_error = abap_true.
+              go_html->add_warning( |error, wrong result, expected { lv_expected }, got { lv_result }| ).
+            ELSE.
+              go_html->add_success( |ok| ).
+            ENDIF.
+          " WHEN 'f32'.
+          "   APPEND NEW zcl_wasm_f32( CONV #( ls_arg-value ) ) TO lt_values.
+          WHEN OTHERS.
+            go_html->add_warning( |unknown type, assert_return: { ls_arg-type }| ).
+        ENDCASE.
+      ENDDO.
+
+      IF lv_error = abap_false.
+        go_html->add_success( |ok, result| ).
+      ELSE.
+        go_html->add_error( |error, result| ).
+      ENDIF.
+    ELSE.
+      go_html->add_warning( |todo, { is_command-action-type }| ).
+    ENDIF.
 
   ENDMETHOD.
 
@@ -82,88 +156,61 @@ CLASS cl_testsuite IMPLEMENTATION.
     DATA lv_filename TYPE string.
     DATA lo_wasm     TYPE REF TO zif_wasm.
     DATA lv_hex      TYPE xstring.
-    DATA lt_values   TYPE zif_wasm_value=>ty_values.
 
 
-    READ TABLE it_files WITH KEY filename = |{ iv_folder }.json| INTO DATA(ls_file).
+    READ TABLE it_files WITH KEY filename = |{ iv_folder }.json| ASSIGNING FIELD-SYMBOL(<ls_file>).
     ASSERT sy-subrc = 0.
 
     WRITE / '@KERNEL const fs = await import("fs");'.
 
     /ui2/cl_json=>deserialize(
       EXPORTING
-        json = cl_abap_codepage=>convert_from( ls_file-hex )
+        json = cl_abap_codepage=>convert_from( <ls_file>-hex )
       CHANGING
         data = ls_json ).
 
     WRITE / '================================'.
     WRITE / ls_json-source_filename.
 
-    rv_html = |<h1>{ ls_json-source_filename }</h1>\n|.
-    LOOP AT ls_json-commands INTO DATA(ls_command).
-      DATA(lv_command) = /ui2/cl_json=>serialize(
-        pretty_name = /ui2/cl_json=>pretty_mode-low_case
-        compress    = abap_true
-        data        = ls_command ).
-      rv_html = rv_html && |<pre>| && lv_command && |</pre>\n|.
+    go_html->add_suite( ls_json-source_filename ).
+
+    LOOP AT ls_json-commands ASSIGNING FIELD-SYMBOL(<ls_command>).
+      go_html->add_command( <ls_command> ).
 
       TRY.
-          CASE ls_command-type.
+          CASE <ls_command>-type.
             WHEN 'module'.
-              lv_filename = './testsuite/' && iv_folder && '/' && ls_command-filename.
-              WRITE / |load: { ls_command-filename }|.
+              lv_filename = './testsuite/' && iv_folder && '/' && <ls_command>-filename.
+              WRITE / |load: { <ls_command>-filename }|.
               WRITE / '@KERNEL lv_hex.set(fs.readFileSync(lv_filename.get()).toString("hex").toUpperCase());'.
               lo_wasm = zcl_wasm=>create_with_wasm( lv_hex ).
-              rv_html = rv_html && |<p style="background-color: green">loaded</p>\n|.
+              go_html->add_success( |loaded| ).
             WHEN 'assert_return'.
-              IF ls_command-action-type = 'invoke'.
-                CLEAR lt_values.
-                LOOP AT ls_command-action-args INTO DATA(ls_arg).
-                  CASE ls_arg-type.
-                    WHEN 'i32'.
-                      APPEND NEW zcl_wasm_i32( CONV #( ls_arg-value ) ) TO lt_values.
-                    WHEN OTHERS.
-                      rv_html = rv_html && |<p style="background-color: yellow">unknown type, { ls_arg-type }</p>\n|.
-                  ENDCASE.
-                ENDLOOP.
-
-                IF ls_command-action-field = 'call'
-                    OR ls_command-action-field = 'call Mf.call'
-                    OR ls_command-action-field = 'Mf.call'.
-                  RAISE EXCEPTION NEW zcx_wasm( text = 'call todo' ).
-                ENDIF.
-
-                WRITE / |excecute { ls_command-action-field }|.
-                DATA(lt_result) = lo_wasm->execute_function_export(
-                  iv_name       = ls_command-action-field
-                  it_parameters = lt_values ).
-
-                rv_html = rv_html && |<p style="background-color: yellow">invoke, todo, check result</p>\n|.
-              ELSE.
-                rv_html = rv_html && |<p style="background-color: yellow">todo, { ls_command-action-type }</p>\n|.
-              ENDIF.
+              assert_return(
+                is_command = <ls_command>
+                io_wasm    = lo_wasm ).
             WHEN 'assert_trap'.
-              rv_html = rv_html && |<p style="background-color: yellow">todo, assert_trap</p>\n|.
+              go_html->add_warning( |todo, assert_trap| ).
             WHEN 'assert_malformed'.
-              rv_html = rv_html && |<p style="background-color: yellow">todo, assert_malformed</p>\n|.
+              go_html->add_warning( |todo, assert_malformed| ).
             WHEN 'assert_invalid'.
-              rv_html = rv_html && |<p style="background-color: yellow">todo, assert_invalid</p>\n|.
+              go_html->add_warning( |todo, assert_invalid| ).
             WHEN 'action'.
-              rv_html = rv_html && |<p style="background-color: yellow">todo, action</p>\n|.
+              go_html->add_warning( |todo, action| ).
             WHEN 'assert_exhaustion'.
-              rv_html = rv_html && |<p style="background-color: yellow">todo, assert_exhaustion</p>\n|.
+              go_html->add_warning( |todo, assert_exhaustion| ).
             WHEN 'assert_uninstantiable'.
-              rv_html = rv_html && |<p style="background-color: yellow">todo, assert_uninstantiable</p>\n|.
+              go_html->add_warning( |todo, assert_uninstantiable| ).
             WHEN 'register'.
-              rv_html = rv_html && |<p style="background-color: yellow">todo, register</p>\n|.
+              go_html->add_warning( |todo, register| ).
             WHEN 'assert_unlinkable'.
-              rv_html = rv_html && |<p style="background-color: yellow">todo, assert_unlinkable</p>\n|.
+              go_html->add_warning( |todo, assert_unlinkable| ).
             WHEN OTHERS.
-              WRITE / ls_command-type.
+              WRITE / <ls_command>-type.
               ASSERT 1 = 'todo'.
           ENDCASE.
-        CATCH cx_static_check INTO DATA(lx_error).
-          rv_html = rv_html && |<p style="background-color: red">exception: { lx_error->get_text( ) }</p>\n|.
+        CATCH cx_root INTO DATA(lx_error).
+          go_html->add_error( |exception: { lx_error->get_text( ) }| ).
       ENDTRY.
     ENDLOOP.
 

@@ -160,8 +160,7 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
         WHEN gc_section_data_count.
           DATA(lv_data_count) = lo_body->shift_u32( ).
         WHEN OTHERS.
-          WRITE: / 'unknown section:', lv_section.
-          ASSERT 0 = 1.
+          RAISE EXCEPTION NEW zcx_wasm( text = |unknown section: { lv_section }| ).
       ENDCASE.
     ENDWHILE.
 
@@ -670,8 +669,7 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
             WHEN zif_wasm_opcodes=>c_opcodes-table_fill.
               APPEND zcl_wasm_table_fill=>parse( io_body ) TO et_instructions.
             WHEN OTHERS.
-              WRITE: / 'todoparser FC:', lv_opcodei.
-              ASSERT 1 = 'todo'.
+              RAISE EXCEPTION NEW zcx_wasm( text = |todoparser FC: { lv_opcodei }| ).
           ENDCASE.
         WHEN zif_wasm_opcodes=>c_opcodes-end.
           APPEND zcl_wasm_end=>parse( io_body ) TO et_instructions.
@@ -679,8 +677,7 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
         WHEN zif_wasm_opcodes=>c_opcodes-else_.
           RETURN.
         WHEN OTHERS.
-          WRITE: / 'todoparser:', lv_opcode.
-          ASSERT 1 = 'todo'.
+          RAISE EXCEPTION NEW zcx_wasm( text = |todoparser: { lv_opcode }| ).
       ENDCASE.
     ENDWHILE.
 
@@ -803,8 +800,7 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
           lv_vec = io_body->shift_u32( ).
           lv_contents = io_body->shift( lv_vec ).
         WHEN OTHERS.
-          WRITE: / 'type:', lv_type.
-          ASSERT 1 = 2.
+          RAISE EXCEPTION NEW zcx_wasm( text = |parse_data, type: { lv_type }| ).
       ENDCASE.
 
     ENDDO.
@@ -978,8 +974,7 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
             ASSERT lv_last_opcode = zif_wasm_opcodes=>c_opcodes-end.
           ENDDO.
         WHEN OTHERS.
-          WRITE: / 'elementtype:', lv_type.
-          ASSERT 1 = 2.
+          RAISE EXCEPTION NEW zcx_wasm( text = |elementtype: { lv_type }| ).
       ENDCASE.
 
     ENDDO.

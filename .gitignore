@@ -6,3 +6,5 @@ testsuite.html
 deps
 foo.txt
 web
+*.0x
+isolate-*

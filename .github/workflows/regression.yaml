@@ -1,4 +1,4 @@
-name: test
+name: regression
 
 on: pull_request
 
@@ -6,17 +6,17 @@ permissions:
   contents: read
 
 jobs:
-  test:
+  regression:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
     - run: npm ci
     - run: npm test
-    - name: Upload build artifact
-      uses: actions/upload-artifact@main
+    - uses: actions/checkout@v4
       with:
-        name: testsuite.html
-        path: ./web/testsuite.html
-        retention-days: 7
+        ref: 'main'
+    - uses: actions/setup-node@v4
+    - run: npm ci
+    - run: npm test
