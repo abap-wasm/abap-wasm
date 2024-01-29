@@ -4,7 +4,7 @@ CLASS cl_result DEFINITION PUBLIC.
       RETURNING
         VALUE(rv_html) TYPE string.
 
-    METHODS totals
+    METHODS render_json
       RETURNING
         VALUE(rv_json) TYPE string.
 
@@ -40,7 +40,7 @@ ENDCLASS.
 
 CLASS cl_result IMPLEMENTATION.
 
-  METHOD totals.
+  METHOD render_json.
 
     DATA: BEGIN OF ls_totals,
             errors    TYPE i,
