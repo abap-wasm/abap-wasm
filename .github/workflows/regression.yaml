@@ -14,9 +14,12 @@ jobs:
     - uses: actions/setup-node@v4
     - run: npm ci
     - run: npm test
+    - run: ls -l web
+
     - uses: actions/checkout@v4
       with:
         ref: 'main'
     - uses: actions/setup-node@v4
     - run: npm ci
     - run: npm test
+    - run: ls -l web
