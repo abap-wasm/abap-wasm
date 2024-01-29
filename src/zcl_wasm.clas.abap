@@ -44,7 +44,12 @@ CLASS zcl_wasm IMPLEMENTATION.
   METHOD zif_wasm~execute_function_export.
 
     DATA(ls_export) = mo_module->get_export_by_name( iv_name ).
-    DATA(ls_type) = mo_module->get_type_by_index( ls_export-index ).
+    IF ls_export-type <> zcl_wasm_types=>c_export_type-func.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'execute_function_export: expected type func' ).
+    ENDIF.
+
+    DATA(lv_type) = mo_module->get_function_by_index( ls_export-index ).
+    DATA(ls_type) = mo_module->get_type_by_index( CONV #( lv_type ) ).
 
     DATA(lo_memory) = NEW zcl_wasm_memory( ).
 
