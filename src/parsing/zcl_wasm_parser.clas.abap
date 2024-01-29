@@ -691,7 +691,6 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
     DATA ls_result TYPE zcl_wasm_module=>ty_export.
 
     DATA(lv_count) = io_body->shift_u32( ).
-    " WRITE: / 'exports:', lv_count.
 
     DO lv_count TIMES.
       ls_result-name = io_body->shift_utf8( ).
