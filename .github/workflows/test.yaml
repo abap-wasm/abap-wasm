@@ -8,11 +8,10 @@ permissions:
 jobs:
   test:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 10
     steps:
     - uses: actions/checkout@v4
-    - name: Use Node.js
-      uses: actions/setup-node@v4
+    - uses: actions/setup-node@v4
     - name: npm ci
       run: npm ci
     - name: npm test

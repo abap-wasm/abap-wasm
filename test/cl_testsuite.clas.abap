@@ -2,7 +2,7 @@ CLASS cl_testsuite DEFINITION PUBLIC CREATE PUBLIC.
   PUBLIC SECTION.
     CLASS-METHODS run
       RETURNING
-        VALUE(rv_html) TYPE string.
+        VALUE(ro_html) TYPE REF TO cl_result.
   PRIVATE SECTION.
     TYPES: BEGIN OF ty_file,
              filename TYPE string,
@@ -33,7 +33,7 @@ CLASS cl_testsuite DEFINITION PUBLIC CREATE PUBLIC.
              commands        TYPE STANDARD TABLE OF ty_json_commands WITH DEFAULT KEY,
            END OF ty_json.
 
-    CLASS-DATA go_html TYPE REF TO cl_html.
+    CLASS-DATA go_html TYPE REF TO cl_result.
 
     CLASS-METHODS run_folder
       IMPORTING
@@ -78,7 +78,7 @@ CLASS cl_testsuite IMPLEMENTATION.
 
     WRITE / '@KERNEL }'.
 
-    rv_html = go_html->render( ).
+    ro_html = go_html.
 
   ENDMETHOD.
 

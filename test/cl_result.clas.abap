@@ -1,6 +1,12 @@
-CLASS cl_html DEFINITION PUBLIC.
+CLASS cl_result DEFINITION PUBLIC.
   PUBLIC SECTION.
-    METHODS render RETURNING VALUE(rv_html) TYPE string.
+    METHODS render_html
+      RETURNING
+        VALUE(rv_html) TYPE string.
+
+    METHODS totals
+      RETURNING
+        VALUE(rv_json) TYPE string.
 
     METHODS add_success
       IMPORTING
@@ -32,9 +38,27 @@ CLASS cl_html DEFINITION PUBLIC.
     DATA mo_type_descr TYPE REF TO cl_abap_typedescr.
 ENDCLASS.
 
-CLASS cl_html IMPLEMENTATION.
+CLASS cl_result IMPLEMENTATION.
 
-  METHOD render.
+  METHOD totals.
+
+    DATA: BEGIN OF ls_totals,
+            errors    TYPE i,
+            warnings  TYPE i,
+            successes TYPE i,
+          END OF ls_totals.
+
+    ls_totals-errors = mv_errors.
+    ls_totals-warnings = mv_warnings.
+    ls_totals-successes = mv_success.
+
+    rv_json = /ui2/cl_json=>serialize(
+      pretty_name = /ui2/cl_json=>pretty_mode-low_case
+      data        = ls_totals ).
+
+  ENDMETHOD.
+
+  METHOD render_html.
     mv_html = mv_html && |<br>\n|.
     mv_html = mv_html && |<h2>Errors: { mv_errors }</h2>\n|.
     mv_html = mv_html && |<h2>Warnings: { mv_warnings }</h2>\n|.
