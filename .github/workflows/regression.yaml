@@ -22,6 +22,30 @@ jobs:
     - run: npm ci && npm test
     - run: cp web/totals.json ../after.json
 
-    - run: ls -l ../
-    - run: ls
     - run: node test/build_comment.mjs
+
+    - uses: jwalton/gh-find-current-pr@v1
+      id: findPr
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+    - run: echo ${{ steps.findPr.outputs.pr }}
+
+    - name: Find Comment
+      if: steps.findPr.outputs.pr != ''
+      uses: peter-evans/find-comment@v2
+      id: fc
+      with:
+        issue-number: '${{steps.findPr.outputs.pr}}'
+        body-includes: Regression test results
+
+    - run: echo ${{ steps.fc.outputs.comment-id }}
+
+    - name: Create comment
+      if: steps.findPr.outputs.pr != ''
+      uses: peter-evans/create-or-update-comment@v3
+      id: create-comment
+      with:
+        issue-number: '${{steps.findPr.outputs.pr}}'
+        edit-mode: replace
+        comment-id: '${{steps.fc.outputs.comment-id}}'
+        body-path: ./comment-regression.txt
