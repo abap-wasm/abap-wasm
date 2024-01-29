@@ -33,7 +33,7 @@ CLASS cl_testsuite DEFINITION PUBLIC CREATE PUBLIC.
              commands        TYPE STANDARD TABLE OF ty_json_commands WITH DEFAULT KEY,
            END OF ty_json.
 
-    CLASS-DATA go_html TYPE REF TO cl_result.
+    CLASS-DATA go_result TYPE REF TO cl_result.
 
     CLASS-METHODS run_folder
       IMPORTING
@@ -56,7 +56,7 @@ CLASS cl_testsuite IMPLEMENTATION.
     DATA lv_hex      TYPE xstring.
     DATA lt_files    TYPE ty_files.
 
-    go_html = NEW #( ).
+    go_result = NEW #( ).
 
     WRITE / '@KERNEL const fs = await import("fs");'.
     WRITE / '@KERNEL const folders = fs.readdirSync("./testsuite/").filter(a => a.includes(".") === false);'.
@@ -78,7 +78,8 @@ CLASS cl_testsuite IMPLEMENTATION.
 
     WRITE / '@KERNEL }'.
 
-    ro_html = go_html.
+    go_result->end( ).
+    ro_html = go_result.
 
   ENDMETHOD.
 
@@ -98,7 +99,7 @@ CLASS cl_testsuite IMPLEMENTATION.
           WHEN 'f64'.
             APPEND NEW zcl_wasm_f64( CONV #( ls_arg-value ) ) TO lt_values.
           WHEN OTHERS.
-            go_html->add_warning( |unknown type, invoke, { ls_arg-type }| ).
+            go_result->add_warning( |unknown type, invoke, { ls_arg-type }| ).
         ENDCASE.
       ENDLOOP.
 
@@ -114,7 +115,7 @@ CLASS cl_testsuite IMPLEMENTATION.
         it_parameters = lt_values ).
 
       IF lines( lt_result ) <> lines( is_command-expected ).
-        go_html->add_warning( |error, wrong number of results| ).
+        go_result->add_warning( |error, wrong number of results| ).
         RETURN.
       ENDIF.
 
@@ -132,24 +133,24 @@ CLASS cl_testsuite IMPLEMENTATION.
             DATA(lv_result)   = CAST zcl_wasm_i32( ls_result )->get_value( ).
             IF lv_expected <> lv_result.
               lv_error = abap_true.
-              go_html->add_warning( |error, wrong result, expected { lv_expected }, got { lv_result }| ).
+              go_result->add_warning( |error, wrong result, expected { lv_expected }, got { lv_result }| ).
             ELSE.
-              go_html->add_success( |ok| ).
+              go_result->add_success( |ok| ).
             ENDIF.
           " WHEN 'f32'.
           "   APPEND NEW zcl_wasm_f32( CONV #( ls_arg-value ) ) TO lt_values.
           WHEN OTHERS.
-            go_html->add_warning( |unknown type, assert_return: { ls_arg-type }| ).
+            go_result->add_warning( |unknown type, assert_return: { ls_arg-type }| ).
         ENDCASE.
       ENDDO.
 
       IF lv_error = abap_false.
-        go_html->add_success( |ok, result| ).
+        go_result->add_success( |ok, result| ).
       ELSE.
-        go_html->add_error( |error, result| ).
+        go_result->add_error( |error, result| ).
       ENDIF.
     ELSE.
-      go_html->add_warning( |todo, { is_command-action-type }| ).
+      go_result->add_warning( |todo, { is_command-action-type }| ).
     ENDIF.
 
   ENDMETHOD.
@@ -176,10 +177,10 @@ CLASS cl_testsuite IMPLEMENTATION.
     WRITE / '================================'.
     WRITE / ls_json-source_filename.
 
-    go_html->add_suite( ls_json-source_filename ).
+    go_result->add_suite( ls_json-source_filename ).
 
     LOOP AT ls_json-commands ASSIGNING FIELD-SYMBOL(<ls_command>).
-      go_html->add_command( <ls_command> ).
+      go_result->add_command( <ls_command> ).
 
       TRY.
           CASE <ls_command>-type.
@@ -188,33 +189,33 @@ CLASS cl_testsuite IMPLEMENTATION.
               WRITE / |load: { <ls_command>-filename }|.
               WRITE / '@KERNEL lv_hex.set(fs.readFileSync(lv_filename.get()).toString("hex").toUpperCase());'.
               lo_wasm = zcl_wasm=>create_with_wasm( lv_hex ).
-              go_html->add_success( |loaded| ).
+              go_result->add_success( |loaded| ).
             WHEN 'assert_return'.
               assert_return(
                 is_command = <ls_command>
                 io_wasm    = lo_wasm ).
             WHEN 'assert_trap'.
-              go_html->add_warning( |todo, assert_trap| ).
+              go_result->add_warning( |todo, assert_trap| ).
             WHEN 'assert_malformed'.
-              go_html->add_warning( |todo, assert_malformed| ).
+              go_result->add_warning( |todo, assert_malformed| ).
             WHEN 'assert_invalid'.
-              go_html->add_warning( |todo, assert_invalid| ).
+              go_result->add_warning( |todo, assert_invalid| ).
             WHEN 'action'.
-              go_html->add_warning( |todo, action| ).
+              go_result->add_warning( |todo, action| ).
             WHEN 'assert_exhaustion'.
-              go_html->add_warning( |todo, assert_exhaustion| ).
+              go_result->add_warning( |todo, assert_exhaustion| ).
             WHEN 'assert_uninstantiable'.
-              go_html->add_warning( |todo, assert_uninstantiable| ).
+              go_result->add_warning( |todo, assert_uninstantiable| ).
             WHEN 'register'.
-              go_html->add_warning( |todo, register| ).
+              go_result->add_warning( |todo, register| ).
             WHEN 'assert_unlinkable'.
-              go_html->add_warning( |todo, assert_unlinkable| ).
+              go_result->add_warning( |todo, assert_unlinkable| ).
             WHEN OTHERS.
               WRITE / <ls_command>-type.
               ASSERT 1 = 'todo'.
           ENDCASE.
         CATCH cx_root INTO DATA(lx_error).
-          go_html->add_error( |exception: { lx_error->get_text( ) }| ).
+          go_result->add_error( |exception: { lx_error->get_text( ) }| ).
       ENDTRY.
     ENDLOOP.
 
