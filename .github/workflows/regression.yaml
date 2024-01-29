@@ -10,16 +10,16 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-    - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
-    - run: npm ci
-    - run: npm test
-    - run: ls -l web
+
+    - uses: actions/checkout@v4
+    - run: npm ci && npm test
+    - run: cp web/totals.json ../after.json
 
     - uses: actions/checkout@v4
       with:
         ref: 'main'
-    - uses: actions/setup-node@v4
-    - run: npm ci
-    - run: npm test
-    - run: ls -l web
+    - run: npm ci && npm test
+    - run: cp web/totals.json ../before.json
+
+    - run: node test/build_comment.mjs
