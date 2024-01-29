@@ -12,7 +12,11 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
-    - name: npm ci
-      run: npm ci
-    - name: npm test
-      run: npm test
+    - run: npm ci
+    - run: npm test
+    - uses: actions/checkout@v4
+      with:
+        ref: 'main'
+    - uses: actions/setup-node@v4
+    - run: npm ci
+    - run: npm test
