@@ -5,11 +5,11 @@ const before = JSON.parse(fs.readFileSync("../before.json", "utf-8"));
 
 let comment = "Regression test results:\n";
 
-comment += "|         | Before | After | Delta |\n";
-comment += "| :---    | ---: | ---: | ---: |\n";
-comment += "| Success | 0 | 0 | 0 |\n";
-comment += "| Warning | 0 | 0 | 0 |\n";
-comment += "| Error   | 0 | 0 | 0 |\n";
+comment += "|           | Before | After | Delta |\n";
+comment += "| :---      | ---:   | ---:  | ---:  |\n";
+comment += `| Successes | ${before.successes} | ${after.successes} | ${after.successes - before.successes} |\n`;
+comment += `| Warnings  | ${before.warnings} | ${after.warnings} | ${after.warnings - before.warnings} |\n`;
+comment += `| Errors    | ${before.errors} | ${after.errors} | ${after.errors - before.errors} |\n`;
 
 comment += "\nUpdated: " + new Date().toISOString() + "\n";
 comment += "\nSHA: " + process.env.GITHUB_SHA + "\n";
