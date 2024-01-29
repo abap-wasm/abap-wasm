@@ -91,8 +91,12 @@ CLASS cl_testsuite IMPLEMENTATION.
         CASE ls_arg-type.
           WHEN 'i32'.
             APPEND NEW zcl_wasm_i32( CONV #( ls_arg-value ) ) TO lt_values.
-          " WHEN 'f32'.
-          "   APPEND NEW zcl_wasm_f32( CONV #( ls_arg-value ) ) TO lt_values.
+          WHEN 'i64'.
+            APPEND NEW zcl_wasm_i64( CONV #( ls_arg-value ) ) TO lt_values.
+          WHEN 'f32'.
+            APPEND NEW zcl_wasm_f32( CONV #( ls_arg-value ) ) TO lt_values.
+          WHEN 'f64'.
+            APPEND NEW zcl_wasm_f64( CONV #( ls_arg-value ) ) TO lt_values.
           WHEN OTHERS.
             go_html->add_warning( |unknown type, { ls_arg-type }| ).
         ENDCASE.
