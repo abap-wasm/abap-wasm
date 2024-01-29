@@ -6,14 +6,20 @@ CLASS zcl_wasm_f64 DEFINITION
   PUBLIC SECTION.
 
     INTERFACES zif_wasm_value .
+
+    METHODS constructor
+      IMPORTING
+        !iv_value TYPE f .
   PROTECTED SECTION.
   PRIVATE SECTION.
+    DATA mv_value TYPE f .
 ENDCLASS.
 
+CLASS zcl_wasm_f64 IMPLEMENTATION.
 
-
-CLASS ZCL_WASM_F64 IMPLEMENTATION.
-
+  METHOD constructor.
+    mv_value = iv_value.
+  ENDMETHOD.
 
   METHOD zif_wasm_value~get_type.
 

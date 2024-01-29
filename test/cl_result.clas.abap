@@ -1,5 +1,7 @@
 CLASS cl_result DEFINITION PUBLIC.
   PUBLIC SECTION.
+    METHODS constructor.
+
     METHODS render_html
       RETURNING
         VALUE(rv_html) TYPE string.
@@ -28,17 +30,29 @@ CLASS cl_result DEFINITION PUBLIC.
       IMPORTING
         iv_suite TYPE string.
 
-  PRIVATE SECTION.
-    DATA mv_html TYPE string.
+    METHODS end.
 
-    DATA mv_errors TYPE i.
+  PRIVATE SECTION.
+    DATA mv_html     TYPE string.
+    DATA mv_start    TYPE i.
+    DATA mv_end      TYPE i.
+    DATA mv_errors   TYPE i.
     DATA mv_warnings TYPE i.
-    DATA mv_success TYPE i.
+    DATA mv_success  TYPE i.
+    DATA mt_suites   TYPE STANDARD TABLE OF string WITH DEFAULT KEY.
 
     DATA mo_type_descr TYPE REF TO cl_abap_typedescr.
 ENDCLASS.
 
 CLASS cl_result IMPLEMENTATION.
+
+  METHOD constructor.
+    GET RUN TIME FIELD mv_start.
+  ENDMETHOD.
+
+  METHOD end.
+    GET RUN TIME FIELD mv_end.
+  ENDMETHOD.
 
   METHOD render_json.
 
@@ -46,11 +60,13 @@ CLASS cl_result IMPLEMENTATION.
             errors    TYPE i,
             warnings  TYPE i,
             successes TYPE i,
+            runtime   TYPE i,
           END OF ls_totals.
 
     ls_totals-errors = mv_errors.
     ls_totals-warnings = mv_warnings.
     ls_totals-successes = mv_success.
+    ls_totals-runtime = ( mv_end - mv_start ) / 1000.
 
     rv_json = /ui2/cl_json=>serialize(
       pretty_name = /ui2/cl_json=>pretty_mode-low_case
@@ -59,16 +75,24 @@ CLASS cl_result IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD render_html.
-    mv_html = mv_html && |<br>\n|.
-    mv_html = mv_html && |<h2>Errors: { mv_errors }</h2>\n|.
-    mv_html = mv_html && |<h2>Warnings: { mv_warnings }</h2>\n|.
-    mv_html = mv_html && |<h2>Successes: { mv_success }</h2>\n|.
+    DATA lv_top TYPE string.
 
-    rv_html = mv_html.
+    LOOP AT mt_suites INTO DATA(ls_suite).
+      lv_top = lv_top && |<a href="#{ ls_suite }">{ ls_suite }</a>&nbsp;\n|.
+    ENDLOOP.
+
+    lv_top = lv_top && |<hr>\n|.
+    lv_top = lv_top && |<h3>Errors: { mv_errors }</h3>\n|.
+    lv_top = lv_top && |<h3>Warnings: { mv_warnings }</h3>\n|.
+    lv_top = lv_top && |<h3>Successes: { mv_success }</h3>\n|.
+    lv_top = lv_top && |<hr>\n|.
+
+    rv_html = lv_top && mv_html.
   ENDMETHOD.
 
   METHOD add_suite.
-    mv_html = mv_html && |<h1>{ iv_suite }</h1>\n|.
+    mv_html = mv_html && |<h1 id="{ iv_suite }">{ iv_suite }</h1>\n|.
+    APPEND iv_suite TO mt_suites.
   ENDMETHOD.
 
   METHOD add_command.
