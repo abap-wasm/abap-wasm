@@ -194,10 +194,10 @@ CLASS cl_testsuite IMPLEMENTATION.
         is_command = <ls_command>
         iv_wast    = lv_wast ).
 
+      lv_filename = './testsuite/' && iv_folder && '/' && <ls_command>-filename.
       TRY.
           CASE <ls_command>-type.
             WHEN 'module'.
-              lv_filename = './testsuite/' && iv_folder && '/' && <ls_command>-filename.
               WRITE / |load: { <ls_command>-filename }|.
               WRITE / '@KERNEL lv_hex.set(fs.readFileSync(lv_filename.get()).toString("hex").toUpperCase());'.
               lo_wasm = zcl_wasm=>create_with_wasm( lv_hex ).
@@ -209,7 +209,14 @@ CLASS cl_testsuite IMPLEMENTATION.
             WHEN 'assert_trap'.
               go_result->add_warning( |todo, assert_trap| ).
             WHEN 'assert_malformed'.
-              go_result->add_warning( |todo, assert_malformed| ).
+              WRITE / |load: { <ls_command>-filename }|.
+              WRITE / '@KERNEL lv_hex.set(fs.readFileSync(lv_filename.get()).toString("hex").toUpperCase());'.
+              TRY.
+                  zcl_wasm=>create_with_wasm( lv_hex ).
+                  go_result->add_error( |expected malformed| ).
+                CATCH cx_root INTO DATA(lx_error).
+                  go_result->add_success( |got error: { lx_error->get_text( ) }| ).
+              ENDTRY.
             WHEN 'assert_invalid'.
               go_result->add_warning( |todo, assert_invalid| ).
             WHEN 'action'.
@@ -226,7 +233,7 @@ CLASS cl_testsuite IMPLEMENTATION.
               WRITE / <ls_command>-type.
               ASSERT 1 = 'todo'.
           ENDCASE.
-        CATCH cx_root INTO DATA(lx_error).
+        CATCH cx_root INTO lx_error.
           go_result->add_error( |exception: { lx_error->get_text( ) }| ).
       ENDTRY.
     ENDLOOP.

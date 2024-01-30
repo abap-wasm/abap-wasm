@@ -139,8 +139,12 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
     DATA(lo_stream) = NEW zcl_wasm_binary_stream( iv_wasm ).
 
 * https://webassembly.github.io/spec/core/binary/modules.html#binary-module
-    ASSERT lo_stream->shift( 4 ) = lc_magic.
-    ASSERT lo_stream->shift( 4 ) = lc_version.
+    IF lo_stream->shift( 4 ) <> lc_magic.
+      RAISE EXCEPTION NEW zcx_wasm( text = |unexpected magic number| ).
+    ENDIF.
+    IF lo_stream->shift( 4 ) <> lc_version.
+      RAISE EXCEPTION NEW zcx_wasm( text = |unexpected version| ).
+    ENDIF.
 
     WHILE lo_stream->get_length( ) > 0.
 * https://webassembly.github.io/spec/core/binary/modules.html#sections
@@ -224,7 +228,7 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
               lv_min = io_body->shift_u32( ).
               lv_max = io_body->shift_u32( ).
             WHEN OTHERS.
-              ASSERT 1 = 'todo'.
+              RAISE EXCEPTION NEW zcx_wasm( text = |parse_import: todo| ).
           ENDCASE.
         WHEN '02'.
           lv_limit = io_body->shift( 1 ).
@@ -236,13 +240,13 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
               lv_min = io_body->shift_u32( ).
               lv_max = io_body->shift_u32( ).
             WHEN OTHERS.
-              ASSERT 1 = 'todo'.
+              RAISE EXCEPTION NEW zcx_wasm( text = |parse_import: todo| ).
           ENDCASE.
         WHEN '03'.
           DATA(lv_valtype) = io_body->shift( 1 ).
           DATA(lv_mut) = io_body->shift( 1 ).
         WHEN OTHERS.
-          ASSERT 1 = 'todo'.
+          RAISE EXCEPTION NEW zcx_wasm( text = |parse_import: todo| ).
       ENDCASE.
 
     ENDDO.
@@ -751,7 +755,9 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
 * https://webassembly.github.io/spec/core/binary/modules.html#type-section
 
     DO io_body->shift_u32( ) TIMES.
-      ASSERT io_body->shift( 1 ) = zcl_wasm_types=>c_function_type.
+      IF io_body->shift( 1 ) <> zcl_wasm_types=>c_function_type.
+        RAISE EXCEPTION NEW zcx_wasm( text = |parse_type, expected function type| ).
+      ENDIF.
 
       APPEND VALUE #(
         parameter_types = io_body->shift( io_body->shift_u32( ) )
@@ -779,7 +785,7 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
           lv_min = io_body->shift_u32( ).
           lv_max = io_body->shift_u32( ).
         WHEN OTHERS.
-          ASSERT 1 = 'todo'.
+          RAISE EXCEPTION NEW zcx_wasm( text = |parse_memory: todo| ).
       ENDCASE.
 
 * todo
@@ -851,10 +857,10 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
               lv_min = io_body->shift_u32( ).
               lv_max = io_body->shift_u32( ).
             WHEN OTHERS.
-              ASSERT 1 = 'todo'.
+              RAISE EXCEPTION NEW zcx_wasm( text = |parse_table: todo| ).
           ENDCASE.
         WHEN OTHERS.
-          ASSERT 1 = 'todo'.
+          RAISE EXCEPTION NEW zcx_wasm( text = |parse_table: todo| ).
       ENDCASE.
 
     ENDDO.
@@ -878,7 +884,9 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
         IMPORTING
           ev_last_opcode  = DATA(lv_last_opcode)
           et_instructions = DATA(lt_instructions) ).
-      ASSERT lv_last_opcode = zif_wasm_opcodes=>c_opcodes-end.
+      IF lv_last_opcode <> zif_wasm_opcodes=>c_opcodes-end.
+        RAISE EXCEPTION NEW zcx_wasm( text = |parse_global, expected end| ).
+      ENDIF.
     ENDDO.
 
   ENDMETHOD.
@@ -898,7 +906,9 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
             IMPORTING
               ev_last_opcode  = DATA(lv_last_opcode)
               et_instructions = DATA(lt_instructions) ).
-          ASSERT lv_last_opcode = zif_wasm_opcodes=>c_opcodes-end.
+          IF lv_last_opcode <> zif_wasm_opcodes=>c_opcodes-end.
+            RAISE EXCEPTION NEW zcx_wasm( text = |parse_element: expected end| ).
+          ENDIF.
 
           DO io_body->shift_u32( ) TIMES.
             DATA(lv_funcidx) = io_body->shift_u32( ).
@@ -920,7 +930,9 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
             IMPORTING
               ev_last_opcode  = lv_last_opcode
               et_instructions = lt_instructions ).
-          ASSERT lv_last_opcode = zif_wasm_opcodes=>c_opcodes-end.
+          IF lv_last_opcode <> zif_wasm_opcodes=>c_opcodes-end.
+            RAISE EXCEPTION NEW zcx_wasm( text = |parse_element: expected end| ).
+          ENDIF.
 
           lv_elemkind = io_body->shift( 1 ).
 
@@ -941,7 +953,9 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
             IMPORTING
               ev_last_opcode  = lv_last_opcode
               et_instructions = lt_instructions ).
-          ASSERT lv_last_opcode = zif_wasm_opcodes=>c_opcodes-end.
+          IF lv_last_opcode <> zif_wasm_opcodes=>c_opcodes-end.
+            RAISE EXCEPTION NEW zcx_wasm( text = |parse_element: expected end| ).
+          ENDIF.
 
           DO io_body->shift_u32( ) TIMES.
             parse_instructions(
@@ -950,7 +964,9 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
               IMPORTING
                 ev_last_opcode  = lv_last_opcode
                 et_instructions = lt_instructions ).
-            ASSERT lv_last_opcode = zif_wasm_opcodes=>c_opcodes-end.
+            IF lv_last_opcode <> zif_wasm_opcodes=>c_opcodes-end.
+              RAISE EXCEPTION NEW zcx_wasm( text = |parse_element: expected end| ).
+            ENDIF.
           ENDDO.
         WHEN 5.
           DATA(lv_reftype) = io_body->shift( 1 ).
@@ -962,7 +978,9 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
               IMPORTING
                 ev_last_opcode  = lv_last_opcode
                 et_instructions = lt_instructions ).
-            ASSERT lv_last_opcode = zif_wasm_opcodes=>c_opcodes-end.
+            IF lv_last_opcode <> zif_wasm_opcodes=>c_opcodes-end.
+              RAISE EXCEPTION NEW zcx_wasm( text = |parse_element: expected end| ).
+            ENDIF.
           ENDDO.
         WHEN 6.
           lv_tableidx = io_body->shift_u32( ).
@@ -973,7 +991,9 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
             IMPORTING
               ev_last_opcode  = lv_last_opcode
               et_instructions = lt_instructions ).
-          ASSERT lv_last_opcode = zif_wasm_opcodes=>c_opcodes-end.
+          IF lv_last_opcode <> zif_wasm_opcodes=>c_opcodes-end.
+            RAISE EXCEPTION NEW zcx_wasm( text = |parse_element: expected end| ).
+          ENDIF.
 
           lv_reftype = io_body->shift( 1 ).
 
@@ -984,7 +1004,9 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
               IMPORTING
                 ev_last_opcode  = lv_last_opcode
                 et_instructions = lt_instructions ).
-            ASSERT lv_last_opcode = zif_wasm_opcodes=>c_opcodes-end.
+            IF lv_last_opcode <> zif_wasm_opcodes=>c_opcodes-end.
+              RAISE EXCEPTION NEW zcx_wasm( text = |parse_element: expected end| ).
+            ENDIF.
           ENDDO.
         WHEN 7.
           lv_reftype = io_body->shift( 1 ).
@@ -996,7 +1018,9 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
               IMPORTING
                 ev_last_opcode  = lv_last_opcode
                 et_instructions = lt_instructions ).
-            ASSERT lv_last_opcode = zif_wasm_opcodes=>c_opcodes-end.
+            IF lv_last_opcode <> zif_wasm_opcodes=>c_opcodes-end.
+              RAISE EXCEPTION NEW zcx_wasm( text = |parse_element: expected end| ).
+            ENDIF.
           ENDDO.
         WHEN OTHERS.
           RAISE EXCEPTION NEW zcx_wasm( text = |elementtype: { lv_type }| ).
