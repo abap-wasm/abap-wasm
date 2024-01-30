@@ -91,7 +91,7 @@ CLASS cl_testsuite IMPLEMENTATION.
       LOOP AT is_command-action-args INTO DATA(ls_arg).
         CASE ls_arg-type.
           WHEN 'i32'.
-            APPEND NEW zcl_wasm_i32( CONV #( ls_arg-value ) ) TO lt_values.
+            APPEND zcl_wasm_i32=>from_signed( CONV #( ls_arg-value ) ) TO lt_values.
           WHEN 'i64'.
             APPEND NEW zcl_wasm_i64( CONV #( ls_arg-value ) ) TO lt_values.
           WHEN 'f32'.

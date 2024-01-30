@@ -34,8 +34,8 @@ CLASS ltcl_test IMPLEMENTATION.
 
   METHOD lt_s.
 
-    mo_memory->stack_push( NEW zcl_wasm_i32( 3 ) ).
-    mo_memory->stack_push( NEW zcl_wasm_i32( 2 ) ).
+    mo_memory->stack_push( zcl_wasm_i32=>from_signed( 3 ) ).
+    mo_memory->stack_push( zcl_wasm_i32=>from_signed( 2 ) ).
 
     zcl_wasm_i32=>lt_s( mo_memory ).
 
@@ -50,8 +50,8 @@ CLASS ltcl_test IMPLEMENTATION.
 
   METHOD add.
 
-    mo_memory->stack_push( NEW zcl_wasm_i32( 2 ) ).
-    mo_memory->stack_push( NEW zcl_wasm_i32( 3 ) ).
+    mo_memory->stack_push( zcl_wasm_i32=>from_signed( 2 ) ).
+    mo_memory->stack_push( zcl_wasm_i32=>from_signed( 3 ) ).
 
     zcl_wasm_i32=>add( mo_memory ).
 

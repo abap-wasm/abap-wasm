@@ -7,13 +7,16 @@ CLASS zcl_wasm_i32 DEFINITION
 
     INTERFACES zif_wasm_value .
 
-    METHODS constructor
+    CLASS-METHODS from_signed
       IMPORTING
-        !iv_value TYPE i .
+        !iv_value TYPE i
+      RETURNING
+        VALUE(ro_value) TYPE REF TO zcl_wasm_i32.
 
     METHODS get_signed
       RETURNING
         VALUE(rv_value) TYPE i .
+" METHOD get_unsigned
 
     CLASS-METHODS add
       IMPORTING
@@ -53,7 +56,7 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
     DATA(lo_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
     DATA(lo_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
 
-    io_memory->stack_push( NEW zcl_wasm_i32( lo_val1->get_signed( ) + lo_val2->get_signed( ) ) ).
+    io_memory->stack_push( from_signed( lo_val1->get_signed( ) + lo_val2->get_signed( ) ) ).
 
   ENDMETHOD.
 
@@ -64,13 +67,14 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
     DATA(lo_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
     DATA(lo_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
 
-    io_memory->stack_push( NEW zcl_wasm_i32( lo_val1->get_signed( ) * lo_val2->get_signed( ) ) ).
+    io_memory->stack_push( from_signed( lo_val1->get_signed( ) * lo_val2->get_signed( ) ) ).
 
   ENDMETHOD.
 
 
-  METHOD constructor.
-    mv_value = iv_value.
+  METHOD from_signed.
+    ro_value = NEW #( ).
+    ro_value->mv_value = iv_value.
   ENDMETHOD.
 
 
@@ -95,7 +99,7 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
       lv_result = 1.
     ENDIF.
 
-    io_memory->stack_push( NEW zcl_wasm_i32( lv_result ) ).
+    io_memory->stack_push( from_signed( lv_result ) ).
 
   ENDMETHOD.
 
@@ -109,7 +113,7 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
     DATA(lo_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
     DATA(lo_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
 
-    io_memory->stack_push( NEW zcl_wasm_i32( lo_val2->get_signed( ) - lo_val1->get_signed( ) ) ).
+    io_memory->stack_push( from_signed( lo_val2->get_signed( ) - lo_val1->get_signed( ) ) ).
 
   ENDMETHOD.
 
@@ -120,7 +124,7 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
     DATA(lo_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
     DATA(lo_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
 
-    io_memory->stack_push( NEW zcl_wasm_i32( lo_val1->get_signed( ) / lo_val2->get_signed( ) ) ).
+    io_memory->stack_push( from_signed( lo_val1->get_signed( ) / lo_val2->get_signed( ) ) ).
 
   ENDMETHOD.
 
