@@ -26,7 +26,9 @@ CLASS zcl_wasm_memory DEFINITION
       IMPORTING
         !iv_index       TYPE int8
       RETURNING
-        VALUE(ri_value) TYPE REF TO zif_wasm_value .
+        VALUE(ri_value) TYPE REF TO zif_wasm_value
+      RAISING
+        zcx_wasm.
   PROTECTED SECTION.
     DATA mt_stack TYPE STANDARD TABLE OF REF TO zif_wasm_value WITH DEFAULT KEY.
     DATA mt_locals TYPE STANDARD TABLE OF REF TO zif_wasm_value WITH DEFAULT KEY.
