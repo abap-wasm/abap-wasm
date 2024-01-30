@@ -128,7 +128,7 @@ CLASS cl_testsuite IMPLEMENTATION.
 
         CASE ls_expected-type.
           WHEN 'i32'.
-            DATA(lv_expected) = CONV i( ls_expected-value ).
+            DATA(lv_expected) = CONV int8( ls_expected-value ).
             DATA(lv_result)   = CAST zcl_wasm_i32( ls_result )->get_unsigned( ).
             IF lv_expected <> lv_result.
               lv_error = abap_true.
