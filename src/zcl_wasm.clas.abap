@@ -8,7 +8,9 @@ CLASS zcl_wasm DEFINITION
       IMPORTING
         !iv_wasm       TYPE xstring
       RETURNING
-        VALUE(ro_wasm) TYPE REF TO zif_wasm .
+        VALUE(ro_wasm) TYPE REF TO zif_wasm
+      RAISING
+        zcx_wasm.
 
     METHODS constructor
       IMPORTING

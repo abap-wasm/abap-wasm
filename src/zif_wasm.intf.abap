@@ -17,6 +17,8 @@ INTERFACE zif_wasm PUBLIC.
 
   METHODS list_function_exports
     RETURNING
-      VALUE(rt_functions) TYPE ty_name_and_parameters.
+      VALUE(rt_functions) TYPE ty_name_and_parameters
+    RAISING
+      zcx_wasm.
 
 ENDINTERFACE.

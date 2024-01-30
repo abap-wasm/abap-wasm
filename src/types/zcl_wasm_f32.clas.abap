@@ -11,11 +11,15 @@ CLASS zcl_wasm_f32 DEFINITION
       IMPORTING
         !iv_value       TYPE int8
       RETURNING
-        VALUE(rv_value) TYPE REF TO zcl_wasm_f32 .
+        VALUE(rv_value) TYPE REF TO zcl_wasm_f32
+      RAISING
+        zcx_wasm.
 
     METHODS get_unsigned_int32
       RETURNING
-        VALUE(rv_value) TYPE int8 .
+        VALUE(rv_value) TYPE int8
+      RAISING
+        zcx_wasm.
   PROTECTED SECTION.
   PRIVATE SECTION.
     DATA mv_value TYPE f .
