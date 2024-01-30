@@ -179,8 +179,10 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
     DATA(lv_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ).
     DATA(lv_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ).
 
-    IF sign( lv_val1 ) <> sign( lv_val2 ).
-      io_memory->stack_push( from_signed( -1 * ( abs( lv_val1 ) MOD abs( lv_val2 ) ) ) ).
+    IF lv_val1 < 0.
+      io_memory->stack_push( from_signed( -1 * ( lv_val1 MOD lv_val2 ) ) ).
+    ELSEIF lv_val2 < 0.
+      io_memory->stack_push( from_signed( -1 * ( lv_val1 MOD lv_val2 ) ) ).
     ELSE.
       io_memory->stack_push( from_signed( lv_val1 MOD lv_val2 ) ).
     ENDIF.
