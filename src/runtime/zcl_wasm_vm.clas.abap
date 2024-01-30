@@ -11,11 +11,15 @@ CLASS zcl_wasm_vm DEFINITION
 
     METHODS call
       IMPORTING
-        !iv_index TYPE int8.
+        iv_funcidx TYPE int8
+      RAISING
+        zcx_wasm.
 
     METHODS execute
       IMPORTING
-        !it_instructions TYPE zif_wasm_instruction=>ty_list .
+        !it_instructions TYPE zif_wasm_instruction=>ty_list
+      RAISING
+        zcx_wasm.
 
   PROTECTED SECTION.
 
@@ -39,9 +43,9 @@ CLASS zcl_wasm_vm IMPLEMENTATION.
 * The call instruction invokes another function, consuming the necessary arguments from the stack
 * and returning the result values of the call
 
-    DATA(lv_type) = mo_module->get_function_by_index( iv_index ).
+    DATA(lv_type) = mo_module->get_function_by_index( iv_funcidx ).
     DATA(ls_type) = mo_module->get_type_by_index( CONV #( lv_type ) ).
-    DATA(ls_code) = mo_module->get_code_by_index( iv_index ).
+    DATA(ls_code) = mo_module->get_code_by_index( iv_funcidx ).
 
 * consume values from stack
     DATA(lo_memory) = NEW zcl_wasm_memory( ).

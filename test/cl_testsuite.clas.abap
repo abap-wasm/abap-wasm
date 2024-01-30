@@ -44,7 +44,9 @@ CLASS cl_testsuite DEFINITION PUBLIC CREATE PUBLIC.
     CLASS-METHODS assert_return
       IMPORTING
         is_command TYPE ty_json_commands
-        io_wasm    TYPE REF TO zif_wasm.
+        io_wasm    TYPE REF TO zif_wasm
+      RAISING
+        zcx_wasm.
 ENDCLASS.
 
 
