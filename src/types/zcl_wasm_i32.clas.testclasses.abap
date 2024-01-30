@@ -5,7 +5,7 @@ CLASS ltcl_test DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS FINAL.
     DATA mo_memory TYPE REF TO zcl_wasm_memory.
 
     METHODS setup.
-    METHODS assert_sole_value IMPORTING iv_value TYPE i.
+    METHODS assert_sole_value IMPORTING iv_value TYPE i RAISING zcx_wasm.
 
     METHODS add FOR TESTING RAISING cx_static_check.
     METHODS sub FOR TESTING RAISING cx_static_check.

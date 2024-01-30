@@ -27,22 +27,28 @@ CLASS zcl_wasm_i32 DEFINITION
 
     CLASS-METHODS add
       IMPORTING
-        !io_memory TYPE REF TO zcl_wasm_memory .
+        !io_memory TYPE REF TO zcl_wasm_memory
+      RAISING zcx_wasm.
     CLASS-METHODS mul
       IMPORTING
-        !io_memory TYPE REF TO zcl_wasm_memory .
+        !io_memory TYPE REF TO zcl_wasm_memory
+      RAISING zcx_wasm.
     CLASS-METHODS div_s
       IMPORTING
-        !io_memory TYPE REF TO zcl_wasm_memory .
+        !io_memory TYPE REF TO zcl_wasm_memory
+      RAISING zcx_wasm.
     CLASS-METHODS div_u
       IMPORTING
-        !io_memory TYPE REF TO zcl_wasm_memory .
+        !io_memory TYPE REF TO zcl_wasm_memory
+      RAISING zcx_wasm.
     CLASS-METHODS lt_s
       IMPORTING
-        !io_memory TYPE REF TO zcl_wasm_memory .
+        !io_memory TYPE REF TO zcl_wasm_memory
+      RAISING zcx_wasm.
     CLASS-METHODS sub
       IMPORTING
-        !io_memory TYPE REF TO zcl_wasm_memory .
+        !io_memory TYPE REF TO zcl_wasm_memory
+      RAISING zcx_wasm.
   PROTECTED SECTION.
   PRIVATE SECTION.
 * https://webassembly.github.io/spec/core/syntax/types.html
