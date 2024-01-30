@@ -7,13 +7,14 @@ CLASS zcl_wasm_i32 DEFINITION
 
     INTERFACES zif_wasm_value .
 
-    CLASS-METHODS const_
-      IMPORTING
-        !io_memory TYPE REF TO zcl_wasm_memory
-        !iv_value  TYPE i .
     METHODS constructor
       IMPORTING
         !iv_value TYPE i .
+
+    METHODS get_value
+      RETURNING
+        VALUE(rv_value) TYPE i .
+
     CLASS-METHODS add
       IMPORTING
         !io_memory TYPE REF TO zcl_wasm_memory .
@@ -29,12 +30,12 @@ CLASS zcl_wasm_i32 DEFINITION
     CLASS-METHODS sub
       IMPORTING
         !io_memory TYPE REF TO zcl_wasm_memory .
-    METHODS get_value
-      RETURNING
-        VALUE(rv_value) TYPE i .
   PROTECTED SECTION.
   PRIVATE SECTION.
+* https://webassembly.github.io/spec/core/syntax/types.html
+* "Integers are not inherently signed or unsigned, their interpretation is determined by individual operations."
 
+* the internal representation is signed in abap-wasm,
     DATA mv_value TYPE i .
 ENDCLASS.
 
@@ -73,19 +74,8 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD const_.
-
-* https://webassembly.github.io/spec/core/exec/instructions.html#t-mathsf-xref-syntax-instructions-syntax-instr-numeric-mathsf-const-c
-
-    io_memory->stack_push( NEW zcl_wasm_i32( iv_value ) ).
-
-  ENDMETHOD.
-
-
   METHOD get_value.
-
     rv_value = mv_value.
-
   ENDMETHOD.
 
 

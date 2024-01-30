@@ -24,9 +24,10 @@ CLASS zcl_wasm_i32_const IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    zcl_wasm_i32=>const_(
-      io_memory = io_memory
-      iv_value  = mv_value ).
+* https://webassembly.github.io/spec/core/exec/instructions.html#t-mathsf-xref-syntax-instructions-syntax-instr-numeric-mathsf-const-c
+
+    io_memory->stack_push( NEW zcl_wasm_i32( mv_value ) ).
+
   ENDMETHOD.
 
 ENDCLASS.
