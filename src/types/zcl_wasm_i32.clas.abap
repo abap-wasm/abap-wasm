@@ -12,6 +12,11 @@ CLASS zcl_wasm_i32 DEFINITION
         !iv_value TYPE i
       RETURNING
         VALUE(ro_value) TYPE REF TO zcl_wasm_i32.
+    CLASS-METHODS from_unsigned
+      IMPORTING
+        !iv_value TYPE int8
+      RETURNING
+        VALUE(ro_value) TYPE REF TO zcl_wasm_i32.
 
     METHODS get_signed
       RETURNING
@@ -71,12 +76,19 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
 
   ENDMETHOD.
 
-
   METHOD from_signed.
     ro_value = NEW #( ).
     ro_value->mv_value = iv_value.
   ENDMETHOD.
 
+  METHOD from_unsigned.
+    ro_value = NEW #( ).
+    IF iv_value > cl_abap_math=>max_int4.
+      ro_value->mv_value = iv_value - cl_abap_math=>max_int4 - cl_abap_math=>max_int4 - 2.
+    ELSE.
+      ro_value->mv_value = iv_value.
+    ENDIF.
+  ENDMETHOD.
 
   METHOD get_signed.
     rv_value = mv_value.
