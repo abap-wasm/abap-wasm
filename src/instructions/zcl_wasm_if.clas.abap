@@ -10,7 +10,8 @@ CLASS zcl_wasm_if DEFINITION PUBLIC.
 
     CLASS-METHODS parse
       IMPORTING !io_body TYPE REF TO zcl_wasm_binary_stream
-      RETURNING VALUE(ri_instruction) TYPE REF TO zif_wasm_instruction.
+      RETURNING VALUE(ri_instruction) TYPE REF TO zif_wasm_instruction
+      RAISING zcx_wasm.
   PRIVATE SECTION.
     DATA mv_block_type TYPE xstring.
     DATA mt_in1        TYPE zif_wasm_instruction=>ty_list.

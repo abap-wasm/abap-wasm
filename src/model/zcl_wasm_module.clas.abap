@@ -54,22 +54,30 @@ CLASS zcl_wasm_module DEFINITION
       IMPORTING
         !iv_index      TYPE int8
       RETURNING
-        VALUE(rs_code) TYPE ty_code.
+        VALUE(rs_code) TYPE ty_code
+      RAISING
+        zcx_wasm.
     METHODS get_function_by_index
       IMPORTING
         !iv_index      TYPE int8
       RETURNING
-        VALUE(rv_type) TYPE i .
+        VALUE(rv_type) TYPE i
+      RAISING
+        zcx_wasm.
     METHODS get_export_by_name
       IMPORTING
         !iv_name         TYPE string
       RETURNING
-        VALUE(rs_export) TYPE ty_export .
+        VALUE(rs_export) TYPE ty_export
+      RAISING
+        zcx_wasm.
     METHODS get_type_by_index
       IMPORTING
         !iv_index      TYPE int8
       RETURNING
-        VALUE(rs_type) TYPE ty_type .
+        VALUE(rs_type) TYPE ty_type
+      RAISING
+        zcx_wasm.
   PROTECTED SECTION.
   PRIVATE SECTION.
 

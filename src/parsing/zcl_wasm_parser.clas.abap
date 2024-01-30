@@ -8,14 +8,18 @@ CLASS zcl_wasm_parser DEFINITION
       IMPORTING
         !iv_wasm         TYPE xstring
       RETURNING
-        VALUE(ro_module) TYPE REF TO zcl_wasm_module .
+        VALUE(ro_module) TYPE REF TO zcl_wasm_module
+      RAISING
+        zcx_wasm.
 
     METHODS parse_instructions
       IMPORTING
         !io_body        TYPE REF TO zcl_wasm_binary_stream
       EXPORTING
         ev_last_opcode  TYPE zif_wasm_opcodes=>ty_opcode
-        et_instructions TYPE zif_wasm_instruction=>ty_list .
+        et_instructions TYPE zif_wasm_instruction=>ty_list
+      RAISING
+        zcx_wasm.
   PROTECTED SECTION.
 
     CONSTANTS:
@@ -50,53 +54,75 @@ CLASS zcl_wasm_parser DEFINITION
       IMPORTING
         !io_body          TYPE REF TO zcl_wasm_binary_stream
       RETURNING
-        VALUE(rt_results) TYPE zcl_wasm_module=>ty_codes .
+        VALUE(rt_results) TYPE zcl_wasm_module=>ty_codes
+      RAISING
+        zcx_wasm.
 
     METHODS parse_type
       IMPORTING
         !io_body          TYPE REF TO zcl_wasm_binary_stream
       RETURNING
-        VALUE(rt_results) TYPE zcl_wasm_module=>ty_types .
+        VALUE(rt_results) TYPE zcl_wasm_module=>ty_types
+      RAISING
+        zcx_wasm.
 
     METHODS parse_function
       IMPORTING
         !io_body          TYPE REF TO zcl_wasm_binary_stream
       RETURNING
-        VALUE(rt_results) TYPE zcl_wasm_module=>ty_functions .
+        VALUE(rt_results) TYPE zcl_wasm_module=>ty_functions
+      RAISING
+        zcx_wasm.
 
     METHODS parse_table
       IMPORTING
-        !io_body          TYPE REF TO zcl_wasm_binary_stream.
+        !io_body          TYPE REF TO zcl_wasm_binary_stream
+      RAISING
+        zcx_wasm.
 
     METHODS parse_data
       IMPORTING
-        !io_body          TYPE REF TO zcl_wasm_binary_stream.
+        !io_body          TYPE REF TO zcl_wasm_binary_stream
+      RAISING
+        zcx_wasm.
 
     METHODS parse_import
       IMPORTING
-        !io_body          TYPE REF TO zcl_wasm_binary_stream.
+        !io_body          TYPE REF TO zcl_wasm_binary_stream
+      RAISING
+        zcx_wasm.
 
     METHODS parse_global
       IMPORTING
-        !io_body          TYPE REF TO zcl_wasm_binary_stream.
+        !io_body          TYPE REF TO zcl_wasm_binary_stream
+      RAISING
+        zcx_wasm.
 
     METHODS parse_element
       IMPORTING
-        !io_body          TYPE REF TO zcl_wasm_binary_stream.
+        !io_body          TYPE REF TO zcl_wasm_binary_stream
+      RAISING
+        zcx_wasm.
 
     METHODS parse_memory
       IMPORTING
-        !io_body          TYPE REF TO zcl_wasm_binary_stream.
+        !io_body          TYPE REF TO zcl_wasm_binary_stream
+      RAISING
+        zcx_wasm.
 
     METHODS parse_start
       IMPORTING
-        !io_body          TYPE REF TO zcl_wasm_binary_stream.
+        !io_body          TYPE REF TO zcl_wasm_binary_stream
+      RAISING
+        zcx_wasm.
 
     METHODS parse_export
       IMPORTING
         !io_body          TYPE REF TO zcl_wasm_binary_stream
       RETURNING
-        VALUE(rt_results) TYPE zcl_wasm_module=>ty_exports .
+        VALUE(rt_results) TYPE zcl_wasm_module=>ty_exports
+      RAISING
+        zcx_wasm.
   PRIVATE SECTION.
 ENDCLASS.
 
