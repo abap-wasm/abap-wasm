@@ -12,7 +12,7 @@ CLASS zcl_wasm_memory_size IMPLEMENTATION.
 
   METHOD parse.
     IF io_body->shift( 1 ) <> '00'.
-      RAISE EXCEPTION NEW zcx_wasm( text = |zcl_wasm_memory_size->parse()| ).
+      RAISE EXCEPTION NEW zcx_wasm( text = |zero byte expected| ).
     ENDIF.
     ri_instruction = NEW zcl_wasm_memory_size( ).
   ENDMETHOD.
