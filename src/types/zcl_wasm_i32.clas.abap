@@ -28,27 +28,38 @@ CLASS zcl_wasm_i32 DEFINITION
     CLASS-METHODS add
       IMPORTING
         !io_memory TYPE REF TO zcl_wasm_memory
-      RAISING zcx_wasm.
+      RAISING
+        zcx_wasm.
     CLASS-METHODS mul
       IMPORTING
         !io_memory TYPE REF TO zcl_wasm_memory
-      RAISING zcx_wasm.
+      RAISING
+        zcx_wasm.
     CLASS-METHODS div_s
       IMPORTING
         !io_memory TYPE REF TO zcl_wasm_memory
-      RAISING zcx_wasm.
+      RAISING
+        zcx_wasm.
+    CLASS-METHODS rem_s
+      IMPORTING
+        !io_memory TYPE REF TO zcl_wasm_memory
+      RAISING
+        zcx_wasm.
     CLASS-METHODS div_u
       IMPORTING
         !io_memory TYPE REF TO zcl_wasm_memory
-      RAISING zcx_wasm.
+      RAISING
+        zcx_wasm.
     CLASS-METHODS lt_s
       IMPORTING
         !io_memory TYPE REF TO zcl_wasm_memory
-      RAISING zcx_wasm.
+      RAISING
+        zcx_wasm.
     CLASS-METHODS sub
       IMPORTING
         !io_memory TYPE REF TO zcl_wasm_memory
-      RAISING zcx_wasm.
+      RAISING
+        zcx_wasm.
   PROTECTED SECTION.
   PRIVATE SECTION.
 * https://webassembly.github.io/spec/core/syntax/types.html
@@ -158,6 +169,17 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
     ELSE.
       io_memory->stack_push( from_signed( lv_val1 DIV lv_val2 ) ).
     ENDIF.
+
+  ENDMETHOD.
+
+  METHOD rem_s.
+
+    ASSERT io_memory->stack_length( ) >= 2.
+
+    DATA(lv_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ).
+    DATA(lv_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ).
+
+    io_memory->stack_push( from_signed( lv_val1 MOD lv_val2 ) ).
 
   ENDMETHOD.
 
