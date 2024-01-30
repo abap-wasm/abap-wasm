@@ -11,7 +11,9 @@ INTERFACE zif_wasm PUBLIC.
       !iv_name          TYPE string
       !it_parameters    TYPE zif_wasm_value=>ty_values
     RETURNING
-      VALUE(rt_results) TYPE zif_wasm_value=>ty_values .
+      VALUE(rt_results) TYPE zif_wasm_value=>ty_values
+    RAISING
+      zcx_wasm.
 
   METHODS list_function_exports
     RETURNING
