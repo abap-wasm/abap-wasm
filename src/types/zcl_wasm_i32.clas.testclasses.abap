@@ -10,6 +10,7 @@ CLASS ltcl_test DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS FINAL.
     METHODS add FOR TESTING RAISING cx_static_check.
     METHODS sub FOR TESTING RAISING cx_static_check.
     METHODS lt_s FOR TESTING RAISING cx_static_check.
+
     METHODS test_unsigned_minus_seven FOR TESTING RAISING cx_static_check.
     METHODS test_unsigned_zero FOR TESTING RAISING cx_static_check.
     METHODS test_unsigned_one FOR TESTING RAISING cx_static_check.

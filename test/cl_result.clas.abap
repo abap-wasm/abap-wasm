@@ -87,6 +87,9 @@ CLASS cl_result IMPLEMENTATION.
     lv_top = lv_top && |<h3>Successes: { mv_success }</h3>\n|.
     lv_top = lv_top && |<hr>\n|.
 
+    GET TIME STAMP FIELD DATA(lv_timestamp).
+    mv_html = mv_html && |<p>Generated at { lv_timestamp TIMESTAMP = ISO }</p>\n|.
+
     rv_html = lv_top && mv_html.
   ENDMETHOD.
 
