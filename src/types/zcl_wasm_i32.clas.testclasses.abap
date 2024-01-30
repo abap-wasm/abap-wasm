@@ -27,7 +27,7 @@ CLASS ltcl_test IMPLEMENTATION.
       exp = 1 ).
 
     cl_abap_unit_assert=>assert_equals(
-      act = mo_memory->stack_pop_i32( )->get_value( )
+      act = mo_memory->stack_pop_i32( )->get_signed( )
       exp = iv_value ).
 
   ENDMETHOD.

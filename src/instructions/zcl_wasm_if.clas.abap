@@ -64,7 +64,7 @@ CLASS zcl_wasm_if IMPLEMENTATION.
 * todo, more regarding block type?
 
 * If c is non-zero, then enter
-    DATA(lv_value) = io_memory->stack_pop_i32( )->get_value( ).
+    DATA(lv_value) = io_memory->stack_pop_i32( )->get_signed( ).
     IF lv_value <> 0.
       LOOP AT mt_in1 INTO DATA(lo_instruction).
         rv_control = lo_instruction->execute(

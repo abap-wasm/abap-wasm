@@ -46,7 +46,7 @@ CLASS ltcl_test IMPLEMENTATION.
     cl_abap_unit_assert=>assert_subrc( ).
 
     cl_abap_unit_assert=>assert_equals(
-      act = CAST zcl_wasm_i32( li_data )->get_value( )
+      act = CAST zcl_wasm_i32( li_data )->get_signed( )
       exp = iv_value ).
 
   ENDMETHOD.

@@ -11,7 +11,7 @@ CLASS zcl_wasm_i32 DEFINITION
       IMPORTING
         !iv_value TYPE i .
 
-    METHODS get_value
+    METHODS get_signed
       RETURNING
         VALUE(rv_value) TYPE i .
 
@@ -53,7 +53,7 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
     DATA(lo_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
     DATA(lo_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
 
-    io_memory->stack_push( NEW zcl_wasm_i32( lo_val1->get_value( ) + lo_val2->get_value( ) ) ).
+    io_memory->stack_push( NEW zcl_wasm_i32( lo_val1->get_signed( ) + lo_val2->get_signed( ) ) ).
 
   ENDMETHOD.
 
@@ -64,7 +64,7 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
     DATA(lo_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
     DATA(lo_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
 
-    io_memory->stack_push( NEW zcl_wasm_i32( lo_val1->get_value( ) * lo_val2->get_value( ) ) ).
+    io_memory->stack_push( NEW zcl_wasm_i32( lo_val1->get_signed( ) * lo_val2->get_signed( ) ) ).
 
   ENDMETHOD.
 
@@ -74,7 +74,7 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD get_value.
+  METHOD get_signed.
     rv_value = mv_value.
   ENDMETHOD.
 
@@ -91,7 +91,7 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
     DATA(lo_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
 
     DATA(lv_result) = 0.
-    IF lo_val1->get_value( ) > lo_val2->get_value( ).
+    IF lo_val1->get_signed( ) > lo_val2->get_signed( ).
       lv_result = 1.
     ENDIF.
 
@@ -109,7 +109,7 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
     DATA(lo_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
     DATA(lo_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
 
-    io_memory->stack_push( NEW zcl_wasm_i32( lo_val2->get_value( ) - lo_val1->get_value( ) ) ).
+    io_memory->stack_push( NEW zcl_wasm_i32( lo_val2->get_signed( ) - lo_val1->get_signed( ) ) ).
 
   ENDMETHOD.
 
@@ -120,7 +120,7 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
     DATA(lo_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
     DATA(lo_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
 
-    io_memory->stack_push( NEW zcl_wasm_i32( lo_val1->get_value( ) / lo_val2->get_value( ) ) ).
+    io_memory->stack_push( NEW zcl_wasm_i32( lo_val1->get_signed( ) / lo_val2->get_signed( ) ) ).
 
   ENDMETHOD.
 
