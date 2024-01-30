@@ -27,22 +27,70 @@ CLASS zcl_wasm_i32 DEFINITION
 
     CLASS-METHODS add
       IMPORTING
-        !io_memory TYPE REF TO zcl_wasm_memory .
+        !io_memory TYPE REF TO zcl_wasm_memory
+      RAISING
+        zcx_wasm.
     CLASS-METHODS mul
       IMPORTING
-        !io_memory TYPE REF TO zcl_wasm_memory .
+        !io_memory TYPE REF TO zcl_wasm_memory
+      RAISING
+        zcx_wasm.
     CLASS-METHODS div_s
       IMPORTING
-        !io_memory TYPE REF TO zcl_wasm_memory .
+        !io_memory TYPE REF TO zcl_wasm_memory
+      RAISING
+        zcx_wasm.
+    CLASS-METHODS rem_s
+      IMPORTING
+        !io_memory TYPE REF TO zcl_wasm_memory
+      RAISING
+        zcx_wasm.
+    CLASS-METHODS rem_u
+      IMPORTING
+        !io_memory TYPE REF TO zcl_wasm_memory
+      RAISING
+        zcx_wasm.
     CLASS-METHODS div_u
       IMPORTING
-        !io_memory TYPE REF TO zcl_wasm_memory .
+        !io_memory TYPE REF TO zcl_wasm_memory
+      RAISING
+        zcx_wasm.
     CLASS-METHODS lt_s
       IMPORTING
-        !io_memory TYPE REF TO zcl_wasm_memory .
+        !io_memory TYPE REF TO zcl_wasm_memory
+      RAISING
+        zcx_wasm.
     CLASS-METHODS sub
       IMPORTING
-        !io_memory TYPE REF TO zcl_wasm_memory .
+        !io_memory TYPE REF TO zcl_wasm_memory
+      RAISING
+        zcx_wasm.
+    CLASS-METHODS eqz
+      IMPORTING
+        !io_memory TYPE REF TO zcl_wasm_memory
+      RAISING
+        zcx_wasm.
+    CLASS-METHODS eq
+      IMPORTING
+        !io_memory TYPE REF TO zcl_wasm_memory
+      RAISING
+        zcx_wasm.
+
+    CLASS-METHODS and
+      IMPORTING
+        !io_memory TYPE REF TO zcl_wasm_memory
+      RAISING
+        zcx_wasm.
+    CLASS-METHODS or
+      IMPORTING
+        !io_memory TYPE REF TO zcl_wasm_memory
+      RAISING
+        zcx_wasm.
+    CLASS-METHODS xor
+      IMPORTING
+        !io_memory TYPE REF TO zcl_wasm_memory
+      RAISING
+        zcx_wasm.
   PROTECTED SECTION.
   PRIVATE SECTION.
 * https://webassembly.github.io/spec/core/syntax/types.html
@@ -155,6 +203,72 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
 
   ENDMETHOD.
 
+  METHOD eqz.
+
+    ASSERT io_memory->stack_length( ) >= 1.
+
+    DATA(lv_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ).
+
+    IF lv_val1 = 0.
+      io_memory->stack_push( from_signed( 1 ) ).
+    ELSE.
+      io_memory->stack_push( from_signed( 0 ) ).
+    ENDIF.
+
+  ENDMETHOD.
+
+  METHOD eq.
+
+    ASSERT io_memory->stack_length( ) >= 2.
+
+    DATA(lv_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ).
+    DATA(lv_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ).
+
+    IF lv_val1 = lv_val2.
+      io_memory->stack_push( from_signed( 1 ) ).
+    ELSE.
+      io_memory->stack_push( from_signed( 0 ) ).
+    ENDIF.
+
+  ENDMETHOD.
+
+  METHOD rem_s.
+
+    ASSERT io_memory->stack_length( ) >= 2.
+
+    DATA(lv_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ).
+    DATA(lv_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ).
+
+    DATA(lv_result) = abs( lv_val1 ) MOD abs( lv_val2 ).
+    IF lv_val1 < 0.
+      lv_result = lv_result * -1.
+    ENDIF.
+    io_memory->stack_push( from_signed( lv_result ) ).
+
+  ENDMETHOD.
+
+  METHOD rem_u.
+
+    ASSERT io_memory->stack_length( ) >= 2.
+
+    DATA(lv_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_unsigned( ).
+    DATA(lv_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_unsigned( ).
+
+    IF lv_val1 < 0.
+      lv_val1 = lv_val1 * -1.
+    ENDIF.
+    IF lv_val2 < 0.
+      lv_val2 = lv_val2 * -1.
+    ENDIF.
+
+    DATA(lv_result) = lv_val1 MOD lv_val2.
+    IF lv_val1 < 0.
+      lv_result = lv_result * -1.
+    ENDIF.
+    io_memory->stack_push( from_unsigned( lv_result ) ).
+
+  ENDMETHOD.
+
   METHOD div_u.
 
     ASSERT io_memory->stack_length( ) >= 2.
@@ -171,4 +285,61 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
     rv_type = zcl_wasm_types=>c_value_type-i32.
 
   ENDMETHOD.
+
+  METHOD and.
+
+    DATA lv_hex1 TYPE x LENGTH 4.
+    DATA lv_hex2 TYPE x LENGTH 4.
+
+    ASSERT io_memory->stack_length( ) >= 2.
+
+    DATA(lv_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ).
+    DATA(lv_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ).
+    lv_hex1 = lv_val1.
+    lv_hex2 = lv_val2.
+
+    lv_hex1 = lv_hex1 BIT-AND lv_hex2.
+    lv_val1 = lv_hex1.
+
+    io_memory->stack_push( from_signed( lv_val1 ) ).
+
+  ENDMETHOD.
+
+  METHOD or.
+
+    DATA lv_hex1 TYPE x LENGTH 4.
+    DATA lv_hex2 TYPE x LENGTH 4.
+
+    ASSERT io_memory->stack_length( ) >= 2.
+
+    DATA(lv_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ).
+    DATA(lv_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ).
+    lv_hex1 = lv_val1.
+    lv_hex2 = lv_val2.
+
+    lv_hex1 = lv_hex1 BIT-OR lv_hex2.
+    lv_val1 = lv_hex1.
+
+    io_memory->stack_push( from_signed( lv_val1 ) ).
+
+  ENDMETHOD.
+
+  METHOD xor.
+
+    DATA lv_hex1 TYPE x LENGTH 4.
+    DATA lv_hex2 TYPE x LENGTH 4.
+
+    ASSERT io_memory->stack_length( ) >= 2.
+
+    DATA(lv_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ).
+    DATA(lv_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ).
+    lv_hex1 = lv_val1.
+    lv_hex2 = lv_val2.
+
+    lv_hex1 = lv_hex1 BIT-XOR lv_hex2.
+    lv_val1 = lv_hex1.
+
+    io_memory->stack_push( from_signed( lv_val1 ) ).
+  ENDMETHOD.
+
 ENDCLASS.

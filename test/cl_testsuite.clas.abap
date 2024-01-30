@@ -203,7 +203,6 @@ CLASS cl_testsuite IMPLEMENTATION.
               lo_wasm = zcl_wasm=>create_with_wasm( lv_hex ).
               go_result->add_success( |loaded| ).
             WHEN 'assert_return'.
-* todo, some resetting of the stack/memory here?
               assert_return(
                 is_command = <ls_command>
                 io_wasm    = lo_wasm ).

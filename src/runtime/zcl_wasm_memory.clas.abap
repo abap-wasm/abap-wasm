@@ -9,10 +9,13 @@ CLASS zcl_wasm_memory DEFINITION
         !ii_value TYPE REF TO zif_wasm_value .
     METHODS stack_pop
       RETURNING
-        VALUE(ri_value) TYPE REF TO zif_wasm_value .
+        VALUE(ri_value) TYPE REF TO zif_wasm_value
+      RAISING
+        zcx_wasm.
     METHODS stack_pop_i32
       RETURNING
-        VALUE(ro_value) TYPE REF TO zcl_wasm_i32 .
+        VALUE(ro_value) TYPE REF TO zcl_wasm_i32
+      RAISING zcx_wasm.
     METHODS stack_peek
       RETURNING
         VALUE(ri_value) TYPE REF TO zif_wasm_value .
