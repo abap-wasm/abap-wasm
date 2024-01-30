@@ -70,6 +70,11 @@ CLASS zcl_wasm_i32 DEFINITION
         !io_memory TYPE REF TO zcl_wasm_memory
       RAISING
         zcx_wasm.
+    CLASS-METHODS eq
+      IMPORTING
+        !io_memory TYPE REF TO zcl_wasm_memory
+      RAISING
+        zcx_wasm.
 
     CLASS-METHODS and
       IMPORTING
@@ -205,6 +210,21 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
     DATA(lv_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ).
 
     IF lv_val1 = 0.
+      io_memory->stack_push( from_signed( 1 ) ).
+    ELSE.
+      io_memory->stack_push( from_signed( 0 ) ).
+    ENDIF.
+
+  ENDMETHOD.
+
+  METHOD eq.
+
+    ASSERT io_memory->stack_length( ) >= 2.
+
+    DATA(lv_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ).
+    DATA(lv_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ).
+
+    IF lv_val1 = lv_val2.
       io_memory->stack_push( from_signed( 1 ) ).
     ELSE.
       io_memory->stack_push( from_signed( 0 ) ).
