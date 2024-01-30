@@ -11,6 +11,7 @@ CLASS ltcl_test DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS FINAL.
     METHODS sub FOR TESTING RAISING cx_static_check.
     METHODS lt_s FOR TESTING RAISING cx_static_check.
     METHODS div FOR TESTING RAISING cx_static_check.
+    METHODS div_negative FOR TESTING RAISING cx_static_check.
 
     METHODS test_unsigned_minus_seven FOR TESTING RAISING cx_static_check.
     METHODS test_unsigned_zero FOR TESTING RAISING cx_static_check.
@@ -56,6 +57,17 @@ CLASS ltcl_test IMPLEMENTATION.
     zcl_wasm_i32=>div_s( mo_memory ).
 
     assert_sole_value( 2 ).
+
+  ENDMETHOD.
+
+  METHOD div_negative.
+
+    mo_memory->stack_push( zcl_wasm_i32=>from_signed( 3 ) ).
+    mo_memory->stack_push( zcl_wasm_i32=>from_signed( -7 ) ).
+
+    zcl_wasm_i32=>div_s( mo_memory ).
+
+    assert_sole_value( -2 ).
 
   ENDMETHOD.
 

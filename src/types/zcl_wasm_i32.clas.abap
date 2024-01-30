@@ -140,10 +140,15 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
 
     ASSERT io_memory->stack_length( ) >= 2.
 
-    DATA(lo_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
-    DATA(lo_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
+    DATA(lv_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ).
+    DATA(lv_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ).
 
-    io_memory->stack_push( from_signed( lo_val1->get_signed( ) DIV lo_val2->get_signed( ) ) ).
+* division is truncating, so round towards zero
+    IF sign( lv_val1 ) <> sign( lv_val2 ).
+      io_memory->stack_push( from_signed( -1 * ( abs( lv_val1 ) DIV abs( lv_val2 ) ) ) ).
+    ELSE.
+      io_memory->stack_push( from_signed( lv_val1 DIV lv_val2 ) ).
+    ENDIF.
 
   ENDMETHOD.
 
