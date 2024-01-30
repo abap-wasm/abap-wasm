@@ -71,6 +71,10 @@ CLASS ltcl_test IMPLEMENTATION.
       act = lo_int->get_signed( )
       exp = -7 ).
 
+    cl_abap_unit_assert=>assert_equals(
+      act = lo_int->get_unsigned( )
+      exp = 4294967289 ).
+
   ENDMETHOD.
 
   METHOD test_unsigned_zero.

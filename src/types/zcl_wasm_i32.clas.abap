@@ -21,7 +21,9 @@ CLASS zcl_wasm_i32 DEFINITION
     METHODS get_signed
       RETURNING
         VALUE(rv_value) TYPE i .
-" METHOD get_unsigned
+    METHODS get_unsigned
+      RETURNING
+        VALUE(rv_value) TYPE int8 .
 
     CLASS-METHODS add
       IMPORTING
@@ -87,6 +89,13 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
       ro_value->mv_value = iv_value - cl_abap_math=>max_int4 - cl_abap_math=>max_int4 - 2.
     ELSE.
       ro_value->mv_value = iv_value.
+    ENDIF.
+  ENDMETHOD.
+
+  METHOD get_unsigned.
+    rv_value = mv_value.
+    IF rv_value < 0.
+      rv_value = rv_value + cl_abap_math=>max_int4 + cl_abap_math=>max_int4 + 2.
     ENDIF.
   ENDMETHOD.
 
