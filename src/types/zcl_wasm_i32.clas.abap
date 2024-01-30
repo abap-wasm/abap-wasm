@@ -65,6 +65,11 @@ CLASS zcl_wasm_i32 DEFINITION
         !io_memory TYPE REF TO zcl_wasm_memory
       RAISING
         zcx_wasm.
+    CLASS-METHODS eqz
+      IMPORTING
+        !io_memory TYPE REF TO zcl_wasm_memory
+      RAISING
+        zcx_wasm.
   PROTECTED SECTION.
   PRIVATE SECTION.
 * https://webassembly.github.io/spec/core/syntax/types.html
@@ -173,6 +178,20 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
       io_memory->stack_push( from_signed( -1 * ( abs( lv_val1 ) DIV abs( lv_val2 ) ) ) ).
     ELSE.
       io_memory->stack_push( from_signed( lv_val1 DIV lv_val2 ) ).
+    ENDIF.
+
+  ENDMETHOD.
+
+  METHOD eqz.
+
+    ASSERT io_memory->stack_length( ) >= 1.
+
+    DATA(lv_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ).
+
+    IF lv_val1 = 0.
+      io_memory->stack_push( from_signed( 1 ) ).
+    ELSE.
+      io_memory->stack_push( from_signed( 0 ) ).
     ENDIF.
 
   ENDMETHOD.
