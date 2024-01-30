@@ -34,6 +34,9 @@ CLASS zcl_wasm_i32 DEFINITION
     CLASS-METHODS div_s
       IMPORTING
         !io_memory TYPE REF TO zcl_wasm_memory .
+    CLASS-METHODS div_u
+      IMPORTING
+        !io_memory TYPE REF TO zcl_wasm_memory .
     CLASS-METHODS lt_s
       IMPORTING
         !io_memory TYPE REF TO zcl_wasm_memory .
@@ -152,6 +155,16 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
 
   ENDMETHOD.
 
+  METHOD div_u.
+
+    ASSERT io_memory->stack_length( ) >= 2.
+
+    DATA(lv_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_unsigned( ).
+    DATA(lv_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_unsigned( ).
+
+    io_memory->stack_push( from_unsigned( lv_val1 DIV lv_val2 ) ).
+
+  ENDMETHOD.
 
   METHOD zif_wasm_value~get_type.
 
