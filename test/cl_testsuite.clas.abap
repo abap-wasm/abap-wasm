@@ -38,6 +38,7 @@ CLASS cl_testsuite DEFINITION PUBLIC CREATE PUBLIC.
     CLASS-METHODS run_folder
       IMPORTING
         iv_folder TYPE string
+        iv_wast   TYPE string
         it_files  TYPE ty_files.
 
     CLASS-METHODS assert_return
@@ -54,6 +55,7 @@ CLASS cl_testsuite IMPLEMENTATION.
     DATA lv_folder   TYPE string.
     DATA lv_filename TYPE string.
     DATA lv_hex      TYPE xstring.
+    DATA lv_wast     TYPE xstring.
     DATA lt_files    TYPE ty_files.
 
     go_result = NEW #( ).
@@ -67,6 +69,8 @@ CLASS cl_testsuite IMPLEMENTATION.
     WRITE / '@KERNEL   for (const filename of filenames) {'.
     WRITE / '@KERNEL     lv_filename.set(filename);'.
     WRITE / '@KERNEL     lv_hex.set(fs.readFileSync("./testsuite/" + folder + "/" + filename).toString("hex").toUpperCase());'.
+
+    WRITE / '@KERNEL     lv_wast.set(fs.readFileSync("./testsuite/" + folder + ".wast").toString("hex").toUpperCase());'.
     APPEND VALUE #(
       filename = condense( lv_filename )
       hex      = lv_hex ) TO lt_files.
@@ -74,6 +78,7 @@ CLASS cl_testsuite IMPLEMENTATION.
 
     run_folder(
       iv_folder = lv_folder
+      iv_wast   = cl_abap_codepage=>convert_from( lv_wast )
       it_files  = lt_files ).
 
     WRITE / '@KERNEL }'.
@@ -158,6 +163,7 @@ CLASS cl_testsuite IMPLEMENTATION.
     DATA ls_json     TYPE ty_json.
     DATA lv_filename TYPE string.
     DATA lo_wasm     TYPE REF TO zif_wasm.
+    DATA lv_wast     TYPE string.
     DATA lv_hex      TYPE xstring.
 
 
@@ -175,10 +181,16 @@ CLASS cl_testsuite IMPLEMENTATION.
     WRITE / '================================'.
     WRITE / ls_json-source_filename.
 
+    SPLIT iv_wast AT cl_abap_char_utilities=>newline INTO TABLE DATA(lt_wast).
+
     go_result->add_suite( ls_json-source_filename ).
 
     LOOP AT ls_json-commands ASSIGNING FIELD-SYMBOL(<ls_command>).
-      go_result->add_command( <ls_command> ).
+      CLEAR lv_wast.
+      READ TABLE lt_wast INDEX <ls_command>-line INTO lv_wast.
+      go_result->add_command(
+        is_command = <ls_command>
+        iv_wast    = lv_wast ).
 
       TRY.
           CASE <ls_command>-type.

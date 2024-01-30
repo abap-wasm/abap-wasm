@@ -24,7 +24,8 @@ CLASS cl_result DEFINITION PUBLIC.
 
     METHODS add_command
       IMPORTING
-        is_command TYPE cl_testsuite=>ty_json_commands.
+        is_command TYPE cl_testsuite=>ty_json_commands
+        iv_wast    TYPE string.
 
     METHODS add_suite
       IMPORTING
@@ -110,6 +111,9 @@ CLASS cl_result IMPLEMENTATION.
       data        = is_command ).
 
     mv_html = mv_html && |<pre>| && lv_command && |</pre>\n|.
+    IF is_command-type = 'assert_return'.
+      mv_html = mv_html && |<pre>| && iv_wast && |</pre>\n|.
+    ENDIF.
   ENDMETHOD.
 
   METHOD add_warning.
