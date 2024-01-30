@@ -95,7 +95,7 @@ CLASS cl_testsuite IMPLEMENTATION.
           WHEN 'i64'.
             APPEND NEW zcl_wasm_i64( CONV #( ls_arg-value ) ) TO lt_values.
           WHEN 'f32'.
-            APPEND NEW zcl_wasm_f32( CONV #( ls_arg-value ) ) TO lt_values.
+            APPEND zcl_wasm_f32=>from_unsigned_int32( CONV #( ls_arg-value ) ) TO lt_values.
           WHEN 'f64'.
             APPEND NEW zcl_wasm_f64( CONV #( ls_arg-value ) ) TO lt_values.
           WHEN OTHERS.
@@ -189,6 +189,7 @@ CLASS cl_testsuite IMPLEMENTATION.
               lo_wasm = zcl_wasm=>create_with_wasm( lv_hex ).
               go_result->add_success( |loaded| ).
             WHEN 'assert_return'.
+* todo, some resetting of the stack/memory here?
               assert_return(
                 is_command = <ls_command>
                 io_wasm    = lo_wasm ).

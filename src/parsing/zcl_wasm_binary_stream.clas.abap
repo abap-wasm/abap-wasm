@@ -220,32 +220,6 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
 
     rv_f = rv_f * ( 2 ** lv_exponent ).
 
-    " CASE lv_hex.
-    "   WHEN '000000000000F03F'.
-    "     rv_f = 1.
-    "   WHEN '0000000000000840'.
-    "     rv_f = 3.
-    "   WHEN '0000000000001040'.
-    "     rv_f = 4.
-    "   WHEN '0000000000001440'.
-    "     rv_f = 5.
-    "   WHEN '0000000000001840'.
-    "     rv_f = 6.
-    "   WHEN '0000000000001C40'.
-    "     rv_f = 7.
-    "   WHEN '0000000000002440'.
-    "     rv_f = 10.
-    "   WHEN 'E17A14AE47715340'.
-    "     rv_f = '77.77'.
-    "   WHEN '52B81E85EBB15340'.
-    "     rv_f = '78.78'.
-    "   WHEN 'C3F5285C8FF25340'.
-    "     rv_f = '79.79'.
-    "   WHEN OTHERS.
-    "     WRITE / lv_hex.
-    "     ASSERT lv_hex = 'todo'.
-    " ENDCASE.
-
   ENDMETHOD.
 
 
@@ -279,12 +253,7 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
 
   METHOD shift_i32.
 
-* todo, this should be LEB128
 * https://webassembly.github.io/spec/core/binary/values.html#binary-int
-
-    " DATA lv_hex TYPE x LENGTH 1.
-    " lv_hex = shift( 1 ).
-    " rv_int = CONV i( lv_hex ).
 
     rv_int = shift_i64( ).
 

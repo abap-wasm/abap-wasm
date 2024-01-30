@@ -7,9 +7,11 @@ CLASS zcl_wasm_f32 DEFINITION
 
     INTERFACES zif_wasm_value .
 
-    METHODS constructor
+    CLASS-METHODS from_unsigned_int32
       IMPORTING
-        !iv_value TYPE f .
+        !iv_value       TYPE int8
+      RETURNING
+        VALUE(rv_value) TYPE REF TO zcl_wasm_f32 .
   PROTECTED SECTION.
   PRIVATE SECTION.
     DATA mv_value TYPE f .
@@ -17,8 +19,8 @@ ENDCLASS.
 
 CLASS zcl_wasm_f32 IMPLEMENTATION.
 
-  METHOD constructor.
-    mv_value = iv_value.
+  METHOD from_unsigned_int32.
+    RAISE EXCEPTION NEW zcx_wasm( text = |todo: zcl_wasm_f32, from_unsigned_int32| ).
   ENDMETHOD.
 
   METHOD zif_wasm_value~get_type.
