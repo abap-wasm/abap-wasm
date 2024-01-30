@@ -70,6 +70,22 @@ CLASS zcl_wasm_i32 DEFINITION
         !io_memory TYPE REF TO zcl_wasm_memory
       RAISING
         zcx_wasm.
+
+    CLASS-METHODS and
+      IMPORTING
+        !io_memory TYPE REF TO zcl_wasm_memory
+      RAISING
+        zcx_wasm.
+    CLASS-METHODS or
+      IMPORTING
+        !io_memory TYPE REF TO zcl_wasm_memory
+      RAISING
+        zcx_wasm.
+    CLASS-METHODS xor
+      IMPORTING
+        !io_memory TYPE REF TO zcl_wasm_memory
+      RAISING
+        zcx_wasm.
   PROTECTED SECTION.
   PRIVATE SECTION.
 * https://webassembly.github.io/spec/core/syntax/types.html
@@ -249,4 +265,61 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
     rv_type = zcl_wasm_types=>c_value_type-i32.
 
   ENDMETHOD.
+
+  METHOD and.
+
+    DATA lv_hex1 TYPE x LENGTH 4.
+    DATA lv_hex2 TYPE x LENGTH 4.
+
+    ASSERT io_memory->stack_length( ) >= 2.
+
+    DATA(lv_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ).
+    DATA(lv_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ).
+    lv_hex1 = lv_val1.
+    lv_hex2 = lv_val2.
+
+    lv_hex1 = lv_hex1 BIT-AND lv_hex2.
+    lv_val1 = lv_hex1.
+
+    io_memory->stack_push( from_signed( lv_val1 ) ).
+
+  ENDMETHOD.
+
+  METHOD or.
+
+    DATA lv_hex1 TYPE x LENGTH 4.
+    DATA lv_hex2 TYPE x LENGTH 4.
+
+    ASSERT io_memory->stack_length( ) >= 2.
+
+    DATA(lv_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ).
+    DATA(lv_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ).
+    lv_hex1 = lv_val1.
+    lv_hex2 = lv_val2.
+
+    lv_hex1 = lv_hex1 BIT-OR lv_hex2.
+    lv_val1 = lv_hex1.
+
+    io_memory->stack_push( from_signed( lv_val1 ) ).
+
+  ENDMETHOD.
+
+  METHOD xor.
+
+    DATA lv_hex1 TYPE x LENGTH 4.
+    DATA lv_hex2 TYPE x LENGTH 4.
+
+    ASSERT io_memory->stack_length( ) >= 2.
+
+    DATA(lv_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ).
+    DATA(lv_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ).
+    lv_hex1 = lv_val1.
+    lv_hex2 = lv_val2.
+
+    lv_hex1 = lv_hex1 BIT-XOR lv_hex2.
+    lv_val1 = lv_hex1.
+
+    io_memory->stack_push( from_signed( lv_val1 ) ).
+  ENDMETHOD.
+
 ENDCLASS.
