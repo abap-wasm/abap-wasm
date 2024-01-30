@@ -7,17 +7,34 @@ CLASS zcl_wasm_i32 DEFINITION
 
     INTERFACES zif_wasm_value .
 
-    CLASS-METHODS const_
+    CLASS-METHODS from_signed
       IMPORTING
-        !io_memory TYPE REF TO zcl_wasm_memory
-        !iv_value  TYPE i .
-    METHODS constructor
+        !iv_value TYPE i
+      RETURNING
+        VALUE(ro_value) TYPE REF TO zcl_wasm_i32.
+    CLASS-METHODS from_unsigned
       IMPORTING
-        !iv_value TYPE i .
+        !iv_value TYPE int8
+      RETURNING
+        VALUE(ro_value) TYPE REF TO zcl_wasm_i32.
+
+    METHODS get_signed
+      RETURNING
+        VALUE(rv_value) TYPE i .
+    METHODS get_unsigned
+      RETURNING
+        VALUE(rv_value) TYPE int8 .
+
     CLASS-METHODS add
       IMPORTING
         !io_memory TYPE REF TO zcl_wasm_memory .
     CLASS-METHODS mul
+      IMPORTING
+        !io_memory TYPE REF TO zcl_wasm_memory .
+    CLASS-METHODS div_s
+      IMPORTING
+        !io_memory TYPE REF TO zcl_wasm_memory .
+    CLASS-METHODS div_u
       IMPORTING
         !io_memory TYPE REF TO zcl_wasm_memory .
     CLASS-METHODS lt_s
@@ -26,12 +43,12 @@ CLASS zcl_wasm_i32 DEFINITION
     CLASS-METHODS sub
       IMPORTING
         !io_memory TYPE REF TO zcl_wasm_memory .
-    METHODS get_value
-      RETURNING
-        VALUE(rv_value) TYPE i .
   PROTECTED SECTION.
   PRIVATE SECTION.
+* https://webassembly.github.io/spec/core/syntax/types.html
+* "Integers are not inherently signed or unsigned, their interpretation is determined by individual operations."
 
+* the internal representation is signed in abap-wasm,
     DATA mv_value TYPE i .
 ENDCLASS.
 
@@ -49,7 +66,7 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
     DATA(lo_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
     DATA(lo_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
 
-    io_memory->stack_push( NEW zcl_wasm_i32( lo_val1->get_value( ) + lo_val2->get_value( ) ) ).
+    io_memory->stack_push( from_signed( lo_val1->get_signed( ) + lo_val2->get_signed( ) ) ).
 
   ENDMETHOD.
 
@@ -60,29 +77,33 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
     DATA(lo_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
     DATA(lo_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
 
-    io_memory->stack_push( NEW zcl_wasm_i32( lo_val1->get_value( ) * lo_val2->get_value( ) ) ).
+    io_memory->stack_push( from_signed( lo_val1->get_signed( ) * lo_val2->get_signed( ) ) ).
 
   ENDMETHOD.
 
-
-  METHOD constructor.
-    mv_value = iv_value.
+  METHOD from_signed.
+    ro_value = NEW #( ).
+    ro_value->mv_value = iv_value.
   ENDMETHOD.
 
-
-  METHOD const_.
-
-* https://webassembly.github.io/spec/core/exec/instructions.html#t-mathsf-xref-syntax-instructions-syntax-instr-numeric-mathsf-const-c
-
-    io_memory->stack_push( NEW zcl_wasm_i32( iv_value ) ).
-
+  METHOD from_unsigned.
+    ro_value = NEW #( ).
+    IF iv_value > cl_abap_math=>max_int4.
+      ro_value->mv_value = iv_value - cl_abap_math=>max_int4 - cl_abap_math=>max_int4 - 2.
+    ELSE.
+      ro_value->mv_value = iv_value.
+    ENDIF.
   ENDMETHOD.
 
-
-  METHOD get_value.
-
+  METHOD get_unsigned.
     rv_value = mv_value.
+    IF rv_value < 0.
+      rv_value = rv_value + cl_abap_math=>max_int4 + cl_abap_math=>max_int4 + 2.
+    ENDIF.
+  ENDMETHOD.
 
+  METHOD get_signed.
+    rv_value = mv_value.
   ENDMETHOD.
 
 
@@ -90,19 +111,17 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
 
 * https://webassembly.github.io/spec/core/exec/instructions.html#t-mathsf-xref-syntax-instructions-syntax-relop-mathit-relop
 
-* signed compare
-
     ASSERT io_memory->stack_length( ) >= 2.
 
     DATA(lo_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
     DATA(lo_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
 
     DATA(lv_result) = 0.
-    IF lo_val1->get_value( ) > lo_val2->get_value( ).
+    IF lo_val1->get_signed( ) > lo_val2->get_signed( ).
       lv_result = 1.
     ENDIF.
 
-    io_memory->stack_push( NEW zcl_wasm_i32( lv_result ) ).
+    io_memory->stack_push( from_signed( lv_result ) ).
 
   ENDMETHOD.
 
@@ -116,10 +135,36 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
     DATA(lo_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
     DATA(lo_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
 
-    io_memory->stack_push( NEW zcl_wasm_i32( lo_val2->get_value( ) - lo_val1->get_value( ) ) ).
+    io_memory->stack_push( from_signed( lo_val2->get_signed( ) - lo_val1->get_signed( ) ) ).
 
   ENDMETHOD.
 
+  METHOD div_s.
+
+    ASSERT io_memory->stack_length( ) >= 2.
+
+    DATA(lv_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ).
+    DATA(lv_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ).
+
+* division is truncating, so round towards zero
+    IF sign( lv_val1 ) <> sign( lv_val2 ).
+      io_memory->stack_push( from_signed( -1 * ( abs( lv_val1 ) DIV abs( lv_val2 ) ) ) ).
+    ELSE.
+      io_memory->stack_push( from_signed( lv_val1 DIV lv_val2 ) ).
+    ENDIF.
+
+  ENDMETHOD.
+
+  METHOD div_u.
+
+    ASSERT io_memory->stack_length( ) >= 2.
+
+    DATA(lv_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_unsigned( ).
+    DATA(lv_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_unsigned( ).
+
+    io_memory->stack_push( from_unsigned( lv_val1 DIV lv_val2 ) ).
+
+  ENDMETHOD.
 
   METHOD zif_wasm_value~get_type.
 

@@ -7,6 +7,7 @@ CLASS zcl_wasm_i64 DEFINITION
 
     INTERFACES zif_wasm_value .
 
+* todo, from_signed() and from_unsigned() methods
     METHODS constructor
       IMPORTING
         !iv_value TYPE int8 .

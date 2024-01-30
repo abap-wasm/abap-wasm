@@ -2,15 +2,20 @@
 CLASS ltcl_test DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS FINAL.
 
   PRIVATE SECTION.
-    DATA: mo_memory TYPE REF TO zcl_wasm_memory.
+    DATA mo_memory TYPE REF TO zcl_wasm_memory.
 
-    METHODS:
-      setup,
-      assert_sole_value IMPORTING iv_value TYPE i,
-      add FOR TESTING,
-      sub FOR TESTING,
-      lt_s FOR TESTING,
-      const_ FOR TESTING.
+    METHODS setup.
+    METHODS assert_sole_value IMPORTING iv_value TYPE i.
+
+    METHODS add FOR TESTING RAISING cx_static_check.
+    METHODS sub FOR TESTING RAISING cx_static_check.
+    METHODS lt_s FOR TESTING RAISING cx_static_check.
+    METHODS div FOR TESTING RAISING cx_static_check.
+    METHODS div_negative FOR TESTING RAISING cx_static_check.
+
+    METHODS test_unsigned_minus_seven FOR TESTING RAISING cx_static_check.
+    METHODS test_unsigned_zero FOR TESTING RAISING cx_static_check.
+    METHODS test_unsigned_one FOR TESTING RAISING cx_static_check.
 
 ENDCLASS.
 
@@ -28,19 +33,41 @@ CLASS ltcl_test IMPLEMENTATION.
       exp = 1 ).
 
     cl_abap_unit_assert=>assert_equals(
-      act = mo_memory->stack_pop_i32( )->get_value( )
+      act = mo_memory->stack_pop_i32( )->get_signed( )
       exp = iv_value ).
 
   ENDMETHOD.
 
   METHOD lt_s.
 
-    mo_memory->stack_push( NEW zcl_wasm_i32( 3 ) ).
-    mo_memory->stack_push( NEW zcl_wasm_i32( 2 ) ).
+    mo_memory->stack_push( zcl_wasm_i32=>from_signed( 3 ) ).
+    mo_memory->stack_push( zcl_wasm_i32=>from_signed( 2 ) ).
 
     zcl_wasm_i32=>lt_s( mo_memory ).
 
     assert_sole_value( 0 ).
+
+  ENDMETHOD.
+
+  METHOD div.
+
+    mo_memory->stack_push( zcl_wasm_i32=>from_signed( 2 ) ).
+    mo_memory->stack_push( zcl_wasm_i32=>from_signed( 5 ) ).
+
+    zcl_wasm_i32=>div_s( mo_memory ).
+
+    assert_sole_value( 2 ).
+
+  ENDMETHOD.
+
+  METHOD div_negative.
+
+    mo_memory->stack_push( zcl_wasm_i32=>from_signed( 3 ) ).
+    mo_memory->stack_push( zcl_wasm_i32=>from_signed( -7 ) ).
+
+    zcl_wasm_i32=>div_s( mo_memory ).
+
+    assert_sole_value( -2 ).
 
   ENDMETHOD.
 
@@ -49,25 +76,48 @@ CLASS ltcl_test IMPLEMENTATION.
     RETURN.
   ENDMETHOD.
 
-  METHOD const_.
-
-    CONSTANTS lc_value TYPE i VALUE 42.
-
-    zcl_wasm_i32=>const_( io_memory = mo_memory
-                          iv_value  = lc_value ).
-
-    assert_sole_value( lc_value ).
-
-  ENDMETHOD.
-
   METHOD add.
 
-    mo_memory->stack_push( NEW zcl_wasm_i32( 2 ) ).
-    mo_memory->stack_push( NEW zcl_wasm_i32( 3 ) ).
+    mo_memory->stack_push( zcl_wasm_i32=>from_signed( 2 ) ).
+    mo_memory->stack_push( zcl_wasm_i32=>from_signed( 3 ) ).
 
     zcl_wasm_i32=>add( mo_memory ).
 
     assert_sole_value( 5 ).
+
+  ENDMETHOD.
+
+  METHOD test_unsigned_minus_seven.
+
+    DATA(lo_int) = zcl_wasm_i32=>from_unsigned( 4294967289 ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lo_int->get_signed( )
+      exp = -7 ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lo_int->get_unsigned( )
+      exp = 4294967289 ).
+
+  ENDMETHOD.
+
+  METHOD test_unsigned_zero.
+
+    DATA(lo_int) = zcl_wasm_i32=>from_unsigned( 0 ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lo_int->get_signed( )
+      exp = 0 ).
+
+  ENDMETHOD.
+
+  METHOD test_unsigned_one.
+
+    DATA(lo_int) = zcl_wasm_i32=>from_unsigned( 1 ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lo_int->get_signed( )
+      exp = 1 ).
 
   ENDMETHOD.
 

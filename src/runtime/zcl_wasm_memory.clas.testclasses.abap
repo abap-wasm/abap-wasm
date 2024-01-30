@@ -17,7 +17,7 @@ CLASS ltcl_test IMPLEMENTATION.
       act = lo_memory->stack_length( )
       exp = 0 ).
 
-    lo_memory->stack_push( NEW zcl_wasm_i32( 2 ) ).
+    lo_memory->stack_push( zcl_wasm_i32=>from_signed( 2 ) ).
 
     cl_abap_unit_assert=>assert_equals(
       act = lo_memory->stack_length( )

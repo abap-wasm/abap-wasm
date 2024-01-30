@@ -46,7 +46,7 @@ CLASS ltcl_test IMPLEMENTATION.
     cl_abap_unit_assert=>assert_subrc( ).
 
     cl_abap_unit_assert=>assert_equals(
-      act = CAST zcl_wasm_i32( li_data )->get_value( )
+      act = CAST zcl_wasm_i32( li_data )->get_signed( )
       exp = iv_value ).
 
   ENDMETHOD.
@@ -58,8 +58,8 @@ CLASS ltcl_test IMPLEMENTATION.
     DATA(lo_wasm) = zcl_wasm=>create_with_wasm( zcl_wasm_test_data=>wasm_add_two( ) ).
     cl_abap_unit_assert=>assert_not_initial( lo_wasm ).
 
-    APPEND NEW zcl_wasm_i32( 2 ) TO lt_values.
-    APPEND NEW zcl_wasm_i32( 3 ) TO lt_values.
+    APPEND zcl_wasm_i32=>from_signed( 2 ) TO lt_values.
+    APPEND zcl_wasm_i32=>from_signed( 3 ) TO lt_values.
 
     DATA(lt_result) = lo_wasm->execute_function_export(
       iv_name       = 'add'
@@ -77,7 +77,7 @@ CLASS ltcl_test IMPLEMENTATION.
     DATA(lo_wasm) = zcl_wasm=>create_with_wasm( zcl_wasm_test_data=>wasm_fibonacci( ) ).
     cl_abap_unit_assert=>assert_not_initial( lo_wasm ).
 
-    APPEND NEW zcl_wasm_i32( 6 ) TO lt_values.
+    APPEND zcl_wasm_i32=>from_signed( 6 ) TO lt_values.
 
     DATA(lt_result) = lo_wasm->execute_function_export(
       iv_name       = 'fib'
@@ -95,7 +95,7 @@ CLASS ltcl_test IMPLEMENTATION.
     DATA(lo_wasm) = zcl_wasm=>create_with_wasm( zcl_wasm_test_data=>wasm_factorial( ) ).
     cl_abap_unit_assert=>assert_not_initial( lo_wasm ).
 
-    APPEND NEW zcl_wasm_i32( 3 ) TO lt_values.
+    APPEND zcl_wasm_i32=>from_signed( 3 ) TO lt_values.
 
     DATA(lt_result) = lo_wasm->execute_function_export(
       iv_name       = 'fac'

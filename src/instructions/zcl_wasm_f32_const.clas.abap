@@ -16,7 +16,7 @@ ENDCLASS.
 CLASS zcl_wasm_f32_const IMPLEMENTATION.
 
   METHOD constructor.
-* todo, ABAP float is double precision?
+* todo, ABAP float is double precision? need single precision?
     mv_float = iv_float.
   ENDMETHOD.
 
