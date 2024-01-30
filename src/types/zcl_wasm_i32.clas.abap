@@ -108,8 +108,6 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
 
 * https://webassembly.github.io/spec/core/exec/instructions.html#t-mathsf-xref-syntax-instructions-syntax-relop-mathit-relop
 
-* signed compare
-
     ASSERT io_memory->stack_length( ) >= 2.
 
     DATA(lo_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
@@ -145,7 +143,7 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
     DATA(lo_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
     DATA(lo_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
 
-    io_memory->stack_push( from_signed( lo_val1->get_signed( ) / lo_val2->get_signed( ) ) ).
+    io_memory->stack_push( from_signed( lo_val1->get_signed( ) DIV lo_val2->get_signed( ) ) ).
 
   ENDMETHOD.
 
