@@ -22,11 +22,8 @@ CLASS zcl_wasm_vm DEFINITION
         zcx_wasm.
 
   PROTECTED SECTION.
-
     DATA mo_memory TYPE REF TO zcl_wasm_memory .
-    DATA mo_instructions TYPE REF TO zcl_wasm_binary_stream .
     DATA mo_module TYPE REF TO zcl_wasm_module .
-  PRIVATE SECTION.
 
 ENDCLASS.
 

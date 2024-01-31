@@ -17,7 +17,7 @@ CLASS ltcl_test IMPLEMENTATION.
     "   block
     "   end))
 
-    DATA(lv_wasm) = 'AGFzbQEAAAABBAFgAAADAgEABwkBBWVtcHR5AAAKCgEIAAJACwJACwsACgRuYW1lAgMBAAA='.
+    DATA(lv_wasm) = `AGFzbQEAAAABBAFgAAADAgEABwkBBWVtcHR5AAAKCgEIAAJACwJACwsACgRuYW1lAgMBAAA=`.
 
     DATA(li_wasm) = zcl_wasm=>create_with_base64( lv_wasm ).
 
