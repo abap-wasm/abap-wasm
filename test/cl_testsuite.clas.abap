@@ -223,7 +223,14 @@ CLASS cl_testsuite IMPLEMENTATION.
                   go_result->add_success( |got error: { lx_error->get_text( ) }| ).
               ENDTRY.
             WHEN 'assert_invalid'.
-              go_result->add_warning( |todo, assert_invalid| ).
+              WRITE / |load: { <ls_command>-filename }|.
+              WRITE / '@KERNEL lv_hex.set(fs.readFileSync(lv_filename.get()).toString("hex").toUpperCase());'.
+              TRY.
+                  zcl_wasm=>create_with_wasm( lv_hex ).
+                  go_result->add_error( |expected invalid| ).
+                CATCH cx_root INTO lx_error.
+                  go_result->add_success( |got error: { lx_error->get_text( ) }| ).
+              ENDTRY.
             WHEN 'action'.
               go_result->add_warning( |todo, action| ).
             WHEN 'assert_exhaustion'.
