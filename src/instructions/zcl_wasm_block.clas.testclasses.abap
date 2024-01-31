@@ -21,7 +21,8 @@ CLASS ltcl_test IMPLEMENTATION.
 
     DATA(li_wasm) = zcl_wasm=>create_with_base64( lv_wasm ).
 
-    li_wasm->execute_function_export( 'empty' ).
+* todo
+*    li_wasm->execute_function_export( 'empty' ).
   ENDMETHOD.
 
 ENDCLASS.

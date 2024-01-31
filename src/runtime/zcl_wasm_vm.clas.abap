@@ -33,31 +33,10 @@ CLASS zcl_wasm_vm IMPLEMENTATION.
 
 
   METHOD call.
-* todo: consolidate some of this code with ZCL_WASM_CALL ?
 
-* https://webassembly.github.io/spec/core/syntax/instructions.html#control-instructions
-
-* The call instruction invokes another function, consuming the necessary arguments from the stack
-* and returning the result values of the call
-
-    DATA(lv_type) = mo_module->get_function_by_index( iv_funcidx ).
-    DATA(ls_type) = mo_module->get_type_by_index( CONV #( lv_type ) ).
-    DATA(ls_code) = mo_module->get_code_by_index( iv_funcidx ).
-
-* consume values from stack
-    DATA(lo_memory) = NEW zcl_wasm_memory( ).
-    DO xstrlen( ls_type-parameter_types ) TIMES.
-      lo_memory->local_push( mo_memory->stack_pop( ) ).
-    ENDDO.
-
-    NEW zcl_wasm_vm(
-      io_memory = lo_memory
-      io_module = mo_module )->execute( ls_code-instructions ).
-
-* return to stack
-    DO xstrlen( ls_type-result_types ) TIMES.
-      mo_memory->stack_push( lo_memory->stack_pop( ) ).
-    ENDDO.
+    CAST zif_wasm_instruction( NEW zcl_wasm_call( iv_funcidx ) )->execute(
+      io_memory = mo_memory
+      io_module = mo_module ).
 
   ENDMETHOD.
 
