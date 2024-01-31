@@ -33,6 +33,12 @@ CLASS zcl_wasm_memory DEFINITION
         VALUE(ri_value) TYPE REF TO zif_wasm_value
       RAISING
         zcx_wasm.
+    METHODS local_set
+      IMPORTING
+        iv_index TYPE int8
+        ii_value TYPE REF TO zif_wasm_value
+      RAISING
+        zcx_wasm.
   PROTECTED SECTION.
     DATA mt_stack TYPE STANDARD TABLE OF REF TO zif_wasm_value WITH DEFAULT KEY.
     DATA mt_locals TYPE STANDARD TABLE OF REF TO zif_wasm_value WITH DEFAULT KEY.
@@ -48,6 +54,16 @@ CLASS zcl_wasm_memory IMPLEMENTATION.
 
     DATA(lv_index) = iv_index + 1.
     READ TABLE mt_locals INDEX lv_index INTO ri_value.
+    IF sy-subrc <> 0.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: not found in local memory' ).
+    ENDIF.
+
+  ENDMETHOD.
+
+  METHOD local_set.
+
+    DATA(lv_index) = iv_index + 1.
+    MODIFY TABLE mt_locals INDEX lv_index FROM ii_value.
     IF sy-subrc <> 0.
       RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: not found in local memory' ).
     ENDIF.
