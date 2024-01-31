@@ -9,7 +9,7 @@ INTERFACE zif_wasm PUBLIC.
   METHODS execute_function_export
     IMPORTING
       !iv_name          TYPE string
-      !it_parameters    TYPE zif_wasm_value=>ty_values
+      !it_parameters    TYPE zif_wasm_value=>ty_values OPTIONAL
     RETURNING
       VALUE(rt_results) TYPE zif_wasm_value=>ty_values
     RAISING
