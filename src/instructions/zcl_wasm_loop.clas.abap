@@ -49,7 +49,7 @@ CLASS zcl_wasm_loop IMPLEMENTATION.
   METHOD zif_wasm_instruction~execute.
 * loops doesnt loop, but branches to the start instead of block branches which branches to the end
 
-* todo: labels and block type?
+* todo: label and block type?
     NEW zcl_wasm_vm(
       io_memory = io_memory
       io_module = io_module )->execute( mt_instructions ).
