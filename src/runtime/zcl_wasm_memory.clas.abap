@@ -57,7 +57,8 @@ CLASS zcl_wasm_memory IMPLEMENTATION.
 
   METHOD local_push.
 
-    APPEND ii_value TO mt_locals.
+* note: locals are popped from the stack in reverse order
+    INSERT ii_value INTO mt_locals INDEX 1.
 
   ENDMETHOD.
 
