@@ -111,7 +111,9 @@ CLASS zcl_wasm_memory IMPLEMENTATION.
 
     DATA(li_pop) = stack_pop( ).
 
-    ASSERT li_pop->get_type( ) = zcl_wasm_types=>c_value_type-i32.
+    IF li_pop->get_type( ) <> zcl_wasm_types=>c_value_type-i32.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: pop, expected i32' ).
+    ENDIF.
 
     ro_value ?= li_pop.
 
