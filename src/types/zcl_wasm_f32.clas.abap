@@ -28,6 +28,11 @@ CLASS zcl_wasm_f32 DEFINITION
         VALUE(rv_value) TYPE int8
       RAISING
         zcx_wasm.
+    METHODS get_value
+      RETURNING
+        VALUE(rv_value) TYPE f
+      RAISING
+        zcx_wasm.
   PROTECTED SECTION.
   PRIVATE SECTION.
     DATA mv_value TYPE f .
@@ -38,6 +43,10 @@ CLASS zcl_wasm_f32 IMPLEMENTATION.
   METHOD from_float.
     ro_value = NEW #( ).
     ro_value->mv_value = iv_value.
+  ENDMETHOD.
+
+  METHOD get_value.
+    rv_value = mv_value.
   ENDMETHOD.
 
   METHOD from_unsigned_i32.
