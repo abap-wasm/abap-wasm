@@ -215,7 +215,7 @@ CLASS cl_testsuite IMPLEMENTATION.
       TRY.
           CASE <ls_command>-type.
             WHEN 'module'.
-              WRITE / |load: { <ls_command>-filename }|.
+*              WRITE / |load: { <ls_command>-filename }|.
               WRITE / '@KERNEL lv_hex.set(fs.readFileSync(lv_filename.get()).toString("hex").toUpperCase());'.
               lo_wasm = zcl_wasm=>create_with_wasm( lv_hex ).
               go_result->add_success( |loaded| ).
@@ -226,7 +226,7 @@ CLASS cl_testsuite IMPLEMENTATION.
             WHEN 'assert_trap'.
               go_result->add_warning( |todo, assert_trap| ).
             WHEN 'assert_malformed'.
-              WRITE / |load: { <ls_command>-filename }|.
+*              WRITE / |load: { <ls_command>-filename }|.
               WRITE / '@KERNEL lv_hex.set(fs.readFileSync(lv_filename.get()).toString("hex").toUpperCase());'.
               TRY.
                   zcl_wasm=>create_with_wasm( lv_hex ).
@@ -235,7 +235,7 @@ CLASS cl_testsuite IMPLEMENTATION.
                   go_result->add_success( |got error: { lx_error->get_text( ) }| ).
               ENDTRY.
             WHEN 'assert_invalid'.
-              WRITE / |load: { <ls_command>-filename }|.
+*              WRITE / |load: { <ls_command>-filename }|.
               WRITE / '@KERNEL lv_hex.set(fs.readFileSync(lv_filename.get()).toString("hex").toUpperCase());'.
               TRY.
                   zcl_wasm=>create_with_wasm( lv_hex ).

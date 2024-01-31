@@ -50,7 +50,11 @@ CLASS zcl_wasm_f32 IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD from_unsigned_i32.
-    RAISE EXCEPTION NEW zcx_wasm( text = |todo: zcl_wasm_f32, from_unsigned_i32| ).
+    DATA lv_hex TYPE x LENGTH 4.
+    DATA(lv_int) = zcl_wasm_i32=>from_unsigned( iv_value )->get_signed( ).
+    lv_hex = lv_int.
+    ro_value = NEW #( ).
+    ro_value->mv_value = NEW zcl_wasm_binary_stream( lv_hex )->shift_f32( ).
   ENDMETHOD.
 
   METHOD get_unsigned_i32.
