@@ -13,15 +13,15 @@ CLASS zcl_wasm_loop DEFINITION PUBLIC.
       RAISING zcx_wasm.
 
   PRIVATE SECTION.
-    DATA mv_block_type TYPE xstring.
-    DATA mt_in         TYPE zif_wasm_instruction=>ty_list.
+    DATA mv_block_type   TYPE xstring.
+    DATA mt_instructions TYPE zif_wasm_instruction=>ty_list.
 ENDCLASS.
 
 CLASS zcl_wasm_loop IMPLEMENTATION.
 
   METHOD constructor.
-    mv_block_type = iv_block_type.
-    mt_in         = it_in.
+    mv_block_type   = iv_block_type.
+    mt_instructions = it_in.
   ENDMETHOD.
 
   METHOD parse.
@@ -34,7 +34,7 @@ CLASS zcl_wasm_loop IMPLEMENTATION.
         io_body         = io_body
       IMPORTING
         ev_last_opcode  = DATA(lv_last_opcode)
-        et_instructions = DATA(lt_in) ).
+        et_instructions = DATA(lt_instructions) ).
 
     IF lv_last_opcode <> zif_wasm_opcodes=>c_opcodes-end.
       RAISE EXCEPTION NEW zcx_wasm( text = 'loop: expected end opcode' ).
@@ -42,14 +42,17 @@ CLASS zcl_wasm_loop IMPLEMENTATION.
 
     ri_instruction = NEW zcl_wasm_loop(
       iv_block_type = lv_block_type
-      it_in         = lt_in ).
+      it_in         = lt_instructions ).
 
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
 * loops doesnt loop, but branches to the start instead of block branches which branches to the end
 
-    RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_loop' ).
+* todo: labels and block type?
+    NEW zcl_wasm_vm(
+      io_memory = io_memory
+      io_module = io_module )->execute( mt_instructions ).
 
   ENDMETHOD.
 
