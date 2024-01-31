@@ -153,6 +153,14 @@ CLASS cl_testsuite IMPLEMENTATION.
               go_result->add_error( |error, wrong result, expected { lv_expected }, got { lv_result }| ).
               EXIT. " current loop
             ENDIF.
+          WHEN 'f32'.
+            lv_expected = CONV int8( ls_expected-value ).
+            lv_result   = CAST zcl_wasm_f32( li_result )->get_unsigned_i32( ).
+            IF lv_expected <> lv_result.
+              lv_error = abap_true.
+              go_result->add_error( |error, wrong result, expected { lv_expected }, got { lv_result }| ).
+              EXIT. " current loop
+            ENDIF.
           WHEN OTHERS.
             lv_error = abap_true.
             go_result->add_error( |unknown type, assert_return: { ls_expected-type }| ).

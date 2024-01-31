@@ -25,7 +25,7 @@ CLASS zcl_wasm_f32 DEFINITION
 
     METHODS get_unsigned_i32
       RETURNING
-        VALUE(ro_value) TYPE int8
+        VALUE(rv_value) TYPE int8
       RAISING
         zcx_wasm.
   PROTECTED SECTION.
@@ -45,6 +45,10 @@ CLASS zcl_wasm_f32 IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD get_unsigned_i32.
+    IF mv_value = 0.
+      RETURN.
+    ENDIF.
+
     RAISE EXCEPTION NEW zcx_wasm( text = |todo: zcl_wasm_f32, get_unsigned_i32| ).
   ENDMETHOD.
 
