@@ -94,6 +94,10 @@ CLASS cl_testsuite IMPLEMENTATION.
 
     DATA lt_values TYPE zif_wasm_value=>ty_values.
 
+    IF io_wasm IS INITIAL.
+      RAISE EXCEPTION NEW zcx_wasm( text = |assert_return: nothing loaded| ).
+    ENDIF.
+
     IF is_command-action-type = 'invoke'.
       LOOP AT is_command-action-args INTO DATA(ls_arg).
         CASE ls_arg-type.
@@ -103,8 +107,8 @@ CLASS cl_testsuite IMPLEMENTATION.
             APPEND zcl_wasm_i64=>from_unsigned( ls_arg-value ) TO lt_values.
           WHEN 'f32'.
             APPEND zcl_wasm_f32=>from_unsigned_i32( CONV #( ls_arg-value ) ) TO lt_values.
-          WHEN 'f64'.
-            APPEND NEW zcl_wasm_f64( CONV #( ls_arg-value ) ) TO lt_values.
+          " WHEN 'f64'.
+          "   APPEND NEW zcl_wasm_f64( CONV #( ls_arg-value ) ) TO lt_values.
           WHEN OTHERS.
             RAISE EXCEPTION NEW zcx_wasm( text = |unknown type, invoke, { ls_arg-type }| ).
         ENDCASE.
@@ -130,20 +134,33 @@ CLASS cl_testsuite IMPLEMENTATION.
         DATA(lv_index) = sy-index.
         READ TABLE is_command-expected INDEX lv_index INTO DATA(ls_expected).
         ASSERT sy-subrc = 0.
-        READ TABLE lt_result INDEX lv_index INTO DATA(ls_result).
+        READ TABLE lt_result INDEX lv_index INTO DATA(li_result).
         ASSERT sy-subrc = 0.
 
         CASE ls_expected-type.
           WHEN 'i32'.
             DATA(lv_expected) = CONV int8( ls_expected-value ).
-            DATA(lv_result)   = CAST zcl_wasm_i32( ls_result )->get_unsigned( ).
+            DATA(lv_result)   = CAST zcl_wasm_i32( li_result )->get_unsigned( ).
             IF lv_expected <> lv_result.
               lv_error = abap_true.
               go_result->add_error( |error, wrong result, expected { lv_expected }, got { lv_result }| ).
               EXIT. " current loop
             ENDIF.
-          " WHEN 'f32'.
-          "   APPEND NEW zcl_wasm_f32( CONV #( ls_arg-value ) ) TO lt_values.
+          WHEN 'i64'.
+            DATA(lv_str) = CAST zcl_wasm_i64( li_result )->get_unsigned( ).
+            IF ls_expected-value <> lv_str.
+              lv_error = abap_true.
+              go_result->add_error( |error, wrong result, expected { lv_expected }, got { lv_result }| ).
+              EXIT. " current loop
+            ENDIF.
+          WHEN 'f32'.
+            lv_expected = CONV int8( ls_expected-value ).
+            lv_result   = CAST zcl_wasm_f32( li_result )->get_unsigned_i32( ).
+            IF lv_expected <> lv_result.
+              lv_error = abap_true.
+              go_result->add_error( |error, wrong result, expected { lv_expected }, got { lv_result }| ).
+              EXIT. " current loop
+            ENDIF.
           WHEN OTHERS.
             lv_error = abap_true.
             go_result->add_error( |unknown type, assert_return: { ls_expected-type }| ).
@@ -218,7 +235,14 @@ CLASS cl_testsuite IMPLEMENTATION.
                   go_result->add_success( |got error: { lx_error->get_text( ) }| ).
               ENDTRY.
             WHEN 'assert_invalid'.
-              go_result->add_warning( |todo, assert_invalid| ).
+              WRITE / |load: { <ls_command>-filename }|.
+              WRITE / '@KERNEL lv_hex.set(fs.readFileSync(lv_filename.get()).toString("hex").toUpperCase());'.
+              TRY.
+                  zcl_wasm=>create_with_wasm( lv_hex ).
+                  go_result->add_error( |expected invalid| ).
+                CATCH cx_root INTO lx_error.
+                  go_result->add_success( |got error: { lx_error->get_text( ) }| ).
+              ENDTRY.
             WHEN 'action'.
               go_result->add_warning( |todo, action| ).
             WHEN 'assert_exhaustion'.

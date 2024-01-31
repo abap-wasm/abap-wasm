@@ -22,6 +22,7 @@ CLASS zcl_wasm_memory DEFINITION
     METHODS stack_length
       RETURNING
         VALUE(rv_length) TYPE i .
+
     METHODS local_push
       IMPORTING
         !ii_value TYPE REF TO zif_wasm_value .
@@ -30,6 +31,12 @@ CLASS zcl_wasm_memory DEFINITION
         !iv_index       TYPE int8
       RETURNING
         VALUE(ri_value) TYPE REF TO zif_wasm_value
+      RAISING
+        zcx_wasm.
+    METHODS local_set
+      IMPORTING
+        iv_index TYPE int8
+        ii_value TYPE REF TO zif_wasm_value
       RAISING
         zcx_wasm.
   PROTECTED SECTION.
@@ -48,7 +55,17 @@ CLASS zcl_wasm_memory IMPLEMENTATION.
     DATA(lv_index) = iv_index + 1.
     READ TABLE mt_locals INDEX lv_index INTO ri_value.
     IF sy-subrc <> 0.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: not found in local memory' ).
+      RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: not found in local memory, local_get' ).
+    ENDIF.
+
+  ENDMETHOD.
+
+  METHOD local_set.
+
+    DATA(lv_index) = iv_index + 1.
+    MODIFY TABLE mt_locals INDEX lv_index FROM ii_value.
+    IF sy-subrc <> 0.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: not found in local memory, local_set' ).
     ENDIF.
 
   ENDMETHOD.
@@ -56,7 +73,8 @@ CLASS zcl_wasm_memory IMPLEMENTATION.
 
   METHOD local_push.
 
-    APPEND ii_value TO mt_locals.
+* note: locals are popped from the stack in reverse order
+    INSERT ii_value INTO mt_locals INDEX 1.
 
   ENDMETHOD.
 
@@ -93,7 +111,9 @@ CLASS zcl_wasm_memory IMPLEMENTATION.
 
     DATA(li_pop) = stack_pop( ).
 
-    ASSERT li_pop->get_type( ) = zcl_wasm_types=>c_value_type-i32.
+    IF li_pop->get_type( ) <> zcl_wasm_types=>c_value_type-i32.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: pop, expected i32' ).
+    ENDIF.
 
     ro_value ?= li_pop.
 

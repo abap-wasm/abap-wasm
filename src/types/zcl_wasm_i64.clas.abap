@@ -24,6 +24,18 @@ CLASS zcl_wasm_i64 DEFINITION
       RAISING
         zcx_wasm.
 
+    METHODS get_unsigned
+      RETURNING
+        VALUE(rv_value) TYPE string
+      RAISING
+        zcx_wasm.
+
+    CLASS-METHODS eqz
+      IMPORTING
+        !io_memory TYPE REF TO zcl_wasm_memory
+      RAISING
+        zcx_wasm.
+
   PROTECTED SECTION.
   PRIVATE SECTION.
     DATA mv_value TYPE int8 .
@@ -49,8 +61,31 @@ CLASS zcl_wasm_i64 IMPLEMENTATION.
     ro_value->mv_value = iv_value.
   ENDMETHOD.
 
+  METHOD get_unsigned.
+    IF mv_value < 0.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'i64, get_unsigned, value is negative' ).
+    ENDIF.
+    rv_value = mv_value.
+  ENDMETHOD.
+
   METHOD zif_wasm_value~get_type.
     rv_type = zcl_wasm_types=>c_value_type-i64.
+  ENDMETHOD.
+
+  METHOD eqz.
+
+    IF io_memory->stack_length( ) < 1.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'i64, eqz, expected value on stack' ).
+    ENDIF.
+
+    DATA(lv_val1) = CAST zcl_wasm_i64( io_memory->stack_pop( ) )->mv_value.
+
+    IF lv_val1 = 0.
+      io_memory->stack_push( from_signed( 1 ) ).
+    ELSE.
+      io_memory->stack_push( from_signed( 0 ) ).
+    ENDIF.
+
   ENDMETHOD.
 
 ENDCLASS.

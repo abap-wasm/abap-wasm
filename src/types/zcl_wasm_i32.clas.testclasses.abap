@@ -57,8 +57,8 @@ CLASS ltcl_test IMPLEMENTATION.
 
   METHOD div.
 
-    mo_memory->stack_push( zcl_wasm_i32=>from_signed( 2 ) ).
     mo_memory->stack_push( zcl_wasm_i32=>from_signed( 5 ) ).
+    mo_memory->stack_push( zcl_wasm_i32=>from_signed( 2 ) ).
 
     zcl_wasm_i32=>div_s( mo_memory ).
 
@@ -68,8 +68,8 @@ CLASS ltcl_test IMPLEMENTATION.
 
   METHOD div_negative.
 
-    mo_memory->stack_push( zcl_wasm_i32=>from_signed( 3 ) ).
     mo_memory->stack_push( zcl_wasm_i32=>from_signed( -7 ) ).
+    mo_memory->stack_push( zcl_wasm_i32=>from_signed( 3 ) ).
     zcl_wasm_i32=>div_s( mo_memory ).
     assert_sole_value( -2 ).
 
@@ -77,8 +77,8 @@ CLASS ltcl_test IMPLEMENTATION.
 
   METHOD rem_negative1.
 
-    mo_memory->stack_push( zcl_wasm_i32=>from_signed( 2 ) ).
     mo_memory->stack_push( zcl_wasm_i32=>from_signed( -5 ) ).
+    mo_memory->stack_push( zcl_wasm_i32=>from_signed( 2 ) ).
     zcl_wasm_i32=>rem_s( mo_memory ).
     assert_sole_value( -1 ).
 
@@ -86,8 +86,8 @@ CLASS ltcl_test IMPLEMENTATION.
 
   METHOD rem_negative2.
 
-    mo_memory->stack_push( zcl_wasm_i32=>from_signed( -2 ) ).
     mo_memory->stack_push( zcl_wasm_i32=>from_signed( 5 ) ).
+    mo_memory->stack_push( zcl_wasm_i32=>from_signed( -2 ) ).
     zcl_wasm_i32=>rem_s( mo_memory ).
     assert_sole_value( 1 ).
 
@@ -95,8 +95,8 @@ CLASS ltcl_test IMPLEMENTATION.
 
   METHOD rem_negative3.
 
-    mo_memory->stack_push( zcl_wasm_i32=>from_signed( -2 ) ).
     mo_memory->stack_push( zcl_wasm_i32=>from_signed( -5 ) ).
+    mo_memory->stack_push( zcl_wasm_i32=>from_signed( -2 ) ).
     zcl_wasm_i32=>rem_s( mo_memory ).
     assert_sole_value( -1 ).
 
@@ -104,8 +104,8 @@ CLASS ltcl_test IMPLEMENTATION.
 
   METHOD rem_negative4.
 
-    mo_memory->stack_push( zcl_wasm_i32=>from_signed( 3 ) ).
     mo_memory->stack_push( zcl_wasm_i32=>from_signed( -7 ) ).
+    mo_memory->stack_push( zcl_wasm_i32=>from_signed( 3 ) ).
     zcl_wasm_i32=>rem_s( mo_memory ).
     assert_sole_value( -1 ).
 
@@ -113,8 +113,8 @@ CLASS ltcl_test IMPLEMENTATION.
 
   METHOD rem_negative5.
 
-    mo_memory->stack_push( zcl_wasm_i32=>from_signed( -3 ) ).
     mo_memory->stack_push( zcl_wasm_i32=>from_signed( 7 ) ).
+    mo_memory->stack_push( zcl_wasm_i32=>from_signed( -3 ) ).
     zcl_wasm_i32=>rem_s( mo_memory ).
     assert_sole_value( 1 ).
 

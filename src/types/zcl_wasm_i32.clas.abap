@@ -196,9 +196,9 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
 
 * division is truncating, so round towards zero
     IF sign( lv_val1 ) <> sign( lv_val2 ).
-      io_memory->stack_push( from_signed( -1 * ( abs( lv_val1 ) DIV abs( lv_val2 ) ) ) ).
+      io_memory->stack_push( from_signed( -1 * ( abs( lv_val2 ) DIV abs( lv_val1 ) ) ) ).
     ELSE.
-      io_memory->stack_push( from_signed( lv_val1 DIV lv_val2 ) ).
+      io_memory->stack_push( from_signed( lv_val2 DIV lv_val1 ) ).
     ENDIF.
 
   ENDMETHOD.
@@ -239,8 +239,8 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
     DATA(lv_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ).
     DATA(lv_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ).
 
-    DATA(lv_result) = abs( lv_val1 ) MOD abs( lv_val2 ).
-    IF lv_val1 < 0.
+    DATA(lv_result) = abs( lv_val2 ) MOD abs( lv_val1 ).
+    IF lv_val2 < 0.
       lv_result = lv_result * -1.
     ENDIF.
     io_memory->stack_push( from_signed( lv_result ) ).
@@ -261,7 +261,7 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
       lv_val2 = lv_val2 * -1.
     ENDIF.
 
-    DATA(lv_result) = lv_val1 MOD lv_val2.
+    DATA(lv_result) = lv_val2 MOD lv_val1.
     IF lv_val1 < 0.
       lv_result = lv_result * -1.
     ENDIF.
@@ -276,7 +276,7 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
     DATA(lv_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_unsigned( ).
     DATA(lv_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_unsigned( ).
 
-    io_memory->stack_push( from_unsigned( lv_val1 DIV lv_val2 ) ).
+    io_memory->stack_push( from_unsigned( lv_val2 DIV lv_val1 ) ).
 
   ENDMETHOD.
 

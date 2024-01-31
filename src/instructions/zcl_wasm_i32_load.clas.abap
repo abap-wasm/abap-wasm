@@ -24,7 +24,6 @@ CLASS zcl_wasm_i32_load IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD parse.
-* todo: singletons?
     ri_instruction = NEW zcl_wasm_i32_load(
       iv_align  = io_body->shift_u32( )
       iv_offset = io_body->shift_u32( ) ).

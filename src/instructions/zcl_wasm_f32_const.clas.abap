@@ -10,14 +10,14 @@ CLASS zcl_wasm_f32_const DEFINITION PUBLIC.
       IMPORTING !io_body TYPE REF TO zcl_wasm_binary_stream
       RETURNING VALUE(ri_instruction) TYPE REF TO zif_wasm_instruction.
   PRIVATE SECTION.
-    DATA mv_float TYPE f.
+    DATA mv_value TYPE f.
 ENDCLASS.
 
 CLASS zcl_wasm_f32_const IMPLEMENTATION.
 
   METHOD constructor.
 * todo, ABAP float is double precision? need single precision?
-    mv_float = iv_float.
+    mv_value = iv_float.
   ENDMETHOD.
 
   METHOD parse.
@@ -25,7 +25,7 @@ CLASS zcl_wasm_f32_const IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_f32_const' ).
+    io_memory->stack_push( zcl_wasm_f32=>from_float( mv_value ) ).
   ENDMETHOD.
 
 ENDCLASS.

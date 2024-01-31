@@ -22,12 +22,22 @@ CLASS zcl_wasm_local_tee IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD parse.
-* todo, singletons?
-    ri_instruction = NEW zcl_wasm_local_set( io_body->shift_u32( ) ).
+    ri_instruction = NEW zcl_wasm_local_tee( io_body->shift_u32( ) ).
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_local_tee' ).
+
+* https://webassembly.github.io/spec/core/exec/instructions.html#xref-syntax-instructions-syntax-instr-variable-mathsf-local-tee-x
+
+    DATA(lo_val) = io_memory->stack_pop( ).
+
+    io_memory->stack_push( lo_val ).
+    io_memory->stack_push( lo_val ).
+
+    NEW zcl_wasm_local_set( mv_localidx )->zif_wasm_instruction~execute(
+      io_memory = io_memory
+      io_module = io_module ).
+
   ENDMETHOD.
 
 ENDCLASS.

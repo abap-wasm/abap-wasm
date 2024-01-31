@@ -85,12 +85,11 @@ CLASS zcl_wasm IMPLEMENTATION.
     DATA(lv_type) = mo_module->get_function_by_index( ls_export-index ).
     DATA(ls_type) = mo_module->get_type_by_index( CONV #( lv_type ) ).
 
-    DATA(lo_memory) = NEW zcl_wasm_memory( ).
-
     IF lines( it_parameters ) <> xstrlen( ls_type-parameter_types ).
       RAISE EXCEPTION NEW zcx_wasm( text = 'execute_function_export: number of parameters doesnt match' ).
     ENDIF.
 
+    DATA(lo_memory) = NEW zcl_wasm_memory( ).
     LOOP AT it_parameters INTO DATA(li_value).
       lo_memory->stack_push( li_value ).
     ENDLOOP.

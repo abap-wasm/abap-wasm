@@ -23,12 +23,19 @@ CLASS zcl_wasm_local_set IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD parse.
-* todo, singletons?
     ri_instruction = NEW zcl_wasm_local_set( io_body->shift_u32( ) ).
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_local_set' ).
+
+* https://webassembly.github.io/spec/core/exec/instructions.html#xref-syntax-instructions-syntax-instr-variable-mathsf-local-set-x
+
+    DATA(li_value) = io_memory->stack_pop( ).
+
+    io_memory->local_set(
+      iv_index = mv_localidx
+      ii_value = li_value ).
+
   ENDMETHOD.
 
 ENDCLASS.

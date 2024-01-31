@@ -11,10 +11,15 @@ CLASS zcl_wasm_module DEFINITION
       END OF ty_type .
     TYPES:
       ty_types TYPE STANDARD TABLE OF ty_type WITH DEFAULT KEY .
+    TYPES: BEGIN OF ty_local,
+              count TYPE i,
+              type TYPE zcl_wasm_types=>ty_valtype ,
+           END OF ty_local.
+    TYPES: ty_locals TYPE STANDARD TABLE OF ty_local WITH DEFAULT KEY.
 
     TYPES:
       BEGIN OF ty_code,
-        locals       TYPE xstring,
+        locals       TYPE ty_locals,
         instructions TYPE zif_wasm_instruction=>ty_list,
       END OF ty_code .
     TYPES:
