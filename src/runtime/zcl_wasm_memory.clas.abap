@@ -22,6 +22,7 @@ CLASS zcl_wasm_memory DEFINITION
     METHODS stack_length
       RETURNING
         VALUE(rv_length) TYPE i .
+
     METHODS local_push
       IMPORTING
         !ii_value TYPE REF TO zif_wasm_value .

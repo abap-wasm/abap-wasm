@@ -15,6 +15,24 @@ CLASS zcl_wasm_select IMPLEMENTATION.
 
   METHOD zif_wasm_instruction~execute.
 * https://webassembly.github.io/spec/core/exec/instructions.html#xref-syntax-instructions-syntax-instr-parametric-mathsf-select-t-ast
-    RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_select' ).
+
+    DATA lo_c TYPE REF TO zcl_wasm_i32.
+
+    TRY.
+        lo_c ?= io_memory->stack_pop( ).
+      CATCH cx_sy_move_cast_error.
+        RAISE EXCEPTION NEW zcx_wasm( text = 'select: expected i32' ).
+    ENDTRY.
+
+    DATA(lo_val1) = io_memory->stack_pop( ).
+    DATA(lo_val2) = io_memory->stack_pop( ).
+* todo: validate val1 and val2 are of same type
+
+    IF lo_c->get_signed( ) = 0.
+      io_memory->stack_push( lo_val1 ).
+    ELSE.
+      io_memory->stack_push( lo_val2 ).
+    ENDIF.
+
   ENDMETHOD.
 ENDCLASS.

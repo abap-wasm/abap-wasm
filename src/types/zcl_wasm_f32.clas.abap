@@ -28,7 +28,7 @@ ENDCLASS.
 CLASS zcl_wasm_f32 IMPLEMENTATION.
 
   METHOD from_unsigned_i32.
-    RAISE EXCEPTION NEW zcx_wasm( text = |todo: zcl_wasm_f32, from_unsigned_int32| ).
+    RAISE EXCEPTION NEW zcx_wasm( text = |todo: zcl_wasm_f32, from_unsigned_i32| ).
   ENDMETHOD.
 
   METHOD get_unsigned_i32.
