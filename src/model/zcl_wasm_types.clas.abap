@@ -6,6 +6,8 @@ CLASS zcl_wasm_types DEFINITION
 
     TYPES:
       ty_type TYPE x LENGTH 1 .
+    TYPES:
+      ty_valtype TYPE x LENGTH 1 .
 
 * https://webassembly.github.io/spec/core/binary/types.html#value-types
     CONSTANTS:
@@ -34,5 +36,5 @@ ENDCLASS.
 
 
 
-CLASS ZCL_WASM_TYPES IMPLEMENTATION.
+CLASS zcl_wasm_types IMPLEMENTATION.
 ENDCLASS.

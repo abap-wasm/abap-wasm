@@ -94,6 +94,10 @@ CLASS cl_testsuite IMPLEMENTATION.
 
     DATA lt_values TYPE zif_wasm_value=>ty_values.
 
+    IF io_wasm IS INITIAL.
+      RAISE EXCEPTION NEW zcx_wasm( text = |assert_return: nothing loaded| ).
+    ENDIF.
+
     IF is_command-action-type = 'invoke'.
       LOOP AT is_command-action-args INTO DATA(ls_arg).
         CASE ls_arg-type.
