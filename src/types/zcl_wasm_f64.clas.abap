@@ -7,9 +7,11 @@ CLASS zcl_wasm_f64 DEFINITION
 
     INTERFACES zif_wasm_value .
 
-    METHODS constructor
+    CLASS-METHODS from_float
       IMPORTING
-        !iv_value TYPE f OPTIONAL.
+        !iv_float TYPE f
+      RETURNING
+        VALUE(ro_value) TYPE REF TO zcl_wasm_f64.
   PROTECTED SECTION.
   PRIVATE SECTION.
     DATA mv_value TYPE f .
@@ -17,8 +19,9 @@ ENDCLASS.
 
 CLASS zcl_wasm_f64 IMPLEMENTATION.
 
-  METHOD constructor.
-    mv_value = iv_value.
+  METHOD from_float.
+    ro_value = NEW #( ).
+    ro_value->mv_value = iv_float.
   ENDMETHOD.
 
   METHOD zif_wasm_value~get_type.

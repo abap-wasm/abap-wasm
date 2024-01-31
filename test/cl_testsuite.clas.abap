@@ -107,8 +107,8 @@ CLASS cl_testsuite IMPLEMENTATION.
             APPEND zcl_wasm_i64=>from_unsigned( ls_arg-value ) TO lt_values.
           WHEN 'f32'.
             APPEND zcl_wasm_f32=>from_unsigned_i32( CONV #( ls_arg-value ) ) TO lt_values.
-          WHEN 'f64'.
-            APPEND NEW zcl_wasm_f64( CONV #( ls_arg-value ) ) TO lt_values.
+          " WHEN 'f64'.
+          "   APPEND NEW zcl_wasm_f64( CONV #( ls_arg-value ) ) TO lt_values.
           WHEN OTHERS.
             RAISE EXCEPTION NEW zcx_wasm( text = |unknown type, invoke, { ls_arg-type }| ).
         ENDCASE.
