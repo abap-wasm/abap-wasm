@@ -794,7 +794,6 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
 
 * todo
 
-      " WRITE: / 'min:', lv_min, 'max:', lv_max.
     ENDDO.
 
   ENDMETHOD.
