@@ -16,6 +16,14 @@ CLASS zcl_wasm_i64 DEFINITION
       RAISING
         zcx_wasm.
 
+    CLASS-METHODS from_signed
+      IMPORTING
+        !iv_value       TYPE int8
+      RETURNING
+        VALUE(ro_value) TYPE REF TO zcl_wasm_i64
+      RAISING
+        zcx_wasm.
+
   PROTECTED SECTION.
   PRIVATE SECTION.
     DATA mv_value TYPE int8 .
@@ -32,6 +40,11 @@ CLASS zcl_wasm_i64 IMPLEMENTATION.
       RAISE EXCEPTION NEW zcx_wasm( text = 'i64, from_unsigned, value too long, todo' ).
     ENDIF.
 
+    ro_value = NEW #( ).
+    ro_value->mv_value = iv_value.
+  ENDMETHOD.
+
+  METHOD from_signed.
     ro_value = NEW #( ).
     ro_value->mv_value = iv_value.
   ENDMETHOD.
