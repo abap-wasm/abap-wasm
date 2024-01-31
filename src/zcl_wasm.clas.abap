@@ -8,7 +8,15 @@ CLASS zcl_wasm DEFINITION
       IMPORTING
         !iv_wasm       TYPE xstring
       RETURNING
-        VALUE(ro_wasm) TYPE REF TO zif_wasm
+        VALUE(ri_wasm) TYPE REF TO zif_wasm
+      RAISING
+        zcx_wasm.
+
+    CLASS-METHODS create_with_base64
+      IMPORTING
+        !iv_base64     TYPE string
+      RETURNING
+        VALUE(ri_wasm) TYPE REF TO zif_wasm
       RAISING
         zcx_wasm.
 
@@ -38,7 +46,31 @@ CLASS zcl_wasm IMPLEMENTATION.
 
   METHOD create_with_wasm.
 
-    ro_wasm = NEW zcl_wasm( NEW zcl_wasm_parser( )->parse( iv_wasm ) ).
+    ri_wasm = NEW zcl_wasm( NEW zcl_wasm_parser( )->parse( iv_wasm ) ).
+
+  ENDMETHOD.
+
+  METHOD create_with_base64.
+
+    DATA lv_xstr TYPE xstring.
+
+* ABAP Cloud compatible decoding,
+    TRY.
+        CALL METHOD ('CL_WEB_HTTP_UTILITY')=>('DECODE_X_BASE64')
+          EXPORTING
+            encoded = iv_base64
+          RECEIVING
+            decoded = lv_xstr.
+      CATCH cx_sy_dyn_call_illegal_class.
+        DATA(lv_classname) = 'CL_HTTP_UTILITY'.
+        CALL METHOD (lv_classname)=>('DECODE_X_BASE64')
+          EXPORTING
+            encoded = iv_base64
+          RECEIVING
+            decoded = lv_xstr.
+    ENDTRY.
+
+    ri_wasm = NEW zcl_wasm( NEW zcl_wasm_parser( )->parse( lv_xstr ) ).
 
   ENDMETHOD.
 
