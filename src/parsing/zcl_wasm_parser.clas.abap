@@ -278,7 +278,9 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
       DO lv_locals_count TIMES.
         DATA(lv_count) = lo_code->shift_u32( ).
         DATA(lv_locals_type) = lo_code->shift( 1 ).
-        APPEND VALUE #( count = lv_count type = lv_locals_type ) TO lt_locals.
+        APPEND VALUE #(
+          count = lv_count
+          type  = lv_locals_type ) TO lt_locals.
       ENDDO.
 
       parse_instructions(
