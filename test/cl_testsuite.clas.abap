@@ -100,9 +100,9 @@ CLASS cl_testsuite IMPLEMENTATION.
           WHEN 'i32'.
             APPEND zcl_wasm_i32=>from_unsigned( CONV #( ls_arg-value ) ) TO lt_values.
           WHEN 'i64'.
-            APPEND NEW zcl_wasm_i64( CONV #( ls_arg-value ) ) TO lt_values.
+            APPEND zcl_wasm_i64=>from_unsigned( ls_arg-value ) TO lt_values.
           WHEN 'f32'.
-            APPEND zcl_wasm_f32=>from_unsigned_int32( CONV #( ls_arg-value ) ) TO lt_values.
+            APPEND zcl_wasm_f32=>from_unsigned_i32( CONV #( ls_arg-value ) ) TO lt_values.
           WHEN 'f64'.
             APPEND NEW zcl_wasm_f64( CONV #( ls_arg-value ) ) TO lt_values.
           WHEN OTHERS.
