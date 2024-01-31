@@ -51,7 +51,9 @@ CLASS zcl_wasm_block IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_block' ).
+    NEW zcl_wasm_vm(
+      io_memory = io_memory
+      io_module = io_module )->execute( mt_instructions ).
   ENDMETHOD.
 
 ENDCLASS.

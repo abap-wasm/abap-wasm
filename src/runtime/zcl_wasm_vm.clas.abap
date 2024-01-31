@@ -31,15 +31,15 @@ ENDCLASS.
 
 CLASS zcl_wasm_vm IMPLEMENTATION.
 
+  METHOD constructor.
+    mo_memory = io_memory.
+    mo_module = io_module.
+  ENDMETHOD.
+
   METHOD call.
     CAST zif_wasm_instruction( NEW zcl_wasm_call( iv_funcidx ) )->execute(
       io_memory = mo_memory
       io_module = mo_module ).
-  ENDMETHOD.
-
-  METHOD constructor.
-    mo_memory = io_memory.
-    mo_module = io_module.
   ENDMETHOD.
 
   METHOD execute.
