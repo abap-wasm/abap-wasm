@@ -47,6 +47,7 @@ CLASS zcl_wasm_loop IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
+* loops doesnt loop, but branches to the start instead of block branches which branches to the end
 
     RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_loop' ).
 
