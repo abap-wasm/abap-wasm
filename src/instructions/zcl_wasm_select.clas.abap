@@ -14,6 +14,7 @@ CLASS zcl_wasm_select IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
+* https://webassembly.github.io/spec/core/exec/instructions.html#xref-syntax-instructions-syntax-instr-parametric-mathsf-select-t-ast
     RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_select' ).
   ENDMETHOD.
 ENDCLASS.
