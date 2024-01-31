@@ -130,20 +130,25 @@ CLASS cl_testsuite IMPLEMENTATION.
         DATA(lv_index) = sy-index.
         READ TABLE is_command-expected INDEX lv_index INTO DATA(ls_expected).
         ASSERT sy-subrc = 0.
-        READ TABLE lt_result INDEX lv_index INTO DATA(ls_result).
+        READ TABLE lt_result INDEX lv_index INTO DATA(li_result).
         ASSERT sy-subrc = 0.
 
         CASE ls_expected-type.
           WHEN 'i32'.
             DATA(lv_expected) = CONV int8( ls_expected-value ).
-            DATA(lv_result)   = CAST zcl_wasm_i32( ls_result )->get_unsigned( ).
+            DATA(lv_result)   = CAST zcl_wasm_i32( li_result )->get_unsigned( ).
             IF lv_expected <> lv_result.
               lv_error = abap_true.
               go_result->add_error( |error, wrong result, expected { lv_expected }, got { lv_result }| ).
               EXIT. " current loop
             ENDIF.
-          " WHEN 'f32'.
-          "   APPEND NEW zcl_wasm_f32( CONV #( ls_arg-value ) ) TO lt_values.
+          WHEN 'i64'.
+            DATA(lv_str) = CAST zcl_wasm_i64( li_result )->get_unsigned( ).
+            IF ls_expected-value <> lv_str.
+              lv_error = abap_true.
+              go_result->add_error( |error, wrong result, expected { lv_expected }, got { lv_result }| ).
+              EXIT. " current loop
+            ENDIF.
           WHEN OTHERS.
             lv_error = abap_true.
             go_result->add_error( |unknown type, assert_return: { ls_expected-type }| ).

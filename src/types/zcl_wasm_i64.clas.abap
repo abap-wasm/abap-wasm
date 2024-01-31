@@ -24,6 +24,12 @@ CLASS zcl_wasm_i64 DEFINITION
       RAISING
         zcx_wasm.
 
+    METHODS get_unsigned
+      RETURNING
+        VALUE(rv_value) TYPE string
+      RAISING
+        zcx_wasm.
+
   PROTECTED SECTION.
   PRIVATE SECTION.
     DATA mv_value TYPE int8 .
@@ -47,6 +53,13 @@ CLASS zcl_wasm_i64 IMPLEMENTATION.
   METHOD from_signed.
     ro_value = NEW #( ).
     ro_value->mv_value = iv_value.
+  ENDMETHOD.
+
+  METHOD get_unsigned.
+    IF mv_value < 0.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'i64, get_unsigned, value is negative' ).
+    ENDIF.
+    rv_value = mv_value.
   ENDMETHOD.
 
   METHOD zif_wasm_value~get_type.
