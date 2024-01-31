@@ -17,7 +17,4 @@ INTERFACE zif_wasm_instruction PUBLIC.
     RAISING
       zcx_wasm.
 
-* to_string( ) TYPE string
-* to_xstring( ) TYPE xstring
-
 ENDINTERFACE.

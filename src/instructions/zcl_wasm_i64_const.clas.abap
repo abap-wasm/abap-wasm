@@ -21,13 +21,12 @@ CLASS zcl_wasm_i64_const IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD parse.
-* todo: singletons?
     DATA(lv_value) = io_body->shift_i64( ).
     ri_instruction = NEW zcl_wasm_i64_const( lv_value ).
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_i64_const' ).
+    io_memory->stack_push( zcl_wasm_i64=>from_signed( mv_value ) ).
   ENDMETHOD.
 
 ENDCLASS.

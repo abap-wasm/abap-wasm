@@ -7,7 +7,7 @@ CLASS zcl_wasm_f32 DEFINITION
 
     INTERFACES zif_wasm_value .
 
-    CLASS-METHODS from_unsigned_int32
+    CLASS-METHODS from_unsigned_i32
       IMPORTING
         !iv_value       TYPE int8
       RETURNING
@@ -15,7 +15,7 @@ CLASS zcl_wasm_f32 DEFINITION
       RAISING
         zcx_wasm.
 
-    METHODS get_unsigned_int32
+    METHODS get_unsigned_i32
       RETURNING
         VALUE(rv_value) TYPE int8
       RAISING
@@ -27,12 +27,12 @@ ENDCLASS.
 
 CLASS zcl_wasm_f32 IMPLEMENTATION.
 
-  METHOD from_unsigned_int32.
+  METHOD from_unsigned_i32.
     RAISE EXCEPTION NEW zcx_wasm( text = |todo: zcl_wasm_f32, from_unsigned_int32| ).
   ENDMETHOD.
 
-  METHOD get_unsigned_int32.
-    RAISE EXCEPTION NEW zcx_wasm( text = |todo: zcl_wasm_f32, get_unsigned_int32| ).
+  METHOD get_unsigned_i32.
+    RAISE EXCEPTION NEW zcx_wasm( text = |todo: zcl_wasm_f32, get_unsigned_i32| ).
   ENDMETHOD.
 
   METHOD zif_wasm_value~get_type.

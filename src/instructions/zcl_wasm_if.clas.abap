@@ -47,7 +47,9 @@ CLASS zcl_wasm_if IMPLEMENTATION.
           et_instructions = DATA(lt_in2) ).
     ENDIF.
 
-    ASSERT lv_last_opcode = zif_wasm_opcodes=>c_opcodes-end.
+    IF lv_last_opcode <> zif_wasm_opcodes=>c_opcodes-end.
+      RAISE EXCEPTION NEW zcx_wasm( text = |if parse: expected end| ).
+    ENDIF.
 
     ri_instruction = NEW zcl_wasm_if(
       iv_block_type = lv_block_type
