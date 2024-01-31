@@ -11,13 +11,21 @@ CLASS zcl_wasm_f32 DEFINITION
       IMPORTING
         !iv_value       TYPE int8
       RETURNING
-        VALUE(rv_value) TYPE REF TO zcl_wasm_f32
+        VALUE(ro_value) TYPE REF TO zcl_wasm_f32
+      RAISING
+        zcx_wasm.
+
+    CLASS-METHODS from_float
+      IMPORTING
+        !iv_value       TYPE f
+      RETURNING
+        VALUE(ro_value) TYPE REF TO zcl_wasm_f32
       RAISING
         zcx_wasm.
 
     METHODS get_unsigned_i32
       RETURNING
-        VALUE(rv_value) TYPE int8
+        VALUE(ro_value) TYPE int8
       RAISING
         zcx_wasm.
   PROTECTED SECTION.
@@ -26,6 +34,11 @@ CLASS zcl_wasm_f32 DEFINITION
 ENDCLASS.
 
 CLASS zcl_wasm_f32 IMPLEMENTATION.
+
+  METHOD from_float.
+    ro_value = NEW #( ).
+    ro_value->mv_value = iv_value.
+  ENDMETHOD.
 
   METHOD from_unsigned_i32.
     RAISE EXCEPTION NEW zcx_wasm( text = |todo: zcl_wasm_f32, from_unsigned_i32| ).
@@ -36,8 +49,7 @@ CLASS zcl_wasm_f32 IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_value~get_type.
-
     rv_type = zcl_wasm_types=>c_value_type-f32.
-
   ENDMETHOD.
+
 ENDCLASS.
