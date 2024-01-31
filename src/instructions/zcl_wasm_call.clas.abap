@@ -45,6 +45,24 @@ CLASS zcl_wasm_call IMPLEMENTATION.
       lo_memory->local_push( io_memory->stack_pop( ) ).
     ENDDO.
 
+* add the locals
+    LOOP AT ls_code-locals INTO DATA(ls_local).
+      DO ls_local-count TIMES.
+        CASE ls_local-type.
+          WHEN zcl_wasm_types=>c_value_type-i32.
+            lo_memory->local_push( NEW zcl_wasm_i32( ) ).
+          WHEN zcl_wasm_types=>c_value_type-i64.
+            lo_memory->local_push( NEW zcl_wasm_i64( ) ).
+          WHEN zcl_wasm_types=>c_value_type-f32.
+            lo_memory->local_push( NEW zcl_wasm_f32( ) ).
+          WHEN zcl_wasm_types=>c_value_type-f64.
+            lo_memory->local_push( NEW zcl_wasm_f64( ) ).
+          WHEN OTHERS.
+            RAISE EXCEPTION NEW zcx_wasm( text = |call: unknown type| ).
+        ENDCASE.
+      ENDDO.
+    ENDLOOP.
+
     NEW zcl_wasm_vm(
       io_memory = lo_memory
       io_module = io_module )->execute( ls_code-instructions ).

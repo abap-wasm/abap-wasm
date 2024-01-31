@@ -9,7 +9,7 @@ CLASS zcl_wasm_f64 DEFINITION
 
     METHODS constructor
       IMPORTING
-        !iv_value TYPE f .
+        !iv_value TYPE f OPTIONAL.
   PROTECTED SECTION.
   PRIVATE SECTION.
     DATA mv_value TYPE f .
