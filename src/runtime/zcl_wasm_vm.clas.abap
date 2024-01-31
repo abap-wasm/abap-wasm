@@ -31,24 +31,18 @@ ENDCLASS.
 
 CLASS zcl_wasm_vm IMPLEMENTATION.
 
-
   METHOD call.
-
     CAST zif_wasm_instruction( NEW zcl_wasm_call( iv_funcidx ) )->execute(
       io_memory = mo_memory
       io_module = mo_module ).
-
   ENDMETHOD.
-
 
   METHOD constructor.
     mo_memory = io_memory.
     mo_module = io_module.
   ENDMETHOD.
 
-
   METHOD execute.
-
     LOOP AT it_instructions INTO DATA(lo_instruction).
       DATA(lv_control) = lo_instruction->execute(
         io_memory = mo_memory
@@ -57,6 +51,6 @@ CLASS zcl_wasm_vm IMPLEMENTATION.
         RETURN.
       ENDIF.
     ENDLOOP.
-
   ENDMETHOD.
+
 ENDCLASS.
