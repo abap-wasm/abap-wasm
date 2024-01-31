@@ -20,7 +20,13 @@ CLASS ltcl_test IMPLEMENTATION.
 
     DATA(li_wasm) = zcl_wasm=>create_with_base64( lv_wasm ).
 
-    li_wasm->execute_function_export( 'tee' ).
+    DATA(lt_values) = li_wasm->execute_function_export( 'tee' ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lines( lt_values )
+      exp = 1 ).
+
+* expected value = 0
   ENDMETHOD.
 
 ENDCLASS.
