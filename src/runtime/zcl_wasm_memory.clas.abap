@@ -55,7 +55,7 @@ CLASS zcl_wasm_memory IMPLEMENTATION.
     DATA(lv_index) = iv_index + 1.
     READ TABLE mt_locals INDEX lv_index INTO ri_value.
     IF sy-subrc <> 0.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: not found in local memory' ).
+      RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: not found in local memory, local_get' ).
     ENDIF.
 
   ENDMETHOD.
@@ -65,7 +65,7 @@ CLASS zcl_wasm_memory IMPLEMENTATION.
     DATA(lv_index) = iv_index + 1.
     MODIFY TABLE mt_locals INDEX lv_index FROM ii_value.
     IF sy-subrc <> 0.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: not found in local memory' ).
+      RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: not found in local memory, local_set' ).
     ENDIF.
 
   ENDMETHOD.
