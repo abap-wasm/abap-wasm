@@ -22,8 +22,7 @@ CLASS zcl_wasm_local_tee IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD parse.
-* todo, singletons?
-    ri_instruction = NEW zcl_wasm_local_set( io_body->shift_u32( ) ).
+    ri_instruction = NEW zcl_wasm_local_tee( io_body->shift_u32( ) ).
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
