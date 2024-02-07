@@ -6,7 +6,7 @@ CLASS zcl_wasm_binary_stream DEFINITION
 
     METHODS constructor
       IMPORTING
-        !iv_data TYPE xstring .
+        !iv_data TYPE xsequence .
     METHODS get_length
       RETURNING
         VALUE(rv_length) TYPE i .

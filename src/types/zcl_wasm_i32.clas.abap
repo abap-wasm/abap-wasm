@@ -30,6 +30,11 @@ CLASS zcl_wasm_i32 DEFINITION
         !io_memory TYPE REF TO zcl_wasm_memory
       RAISING
         zcx_wasm.
+    CLASS-METHODS shl
+      IMPORTING
+        !io_memory TYPE REF TO zcl_wasm_memory
+      RAISING
+        zcx_wasm.
     CLASS-METHODS mul
       IMPORTING
         !io_memory TYPE REF TO zcl_wasm_memory
@@ -126,6 +131,25 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
     DATA(lo_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
 
     io_memory->stack_push( from_signed( lo_val1->get_signed( ) * lo_val2->get_signed( ) ) ).
+
+  ENDMETHOD.
+
+  METHOD shl.
+
+    ASSERT io_memory->stack_length( ) >= 2.
+
+    DATA(lv_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ).
+    DATA(lv_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ).
+
+    IF lv_val1 > 1000.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'shl, large shift, todo' ).
+    ENDIF.
+
+    DO lv_val1 TIMES.
+      lv_val2 = lv_val2 * 2.
+    ENDDO.
+
+    io_memory->stack_push( from_signed( lv_val2 ) ).
 
   ENDMETHOD.
 

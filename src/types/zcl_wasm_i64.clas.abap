@@ -23,10 +23,20 @@ CLASS zcl_wasm_i64 DEFINITION
         VALUE(ro_value) TYPE REF TO zcl_wasm_i64
       RAISING
         zcx_wasm.
+    CLASS-METHODS add
+      IMPORTING
+        !io_memory TYPE REF TO zcl_wasm_memory
+      RAISING
+        zcx_wasm.
 
     METHODS get_unsigned
       RETURNING
         VALUE(rv_value) TYPE string
+      RAISING
+        zcx_wasm.
+    METHODS get_signed
+      RETURNING
+        VALUE(rv_value) TYPE int8
       RAISING
         zcx_wasm.
 
@@ -42,6 +52,21 @@ CLASS zcl_wasm_i64 DEFINITION
 ENDCLASS.
 
 CLASS zcl_wasm_i64 IMPLEMENTATION.
+
+  METHOD get_signed.
+    rv_value = mv_value.
+  ENDMETHOD.
+
+  METHOD add.
+
+    ASSERT io_memory->stack_length( ) >= 2.
+
+    DATA(lo_val1) = CAST zcl_wasm_i64( io_memory->stack_pop( ) ).
+    DATA(lo_val2) = CAST zcl_wasm_i64( io_memory->stack_pop( ) ).
+
+    io_memory->stack_push( from_signed( lo_val1->get_signed( ) + lo_val2->get_signed( ) ) ).
+
+  ENDMETHOD.
 
   METHOD from_unsigned.
     IF iv_value CN '-0123456789'.
