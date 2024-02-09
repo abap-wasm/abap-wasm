@@ -49,6 +49,7 @@ CLASS zcl_wasm_vm IMPLEMENTATION.
 
   METHOD execute.
     LOOP AT it_instructions INTO DATA(lo_instruction).
+*      WRITE / '@KERNEL console.dir(lo_instruction.get().constructor.name);'.
       DATA(lv_control) = lo_instruction->execute(
         io_memory = mo_memory
         io_module = mo_module ).

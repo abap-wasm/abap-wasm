@@ -183,7 +183,9 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
 
 * https://webassembly.github.io/spec/core/exec/instructions.html#t-mathsf-xref-syntax-instructions-syntax-relop-mathit-relop
 
-    ASSERT io_memory->stack_length( ) >= 2.
+    IF io_memory->stack_length( ) < 2.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'lt_s, expected two variables on stack' ).
+    ENDIF.
 
     DATA(lo_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
     DATA(lo_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
