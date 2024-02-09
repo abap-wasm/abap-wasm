@@ -47,7 +47,7 @@ ENDCLASS.
 
 
 
-CLASS zcl_wasm_memory IMPLEMENTATION.
+CLASS ZCL_WASM_MEMORY IMPLEMENTATION.
 
 
   METHOD local_get.
@@ -60,21 +60,22 @@ CLASS zcl_wasm_memory IMPLEMENTATION.
 
   ENDMETHOD.
 
-  METHOD local_set.
-
-    DATA(lv_index) = iv_index + 1.
-    MODIFY TABLE mt_locals INDEX lv_index FROM ii_value.
-    IF sy-subrc <> 0.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: not found in local memory, local_set' ).
-    ENDIF.
-
-  ENDMETHOD.
-
 
   METHOD local_push.
 
 * note: locals are popped from the stack in reverse order
     INSERT ii_value INTO mt_locals INDEX 1.
+
+  ENDMETHOD.
+
+
+  METHOD local_set.
+
+    DATA(lv_index) = iv_index + 1.
+    MODIFY mt_locals INDEX lv_index FROM ii_value.
+    IF sy-subrc <> 0.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: not found in local memory, local_set' ).
+    ENDIF.
 
   ENDMETHOD.
 
