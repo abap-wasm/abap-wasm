@@ -4,6 +4,7 @@ CLASS zcl_wasm_memory DEFINITION
 
   PUBLIC SECTION.
 
+*********** STACK
     METHODS stack_push
       IMPORTING
         !ii_value TYPE REF TO zif_wasm_value .
@@ -23,6 +24,7 @@ CLASS zcl_wasm_memory DEFINITION
       RETURNING
         VALUE(rv_length) TYPE i .
 
+*********** LOCAL
     METHODS local_push
       IMPORTING
         !ii_value TYPE REF TO zif_wasm_value .
@@ -39,6 +41,13 @@ CLASS zcl_wasm_memory DEFINITION
         ii_value TYPE REF TO zif_wasm_value
       RAISING
         zcx_wasm.
+
+*********** GLOBAL
+* todo
+
+*********** DEFAULT LINEAR
+* todo
+
   PROTECTED SECTION.
     DATA mt_stack TYPE STANDARD TABLE OF REF TO zif_wasm_value WITH DEFAULT KEY.
     DATA mt_locals TYPE STANDARD TABLE OF REF TO zif_wasm_value WITH DEFAULT KEY.
@@ -47,7 +56,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_WASM_MEMORY IMPLEMENTATION.
+CLASS zcl_wasm_memory IMPLEMENTATION.
 
 
   METHOD local_get.
