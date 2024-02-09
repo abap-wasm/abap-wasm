@@ -5,13 +5,13 @@ class ZCX_WASM_BRANCH definition
 
 public section.
 
-  data DEPTH type I .
+  data DEPTH type INT8 .
 
   methods CONSTRUCTOR
     importing
       !TEXTID like TEXTID optional
       !PREVIOUS like PREVIOUS optional
-      !DEPTH type I optional .
+      !DEPTH type INT8 optional .
 protected section.
 private section.
 ENDCLASS.
