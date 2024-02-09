@@ -12,6 +12,9 @@ public section.
       !TEXTID like TEXTID optional
       !PREVIOUS like PREVIOUS optional
       !DEPTH type INT8 optional .
+
+  methods IF_MESSAGE~GET_TEXT
+    redefinition .
 protected section.
 private section.
 ENDCLASS.
@@ -29,4 +32,11 @@ PREVIOUS = PREVIOUS
 .
 me->DEPTH = DEPTH .
   endmethod.
+
+
+  METHOD if_message~get_text.
+
+    result = 'Internal ABAP-WASM branching exception'.
+
+  ENDMETHOD.
 ENDCLASS.
