@@ -29,7 +29,14 @@ CLASS zcl_wasm_br_if IMPLEMENTATION.
 * refers to the innermost structured control instruction enclosing the referring branch instruction,
 * while increasing indices refer to those farther out.
 
-    RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_br_if' ).
+* https://webassembly.github.io/spec/core/exec/instructions.html#xref-syntax-instructions-syntax-instr-control-mathsf-br-if-l
+
+    IF io_memory->stack_pop_i32( )->get_signed( ) = 0.
+      RETURN.
+    ENDIF.
+
+* yea, using exceptions for branching is probably slow, but will work for now
+    RAISE EXCEPTION NEW zcx_wasm_branch( depth = mv_labelidx ).
   ENDMETHOD.
 
 ENDCLASS.

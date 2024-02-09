@@ -19,7 +19,8 @@ CLASS zcl_wasm_vm DEFINITION
       IMPORTING
         !it_instructions TYPE zif_wasm_instruction=>ty_list
       RAISING
-        zcx_wasm.
+        zcx_wasm
+        zcx_wasm_branch.
 
   PROTECTED SECTION.
     DATA mo_memory TYPE REF TO zcl_wasm_memory .
@@ -37,9 +38,13 @@ CLASS zcl_wasm_vm IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD call.
-    CAST zif_wasm_instruction( NEW zcl_wasm_call( iv_funcidx ) )->execute(
-      io_memory = mo_memory
-      io_module = mo_module ).
+    TRY.
+        CAST zif_wasm_instruction( NEW zcl_wasm_call( iv_funcidx ) )->execute(
+          io_memory = mo_memory
+          io_module = mo_module ).
+      CATCH zcx_wasm_branch.
+        RAISE EXCEPTION NEW zcx_wasm( text = 'call(), branching exception, should not happen' ).
+    ENDTRY.
   ENDMETHOD.
 
   METHOD execute.
@@ -47,6 +52,7 @@ CLASS zcl_wasm_vm IMPLEMENTATION.
       DATA(lv_control) = lo_instruction->execute(
         io_memory = mo_memory
         io_module = mo_module ).
+
       IF lv_control = zif_wasm_instruction=>c_control-return_.
         RETURN.
       ENDIF.

@@ -15,6 +15,7 @@ INTERFACE zif_wasm_instruction PUBLIC.
     RETURNING
       VALUE(rv_control) TYPE ty_control
     RAISING
-      zcx_wasm.
+      zcx_wasm
+      zcx_wasm_branch.
 
 ENDINTERFACE.

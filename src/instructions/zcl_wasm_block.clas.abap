@@ -52,10 +52,18 @@ CLASS zcl_wasm_block IMPLEMENTATION.
 
   METHOD zif_wasm_instruction~execute.
 
-* todo: label and block type?
-    NEW zcl_wasm_vm(
-      io_memory = io_memory
-      io_module = io_module )->execute( mt_instructions ).
+* todo: block type?
+
+    TRY.
+        NEW zcl_wasm_vm(
+          io_memory = io_memory
+          io_module = io_module )->execute( mt_instructions ).
+      CATCH zcx_wasm_branch INTO DATA(lx_branch).
+        IF lx_branch->depth > 0.
+          RAISE EXCEPTION NEW zcx_wasm_branch( depth = lx_branch->depth - 1 ).
+        ENDIF.
+    ENDTRY.
+
   ENDMETHOD.
 
 ENDCLASS.
