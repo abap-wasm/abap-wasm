@@ -15,7 +15,7 @@ CLASS zcl_wasm_f32_trunc IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_f32_trunc' ).
+    zcl_wasm_f32=>trunc_value( io_memory ).
   ENDMETHOD.
 
 ENDCLASS.

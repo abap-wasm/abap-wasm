@@ -57,6 +57,18 @@ CLASS zcl_wasm_f32 DEFINITION
         !io_memory TYPE REF TO zcl_wasm_memory
       RAISING
         zcx_wasm.
+
+    CLASS-METHODS ceil_value
+      IMPORTING
+        !io_memory TYPE REF TO zcl_wasm_memory
+      RAISING
+        zcx_wasm.
+
+    CLASS-METHODS trunc_value
+      IMPORTING
+        !io_memory TYPE REF TO zcl_wasm_memory
+      RAISING
+        zcx_wasm.
   PROTECTED SECTION.
   PRIVATE SECTION.
     DATA mv_value TYPE f .
@@ -143,6 +155,30 @@ CLASS zcl_wasm_f32 IMPLEMENTATION.
     DATA(lo_val) = CAST zcl_wasm_f32( io_memory->stack_pop( ) ).
 
     io_memory->stack_push( from_float( floor( lo_val->get_value( ) ) ) ).
+
+  ENDMETHOD.
+
+  METHOD ceil_value.
+
+    IF io_memory->stack_length( ) < 1.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'f32 ceil, expected at least one variables on stack' ).
+    ENDIF.
+
+    DATA(lo_val) = CAST zcl_wasm_f32( io_memory->stack_pop( ) ).
+
+    io_memory->stack_push( from_float( ceil( lo_val->get_value( ) ) ) ).
+
+  ENDMETHOD.
+
+  METHOD trunc_value.
+
+    IF io_memory->stack_length( ) < 1.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'f32 trunc, expected at least one variables on stack' ).
+    ENDIF.
+
+    DATA(lo_val) = CAST zcl_wasm_f32( io_memory->stack_pop( ) ).
+
+    io_memory->stack_push( from_float( trunc( lo_val->get_value( ) ) ) ).
 
   ENDMETHOD.
 
