@@ -25,7 +25,11 @@ CLASS zcl_wasm_br IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_br' ).
+
+* https://webassembly.github.io/spec/core/exec/instructions.html#xref-syntax-instructions-syntax-instr-control-mathsf-br-l
+
+* yea, using exceptions for branching is probably slow, but will work for now
+    RAISE EXCEPTION NEW zcx_wasm_branch( depth = mv_labelidx ).
   ENDMETHOD.
 
 ENDCLASS.
