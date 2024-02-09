@@ -25,6 +25,10 @@ CLASS zcl_wasm_br_if IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
+* Unlike with other index spaces, indexing of labels is relative by nesting depth, that is, label
+* refers to the innermost structured control instruction enclosing the referring branch instruction,
+* while increasing indices refer to those farther out.
+
     RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_br_if' ).
   ENDMETHOD.
 
