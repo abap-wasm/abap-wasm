@@ -45,6 +45,12 @@ CLASS zcl_wasm_f32 DEFINITION
         !io_memory TYPE REF TO zcl_wasm_memory
       RAISING
         zcx_wasm.
+
+    CLASS-METHODS square_root
+      IMPORTING
+        !io_memory TYPE REF TO zcl_wasm_memory
+      RAISING
+        zcx_wasm.
   PROTECTED SECTION.
   PRIVATE SECTION.
     DATA mv_value TYPE f .
@@ -95,7 +101,7 @@ CLASS zcl_wasm_f32 IMPLEMENTATION.
   METHOD gt.
 
     IF io_memory->stack_length( ) < 2.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'f32 gt, expected two variables on stack' ).
+      RAISE EXCEPTION NEW zcx_wasm( text = 'f32 gt, expected at least two variables on stack' ).
     ENDIF.
 
     DATA(lo_val1) = CAST zcl_wasm_f32( io_memory->stack_pop( ) ).
@@ -107,6 +113,18 @@ CLASS zcl_wasm_f32 IMPLEMENTATION.
     ENDIF.
 
     io_memory->stack_push( zcl_wasm_i32=>from_signed( lv_result ) ).
+
+  ENDMETHOD.
+
+  METHOD square_root.
+
+    IF io_memory->stack_length( ) < 1.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'f32 sqrt, expected at least one variables on stack' ).
+    ENDIF.
+
+    DATA(lo_val) = CAST zcl_wasm_f32( io_memory->stack_pop( ) ).
+
+    io_memory->stack_push( from_float( sqrt( lo_val->get_value( ) ) ) ).
 
   ENDMETHOD.
 
