@@ -15,7 +15,7 @@ CLASS zcl_wasm_f32_floor IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_f32_floor' ).
+    zcl_wasm_f32=>floor_value( io_memory ).
   ENDMETHOD.
 
 ENDCLASS.

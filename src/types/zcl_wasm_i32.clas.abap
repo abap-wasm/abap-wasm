@@ -65,6 +65,16 @@ CLASS zcl_wasm_i32 DEFINITION
         !io_memory TYPE REF TO zcl_wasm_memory
       RAISING
         zcx_wasm.
+    CLASS-METHODS lt_u
+      IMPORTING
+        !io_memory TYPE REF TO zcl_wasm_memory
+      RAISING
+        zcx_wasm.
+    CLASS-METHODS le_s
+      IMPORTING
+        !io_memory TYPE REF TO zcl_wasm_memory
+      RAISING
+        zcx_wasm.
     CLASS-METHODS sub
       IMPORTING
         !io_memory TYPE REF TO zcl_wasm_memory
@@ -92,6 +102,12 @@ CLASS zcl_wasm_i32 DEFINITION
       RAISING
         zcx_wasm.
     CLASS-METHODS xor
+      IMPORTING
+        !io_memory TYPE REF TO zcl_wasm_memory
+      RAISING
+        zcx_wasm.
+
+    CLASS-METHODS ne
       IMPORTING
         !io_memory TYPE REF TO zcl_wasm_memory
       RAISING
@@ -199,6 +215,42 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
 
   ENDMETHOD.
 
+  METHOD le_s.
+
+    IF io_memory->stack_length( ) < 2.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'lt_s, expected two variables on stack' ).
+    ENDIF.
+
+    DATA(lo_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
+    DATA(lo_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
+
+    DATA(lv_result) = 0.
+    IF lo_val1->get_signed( ) >= lo_val2->get_signed( ).
+      lv_result = 1.
+    ENDIF.
+
+    io_memory->stack_push( from_signed( lv_result ) ).
+
+  ENDMETHOD.
+
+  METHOD lt_u.
+
+    IF io_memory->stack_length( ) < 2.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'lt_s, expected two variables on stack' ).
+    ENDIF.
+
+    DATA(lo_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
+    DATA(lo_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
+
+    DATA(lv_result) = 0.
+    IF lo_val1->get_unsigned( ) > lo_val2->get_unsigned( ).
+      lv_result = 1.
+    ENDIF.
+
+    io_memory->stack_push( from_signed( lv_result ) ).
+
+  ENDMETHOD.
+
 
   METHOD sub.
 
@@ -251,6 +303,21 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
     DATA(lv_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ).
 
     IF lv_val1 = lv_val2.
+      io_memory->stack_push( from_signed( 1 ) ).
+    ELSE.
+      io_memory->stack_push( from_signed( 0 ) ).
+    ENDIF.
+
+  ENDMETHOD.
+
+  METHOD ne.
+
+    ASSERT io_memory->stack_length( ) >= 2.
+
+    DATA(lv_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ).
+    DATA(lv_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ).
+
+    IF lv_val1 <> lv_val2.
       io_memory->stack_push( from_signed( 1 ) ).
     ELSE.
       io_memory->stack_push( from_signed( 0 ) ).

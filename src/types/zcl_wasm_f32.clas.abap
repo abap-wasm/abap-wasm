@@ -39,6 +39,42 @@ CLASS zcl_wasm_f32 DEFINITION
         !io_memory TYPE REF TO zcl_wasm_memory
       RAISING
         zcx_wasm.
+
+    CLASS-METHODS gt
+      IMPORTING
+        !io_memory TYPE REF TO zcl_wasm_memory
+      RAISING
+        zcx_wasm.
+
+    CLASS-METHODS square_root
+      IMPORTING
+        !io_memory TYPE REF TO zcl_wasm_memory
+      RAISING
+        zcx_wasm.
+
+    CLASS-METHODS floor_value
+      IMPORTING
+        !io_memory TYPE REF TO zcl_wasm_memory
+      RAISING
+        zcx_wasm.
+
+    CLASS-METHODS ceil_value
+      IMPORTING
+        !io_memory TYPE REF TO zcl_wasm_memory
+      RAISING
+        zcx_wasm.
+
+    CLASS-METHODS trunc_value
+      IMPORTING
+        !io_memory TYPE REF TO zcl_wasm_memory
+      RAISING
+        zcx_wasm.
+
+    CLASS-METHODS eq
+      IMPORTING
+        !io_memory TYPE REF TO zcl_wasm_memory
+      RAISING
+        zcx_wasm.
   PROTECTED SECTION.
   PRIVATE SECTION.
     DATA mv_value TYPE f .
@@ -83,6 +119,87 @@ CLASS zcl_wasm_f32 IMPLEMENTATION.
     DATA(lo_val2) = CAST zcl_wasm_f32( io_memory->stack_pop( ) ).
 
     io_memory->stack_push( from_float( lo_val1->get_value( ) + lo_val2->get_value( ) ) ).
+
+  ENDMETHOD.
+
+  METHOD gt.
+
+    IF io_memory->stack_length( ) < 2.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'f32 gt, expected at least two variables on stack' ).
+    ENDIF.
+
+    DATA(lo_val1) = CAST zcl_wasm_f32( io_memory->stack_pop( ) ).
+    DATA(lo_val2) = CAST zcl_wasm_f32( io_memory->stack_pop( ) ).
+
+    DATA(lv_result) = 0.
+    IF lo_val1->get_value( ) > lo_val2->get_value( ).
+      lv_result = 1.
+    ENDIF.
+
+    io_memory->stack_push( zcl_wasm_i32=>from_signed( lv_result ) ).
+
+  ENDMETHOD.
+
+  METHOD square_root.
+
+    IF io_memory->stack_length( ) < 1.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'f32 sqrt, expected at least one variables on stack' ).
+    ENDIF.
+
+    DATA(lo_val) = CAST zcl_wasm_f32( io_memory->stack_pop( ) ).
+
+    io_memory->stack_push( from_float( sqrt( lo_val->get_value( ) ) ) ).
+
+  ENDMETHOD.
+
+  METHOD floor_value.
+
+    IF io_memory->stack_length( ) < 1.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'f32 floor, expected at least one variables on stack' ).
+    ENDIF.
+
+    DATA(lo_val) = CAST zcl_wasm_f32( io_memory->stack_pop( ) ).
+
+    io_memory->stack_push( from_float( floor( lo_val->get_value( ) ) ) ).
+
+  ENDMETHOD.
+
+  METHOD ceil_value.
+
+    IF io_memory->stack_length( ) < 1.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'f32 ceil, expected at least one variables on stack' ).
+    ENDIF.
+
+    DATA(lo_val) = CAST zcl_wasm_f32( io_memory->stack_pop( ) ).
+
+    io_memory->stack_push( from_float( ceil( lo_val->get_value( ) ) ) ).
+
+  ENDMETHOD.
+
+  METHOD trunc_value.
+
+    IF io_memory->stack_length( ) < 1.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'f32 trunc, expected at least one variables on stack' ).
+    ENDIF.
+
+    DATA(lo_val) = CAST zcl_wasm_f32( io_memory->stack_pop( ) ).
+
+    io_memory->stack_push( from_float( trunc( lo_val->get_value( ) ) ) ).
+
+  ENDMETHOD.
+
+  METHOD eq.
+
+    ASSERT io_memory->stack_length( ) >= 2.
+
+    DATA(lv_val1) = CAST zcl_wasm_f32( io_memory->stack_pop( ) )->mv_value.
+    DATA(lv_val2) = CAST zcl_wasm_f32( io_memory->stack_pop( ) )->mv_value.
+
+    IF lv_val1 = lv_val2.
+      io_memory->stack_push( zcl_wasm_i32=>from_signed( 1 ) ).
+    ELSE.
+      io_memory->stack_push( zcl_wasm_i32=>from_signed( 0 ) ).
+    ENDIF.
 
   ENDMETHOD.
 

@@ -15,7 +15,7 @@ CLASS zcl_wasm_f64_eq IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_f64_eq' ).
+    zcl_wasm_f64=>eq( io_memory ).
   ENDMETHOD.
 
 ENDCLASS.

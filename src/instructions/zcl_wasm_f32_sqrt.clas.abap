@@ -15,7 +15,7 @@ CLASS zcl_wasm_f32_sqrt IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_f32_sqrt' ).
+    zcl_wasm_f32=>square_root( io_memory ).
   ENDMETHOD.
 
 ENDCLASS.
