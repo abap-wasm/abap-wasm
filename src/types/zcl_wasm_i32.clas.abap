@@ -75,6 +75,11 @@ CLASS zcl_wasm_i32 DEFINITION
         !io_memory TYPE REF TO zcl_wasm_memory
       RAISING
         zcx_wasm.
+    CLASS-METHODS gt_s
+      IMPORTING
+        !io_memory TYPE REF TO zcl_wasm_memory
+      RAISING
+        zcx_wasm.
     CLASS-METHODS le_u
       IMPORTING
         !io_memory TYPE REF TO zcl_wasm_memory
@@ -231,6 +236,24 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
 
     DATA(lv_result) = 0.
     IF lo_val1->get_signed( ) >= lo_val2->get_signed( ).
+      lv_result = 1.
+    ENDIF.
+
+    io_memory->stack_push( from_signed( lv_result ) ).
+
+  ENDMETHOD.
+
+  METHOD gt_s.
+
+    IF io_memory->stack_length( ) < 2.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'le_s, expected two variables on stack' ).
+    ENDIF.
+
+    DATA(lo_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
+    DATA(lo_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
+
+    DATA(lv_result) = 0.
+    IF lo_val1->get_signed( ) < lo_val2->get_signed( ).
       lv_result = 1.
     ENDIF.
 
