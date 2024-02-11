@@ -34,10 +34,11 @@ CLASS zcl_wasm_i32_load16_s IMPLEMENTATION.
     DATA lv_hex TYPE x LENGTH lc_length.
     DATA lv_int TYPE i.
 
+    DATA(lv_i) = io_memory->stack_pop_i32( )->get_signed( ).
     lv_hex = io_memory->linear_get(
       iv_length = lc_length
       iv_align  = mv_align
-      iv_offset = mv_offset ).
+      iv_offset = mv_offset + lv_i ).
 
     lv_int = lv_hex.
     io_memory->stack_push( zcl_wasm_i32=>from_signed( lv_int ) ).

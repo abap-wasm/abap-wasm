@@ -34,10 +34,11 @@ CLASS zcl_wasm_i32_load8_s IMPLEMENTATION.
     DATA lv_hex TYPE x LENGTH lc_length.
     DATA lv_int TYPE i.
 
+    DATA(lv_i) = io_memory->stack_pop_i32( )->get_signed( ).
     lv_hex = io_memory->linear_get(
       iv_length = lc_length
       iv_align  = mv_align
-      iv_offset = mv_offset ).
+      iv_offset = mv_offset + lv_i ).
 
 * todo: not sure how load8_s is different from load8_u
     lv_int = lv_hex.
