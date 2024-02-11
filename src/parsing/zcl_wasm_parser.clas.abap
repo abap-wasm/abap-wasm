@@ -22,35 +22,6 @@ CLASS zcl_wasm_parser DEFINITION
       RAISING
         zcx_wasm.
   PROTECTED SECTION.
-
-    CONSTANTS:
-* Note that these constants are not structured as they contain JS keywords
-      gc_section_custom   TYPE x LENGTH 1 VALUE '00' ##NO_TEXT.
-    CONSTANTS:
-      gc_section_type     TYPE x LENGTH 1 VALUE '01' ##NO_TEXT.
-    CONSTANTS:
-      gc_section_import   TYPE x LENGTH 1 VALUE '02' ##NO_TEXT.
-    CONSTANTS:
-      gc_section_function TYPE x LENGTH 1 VALUE '03' ##NO_TEXT.
-    CONSTANTS:
-      gc_section_table    TYPE x LENGTH 1 VALUE '04' ##NO_TEXT.
-    CONSTANTS:
-      gc_section_memory   TYPE x LENGTH 1 VALUE '05' ##NO_TEXT.
-    CONSTANTS:
-      gc_section_global   TYPE x LENGTH 1 VALUE '06' ##NO_TEXT.
-    CONSTANTS:
-      gc_section_export   TYPE x LENGTH 1 VALUE '07' ##NO_TEXT.
-    CONSTANTS:
-      gc_section_start    TYPE x LENGTH 1 VALUE '08' ##NO_TEXT.
-    CONSTANTS:
-      gc_section_element  TYPE x LENGTH 1 VALUE '09' ##NO_TEXT.
-    CONSTANTS:
-      gc_section_code     TYPE x LENGTH 1 VALUE '0A' ##NO_TEXT.
-    CONSTANTS:
-      gc_section_data     TYPE x LENGTH 1 VALUE '0B' ##NO_TEXT.
-    CONSTANTS:
-      gc_section_data_count TYPE x LENGTH 1 VALUE '0C' ##NO_TEXT.
-
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -83,40 +54,40 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
       " WRITE: / 'body:', lo_body->get_data( ).
 
       CASE lv_section.
-        WHEN gc_section_custom.
+        WHEN zif_wasm_sections=>gc_section_custom.
 * https://webassembly.github.io/spec/core/binary/modules.html#binary-customsec
 * "ignored by the WebAssembly semantics"
           CONTINUE.
-        WHEN gc_section_type.
+        WHEN zif_wasm_sections=>gc_section_type.
           DATA(lt_types) = zcl_wasm_type_section=>parse( lo_body ).
-        WHEN gc_section_import.
+        WHEN zif_wasm_sections=>gc_section_import.
 * todo
           zcl_wasm_import_section=>parse( lo_body ).
-        WHEN gc_section_function.
+        WHEN zif_wasm_sections=>gc_section_function.
           DATA(lt_functions) = zcl_wasm_function_section=>parse( lo_body ).
-        WHEN gc_section_table.
+        WHEN zif_wasm_sections=>gc_section_table.
 * todo
           zcl_wasm_table_section=>parse( lo_body ).
-        WHEN gc_section_memory.
+        WHEN zif_wasm_sections=>gc_section_memory.
 * todo
           zcl_wasm_memory_section=>parse( lo_body ).
-        WHEN gc_section_global.
+        WHEN zif_wasm_sections=>gc_section_global.
 * todo
           zcl_wasm_global_section=>parse( lo_body ).
-        WHEN gc_section_export.
+        WHEN zif_wasm_sections=>gc_section_export.
           DATA(lt_exports) = zcl_wasm_export_section=>parse( lo_body ).
-        WHEN gc_section_start.
+        WHEN zif_wasm_sections=>gc_section_start.
 * https://webassembly.github.io/spec/core/binary/modules.html#start-section
 * todo
           DATA(lv_funcidx) = lo_body->shift_u32( ).
-        WHEN gc_section_element.
+        WHEN zif_wasm_sections=>gc_section_element.
 * todo
           zcl_wasm_element_section=>parse( lo_body ).
-        WHEN gc_section_code.
+        WHEN zif_wasm_sections=>gc_section_code.
           DATA(lt_codes) = zcl_wasm_code_section=>parse( lo_body ).
-        WHEN gc_section_data.
+        WHEN zif_wasm_sections=>gc_section_data.
           zcl_wasm_data_section=>parse( lo_body ).
-        WHEN gc_section_data_count.
+        WHEN zif_wasm_sections=>gc_section_data_count.
           DATA(lv_data_count) = lo_body->shift_u32( ).
         WHEN OTHERS.
           RAISE EXCEPTION NEW zcx_wasm( text = |unknown section: { lv_section }| ).
