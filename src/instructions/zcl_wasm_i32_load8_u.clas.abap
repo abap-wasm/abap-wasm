@@ -12,7 +12,7 @@ CLASS zcl_wasm_i32_load8_u DEFINITION PUBLIC.
       RETURNING VALUE(ri_instruction) TYPE REF TO zif_wasm_instruction.
 
   PRIVATE SECTION.
-    DATA mv_align TYPE int8.
+    DATA mv_align  TYPE int8.
     DATA mv_offset TYPE int8.
 ENDCLASS.
 
@@ -24,7 +24,6 @@ CLASS zcl_wasm_i32_load8_u IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD parse.
-* todo: singletons?
     ri_instruction = NEW zcl_wasm_i32_load8_u(
       iv_align  = io_body->shift_u32( )
       iv_offset = io_body->shift_u32( ) ).
