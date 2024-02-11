@@ -78,12 +78,6 @@ CLASS zcl_wasm_parser DEFINITION
       RAISING
         zcx_wasm.
 
-    METHODS parse_import
-      IMPORTING
-        !io_body          TYPE REF TO zcl_wasm_binary_stream
-      RAISING
-        zcx_wasm.
-
     METHODS parse_global
       IMPORTING
         !io_body          TYPE REF TO zcl_wasm_binary_stream
@@ -155,7 +149,7 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
           DATA(lt_types) = zcl_wasm_type_section=>parse( lo_body ).
         WHEN gc_section_import.
 * todo
-          parse_import( lo_body ).
+          zcl_wasm_import_section=>parse( lo_body ).
         WHEN gc_section_function.
           DATA(lt_functions) = parse_function( lo_body ).
         WHEN gc_section_table.
@@ -191,57 +185,6 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
       it_codes     = lt_codes
       it_exports   = lt_exports
       it_functions = lt_functions ).
-
-  ENDMETHOD.
-
-  METHOD parse_import.
-
-* https://webassembly.github.io/spec/core/binary/modules.html#binary-importsec
-
-    DO io_body->shift_u32( ) TIMES.
-      DATA(lv_mod) = io_body->shift_utf8( ).
-      " WRITE / lv_mod.
-      DATA(lv_mn) = io_body->shift_utf8( ).
-      " WRITE / lv_mn.
-
-      DATA(lv_desc) = io_body->shift( 1 ).
-      CASE lv_desc.
-        WHEN '00'.
-          DATA(lv_typeidx) = io_body->shift_u32( ).
-        WHEN '01'.
-          DATA(lv_reftype) = io_body->shift( 1 ).
-
-          DATA(lv_limit) = io_body->shift( 1 ).
-          CASE lv_limit.
-            WHEN '00'.
-              DATA(lv_min) = io_body->shift_u32( ).
-              DATA(lv_max) = 0.
-            WHEN '01'.
-              lv_min = io_body->shift_u32( ).
-              lv_max = io_body->shift_u32( ).
-            WHEN OTHERS.
-              RAISE EXCEPTION NEW zcx_wasm( text = |parse_import: todo| ).
-          ENDCASE.
-        WHEN '02'.
-          lv_limit = io_body->shift( 1 ).
-          CASE lv_limit.
-            WHEN '00'.
-              lv_min = io_body->shift_u32( ).
-              lv_max = 0.
-            WHEN '01'.
-              lv_min = io_body->shift_u32( ).
-              lv_max = io_body->shift_u32( ).
-            WHEN OTHERS.
-              RAISE EXCEPTION NEW zcx_wasm( text = |parse_import: todo| ).
-          ENDCASE.
-        WHEN '03'.
-          DATA(lv_valtype) = io_body->shift( 1 ).
-          DATA(lv_mut) = io_body->shift( 1 ).
-        WHEN OTHERS.
-          RAISE EXCEPTION NEW zcx_wasm( text = |parse_import: todo| ).
-      ENDCASE.
-
-    ENDDO.
 
   ENDMETHOD.
 
