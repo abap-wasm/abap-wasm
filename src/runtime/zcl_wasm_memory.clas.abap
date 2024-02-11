@@ -4,6 +4,11 @@ CLASS zcl_wasm_memory DEFINITION
 
   PUBLIC SECTION.
 
+    CONSTANTS c_alignment_8bit TYPE int8 VALUE 0.
+    CONSTANTS c_alignment_16bit TYPE int8 VALUE 1.
+    CONSTANTS c_alignment_32bit TYPE int8 VALUE 2.
+    CONSTANTS c_alignment_64bit TYPE int8 VALUE 3.
+
 *********** STACK
     METHODS stack_push
       IMPORTING
