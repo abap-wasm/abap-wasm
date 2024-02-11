@@ -51,6 +51,15 @@ CLASS zcl_wasm_memory DEFINITION
         iv_offset TYPE int8
         iv_bytes  TYPE xstring.
 
+    METHODS linear_get
+      IMPORTING
+        iv_length TYPE int8
+        iv_offset TYPE int8
+      RETURNING
+        VALUE(rv_bytes) TYPE xstring
+      RAISING
+        zcx_wasm.
+
   PROTECTED SECTION.
     DATA mt_stack  TYPE STANDARD TABLE OF REF TO zif_wasm_value WITH DEFAULT KEY.
     DATA mt_locals TYPE STANDARD TABLE OF REF TO zif_wasm_value WITH DEFAULT KEY.
@@ -64,6 +73,10 @@ CLASS zcl_wasm_memory IMPLEMENTATION.
 
   METHOD linear_set.
     mv_linear = iv_bytes.
+  ENDMETHOD.
+
+  METHOD linear_get.
+    rv_bytes = mv_linear+iv_offset(iv_length).
   ENDMETHOD.
 
   METHOD local_get.

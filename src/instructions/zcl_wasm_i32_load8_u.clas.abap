@@ -33,7 +33,13 @@ CLASS zcl_wasm_i32_load8_u IMPLEMENTATION.
     " WRITE / |  zcl_wasm_i32_load8_u, align: { mv_align }|.
     " WRITE / |  zcl_wasm_i32_load8_u, offset: { mv_offset }|.
 
-    RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_i32_load8_u' ).
+    DATA lv_hex TYPE x LENGTH 1.
+
+    lv_hex = io_memory->linear_get(
+      iv_length = 1
+      iv_offset = mv_offset ).
+
+    io_memory->stack_push( zcl_wasm_i32=>from_signed( lv_hex ) ).
   ENDMETHOD.
 
 ENDCLASS.
