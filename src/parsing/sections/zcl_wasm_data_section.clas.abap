@@ -43,9 +43,15 @@ CLASS zcl_wasm_data_section IMPLEMENTATION.
           ASSERT lv_last_opcode = zif_wasm_opcodes=>c_opcodes-end.
 
           DATA(lv_bytes) = io_body->shift( io_body->shift_u32( ) ).
+
+          APPEND VALUE #(
+            memidx       = 0
+            instructions = lt_instructions
+            bytes        = lv_bytes ) TO ro_data->mt_active.
         WHEN 1.
 * passive
           lv_bytes = io_body->shift( io_body->shift_u32( ) ).
+* todo
         WHEN 2.
 * active, memidx = dynamic
           DATA(lv_memidx) = io_body->shift_u32( ).
@@ -59,6 +65,11 @@ CLASS zcl_wasm_data_section IMPLEMENTATION.
           ASSERT lv_last_opcode = zif_wasm_opcodes=>c_opcodes-end.
 
           lv_bytes = io_body->shift( io_body->shift_u32( ) ).
+
+          APPEND VALUE #(
+            memidx       = lv_memidx
+            instructions = lt_instructions
+            bytes        = lv_bytes ) TO ro_data->mt_active.
         WHEN OTHERS.
           RAISE EXCEPTION NEW zcx_wasm( text = |parse_data, type: { lv_type }| ).
       ENDCASE.
