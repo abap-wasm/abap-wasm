@@ -13,3 +13,5 @@ if (fs.existsSync("web") === false) {
 }
 fs.writeFileSync("web/testsuite.html", html);
 fs.writeFileSync("web/totals.json", json);
+
+console.log("\n\n" + JSON.stringify(JSON.parse(json), null, 2));
