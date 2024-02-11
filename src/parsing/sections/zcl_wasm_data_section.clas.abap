@@ -12,6 +12,12 @@ CLASS zcl_wasm_data_section DEFINITION PUBLIC.
       IMPORTING
         io_memory TYPE REF TO zcl_wasm_memory.
   PRIVATE SECTION.
+    TYPES: BEGIN OF ty_active,
+              memidx       TYPE i,
+              instructions TYPE zif_wasm_instruction=>ty_list,
+              bytes        TYPE xstring,
+           END OF ty_active.
+    DATA mt_active TYPE STANDARD TABLE OF ty_active WITH DEFAULT KEY.
 ENDCLASS.
 
 CLASS zcl_wasm_data_section IMPLEMENTATION.
@@ -27,6 +33,7 @@ CLASS zcl_wasm_data_section IMPLEMENTATION.
 
       CASE lv_type.
         WHEN 0.
+* active, memidx = 0
           zcl_wasm_instructions=>parse(
             EXPORTING
               io_body         = io_body
@@ -35,12 +42,12 @@ CLASS zcl_wasm_data_section IMPLEMENTATION.
               et_instructions = DATA(lt_instructions) ).
           ASSERT lv_last_opcode = zif_wasm_opcodes=>c_opcodes-end.
 
-          DATA(lv_vec) = io_body->shift_u32( ).
-          DATA(lv_contents) = io_body->shift( lv_vec ).
+          DATA(lv_bytes) = io_body->shift( io_body->shift_u32( ) ).
         WHEN 1.
-          lv_vec = io_body->shift_u32( ).
-          lv_contents = io_body->shift( lv_vec ).
+* passive
+          lv_bytes = io_body->shift( io_body->shift_u32( ) ).
         WHEN 2.
+* active, memidx = dynamic
           DATA(lv_memidx) = io_body->shift_u32( ).
 
           zcl_wasm_instructions=>parse(
@@ -51,8 +58,7 @@ CLASS zcl_wasm_data_section IMPLEMENTATION.
               et_instructions = lt_instructions ).
           ASSERT lv_last_opcode = zif_wasm_opcodes=>c_opcodes-end.
 
-          lv_vec = io_body->shift_u32( ).
-          lv_contents = io_body->shift( lv_vec ).
+          lv_bytes = io_body->shift( io_body->shift_u32( ) ).
         WHEN OTHERS.
           RAISE EXCEPTION NEW zcx_wasm( text = |parse_data, type: { lv_type }| ).
       ENDCASE.
