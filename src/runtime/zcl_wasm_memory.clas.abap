@@ -55,8 +55,9 @@ CLASS zcl_wasm_memory DEFINITION
 
     METHODS linear_get
       IMPORTING
-        iv_length TYPE int8 OPTIONAL
-        iv_offset TYPE int8 OPTIONAL
+        iv_length       TYPE int8 OPTIONAL
+        iv_offset       TYPE int8 OPTIONAL
+        iv_align        TYPE int8 OPTIONAL
       RETURNING
         VALUE(rv_bytes) TYPE xstring
       RAISING
@@ -83,6 +84,9 @@ CLASS zcl_wasm_memory IMPLEMENTATION.
 
   METHOD linear_get.
 * https://rsms.me/wasm-intro#addressing-memory
+
+* alignment values:
+* 0 = 8-bit, 1 = 16-bit, 2 = 32-bit, and 3 = 64-bit
 
     DATA lv_byte TYPE x LENGTH 1.
 

@@ -34,12 +34,9 @@ CLASS zcl_wasm_i32_load16_u IMPLEMENTATION.
     DATA lv_hex TYPE x LENGTH lc_length.
     DATA lv_int TYPE i.
 
-    IF mv_align <> 1.
-      RAISE EXCEPTION NEW zcx_wasm( text = |zcl_wasm_i32_load16_u, todo align <> 1: { mv_align }| ).
-    ENDIF.
-
     lv_hex = io_memory->linear_get(
       iv_length = lc_length
+      iv_align  = mv_align
       iv_offset = mv_offset ).
 
     lv_int = lv_hex.
