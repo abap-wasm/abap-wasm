@@ -46,11 +46,15 @@ CLASS zcl_wasm_memory DEFINITION
 * todo
 
 *********** DEFAULT LINEAR
-* todo
+    METHODS linear_set
+      IMPORTING
+        iv_offset TYPE int8
+        iv_bytes  TYPE xstring.
 
   PROTECTED SECTION.
-    DATA mt_stack TYPE STANDARD TABLE OF REF TO zif_wasm_value WITH DEFAULT KEY.
+    DATA mt_stack  TYPE STANDARD TABLE OF REF TO zif_wasm_value WITH DEFAULT KEY.
     DATA mt_locals TYPE STANDARD TABLE OF REF TO zif_wasm_value WITH DEFAULT KEY.
+    DATA mv_linear TYPE xstring.
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -58,6 +62,9 @@ ENDCLASS.
 
 CLASS zcl_wasm_memory IMPLEMENTATION.
 
+  METHOD linear_set.
+    mv_linear = iv_bytes.
+  ENDMETHOD.
 
   METHOD local_get.
 

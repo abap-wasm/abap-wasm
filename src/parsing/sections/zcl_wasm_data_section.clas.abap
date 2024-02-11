@@ -84,7 +84,11 @@ CLASS zcl_wasm_data_section IMPLEMENTATION.
 * An active data segment copies its contents into a memory during instantiation
 * In the current version of WebAssembly, at most one memory is allowed in a module.
 
-* todo
+    LOOP AT mt_active INTO DATA(ls_active).
+      io_memory->linear_set(
+        iv_offset = 0 " todo
+        iv_bytes  = ls_active-bytes ).
+    ENDLOOP.
 
   ENDMETHOD.
 
