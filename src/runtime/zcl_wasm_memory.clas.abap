@@ -76,6 +76,10 @@ CLASS zcl_wasm_memory IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD linear_get.
+    IF iv_offset + iv_length > xstrlen( mv_linear ).
+      RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: linear_get, out of bounds' ).
+    ENDIF.
+
     rv_bytes = mv_linear+iv_offset(iv_length).
   ENDMETHOD.
 
