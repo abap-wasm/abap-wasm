@@ -67,12 +67,6 @@ CLASS zcl_wasm_parser DEFINITION
       RAISING
         zcx_wasm.
 
-    METHODS parse_element
-      IMPORTING
-        !io_body          TYPE REF TO zcl_wasm_binary_stream
-      RAISING
-        zcx_wasm.
-
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -133,7 +127,7 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
           DATA(lv_funcidx) = lo_body->shift_u32( ).
         WHEN gc_section_element.
 * todo
-          parse_element( lo_body ).
+          zcl_wasm_element_section=>parse( lo_body ).
         WHEN gc_section_code.
           DATA(lt_codes) = parse_code( lo_body ).
         WHEN gc_section_data.
@@ -619,146 +613,6 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
 
     DO io_body->shift_u32( ) TIMES.
       APPEND io_body->shift_u32( ) TO rt_results.
-    ENDDO.
-
-  ENDMETHOD.
-
-
-  METHOD parse_element.
-
-* https://webassembly.github.io/spec/core/binary/modules.html#binary-elemsec
-
-    DO io_body->shift_u32( ) TIMES.
-      DATA(lv_type) = io_body->shift_u32( ).
-
-      CASE lv_type.
-        WHEN 0.
-          parse_instructions(
-            EXPORTING
-              io_body         = io_body
-            IMPORTING
-              ev_last_opcode  = DATA(lv_last_opcode)
-              et_instructions = DATA(lt_instructions) ).
-          IF lv_last_opcode <> zif_wasm_opcodes=>c_opcodes-end.
-            RAISE EXCEPTION NEW zcx_wasm( text = |parse_element: expected end| ).
-          ENDIF.
-
-          DO io_body->shift_u32( ) TIMES.
-            DATA(lv_funcidx) = io_body->shift_u32( ).
-            " WRITE: / 'funcidx', lv_funcidx.
-          ENDDO.
-        WHEN 1.
-          DATA(lv_elemkind) = io_body->shift( 1 ).
-
-          DO io_body->shift_u32( ) TIMES.
-            lv_funcidx = io_body->shift_u32( ).
-            " WRITE: / 'funcidx', lv_funcidx.
-          ENDDO.
-        WHEN 2.
-          DATA(lv_tableidx) = io_body->shift_u32( ).
-
-          parse_instructions(
-            EXPORTING
-              io_body         = io_body
-            IMPORTING
-              ev_last_opcode  = lv_last_opcode
-              et_instructions = lt_instructions ).
-          IF lv_last_opcode <> zif_wasm_opcodes=>c_opcodes-end.
-            RAISE EXCEPTION NEW zcx_wasm( text = |parse_element: expected end| ).
-          ENDIF.
-
-          lv_elemkind = io_body->shift( 1 ).
-
-          DO io_body->shift_u32( ) TIMES.
-            lv_funcidx = io_body->shift_u32( ).
-            " WRITE: / 'funcidx', lv_funcidx.
-          ENDDO.
-        WHEN 3.
-          lv_elemkind = io_body->shift( 1 ).
-
-          DO io_body->shift_u32( ) TIMES.
-            lv_funcidx = io_body->shift_u32( ).
-          ENDDO.
-        WHEN 4.
-          parse_instructions(
-            EXPORTING
-              io_body         = io_body
-            IMPORTING
-              ev_last_opcode  = lv_last_opcode
-              et_instructions = lt_instructions ).
-          IF lv_last_opcode <> zif_wasm_opcodes=>c_opcodes-end.
-            RAISE EXCEPTION NEW zcx_wasm( text = |parse_element: expected end| ).
-          ENDIF.
-
-          DO io_body->shift_u32( ) TIMES.
-            parse_instructions(
-              EXPORTING
-                io_body         = io_body
-              IMPORTING
-                ev_last_opcode  = lv_last_opcode
-                et_instructions = lt_instructions ).
-            IF lv_last_opcode <> zif_wasm_opcodes=>c_opcodes-end.
-              RAISE EXCEPTION NEW zcx_wasm( text = |parse_element: expected end| ).
-            ENDIF.
-          ENDDO.
-        WHEN 5.
-          DATA(lv_reftype) = io_body->shift( 1 ).
-
-          DO io_body->shift_u32( ) TIMES.
-            parse_instructions(
-              EXPORTING
-                io_body         = io_body
-              IMPORTING
-                ev_last_opcode  = lv_last_opcode
-                et_instructions = lt_instructions ).
-            IF lv_last_opcode <> zif_wasm_opcodes=>c_opcodes-end.
-              RAISE EXCEPTION NEW zcx_wasm( text = |parse_element: expected end| ).
-            ENDIF.
-          ENDDO.
-        WHEN 6.
-          lv_tableidx = io_body->shift_u32( ).
-
-          parse_instructions(
-            EXPORTING
-              io_body         = io_body
-            IMPORTING
-              ev_last_opcode  = lv_last_opcode
-              et_instructions = lt_instructions ).
-          IF lv_last_opcode <> zif_wasm_opcodes=>c_opcodes-end.
-            RAISE EXCEPTION NEW zcx_wasm( text = |parse_element: expected end| ).
-          ENDIF.
-
-          lv_reftype = io_body->shift( 1 ).
-
-          DO io_body->shift_u32( ) TIMES.
-            parse_instructions(
-              EXPORTING
-                io_body         = io_body
-              IMPORTING
-                ev_last_opcode  = lv_last_opcode
-                et_instructions = lt_instructions ).
-            IF lv_last_opcode <> zif_wasm_opcodes=>c_opcodes-end.
-              RAISE EXCEPTION NEW zcx_wasm( text = |parse_element: expected end| ).
-            ENDIF.
-          ENDDO.
-        WHEN 7.
-          lv_reftype = io_body->shift( 1 ).
-
-          DO io_body->shift_u32( ) TIMES.
-            parse_instructions(
-              EXPORTING
-                io_body         = io_body
-              IMPORTING
-                ev_last_opcode  = lv_last_opcode
-                et_instructions = lt_instructions ).
-            IF lv_last_opcode <> zif_wasm_opcodes=>c_opcodes-end.
-              RAISE EXCEPTION NEW zcx_wasm( text = |parse_element: expected end| ).
-            ENDIF.
-          ENDDO.
-        WHEN OTHERS.
-          RAISE EXCEPTION NEW zcx_wasm( text = |elementtype: { lv_type }| ).
-      ENDCASE.
-
     ENDDO.
 
   ENDMETHOD.
