@@ -29,7 +29,7 @@ CLASS zcl_wasm_loop IMPLEMENTATION.
     DATA(lv_block_type) = io_body->shift( 1 ).
     DATA(lo_parser) = NEW zcl_wasm_parser( ).
 
-    lo_parser->parse_instructions(
+    zcl_wasm_parser=>parse_instructions(
       EXPORTING
         io_body         = io_body
       IMPORTING

@@ -33,7 +33,7 @@ CLASS zcl_wasm_block IMPLEMENTATION.
 * encoded as a positive signed integer.
     DATA(lv_block_type) = io_body->shift( 1 ).
 
-    NEW zcl_wasm_parser( )->parse_instructions(
+    zcl_wasm_parser=>parse_instructions(
       EXPORTING
         io_body         = io_body
       IMPORTING
