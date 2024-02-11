@@ -51,14 +51,6 @@ CLASS zcl_wasm_parser DEFINITION
     CONSTANTS:
       gc_section_data_count TYPE x LENGTH 1 VALUE '0C' ##NO_TEXT.
 
-    METHODS parse_code
-      IMPORTING
-        !io_body          TYPE REF TO zcl_wasm_binary_stream
-      RETURNING
-        VALUE(rt_results) TYPE zcl_wasm_module=>ty_codes
-      RAISING
-        zcx_wasm.
-
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -121,7 +113,7 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
 * todo
           zcl_wasm_element_section=>parse( lo_body ).
         WHEN gc_section_code.
-          DATA(lt_codes) = parse_code( lo_body ).
+          DATA(lt_codes) = zcl_wasm_code_section=>parse( lo_body ).
         WHEN gc_section_data.
           zcl_wasm_data_section=>parse( lo_body ).
         WHEN gc_section_data_count.
@@ -136,43 +128,6 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
       it_codes     = lt_codes
       it_exports   = lt_exports
       it_functions = lt_functions ).
-
-  ENDMETHOD.
-
-  METHOD parse_code.
-
-* https://webassembly.github.io/spec/core/binary/modules.html#binary-codesec
-
-    DATA lt_locals TYPE zcl_wasm_module=>ty_locals.
-    DATA lt_instructions TYPE zif_wasm_instruction=>ty_list.
-
-    DO io_body->shift_u32( ) TIMES.
-
-      DATA(lv_code_size) = io_body->shift_u32( ).
-
-      DATA(lo_code) = NEW zcl_wasm_binary_stream( io_body->shift( lv_code_size ) ).
-
-      CLEAR lt_locals.
-      DATA(lv_locals_count) = lo_code->shift_u32( ).
-      DO lv_locals_count TIMES.
-        DATA(lv_count) = lo_code->shift_u32( ).
-        DATA(lv_locals_type) = lo_code->shift( 1 ).
-        APPEND VALUE #(
-          count = lv_count
-          type  = lv_locals_type ) TO lt_locals.
-      ENDDO.
-
-      CLEAR lt_instructions.
-
-      parse_instructions(
-        EXPORTING io_body         = lo_code
-        IMPORTING et_instructions = lt_instructions ).
-
-      APPEND VALUE #(
-        instructions = lt_instructions
-        locals       = lt_locals ) TO rt_results.
-
-    ENDDO.
 
   ENDMETHOD.
 
