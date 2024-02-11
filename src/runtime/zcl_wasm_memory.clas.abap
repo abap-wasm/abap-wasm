@@ -82,6 +82,10 @@ CLASS zcl_wasm_memory IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD linear_get.
+* https://rsms.me/wasm-intro#addressing-memory
+
+    DATA lv_byte TYPE x LENGTH 1.
+
     IF iv_length = 0 AND iv_offset = 0.
       rv_bytes = mv_linear.
       RETURN.
@@ -89,9 +93,20 @@ CLASS zcl_wasm_memory IMPLEMENTATION.
 
     IF iv_offset + iv_length > xstrlen( mv_linear ).
       RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: linear_get, out of bounds' ).
+    ELSEIF iv_length <= 0.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: linear_get, negative or zero length' ).
+    ELSEIF iv_offset < 0.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: linear_get, negative offset' ).
     ENDIF.
 
-    rv_bytes = mv_linear+iv_offset(iv_length).
+* return multiple bytes in endian order
+    DATA(lv_offset) = iv_offset.
+    DO iv_length TIMES.
+      lv_byte = mv_linear+iv_offset(1).
+      CONCATENATE lv_byte rv_bytes INTO rv_bytes IN BYTE MODE.
+      iv_offset = iv_offset + 1.
+    ENDDO.
+
   ENDMETHOD.
 
   METHOD local_get.
