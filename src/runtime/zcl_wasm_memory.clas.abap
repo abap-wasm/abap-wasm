@@ -4,6 +4,11 @@ CLASS zcl_wasm_memory DEFINITION
 
   PUBLIC SECTION.
 
+    CONSTANTS c_alignment_8bit TYPE int8 VALUE 0.
+    CONSTANTS c_alignment_16bit TYPE int8 VALUE 1.
+    CONSTANTS c_alignment_32bit TYPE int8 VALUE 2.
+    CONSTANTS c_alignment_64bit TYPE int8 VALUE 3.
+
 *********** STACK
     METHODS stack_push
       IMPORTING
@@ -98,7 +103,10 @@ CLASS zcl_wasm_memory IMPLEMENTATION.
     DATA(lv_i) = xstrlen( mv_linear ).
 
     IF lv_i < iv_offset.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: linear_get, out of bounds' ).
+* it allocates 64k bytes pages at a time?
+* hmm,      RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: linear_get, out of bounds' ).
+      rv_bytes = '00'.
+      RETURN.
     ELSEIF iv_length <= 0.
       RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: linear_get, negative or zero length' ).
     ELSEIF iv_offset < 0.

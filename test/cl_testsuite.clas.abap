@@ -137,35 +137,41 @@ CLASS cl_testsuite IMPLEMENTATION.
         READ TABLE lt_result INDEX lv_index INTO DATA(li_result).
         ASSERT sy-subrc = 0.
 
-        CASE ls_expected-type.
-          WHEN 'i32'.
-            DATA(lv_expected) = CONV int8( ls_expected-value ).
-            DATA(lv_result)   = CAST zcl_wasm_i32( li_result )->get_unsigned( ).
-            IF lv_expected <> lv_result.
-              lv_error = abap_true.
-              go_result->add_error( |error, wrong result, expected { lv_expected }, got { lv_result }| ).
-              EXIT. " current loop
-            ENDIF.
-          WHEN 'i64'.
-            DATA(lv_str) = CAST zcl_wasm_i64( li_result )->get_unsigned( ).
-            IF ls_expected-value <> lv_str.
-              lv_error = abap_true.
-              go_result->add_error( |error, wrong result, expected { lv_expected }, got { lv_result }| ).
-              EXIT. " current loop
-            ENDIF.
-          WHEN 'f32'.
-            lv_expected = CONV int8( ls_expected-value ).
-            lv_result   = CAST zcl_wasm_f32( li_result )->get_unsigned_i32( ).
-            IF lv_expected <> lv_result.
-              lv_error = abap_true.
-              go_result->add_error( |error, wrong result, expected { lv_expected }, got { lv_result }| ).
-              EXIT. " current loop
-            ENDIF.
-          WHEN OTHERS.
+        TRY.
+            CASE ls_expected-type.
+              WHEN 'i32'.
+                DATA(lv_expected) = CONV int8( ls_expected-value ).
+                DATA(lv_result)   = CAST zcl_wasm_i32( li_result )->get_unsigned( ).
+                IF lv_expected <> lv_result.
+                  lv_error = abap_true.
+                  go_result->add_error( |error, wrong result, expected { lv_expected }, got { lv_result }| ).
+                  EXIT. " current loop
+                ENDIF.
+              WHEN 'i64'.
+                DATA(lv_str) = CAST zcl_wasm_i64( li_result )->get_unsigned( ).
+                IF ls_expected-value <> lv_str.
+                  lv_error = abap_true.
+                  go_result->add_error( |error, wrong result, expected { ls_expected-value }, got { lv_str }| ).
+                  EXIT. " current loop
+                ENDIF.
+              WHEN 'f32'.
+                lv_expected = CONV int8( ls_expected-value ).
+                lv_result   = CAST zcl_wasm_f32( li_result )->get_unsigned_i32( ).
+                IF lv_expected <> lv_result.
+                  lv_error = abap_true.
+                  go_result->add_error( |error, wrong result, expected { lv_expected }, got { lv_result }| ).
+                  EXIT. " current loop
+                ENDIF.
+              WHEN OTHERS.
+                lv_error = abap_true.
+                go_result->add_error( |unknown type, assert_return: { ls_expected-type }| ).
+                EXIT. " current loop
+            ENDCASE.
+          CATCH cx_sy_move_cast_error.
             lv_error = abap_true.
-            go_result->add_error( |unknown type, assert_return: { ls_expected-type }| ).
+            go_result->add_error( |assert_return, wrong type, casting failed| ).
             EXIT. " current loop
-        ENDCASE.
+        ENDTRY.
       ENDDO.
 
       IF lv_error = abap_false.
@@ -258,7 +264,11 @@ CLASS cl_testsuite IMPLEMENTATION.
               ASSERT 1 = 'todo'.
           ENDCASE.
         CATCH cx_root INTO lx_error.
-          go_result->add_error( |exception: { lx_error->get_text( ) }| ).
+          DATA(lv_text) = lx_error->get_text( ).
+          go_result->add_error( |exception: { lv_text }| ).
+          " IF lv_text = |An exception was raised.|.
+          "   WRITE / '@KERNEL console.dir(lx_error);'.
+          " ENDIF.
       ENDTRY.
     ENDLOOP.
 

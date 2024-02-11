@@ -157,8 +157,12 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
 
     ASSERT io_memory->stack_length( ) >= 2.
 
-    DATA(lo_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
-    DATA(lo_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
+    TRY.
+        DATA(lo_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
+        DATA(lo_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
+      CATCH cx_sy_move_cast_error.
+        RAISE EXCEPTION NEW zcx_wasm( text = 'i32 add, wrong types on stack' ).
+    ENDTRY.
 
     io_memory->stack_push( from_signed( lo_val1->get_signed( ) + lo_val2->get_signed( ) ) ).
 
@@ -228,8 +232,12 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
       RAISE EXCEPTION NEW zcx_wasm( text = 'lt_s, expected two variables on stack' ).
     ENDIF.
 
-    DATA(lo_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
-    DATA(lo_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
+    TRY.
+        DATA(lo_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
+        DATA(lo_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
+      CATCH cx_sy_move_cast_error.
+        RAISE EXCEPTION NEW zcx_wasm( text = 'lt_s, wrong types on stack' ).
+    ENDTRY.
 
     DATA(lv_result) = 0.
     IF lo_val1->get_signed( ) > lo_val2->get_signed( ).
