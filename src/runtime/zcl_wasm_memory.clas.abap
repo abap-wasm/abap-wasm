@@ -46,11 +46,27 @@ CLASS zcl_wasm_memory DEFINITION
 * todo
 
 *********** DEFAULT LINEAR
-* todo
+    METHODS linear_set
+      IMPORTING
+        iv_offset TYPE int8 OPTIONAL
+        iv_bytes  TYPE xstring
+      RAISING
+        zcx_wasm.
+
+    METHODS linear_get
+      IMPORTING
+        iv_length       TYPE int8 OPTIONAL
+        iv_offset       TYPE int8 OPTIONAL
+        iv_align        TYPE int8 OPTIONAL
+      RETURNING
+        VALUE(rv_bytes) TYPE xstring
+      RAISING
+        zcx_wasm.
 
   PROTECTED SECTION.
-    DATA mt_stack TYPE STANDARD TABLE OF REF TO zif_wasm_value WITH DEFAULT KEY.
+    DATA mt_stack  TYPE STANDARD TABLE OF REF TO zif_wasm_value WITH DEFAULT KEY.
     DATA mt_locals TYPE STANDARD TABLE OF REF TO zif_wasm_value WITH DEFAULT KEY.
+    DATA mv_linear TYPE xstring.
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -58,6 +74,51 @@ ENDCLASS.
 
 CLASS zcl_wasm_memory IMPLEMENTATION.
 
+  METHOD linear_set.
+    IF iv_offset <> 0.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: linear_set, offset todo' ).
+    ENDIF.
+
+    mv_linear = iv_bytes.
+  ENDMETHOD.
+
+  METHOD linear_get.
+* https://rsms.me/wasm-intro#addressing-memory
+
+* alignment values:
+* 0 = 8-bit, 1 = 16-bit, 2 = 32-bit, and 3 = 64-bit
+
+    DATA lv_byte TYPE x LENGTH 1.
+
+    IF iv_length = 0 AND iv_offset = 0.
+      rv_bytes = mv_linear.
+      RETURN.
+    ENDIF.
+
+    DATA(lv_i) = xstrlen( mv_linear ).
+
+    IF lv_i < iv_offset.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: linear_get, out of bounds' ).
+    ELSEIF iv_length <= 0.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: linear_get, negative or zero length' ).
+    ELSEIF iv_offset < 0.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: linear_get, negative offset' ).
+    ENDIF.
+
+* return multiple bytes in endian order
+    DATA(lv_offset) = iv_offset.
+    DO iv_length TIMES.
+      IF lv_offset < lv_i.
+        lv_byte = mv_linear+lv_offset(1).
+      ELSE.
+        lv_byte = '00'.
+      ENDIF.
+
+      CONCATENATE lv_byte rv_bytes INTO rv_bytes IN BYTE MODE.
+      lv_offset = lv_offset + 1.
+    ENDDO.
+
+  ENDMETHOD.
 
   METHOD local_get.
 
