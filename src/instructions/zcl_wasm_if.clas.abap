@@ -30,7 +30,7 @@ CLASS zcl_wasm_if IMPLEMENTATION.
 
     DATA(lv_block_type) = io_body->shift( 1 ).
 
-    zcl_wasm_parser=>parse_instructions(
+    zcl_wasm_instructions=>parse(
       EXPORTING
         io_body         = io_body
       IMPORTING
@@ -38,7 +38,7 @@ CLASS zcl_wasm_if IMPLEMENTATION.
         et_instructions = DATA(lt_in1) ).
 
     IF lv_last_opcode = zif_wasm_opcodes=>c_opcodes-else_.
-      zcl_wasm_parser=>parse_instructions(
+      zcl_wasm_instructions=>parse(
         EXPORTING
           io_body         = io_body
         IMPORTING

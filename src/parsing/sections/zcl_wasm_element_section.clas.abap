@@ -18,7 +18,7 @@ CLASS zcl_wasm_element_section IMPLEMENTATION.
 
       CASE lv_type.
         WHEN 0.
-          zcl_wasm_parser=>parse_instructions(
+          zcl_wasm_instructions=>parse(
             EXPORTING
               io_body         = io_body
             IMPORTING
@@ -42,7 +42,7 @@ CLASS zcl_wasm_element_section IMPLEMENTATION.
         WHEN 2.
           DATA(lv_tableidx) = io_body->shift_u32( ).
 
-          zcl_wasm_parser=>parse_instructions(
+          zcl_wasm_instructions=>parse(
             EXPORTING
               io_body         = io_body
             IMPORTING
@@ -65,7 +65,7 @@ CLASS zcl_wasm_element_section IMPLEMENTATION.
             lv_funcidx = io_body->shift_u32( ).
           ENDDO.
         WHEN 4.
-          zcl_wasm_parser=>parse_instructions(
+          zcl_wasm_instructions=>parse(
             EXPORTING
               io_body         = io_body
             IMPORTING
@@ -76,7 +76,7 @@ CLASS zcl_wasm_element_section IMPLEMENTATION.
           ENDIF.
 
           DO io_body->shift_u32( ) TIMES.
-            zcl_wasm_parser=>parse_instructions(
+            zcl_wasm_instructions=>parse(
               EXPORTING
                 io_body         = io_body
               IMPORTING
@@ -90,7 +90,7 @@ CLASS zcl_wasm_element_section IMPLEMENTATION.
           DATA(lv_reftype) = io_body->shift( 1 ).
 
           DO io_body->shift_u32( ) TIMES.
-            zcl_wasm_parser=>parse_instructions(
+            zcl_wasm_instructions=>parse(
               EXPORTING
                 io_body         = io_body
               IMPORTING
@@ -103,7 +103,7 @@ CLASS zcl_wasm_element_section IMPLEMENTATION.
         WHEN 6.
           lv_tableidx = io_body->shift_u32( ).
 
-          zcl_wasm_parser=>parse_instructions(
+          zcl_wasm_instructions=>parse(
             EXPORTING
               io_body         = io_body
             IMPORTING
@@ -116,7 +116,7 @@ CLASS zcl_wasm_element_section IMPLEMENTATION.
           lv_reftype = io_body->shift( 1 ).
 
           DO io_body->shift_u32( ) TIMES.
-            zcl_wasm_parser=>parse_instructions(
+            zcl_wasm_instructions=>parse(
               EXPORTING
                 io_body         = io_body
               IMPORTING
@@ -130,7 +130,7 @@ CLASS zcl_wasm_element_section IMPLEMENTATION.
           lv_reftype = io_body->shift( 1 ).
 
           DO io_body->shift_u32( ) TIMES.
-            zcl_wasm_parser=>parse_instructions(
+            zcl_wasm_instructions=>parse(
               EXPORTING
                 io_body         = io_body
               IMPORTING

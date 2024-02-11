@@ -20,7 +20,7 @@ CLASS zcl_wasm_global_section IMPLEMENTATION.
       " WRITE: / 'type:', lv_type.
       " WRITE: / 'mut:', lv_mut.
 
-      zcl_wasm_parser=>parse_instructions(
+      zcl_wasm_instructions=>parse(
         EXPORTING
           io_body         = io_body
         IMPORTING

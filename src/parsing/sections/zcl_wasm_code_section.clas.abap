@@ -37,7 +37,7 @@ CLASS zcl_wasm_code_section IMPLEMENTATION.
 
       CLEAR lt_instructions.
 
-      zcl_wasm_parser=>parse_instructions(
+      zcl_wasm_instructions=>parse(
         EXPORTING io_body         = lo_code
         IMPORTING et_instructions = lt_instructions ).
 

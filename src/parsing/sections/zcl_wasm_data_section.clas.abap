@@ -18,7 +18,7 @@ CLASS zcl_wasm_data_section IMPLEMENTATION.
 
       CASE lv_type.
         WHEN 0.
-          zcl_wasm_parser=>parse_instructions(
+          zcl_wasm_instructions=>parse(
             EXPORTING
               io_body         = io_body
             IMPORTING
@@ -34,7 +34,7 @@ CLASS zcl_wasm_data_section IMPLEMENTATION.
         WHEN 2.
           DATA(lv_memidx) = io_body->shift_u32( ).
 
-          zcl_wasm_parser=>parse_instructions(
+          zcl_wasm_instructions=>parse(
             EXPORTING
               io_body         = io_body
             IMPORTING
