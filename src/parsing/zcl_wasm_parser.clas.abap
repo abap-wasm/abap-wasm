@@ -20,7 +20,6 @@ ENDCLASS.
 
 CLASS zcl_wasm_parser IMPLEMENTATION.
 
-
   METHOD parse.
 
     CONSTANTS lc_magic   TYPE x LENGTH 4 VALUE '0061736D'.
@@ -77,7 +76,7 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
         WHEN zif_wasm_sections=>gc_section_code.
           DATA(lt_codes) = zcl_wasm_code_section=>parse( lo_body ).
         WHEN zif_wasm_sections=>gc_section_data.
-          zcl_wasm_data_section=>parse( lo_body ).
+          DATA(lo_data_section) = zcl_wasm_data_section=>parse( lo_body ).
         WHEN zif_wasm_sections=>gc_section_data_count.
           DATA(lv_data_count) = lo_body->shift_u32( ).
         WHEN OTHERS.
@@ -86,10 +85,11 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
     ENDWHILE.
 
     ro_module = NEW #(
-      it_types     = lt_types
-      it_codes     = lt_codes
-      it_exports   = lt_exports
-      it_functions = lt_functions ).
+      it_types        = lt_types
+      it_codes        = lt_codes
+      it_exports      = lt_exports
+      io_data_section = lo_data_section
+      it_functions    = lt_functions ).
 
   ENDMETHOD.
 

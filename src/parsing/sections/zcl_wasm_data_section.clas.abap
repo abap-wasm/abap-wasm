@@ -2,9 +2,16 @@ CLASS zcl_wasm_data_section DEFINITION PUBLIC.
   PUBLIC SECTION.
     CLASS-METHODS parse
       IMPORTING
-        !io_body          TYPE REF TO zcl_wasm_binary_stream
+        !io_body       TYPE REF TO zcl_wasm_binary_stream
+      RETURNING
+        VALUE(ro_data) TYPE REF TO zcl_wasm_data_section
       RAISING
         zcx_wasm.
+
+    METHODS instantiate
+      IMPORTING
+        io_memory TYPE REF TO zcl_wasm_memory.
+  PRIVATE SECTION.
 ENDCLASS.
 
 CLASS zcl_wasm_data_section IMPLEMENTATION.
@@ -12,6 +19,8 @@ CLASS zcl_wasm_data_section IMPLEMENTATION.
   METHOD parse.
 
 * https://webassembly.github.io/spec/core/binary/modules.html#binary-datasec
+
+    ro_data = NEW zcl_wasm_data_section( ).
 
     DO io_body->shift_u32( ) TIMES.
       DATA(lv_type) = io_body->shift_u32( ).
@@ -49,6 +58,16 @@ CLASS zcl_wasm_data_section IMPLEMENTATION.
       ENDCASE.
 
     ENDDO.
+
+  ENDMETHOD.
+
+  METHOD instantiate.
+
+* https://webassembly.github.io/spec/core/syntax/modules.html#syntax-data
+* An active data segment copies its contents into a memory during instantiation
+* In the current version of WebAssembly, at most one memory is allowed in a module.
+
+* todo
 
   ENDMETHOD.
 

@@ -39,10 +39,11 @@ CLASS zcl_wasm_module DEFINITION
 
     METHODS constructor
       IMPORTING
-        !it_types     TYPE ty_types OPTIONAL
-        !it_codes     TYPE ty_codes OPTIONAL
-        !it_exports   TYPE ty_exports OPTIONAL
-        !it_functions TYPE ty_functions OPTIONAL .
+        !it_types       TYPE ty_types OPTIONAL
+        !it_codes       TYPE ty_codes OPTIONAL
+        !it_exports     TYPE ty_exports OPTIONAL
+        io_data_section TYPE REF TO zcl_wasm_data_section
+        !it_functions   TYPE ty_functions OPTIONAL .
     METHODS get_types
       RETURNING
         VALUE(rt_result) TYPE ty_types .
@@ -55,6 +56,9 @@ CLASS zcl_wasm_module DEFINITION
     METHODS get_functions
       RETURNING
         VALUE(rt_result) TYPE ty_functions .
+    METHODS get_data_section
+      RETURNING
+        VALUE(ro_data_section) TYPE REF TO zcl_wasm_data_section.
     METHODS get_code_by_index
       IMPORTING
         !iv_index      TYPE int8
@@ -90,25 +94,34 @@ CLASS zcl_wasm_module DEFINITION
     DATA mt_codes TYPE ty_codes .
     DATA mt_exports TYPE ty_exports .
     DATA mt_functions TYPE ty_functions .
+    DATA mo_data_section TYPE REF TO zcl_wasm_data_section.
 ENDCLASS.
 
 
 
 CLASS zcl_wasm_module IMPLEMENTATION.
 
-
   METHOD constructor.
-    mt_types    = it_types.
-    mt_codes     = it_codes.
-    mt_exports   = it_exports.
-    mt_functions = it_functions.
+    mt_types        = it_types.
+    mt_codes        = it_codes.
+    mt_exports      = it_exports.
+    mt_functions    = it_functions.
+
+    IF io_data_section IS INITIAL.
+* none specified, create the empty data section,
+      mo_data_section = NEW #( ).
+    ELSE.
+      mo_data_section = io_data_section.
+    ENDIF.
   ENDMETHOD.
 
+  METHOD get_data_section.
+    ro_data_section = mo_data_section.
+  ENDMETHOD.
 
   METHOD get_codes.
     rt_result = mt_codes.
   ENDMETHOD.
-
 
   METHOD get_code_by_index.
 
