@@ -90,12 +90,6 @@ CLASS zcl_wasm_parser DEFINITION
       RAISING
         zcx_wasm.
 
-    METHODS parse_memory
-      IMPORTING
-        !io_body          TYPE REF TO zcl_wasm_binary_stream
-      RAISING
-        zcx_wasm.
-
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -144,7 +138,7 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
           parse_table( lo_body ).
         WHEN gc_section_memory.
 * todo
-          parse_memory( lo_body ).
+          zcl_wasm_memory_section=>parse( lo_body ).
         WHEN gc_section_global.
 * todo
           parse_global( lo_body ).
@@ -646,33 +640,6 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
 
   ENDMETHOD.
 
-
-  METHOD parse_memory.
-
-* https://webassembly.github.io/spec/core/binary/modules.html#binary-memsec
-
-    DATA(lv_count) = io_body->shift_u32( ).
-    " WRITE: / 'memories:', lv_count.
-
-    DO lv_count TIMES.
-      DATA(lv_limit) = io_body->shift( 1 ).
-
-      CASE lv_limit.
-        WHEN '00'.
-          DATA(lv_min) = io_body->shift_u32( ).
-          DATA(lv_max) = 0.
-        WHEN '01'.
-          lv_min = io_body->shift_u32( ).
-          lv_max = io_body->shift_u32( ).
-        WHEN OTHERS.
-          RAISE EXCEPTION NEW zcx_wasm( text = |parse_memory: todo| ).
-      ENDCASE.
-
-* todo
-
-    ENDDO.
-
-  ENDMETHOD.
 
   METHOD parse_data.
 
