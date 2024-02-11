@@ -151,7 +151,7 @@ CLASS cl_testsuite IMPLEMENTATION.
                 DATA(lv_str) = CAST zcl_wasm_i64( li_result )->get_unsigned( ).
                 IF ls_expected-value <> lv_str.
                   lv_error = abap_true.
-                  go_result->add_error( |error, wrong result, expected { lv_expected }, got { lv_result }| ).
+                  go_result->add_error( |error, wrong result, expected { ls_expected-value }, got { lv_str }| ).
                   EXIT. " current loop
                 ENDIF.
               WHEN 'f32'.
