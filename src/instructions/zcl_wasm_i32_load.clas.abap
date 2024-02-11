@@ -30,7 +30,17 @@ CLASS zcl_wasm_i32_load IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_i32_load' ).
+    CONSTANTS lc_length TYPE int8 VALUE 4.
+    DATA lv_hex TYPE x LENGTH lc_length.
+    DATA lv_int TYPE i.
+
+    lv_hex = io_memory->linear_get(
+      iv_length = lc_length
+      iv_align  = mv_align
+      iv_offset = mv_offset ).
+
+    lv_int = lv_hex.
+    io_memory->stack_push( zcl_wasm_i32=>from_signed( lv_int ) ).
   ENDMETHOD.
 
 ENDCLASS.
