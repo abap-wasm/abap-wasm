@@ -15,7 +15,7 @@ CLASS zcl_wasm_i32_gt_s IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_i32_gt_s' ).
+    zcl_wasm_i32=>gt_s( io_memory ).
   ENDMETHOD.
 
 ENDCLASS.
