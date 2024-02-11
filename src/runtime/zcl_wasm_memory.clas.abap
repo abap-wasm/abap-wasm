@@ -48,13 +48,15 @@ CLASS zcl_wasm_memory DEFINITION
 *********** DEFAULT LINEAR
     METHODS linear_set
       IMPORTING
-        iv_offset TYPE int8
-        iv_bytes  TYPE xstring.
+        iv_offset TYPE int8 OPTIONAL
+        iv_bytes  TYPE xstring
+      RAISING
+        zcx_wasm.
 
     METHODS linear_get
       IMPORTING
-        iv_length TYPE int8
-        iv_offset TYPE int8
+        iv_length TYPE int8 OPTIONAL
+        iv_offset TYPE int8 OPTIONAL
       RETURNING
         VALUE(rv_bytes) TYPE xstring
       RAISING
@@ -72,10 +74,19 @@ ENDCLASS.
 CLASS zcl_wasm_memory IMPLEMENTATION.
 
   METHOD linear_set.
+    IF iv_offset <> 0.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: linear_set, offset todo' ).
+    ENDIF.
+
     mv_linear = iv_bytes.
   ENDMETHOD.
 
   METHOD linear_get.
+    IF iv_length = 0 AND iv_offset = 0.
+      rv_bytes = mv_linear.
+      RETURN.
+    ENDIF.
+
     IF iv_offset + iv_length > xstrlen( mv_linear ).
       RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: linear_get, out of bounds' ).
     ENDIF.

@@ -10,7 +10,10 @@ CLASS zcl_wasm_data_section DEFINITION PUBLIC.
 
     METHODS instantiate
       IMPORTING
-        io_memory TYPE REF TO zcl_wasm_memory.
+        io_memory TYPE REF TO zcl_wasm_memory
+      RAISING
+        zcx_wasm.
+
   PRIVATE SECTION.
     TYPES: BEGIN OF ty_active,
               memidx       TYPE i,
