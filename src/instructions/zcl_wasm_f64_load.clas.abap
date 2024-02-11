@@ -5,7 +5,9 @@ CLASS zcl_wasm_f64_load DEFINITION PUBLIC.
     METHODS constructor
       IMPORTING
         iv_align  TYPE int8
-        iv_offset TYPE int8.
+        iv_offset TYPE int8
+      RAISING
+        zcx_wasm.
 
     CLASS-METHODS parse
       IMPORTING !io_body TYPE REF TO zcl_wasm_binary_stream
@@ -19,6 +21,10 @@ ENDCLASS.
 CLASS zcl_wasm_f64_load IMPLEMENTATION.
 
   METHOD constructor.
+    IF iv_align > zcl_wasm_memory=>c_alignment_64bit.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'alignment must not be larger than natural' ).
+    ENDIF.
+
     mv_align  = iv_align.
     mv_offset = iv_offset.
   ENDMETHOD.
