@@ -21,7 +21,7 @@ ENDCLASS.
 CLASS zcl_wasm_i32_load8_u IMPLEMENTATION.
 
   METHOD constructor.
-    IF iv_align > 0.
+    IF iv_align > zcl_wasm_memory=>c_alignment_8bit.
       RAISE EXCEPTION NEW zcx_wasm( text = 'alignment must not be larger than natural' ).
     ENDIF.
 
