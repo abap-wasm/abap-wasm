@@ -95,7 +95,7 @@ CLASS zcl_wasm_memory IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    IF iv_offset + iv_length > xstrlen( mv_linear ).
+    IF xstrlen( mv_linear ) < iv_offset.
       RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: linear_get, out of bounds' ).
     ELSEIF iv_length <= 0.
       RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: linear_get, negative or zero length' ).
@@ -105,8 +105,14 @@ CLASS zcl_wasm_memory IMPLEMENTATION.
 
 * return multiple bytes in endian order
     DATA(lv_offset) = iv_offset.
+    DATA(lv_i) = xstrlen( mv_linear ).
     DO iv_length TIMES.
-      lv_byte = mv_linear+iv_offset(1).
+      IF lv_offset <= lv_i.
+        lv_byte = mv_linear+iv_offset(1).
+      ELSE.
+        lv_byte = '00'.
+      ENDIF.
+
       CONCATENATE lv_byte rv_bytes INTO rv_bytes IN BYTE MODE.
       iv_offset = iv_offset + 1.
     ENDDO.
