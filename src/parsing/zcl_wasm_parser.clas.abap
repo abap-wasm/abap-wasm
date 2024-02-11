@@ -96,19 +96,6 @@ CLASS zcl_wasm_parser DEFINITION
       RAISING
         zcx_wasm.
 
-    METHODS parse_start
-      IMPORTING
-        !io_body          TYPE REF TO zcl_wasm_binary_stream
-      RAISING
-        zcx_wasm.
-
-    METHODS parse_export
-      IMPORTING
-        !io_body          TYPE REF TO zcl_wasm_binary_stream
-      RETURNING
-        VALUE(rt_results) TYPE zcl_wasm_module=>ty_exports
-      RAISING
-        zcx_wasm.
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -162,10 +149,11 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
 * todo
           parse_global( lo_body ).
         WHEN gc_section_export.
-          DATA(lt_exports) = parse_export( lo_body ).
+          DATA(lt_exports) = zcl_wasm_export_section=>parse( lo_body ).
         WHEN gc_section_start.
+* https://webassembly.github.io/spec/core/binary/modules.html#start-section
 * todo
-          parse_start( lo_body ).
+          DATA(lv_funcidx) = lo_body->shift_u32( ).
         WHEN gc_section_element.
 * todo
           parse_element( lo_body ).
@@ -185,14 +173,6 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
       it_codes     = lt_codes
       it_exports   = lt_exports
       it_functions = lt_functions ).
-
-  ENDMETHOD.
-
-  METHOD parse_start.
-
-* https://webassembly.github.io/spec/core/binary/modules.html#start-section
-
-    DATA(lv_funcidx) = io_body->shift_u32( ).
 
   ENDMETHOD.
 
@@ -652,31 +632,6 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
           RAISE EXCEPTION NEW zcx_wasm( text = |todoparser: { lv_opcode }| ).
       ENDCASE.
     ENDWHILE.
-
-  ENDMETHOD.
-
-
-  METHOD parse_export.
-
-* https://webassembly.github.io/spec/core/binary/modules.html#binary-exportsec
-
-    DATA ls_result TYPE zcl_wasm_module=>ty_export.
-
-    DATA(lv_count) = io_body->shift_u32( ).
-
-    DO lv_count TIMES.
-      ls_result-name = io_body->shift_utf8( ).
-      ls_result-type = io_body->shift( 1 ).
-
-      ASSERT ls_result-type = zcl_wasm_types=>c_export_type-func
-        OR ls_result-type = zcl_wasm_types=>c_export_type-table
-        OR ls_result-type = zcl_wasm_types=>c_export_type-mem
-        OR ls_result-type = zcl_wasm_types=>c_export_type-global.
-
-      ls_result-index = io_body->shift_u32( ).
-
-      APPEND ls_result TO rt_results.
-    ENDDO.
 
   ENDMETHOD.
 
