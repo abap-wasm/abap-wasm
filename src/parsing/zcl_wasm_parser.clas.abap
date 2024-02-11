@@ -58,14 +58,6 @@ CLASS zcl_wasm_parser DEFINITION
       RAISING
         zcx_wasm.
 
-    METHODS parse_type
-      IMPORTING
-        !io_body          TYPE REF TO zcl_wasm_binary_stream
-      RETURNING
-        VALUE(rt_results) TYPE zcl_wasm_module=>ty_types
-      RAISING
-        zcx_wasm.
-
     METHODS parse_function
       IMPORTING
         !io_body          TYPE REF TO zcl_wasm_binary_stream
@@ -160,7 +152,7 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
 * "ignored by the WebAssembly semantics"
           CONTINUE.
         WHEN gc_section_type.
-          DATA(lt_types) = parse_type( lo_body ).
+          DATA(lt_types) = zcl_wasm_type_section=>parse( lo_body ).
         WHEN gc_section_import.
 * todo
           parse_import( lo_body ).
@@ -756,23 +748,6 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
 
   ENDMETHOD.
 
-
-  METHOD parse_type.
-
-* https://webassembly.github.io/spec/core/binary/modules.html#type-section
-
-    DO io_body->shift_u32( ) TIMES.
-      IF io_body->shift( 1 ) <> zcl_wasm_types=>c_function_type.
-        RAISE EXCEPTION NEW zcx_wasm( text = |parse_type, expected function type| ).
-      ENDIF.
-
-      APPEND VALUE #(
-        parameter_types = io_body->shift( io_body->shift_u32( ) )
-        result_types    = io_body->shift( io_body->shift_u32( ) )
-        ) TO rt_results.
-    ENDDO.
-
-  ENDMETHOD.
 
   METHOD parse_memory.
 
