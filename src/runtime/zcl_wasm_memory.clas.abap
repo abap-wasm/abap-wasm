@@ -107,14 +107,14 @@ CLASS zcl_wasm_memory IMPLEMENTATION.
     DATA(lv_offset) = iv_offset.
     DATA(lv_i) = xstrlen( mv_linear ).
     DO iv_length TIMES.
-      IF lv_offset <= lv_i.
-        lv_byte = mv_linear+iv_offset(1).
+      IF lv_offset < lv_i.
+        lv_byte = mv_linear+lv_offset(1).
       ELSE.
         lv_byte = '00'.
       ENDIF.
 
       CONCATENATE lv_byte rv_bytes INTO rv_bytes IN BYTE MODE.
-      iv_offset = iv_offset + 1.
+      lv_offset = lv_offset + 1.
     ENDDO.
 
   ENDMETHOD.
