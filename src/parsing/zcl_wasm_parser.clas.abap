@@ -59,14 +59,6 @@ CLASS zcl_wasm_parser DEFINITION
       RAISING
         zcx_wasm.
 
-    METHODS parse_function
-      IMPORTING
-        !io_body          TYPE REF TO zcl_wasm_binary_stream
-      RETURNING
-        VALUE(rt_results) TYPE zcl_wasm_module=>ty_functions
-      RAISING
-        zcx_wasm.
-
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -109,7 +101,7 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
 * todo
           zcl_wasm_import_section=>parse( lo_body ).
         WHEN gc_section_function.
-          DATA(lt_functions) = parse_function( lo_body ).
+          DATA(lt_functions) = zcl_wasm_function_section=>parse( lo_body ).
         WHEN gc_section_table.
 * todo
           zcl_wasm_table_section=>parse( lo_body ).
@@ -603,17 +595,6 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
           RAISE EXCEPTION NEW zcx_wasm( text = |todoparser: { lv_opcode }| ).
       ENDCASE.
     ENDWHILE.
-
-  ENDMETHOD.
-
-
-  METHOD parse_function.
-
-* https://webassembly.github.io/spec/core/binary/modules.html#binary-funcsec
-
-    DO io_body->shift_u32( ) TIMES.
-      APPEND io_body->shift_u32( ) TO rt_results.
-    ENDDO.
 
   ENDMETHOD.
 
