@@ -24,14 +24,26 @@ CLASS zcl_wasm_i32_load8_s IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD parse.
-* todo: singletons?
     ri_instruction = NEW zcl_wasm_i32_load8_s(
       iv_align  = io_body->shift_u32( )
       iv_offset = io_body->shift_u32( ) ).
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_i32_load8_s' ).
+    DATA lv_hex TYPE x LENGTH 1.
+    DATA lv_int TYPE i.
+
+    IF mv_align <> 0.
+      RAISE EXCEPTION NEW zcx_wasm( text = |zcl_wasm_i32_load8_s, todo align <> 0| ).
+    ENDIF.
+
+* todo: not sure how load8_s is different from load8_u
+    lv_hex = io_memory->linear_get(
+      iv_length = 1
+      iv_offset = mv_offset ).
+
+    lv_int = lv_hex.
+    io_memory->stack_push( zcl_wasm_i32=>from_signed( lv_int ) ).
   ENDMETHOD.
 
 ENDCLASS.
