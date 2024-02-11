@@ -67,12 +67,6 @@ CLASS zcl_wasm_parser DEFINITION
       RAISING
         zcx_wasm.
 
-    METHODS parse_global
-      IMPORTING
-        !io_body          TYPE REF TO zcl_wasm_binary_stream
-      RAISING
-        zcx_wasm.
-
     METHODS parse_element
       IMPORTING
         !io_body          TYPE REF TO zcl_wasm_binary_stream
@@ -130,7 +124,7 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
           zcl_wasm_memory_section=>parse( lo_body ).
         WHEN gc_section_global.
 * todo
-          parse_global( lo_body ).
+          zcl_wasm_global_section=>parse( lo_body ).
         WHEN gc_section_export.
           DATA(lt_exports) = zcl_wasm_export_section=>parse( lo_body ).
         WHEN gc_section_start.
@@ -629,30 +623,6 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
 
   ENDMETHOD.
 
-
-  METHOD parse_global.
-
-* https://webassembly.github.io/spec/core/binary/modules.html#binary-globalsec
-
-    DO io_body->shift_u32( ) TIMES.
-      DATA(lv_type) = io_body->shift( 1 ).
-      DATA(lv_mut) = io_body->shift( 1 ).
-
-      " WRITE: / 'type:', lv_type.
-      " WRITE: / 'mut:', lv_mut.
-
-      parse_instructions(
-        EXPORTING
-          io_body         = io_body
-        IMPORTING
-          ev_last_opcode  = DATA(lv_last_opcode)
-          et_instructions = DATA(lt_instructions) ).
-      IF lv_last_opcode <> zif_wasm_opcodes=>c_opcodes-end.
-        RAISE EXCEPTION NEW zcx_wasm( text = |parse_global, expected end| ).
-      ENDIF.
-    ENDDO.
-
-  ENDMETHOD.
 
   METHOD parse_element.
 
