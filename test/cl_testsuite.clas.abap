@@ -3,6 +3,7 @@ CLASS cl_testsuite DEFINITION PUBLIC CREATE PUBLIC.
     CLASS-METHODS run
       RETURNING
         VALUE(ro_html) TYPE REF TO cl_result.
+
   PRIVATE SECTION.
     TYPES: BEGIN OF ty_file,
              filename TYPE string,

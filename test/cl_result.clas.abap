@@ -12,15 +12,15 @@ CLASS cl_result DEFINITION PUBLIC.
 
     METHODS add_success
       IMPORTING
-        iv_success TYPE string.
+        iv_text TYPE string.
 
     METHODS add_warning
       IMPORTING
-        iv_warning TYPE string.
+        iv_text TYPE string.
 
     METHODS add_error
       IMPORTING
-        iv_error TYPE string.
+        iv_text TYPE string.
 
     METHODS add_command
       IMPORTING
@@ -118,17 +118,17 @@ CLASS cl_result IMPLEMENTATION.
 
   METHOD add_warning.
     mv_warnings = mv_warnings + 1.
-    mv_html = mv_html && '<p style="background-color: yellow">' && iv_warning && |</p>\n|.
+    mv_html = mv_html && '<p style="background-color: yellow">' && iv_text && |</p>\n|.
   ENDMETHOD.
 
   METHOD add_success.
     mv_success = mv_success + 1.
-    mv_html = mv_html && '<p style="background-color: green">' && iv_success && |</p>\n|.
+    mv_html = mv_html && '<p style="background-color: green">' && iv_text && |</p>\n|.
   ENDMETHOD.
 
   METHOD add_error.
     mv_errors = mv_errors + 1.
-    mv_html = mv_html && '<p style="background-color: red">' && iv_error && |</p>\n|.
+    mv_html = mv_html && '<p style="background-color: red">' && iv_text && |</p>\n|.
   ENDMETHOD.
 
 ENDCLASS.
