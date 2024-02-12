@@ -145,7 +145,7 @@ CLASS zcl_wasm_module IMPLEMENTATION.
 
     READ TABLE mt_exports WITH KEY name = iv_name INTO rs_export.
     IF sy-subrc <> 0.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'get_export_by_name: not found' ).
+      RAISE EXCEPTION NEW zcx_wasm( text = |get_export_by_name, not found: { iv_name }| ).
     ENDIF.
 
   ENDMETHOD.

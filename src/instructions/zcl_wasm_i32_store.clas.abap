@@ -11,7 +11,8 @@ CLASS zcl_wasm_i32_store DEFINITION PUBLIC.
 
     CLASS-METHODS parse
       IMPORTING !io_body TYPE REF TO zcl_wasm_binary_stream
-      RETURNING VALUE(ri_instruction) TYPE REF TO zif_wasm_instruction.
+      RETURNING VALUE(ri_instruction) TYPE REF TO zif_wasm_instruction
+      RAISING zcx_wasm.
 
   PRIVATE SECTION.
     DATA mv_align TYPE int8.
@@ -30,7 +31,6 @@ CLASS zcl_wasm_i32_store IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD parse.
-* todo: singletons?
     ri_instruction = NEW zcl_wasm_i32_store(
       iv_align  = io_body->shift_u32( )
       iv_offset = io_body->shift_u32( ) ).
