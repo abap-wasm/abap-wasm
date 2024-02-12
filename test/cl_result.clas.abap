@@ -123,7 +123,10 @@ CLASS cl_result IMPLEMENTATION.
     DATA lv_end_time TYPE i.
     GET RUN TIME FIELD lv_end_time.
     IF iv_start_time IS SUPPLIED.
-      DATA(lv_runtime) = |, { lv_end_time - iv_start_time }ms|.
+      lv_end_time = lv_end_time - iv_start_time.
+      IF lv_end_time > 10.
+        DATA(lv_runtime) = |, { lv_end_time }ms|.
+      ENDIF.
     ENDIF.
     mv_warnings = mv_warnings + 1.
     mv_html = mv_html && '<p style="background-color: yellow">' && iv_text && lv_runtime && |</p>\n|.
@@ -133,7 +136,10 @@ CLASS cl_result IMPLEMENTATION.
     DATA lv_end_time TYPE i.
     GET RUN TIME FIELD lv_end_time.
     IF iv_start_time IS SUPPLIED.
-      DATA(lv_runtime) = |, { lv_end_time - iv_start_time }ms|.
+      lv_end_time = lv_end_time - iv_start_time.
+      IF lv_end_time > 10.
+        DATA(lv_runtime) = |, { lv_end_time }ms|.
+      ENDIF.
     ENDIF.
     mv_success = mv_success + 1.
     mv_html = mv_html && '<p style="background-color: green">' && iv_text && lv_runtime && |</p>\n|.
@@ -143,7 +149,10 @@ CLASS cl_result IMPLEMENTATION.
     DATA lv_end_time TYPE i.
     GET RUN TIME FIELD lv_end_time.
     IF iv_start_time IS SUPPLIED.
-      DATA(lv_runtime) = |, { lv_end_time - iv_start_time }ms|.
+      lv_end_time = lv_end_time - iv_start_time.
+      IF lv_end_time > 10.
+        DATA(lv_runtime) = |, { lv_end_time }ms|.
+      ENDIF.
     ENDIF.
     mv_errors = mv_errors + 1.
     mv_html = mv_html && '<p style="background-color: red">' && iv_text && lv_runtime && |</p>\n|.
