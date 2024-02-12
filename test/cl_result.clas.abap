@@ -38,8 +38,8 @@ CLASS cl_result DEFINITION PUBLIC.
 
   PRIVATE SECTION.
     DATA mv_html     TYPE string.
-    DATA mv_start    TYPE i.
-    DATA mv_end      TYPE i.
+    DATA mv_start    TYPE timestamp.
+    DATA mv_end      TYPE timestamp.
     DATA mv_errors   TYPE i.
     DATA mv_warnings TYPE i.
     DATA mv_success  TYPE i.
@@ -51,11 +51,11 @@ ENDCLASS.
 CLASS cl_result IMPLEMENTATION.
 
   METHOD constructor.
-    GET RUN TIME FIELD mv_start.
+    GET TIME STAMP FIELD mv_start.
   ENDMETHOD.
 
   METHOD end.
-    GET RUN TIME FIELD mv_end.
+    GET TIME STAMP FIELD mv_start.
   ENDMETHOD.
 
   METHOD render_json.
@@ -70,7 +70,10 @@ CLASS cl_result IMPLEMENTATION.
     ls_totals-errors = mv_errors.
     ls_totals-warnings = mv_warnings.
     ls_totals-successes = mv_success.
-    ls_totals-runtime = ( mv_end - mv_start ) / 1000.
+
+    ls_totals-runtime = cl_abap_tstmp=>subtract(
+      tstmp1 = mv_end
+      tstmp2 = mv_start ).
 
     rv_json = /ui2/cl_json=>serialize(
       pretty_name = /ui2/cl_json=>pretty_mode-low_case
