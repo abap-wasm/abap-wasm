@@ -55,7 +55,7 @@ CLASS cl_result IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD end.
-    GET TIME STAMP FIELD mv_start.
+    GET TIME STAMP FIELD mv_end.
   ENDMETHOD.
 
   METHOD render_json.
