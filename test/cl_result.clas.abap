@@ -12,15 +12,18 @@ CLASS cl_result DEFINITION PUBLIC.
 
     METHODS add_success
       IMPORTING
-        iv_text TYPE string.
+        iv_start_time TYPE i OPTIONAL
+        iv_text       TYPE string.
 
     METHODS add_warning
       IMPORTING
-        iv_text TYPE string.
+        iv_start_time TYPE i OPTIONAL
+        iv_text       TYPE string.
 
     METHODS add_error
       IMPORTING
-        iv_text TYPE string.
+        iv_start_time TYPE i OPTIONAL
+        iv_text       TYPE string.
 
     METHODS add_command
       IMPORTING
@@ -117,18 +120,33 @@ CLASS cl_result IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD add_warning.
+    DATA lv_end_time TYPE i.
+    GET RUN TIME FIELD lv_end_time.
+    IF iv_start_time IS SUPPLIED.
+      DATA(lv_runtime) = |,{ lv_end_time - iv_start_time }ms|.
+    ENDIF.
     mv_warnings = mv_warnings + 1.
-    mv_html = mv_html && '<p style="background-color: yellow">' && iv_text && |</p>\n|.
+    mv_html = mv_html && '<p style="background-color: yellow">' && iv_text && lv_runtime && |</p>\n|.
   ENDMETHOD.
 
   METHOD add_success.
+    DATA lv_end_time TYPE i.
+    GET RUN TIME FIELD lv_end_time.
+    IF iv_start_time IS SUPPLIED.
+      DATA(lv_runtime) = |,{ lv_end_time - iv_start_time }ms|.
+    ENDIF.
     mv_success = mv_success + 1.
-    mv_html = mv_html && '<p style="background-color: green">' && iv_text && |</p>\n|.
+    mv_html = mv_html && '<p style="background-color: green">' && iv_text && lv_runtime && |</p>\n|.
   ENDMETHOD.
 
   METHOD add_error.
+    DATA lv_end_time TYPE i.
+    GET RUN TIME FIELD lv_end_time.
+    IF iv_start_time IS SUPPLIED.
+      DATA(lv_runtime) = |,{ lv_end_time - iv_start_time }ms|.
+    ENDIF.
     mv_errors = mv_errors + 1.
-    mv_html = mv_html && '<p style="background-color: red">' && iv_text && |</p>\n|.
+    mv_html = mv_html && '<p style="background-color: red">' && iv_text && lv_runtime && |</p>\n|.
   ENDMETHOD.
 
 ENDCLASS.
