@@ -12,15 +12,18 @@ CLASS cl_result DEFINITION PUBLIC.
 
     METHODS add_success
       IMPORTING
-        iv_success TYPE string.
+        iv_start_time TYPE i OPTIONAL
+        iv_text       TYPE string.
 
     METHODS add_warning
       IMPORTING
-        iv_warning TYPE string.
+        iv_start_time TYPE i OPTIONAL
+        iv_text       TYPE string.
 
     METHODS add_error
       IMPORTING
-        iv_error TYPE string.
+        iv_start_time TYPE i OPTIONAL
+        iv_text       TYPE string.
 
     METHODS add_command
       IMPORTING
@@ -35,8 +38,8 @@ CLASS cl_result DEFINITION PUBLIC.
 
   PRIVATE SECTION.
     DATA mv_html     TYPE string.
-    DATA mv_start    TYPE i.
-    DATA mv_end      TYPE i.
+    DATA mv_start    TYPE timestamp.
+    DATA mv_end      TYPE timestamp.
     DATA mv_errors   TYPE i.
     DATA mv_warnings TYPE i.
     DATA mv_success  TYPE i.
@@ -48,11 +51,11 @@ ENDCLASS.
 CLASS cl_result IMPLEMENTATION.
 
   METHOD constructor.
-    GET RUN TIME FIELD mv_start.
+    GET TIME STAMP FIELD mv_start.
   ENDMETHOD.
 
   METHOD end.
-    GET RUN TIME FIELD mv_end.
+    GET TIME STAMP FIELD mv_end.
   ENDMETHOD.
 
   METHOD render_json.
@@ -67,7 +70,10 @@ CLASS cl_result IMPLEMENTATION.
     ls_totals-errors = mv_errors.
     ls_totals-warnings = mv_warnings.
     ls_totals-successes = mv_success.
-    ls_totals-runtime = ( mv_end - mv_start ) / 1000.
+
+    ls_totals-runtime = cl_abap_tstmp=>subtract(
+      tstmp1 = mv_end
+      tstmp2 = mv_start ).
 
     rv_json = /ui2/cl_json=>serialize(
       pretty_name = /ui2/cl_json=>pretty_mode-low_case
@@ -117,18 +123,42 @@ CLASS cl_result IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD add_warning.
+    DATA lv_end_time TYPE i.
+    GET RUN TIME FIELD lv_end_time.
+    IF iv_start_time IS SUPPLIED.
+      lv_end_time = lv_end_time - iv_start_time.
+      IF lv_end_time > 10.
+        DATA(lv_runtime) = |, { lv_end_time }ms|.
+      ENDIF.
+    ENDIF.
     mv_warnings = mv_warnings + 1.
-    mv_html = mv_html && '<p style="background-color: yellow">' && iv_warning && |</p>\n|.
+    mv_html = mv_html && '<p style="background-color: yellow">' && iv_text && lv_runtime && |</p>\n|.
   ENDMETHOD.
 
   METHOD add_success.
+    DATA lv_end_time TYPE i.
+    GET RUN TIME FIELD lv_end_time.
+    IF iv_start_time IS SUPPLIED.
+      lv_end_time = lv_end_time - iv_start_time.
+      IF lv_end_time > 10.
+        DATA(lv_runtime) = |, { lv_end_time }ms|.
+      ENDIF.
+    ENDIF.
     mv_success = mv_success + 1.
-    mv_html = mv_html && '<p style="background-color: green">' && iv_success && |</p>\n|.
+    mv_html = mv_html && '<p style="background-color: green">' && iv_text && lv_runtime && |</p>\n|.
   ENDMETHOD.
 
   METHOD add_error.
+    DATA lv_end_time TYPE i.
+    GET RUN TIME FIELD lv_end_time.
+    IF iv_start_time IS SUPPLIED.
+      lv_end_time = lv_end_time - iv_start_time.
+      IF lv_end_time > 10.
+        DATA(lv_runtime) = |, { lv_end_time }ms|.
+      ENDIF.
+    ENDIF.
     mv_errors = mv_errors + 1.
-    mv_html = mv_html && '<p style="background-color: red">' && iv_error && |</p>\n|.
+    mv_html = mv_html && '<p style="background-color: red">' && iv_text && lv_runtime && |</p>\n|.
   ENDMETHOD.
 
 ENDCLASS.

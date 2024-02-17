@@ -3,6 +3,7 @@ CLASS cl_testsuite DEFINITION PUBLIC CREATE PUBLIC.
     CLASS-METHODS run
       RETURNING
         VALUE(ro_html) TYPE REF TO cl_result.
+
   PRIVATE SECTION.
     TYPES: BEGIN OF ty_file,
              filename TYPE string,
@@ -92,11 +93,14 @@ CLASS cl_testsuite IMPLEMENTATION.
 
   METHOD assert_return.
 
-    DATA lt_values TYPE zif_wasm_value=>ty_values.
+    DATA lv_start_time TYPE i.
+    DATA lt_values     TYPE zif_wasm_value=>ty_values.
 
     IF io_wasm IS INITIAL.
       RAISE EXCEPTION NEW zcx_wasm( text = |assert_return: nothing loaded| ).
     ENDIF.
+
+    GET RUN TIME FIELD lv_start_time.
 
     IF is_command-action-type = 'invoke'.
       LOOP AT is_command-action-args INTO DATA(ls_arg).
@@ -125,7 +129,9 @@ CLASS cl_testsuite IMPLEMENTATION.
         it_parameters = lt_values ).
 
       IF lines( lt_result ) <> lines( is_command-expected ).
-        go_result->add_error( |error, wrong number of results| ).
+        go_result->add_error(
+          iv_start_time = lv_start_time
+          iv_text       = |error, wrong number of results| ).
         RETURN.
       ENDIF.
 
@@ -144,14 +150,18 @@ CLASS cl_testsuite IMPLEMENTATION.
                 DATA(lv_result)   = CAST zcl_wasm_i32( li_result )->get_unsigned( ).
                 IF lv_expected <> lv_result.
                   lv_error = abap_true.
-                  go_result->add_error( |error, wrong result, expected { lv_expected }, got { lv_result }| ).
+                  go_result->add_error(
+                    iv_start_time = lv_start_time
+                    iv_text       = |error, wrong result, expected { lv_expected }, got { lv_result }| ).
                   EXIT. " current loop
                 ENDIF.
               WHEN 'i64'.
                 DATA(lv_str) = CAST zcl_wasm_i64( li_result )->get_unsigned( ).
                 IF ls_expected-value <> lv_str.
                   lv_error = abap_true.
-                  go_result->add_error( |error, wrong result, expected { ls_expected-value }, got { lv_str }| ).
+                  go_result->add_error(
+                    iv_start_time = lv_start_time
+                    iv_text       = |error, wrong result, expected { ls_expected-value }, got { lv_str }| ).
                   EXIT. " current loop
                 ENDIF.
               WHEN 'f32'.
@@ -159,26 +169,36 @@ CLASS cl_testsuite IMPLEMENTATION.
                 lv_result   = CAST zcl_wasm_f32( li_result )->get_unsigned_i32( ).
                 IF lv_expected <> lv_result.
                   lv_error = abap_true.
-                  go_result->add_error( |error, wrong result, expected { lv_expected }, got { lv_result }| ).
+                  go_result->add_error(
+                    iv_start_time = lv_start_time
+                    iv_text       = |error, wrong result, expected { lv_expected }, got { lv_result }| ).
                   EXIT. " current loop
                 ENDIF.
               WHEN OTHERS.
                 lv_error = abap_true.
-                go_result->add_error( |unknown type, assert_return: { ls_expected-type }| ).
+                go_result->add_error(
+                  iv_start_time = lv_start_time
+                  iv_text       = |unknown type, assert_return: { ls_expected-type }| ).
                 EXIT. " current loop
             ENDCASE.
           CATCH cx_sy_move_cast_error.
             lv_error = abap_true.
-            go_result->add_error( |assert_return, wrong type, casting failed| ).
+            go_result->add_error(
+              iv_start_time = lv_start_time
+              iv_text       = |assert_return, wrong type, casting failed| ).
             EXIT. " current loop
         ENDTRY.
       ENDDO.
 
       IF lv_error = abap_false.
-        go_result->add_success( |ok, result| ).
+        go_result->add_success(
+          iv_start_time = lv_start_time
+          iv_text       = |ok, result| ).
       ENDIF.
     ELSE.
-      go_result->add_warning( |todo, { is_command-action-type }| ).
+      go_result->add_warning(
+        iv_start_time = lv_start_time
+        iv_text       = |todo, { is_command-action-type }| ).
     ENDIF.
 
   ENDMETHOD.
