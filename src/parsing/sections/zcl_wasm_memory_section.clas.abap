@@ -16,6 +16,10 @@ CLASS zcl_wasm_memory_section IMPLEMENTATION.
     DATA(lv_count) = io_body->shift_u32( ).
     " WRITE: / 'memories:', lv_count.
 
+    IF lv_count > 1.
+      RAISE EXCEPTION NEW zcx_wasm( text = |multiple memories| ).
+    ENDIF.
+
     DO lv_count TIMES.
       DATA(lv_limit) = io_body->shift( 1 ).
 
