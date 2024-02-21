@@ -36,8 +36,8 @@ CLASS zcl_wasm_memory_section IMPLEMENTATION.
 
       IF lv_max < lv_min.
         RAISE EXCEPTION NEW zcx_wasm( text = |size minimum must not be greater than maximum| ).
-      ELSEIF lv_max > 65536.
-        RAISE EXCEPTION NEW zcx_wasm( text = |memory size must be at most 65536 pages (4GiB)| ).
+      ELSEIF lv_max > zcl_wasm_memory=>c_max_pages.
+        RAISE EXCEPTION NEW zcx_wasm( text = |memory size must be at most { zcl_wasm_memory=>c_max_pages } pages (4GiB)| ).
       ENDIF.
 
 * todo
