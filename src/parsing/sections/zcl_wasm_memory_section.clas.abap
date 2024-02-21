@@ -26,13 +26,19 @@ CLASS zcl_wasm_memory_section IMPLEMENTATION.
       CASE lv_limit.
         WHEN '00'.
           DATA(lv_min) = io_body->shift_u32( ).
-          DATA(lv_max) = 0.
+          DATA(lv_max) = lv_min.
         WHEN '01'.
           lv_min = io_body->shift_u32( ).
           lv_max = io_body->shift_u32( ).
         WHEN OTHERS.
           RAISE EXCEPTION NEW zcx_wasm( text = |parse_memory: todo| ).
       ENDCASE.
+
+      IF lv_max < lv_min.
+        RAISE EXCEPTION NEW zcx_wasm( text = |size minimum must not be greater than maximum| ).
+      ELSEIF lv_max > 65536.
+        RAISE EXCEPTION NEW zcx_wasm( text = |memory size must be at most 65536 pages (4GiB)| ).
+      ENDIF.
 
 * todo
 
