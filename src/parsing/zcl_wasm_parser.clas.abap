@@ -59,8 +59,7 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
 * todo
           zcl_wasm_table_section=>parse( lo_body ).
         WHEN zif_wasm_sections=>gc_section_memory.
-* todo
-          zcl_wasm_memory_section=>parse( lo_body ).
+          DATA(lo_memory_section) = zcl_wasm_memory_section=>parse( lo_body ).
         WHEN zif_wasm_sections=>gc_section_global.
 * todo
           zcl_wasm_global_section=>parse( lo_body ).
@@ -85,11 +84,12 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
     ENDWHILE.
 
     ro_module = NEW #(
-      it_types        = lt_types
-      it_codes        = lt_codes
-      it_exports      = lt_exports
-      io_data_section = lo_data_section
-      it_functions    = lt_functions ).
+      it_types          = lt_types
+      it_codes          = lt_codes
+      it_exports        = lt_exports
+      io_data_section   = lo_data_section
+      io_memory_section = lo_memory_section
+      it_functions      = lt_functions ).
 
   ENDMETHOD.
 

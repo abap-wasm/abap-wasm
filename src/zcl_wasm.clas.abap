@@ -94,6 +94,7 @@ CLASS zcl_wasm IMPLEMENTATION.
       lo_memory->stack_push( li_value ).
     ENDLOOP.
 
+    mo_module->get_memory_section( )->instantiate( lo_memory ).
     mo_module->get_data_section( )->instantiate( lo_memory ).
 
     NEW zcl_wasm_vm(
