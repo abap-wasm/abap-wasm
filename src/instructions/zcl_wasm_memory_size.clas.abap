@@ -26,9 +26,8 @@ CLASS zcl_wasm_memory_size IMPLEMENTATION.
 
 * https://webassembly.github.io/spec/core/exec/instructions.html#xref-syntax-instructions-syntax-instr-memory-mathsf-memory-size
 
-    DATA(lv_length) = xstrlen( io_memory->get_linear( )->get( ) ) / zif_wasm_memory_linear=>c_page_size.
-
-    io_memory->stack_push( zcl_wasm_i32=>from_signed( lv_length ) ).
+    DATA(lv_size) = io_memory->get_linear( )->size( ).
+    io_memory->stack_push( zcl_wasm_i32=>from_unsigned( lv_size ) ).
 
   ENDMETHOD.
 

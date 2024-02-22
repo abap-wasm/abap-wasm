@@ -36,9 +36,25 @@ CLASS zcl_wasm_memory_linear IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_memory_linear~grow.
+    IF iv_pages < 0.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: linear_grow, negative pages' ).
+    ENDIF.
+
+    IF zif_wasm_memory_linear~size( ) + iv_pages >= zif_wasm_memory_linear=>c_max_pages.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: linear_grow, max pages reached' ).
+    ENDIF.
+
+    IF iv_pages >= 1000.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: todo, its too slow, and will crash node anyhow' ).
+    ENDIF.
+
     DO iv_pages TIMES.
       CONCATENATE mv_linear gv_empty_page INTO mv_linear IN BYTE MODE.
     ENDDO.
+  ENDMETHOD.
+
+  METHOD zif_wasm_memory_linear~size.
+    rv_pages = xstrlen( mv_linear ) / zif_wasm_memory_linear=>c_page_size.
   ENDMETHOD.
 
   METHOD zif_wasm_memory_linear~set.
@@ -53,12 +69,10 @@ CLASS zcl_wasm_memory_linear IMPLEMENTATION.
   METHOD zif_wasm_memory_linear~get.
 * https://rsms.me/wasm-intro#addressing-memory
 
-* alignment values:
-* 0 = 8-bit, 1 = 16-bit, 2 = 32-bit, and 3 = 64-bit
-
     DATA lv_byte TYPE x LENGTH 1.
 
     IF iv_length = 0 AND iv_offset = 0.
+* todo, does this respect endians?
       rv_bytes = mv_linear.
       RETURN.
     ENDIF.
