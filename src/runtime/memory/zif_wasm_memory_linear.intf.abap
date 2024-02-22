@@ -1,0 +1,6 @@
+INTERFACE zif_wasm_memory_linear PUBLIC.
+
+  CONSTANTS c_page_size TYPE i VALUE 65536.
+  CONSTANTS c_max_pages TYPE i VALUE 65536.
+
+ENDINTERFACE.
