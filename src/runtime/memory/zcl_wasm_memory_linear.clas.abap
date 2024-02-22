@@ -1,11 +1,25 @@
 CLASS zcl_wasm_memory_linear DEFINITION PUBLIC.
   PUBLIC SECTION.
     INTERFACES zif_wasm_memory_linear.
+
+    METHODS constructor
+      IMPORTING
+        iv_max TYPE i
+        iv_min TYPE i
+      RAISING
+        zcx_wasm.
   PRIVATE SECTION.
     DATA mv_linear TYPE xstring.
+    DATA mv_max TYPE i.
+    DATA mv_min TYPE i.
 ENDCLASS.
 
 CLASS zcl_wasm_memory_linear IMPLEMENTATION.
+
+  METHOD constructor.
+    mv_min = iv_min.
+    mv_max = iv_max.
+  ENDMETHOD.
 
   METHOD zif_wasm_memory_linear~set.
     IF iv_offset <> 0.
