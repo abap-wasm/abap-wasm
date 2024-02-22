@@ -7,7 +7,7 @@ ENDCLASS.
 
 CLASS zcl_wasm_memory_linear IMPLEMENTATION.
 
-  METHOD zif_wasm_memory_linear~linear_set.
+  METHOD zif_wasm_memory_linear~set.
     IF iv_offset <> 0.
       RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: linear_set, offset todo' ).
     ENDIF.
@@ -15,7 +15,7 @@ CLASS zcl_wasm_memory_linear IMPLEMENTATION.
     mv_linear = iv_bytes.
   ENDMETHOD.
 
-  METHOD zif_wasm_memory_linear~linear_get.
+  METHOD zif_wasm_memory_linear~get.
 * https://rsms.me/wasm-intro#addressing-memory
 
 * alignment values:

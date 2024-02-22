@@ -73,11 +73,6 @@ CLASS zcl_wasm_memory_section IMPLEMENTATION.
 
   METHOD instantiate.
 
-"     IF mv_min = 0 AND mv_max = 0.
-" * no memory defined
-"       RETURN.
-"     ENDIF.
-
     io_memory->set_linear( NEW zcl_wasm_memory_linear( ) ).
 
   ENDMETHOD.

@@ -42,7 +42,7 @@ CLASS zcl_wasm_i32_load8_s IMPLEMENTATION.
     DATA lv_int TYPE i.
 
     DATA(lv_i) = io_memory->stack_pop_i32( )->get_signed( ).
-    lv_hex = io_memory->get_linear( )->linear_get(
+    lv_hex = io_memory->get_linear( )->get(
       iv_length = lc_length
       iv_align  = mv_align
       iv_offset = mv_offset + lv_i ).
