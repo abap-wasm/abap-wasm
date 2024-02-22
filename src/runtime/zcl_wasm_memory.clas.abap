@@ -10,6 +10,7 @@ CLASS zcl_wasm_memory DEFINITION
     CONSTANTS c_alignment_64bit TYPE int8 VALUE 3.
 
     CONSTANTS c_page_size TYPE i VALUE 65536.
+    CONSTANTS c_max_pages TYPE i VALUE 65536.
 
 *********** STACK
     METHODS stack_push
