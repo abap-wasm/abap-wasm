@@ -43,6 +43,7 @@ CLASS zcl_wasm_module DEFINITION
         !it_codes       TYPE ty_codes OPTIONAL
         !it_exports     TYPE ty_exports OPTIONAL
         io_data_section TYPE REF TO zcl_wasm_data_section
+        io_memory_section TYPE REF TO zcl_wasm_memory_section
         !it_functions   TYPE ty_functions OPTIONAL .
     METHODS get_types
       RETURNING
@@ -59,6 +60,9 @@ CLASS zcl_wasm_module DEFINITION
     METHODS get_data_section
       RETURNING
         VALUE(ro_data_section) TYPE REF TO zcl_wasm_data_section.
+    METHODS get_memory_section
+      RETURNING
+        VALUE(ro_memory_section) TYPE REF TO zcl_wasm_memory_section.
     METHODS get_code_by_index
       IMPORTING
         !iv_index      TYPE int8
@@ -94,7 +98,9 @@ CLASS zcl_wasm_module DEFINITION
     DATA mt_codes TYPE ty_codes .
     DATA mt_exports TYPE ty_exports .
     DATA mt_functions TYPE ty_functions .
+
     DATA mo_data_section TYPE REF TO zcl_wasm_data_section.
+    DATA mo_memory_section TYPE REF TO zcl_wasm_memory_section.
 ENDCLASS.
 
 
@@ -113,10 +119,21 @@ CLASS zcl_wasm_module IMPLEMENTATION.
     ELSE.
       mo_data_section = io_data_section.
     ENDIF.
+
+    IF io_memory_section IS INITIAL.
+* none specified, create the empty data section,
+      mo_memory_section = NEW #( ).
+    ELSE.
+      mo_memory_section = io_memory_section.
+    ENDIF.
   ENDMETHOD.
 
   METHOD get_data_section.
     ro_data_section = mo_data_section.
+  ENDMETHOD.
+
+  METHOD get_memory_section.
+    ro_memory_section = mo_memory_section.
   ENDMETHOD.
 
   METHOD get_codes.

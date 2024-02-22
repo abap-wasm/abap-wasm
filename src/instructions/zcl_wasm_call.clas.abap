@@ -44,7 +44,10 @@ CLASS zcl_wasm_call IMPLEMENTATION.
     DO xstrlen( ls_type-parameter_types ) TIMES.
       lo_memory->local_push( io_memory->stack_pop( ) ).
     ENDDO.
-    lo_memory->linear_set( io_memory->linear_get( ) ).
+
+    IF io_memory->has_linear( ) = abap_true.
+      lo_memory->set_linear( io_memory->get_linear( ) ).
+    ENDIF.
 
 * add the locals
     LOOP AT ls_code-locals INTO DATA(ls_local).
