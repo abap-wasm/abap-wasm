@@ -73,7 +73,11 @@ CLASS zcl_wasm_memory_section IMPLEMENTATION.
 
   METHOD instantiate.
 
-    io_memory->set_linear( NEW zcl_wasm_memory_linear( ) ).
+    DATA(lo_linear) = NEW zcl_wasm_memory_linear(
+      iv_min = mv_min
+      iv_max = mv_max ).
+
+    io_memory->set_linear( lo_linear ).
 
   ENDMETHOD.
 

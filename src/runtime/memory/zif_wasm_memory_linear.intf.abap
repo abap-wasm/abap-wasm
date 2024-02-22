@@ -10,7 +10,6 @@ INTERFACE zif_wasm_memory_linear PUBLIC.
     RAISING
       zcx_wasm.
 
-* todo, rename method
   METHODS get
     IMPORTING
       iv_length       TYPE int8 OPTIONAL
@@ -18,6 +17,12 @@ INTERFACE zif_wasm_memory_linear PUBLIC.
       iv_align        TYPE int8 OPTIONAL
     RETURNING
       VALUE(rv_bytes) TYPE xstring
+    RAISING
+      zcx_wasm.
+
+  METHODS grow
+    IMPORTING
+      iv_pages TYPE int8
     RAISING
       zcx_wasm.
 
