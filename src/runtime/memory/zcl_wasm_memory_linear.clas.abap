@@ -46,7 +46,8 @@ CLASS zcl_wasm_memory_linear IMPLEMENTATION.
       RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: linear_set, offset todo' ).
     ENDIF.
 
-    mv_linear = iv_bytes.
+    DATA(lv_length) = xstrlen( iv_bytes ).
+    CONCATENATE iv_bytes mv_linear+lv_length INTO mv_linear IN BYTE MODE.
   ENDMETHOD.
 
   METHOD zif_wasm_memory_linear~get.
