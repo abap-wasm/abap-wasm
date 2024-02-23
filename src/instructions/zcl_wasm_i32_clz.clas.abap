@@ -15,7 +15,27 @@ CLASS zcl_wasm_i32_clz IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_i32_clz' ).
+
+* count leading zeros
+
+    DATA lv_hex TYPE x LENGTH 4.
+    DATA lv_bit TYPE i.
+
+    DATA(lv_int) = io_memory->stack_pop_i32( )->get_signed( ).
+    lv_hex = lv_int.
+
+    DATA(lv_zeros) = 0.
+    DO 32 TIMES.
+      GET BIT sy-index OF lv_hex INTO lv_bit.
+      IF lv_bit = 0.
+        lv_zeros = lv_zeros + 1.
+      ELSE.
+        EXIT.
+      ENDIF.
+    ENDDO.
+
+    io_memory->stack_push( zcl_wasm_i32=>from_signed( lv_zeros ) ).
+
   ENDMETHOD.
 
 ENDCLASS.
