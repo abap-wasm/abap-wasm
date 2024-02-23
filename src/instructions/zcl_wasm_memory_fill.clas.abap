@@ -16,6 +16,20 @@ CLASS zcl_wasm_memory_fill IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
+
+* https://webassembly.github.io/spec/core/exec/instructions.html#xref-syntax-instructions-syntax-instr-memory-mathsf-memory-fill
+
+    DATA(li_linear) = io_memory->get_linear( ).
+    DATA(lv_n) = io_memory->stack_pop_i32( ).
+    DATA(lv_val) = io_memory->stack_pop_i32( ).
+    DATA(lv_d) = io_memory->stack_pop_i32( ).
+
+    IF lv_n->get_signed( ) + lv_d->get_signed( ) > li_linear->size_in_bytes( ).
+      RAISE EXCEPTION NEW zcx_wasm( text = 'memory_fill: trap' ).
+    ELSEIF lv_n->get_signed( ) = 0.
+      RETURN.
+    ENDIF.
+
     RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_memory_fill' ).
   ENDMETHOD.
 
