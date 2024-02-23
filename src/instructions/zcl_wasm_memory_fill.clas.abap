@@ -30,6 +30,16 @@ CLASS zcl_wasm_memory_fill IMPLEMENTATION.
       RETURN.
     ENDIF.
 
+    IF lv_n->get_signed( ) > 1000.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory_fill, refactor to iteration instead of recursion' ).
+    ENDIF.
+
+    io_memory->stack_push( lv_d ).
+    io_memory->stack_push( lv_val ).
+
+* todo, call i32.store8
+* todo
+
     RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_memory_fill' ).
   ENDMETHOD.
 
