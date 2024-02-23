@@ -15,7 +15,24 @@ CLASS zcl_wasm_i32_popcnt IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_i32_popcnt' ).
+
+* Return the count of non-zero bits in i
+
+    DATA lv_hex TYPE x LENGTH 4.
+    DATA lv_bit TYPE i.
+
+    DATA(lv_int) = io_memory->stack_pop_i32( )->get_signed( ).
+    lv_hex = lv_int.
+
+    DATA(lv_count) = 0.
+    DO 32 TIMES.
+      GET BIT sy-index OF lv_hex INTO lv_bit.
+      IF lv_bit = 1.
+        lv_count = lv_count + 1.
+      ENDIF.
+    ENDDO.
+
+    io_memory->stack_push( zcl_wasm_i32=>from_signed( lv_count ) ).
   ENDMETHOD.
 
 ENDCLASS.
