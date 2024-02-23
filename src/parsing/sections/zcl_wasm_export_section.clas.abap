@@ -30,7 +30,11 @@ CLASS zcl_wasm_export_section IMPLEMENTATION.
 
       ls_result-index = io_body->shift_u32( ).
 
-      APPEND ls_result TO rt_results.
+      INSERT ls_result INTO TABLE rt_results.
+* todo, whats the thing with empty/initial names?
+      IF sy-subrc <> 0 AND ls_result-name IS NOT INITIAL.
+        RAISE EXCEPTION NEW zcx_wasm( text = |duplicate export name: { ls_result-name }| ).
+      ENDIF.
     ENDDO.
 
   ENDMETHOD.

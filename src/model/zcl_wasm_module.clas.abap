@@ -32,19 +32,19 @@ CLASS zcl_wasm_module DEFINITION
         index TYPE int8,
       END OF ty_export .
     TYPES:
-      ty_exports TYPE STANDARD TABLE OF ty_export WITH DEFAULT KEY .
+      ty_exports TYPE HASHED TABLE OF ty_export WITH UNIQUE KEY name .
 
     TYPES:
       ty_functions TYPE STANDARD TABLE OF i WITH DEFAULT KEY .
 
     METHODS constructor
       IMPORTING
-        !it_types       TYPE ty_types OPTIONAL
-        !it_codes       TYPE ty_codes OPTIONAL
-        !it_exports     TYPE ty_exports OPTIONAL
-        io_data_section TYPE REF TO zcl_wasm_data_section
+        !it_types         TYPE ty_types OPTIONAL
+        !it_codes         TYPE ty_codes OPTIONAL
+        !it_exports       TYPE ty_exports OPTIONAL
+        io_data_section   TYPE REF TO zcl_wasm_data_section
         io_memory_section TYPE REF TO zcl_wasm_memory_section
-        !it_functions   TYPE ty_functions OPTIONAL .
+        !it_functions     TYPE ty_functions OPTIONAL .
     METHODS get_types
       RETURNING
         VALUE(rt_result) TYPE ty_types .
@@ -160,7 +160,7 @@ CLASS zcl_wasm_module IMPLEMENTATION.
 
   METHOD get_export_by_name.
 
-    READ TABLE mt_exports WITH KEY name = iv_name INTO rs_export.
+    READ TABLE mt_exports WITH TABLE KEY name = iv_name INTO rs_export.
     IF sy-subrc <> 0.
       RAISE EXCEPTION NEW zcx_wasm( text = |get_export_by_name, not found: { iv_name }| ).
     ENDIF.
