@@ -37,7 +37,22 @@ CLASS zcl_wasm_i32_store8 IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_i32_store8' ).
+
+* https://webassembly.github.io/spec/core/exec/instructions.html#t-mathsf-xref-syntax-instructions-syntax-instr-memory-mathsf-store-xref-syntax-instructions-syntax-memarg-mathit-memarg-and-t-mathsf-xref-syntax-instructions-syntax-instr-memory-mathsf-store-n-xref-syntax-instructions-syntax-memarg-mathit-memarg
+
+    CONSTANTS lc_length TYPE int8 VALUE 1.
+    DATA lv_hex TYPE x LENGTH lc_length.
+
+    DATA(li_linear) = io_memory->get_linear( ).
+
+    DATA(lv_c) = io_memory->stack_pop_i32( )->get_signed( ).
+    lv_hex = lv_c.
+    DATA(lv_i) = io_memory->stack_pop_i32( )->get_signed( ).
+
+    io_memory->get_linear( )->set(
+      iv_offset = mv_offset + lv_i
+      iv_bytes  = lv_hex ).
+
   ENDMETHOD.
 
 ENDCLASS.

@@ -21,7 +21,7 @@ CLASS zcl_wasm_memory_grow IMPLEMENTATION.
 
 * https://webassembly.github.io/spec/core/exec/instructions.html#xref-syntax-instructions-syntax-instr-memory-mathsf-memory-grow
 
-    DATA(lv_sz) = io_memory->get_linear( )->size( ).
+    DATA(lv_sz) = io_memory->get_linear( )->size_in_pages( ).
 
     DATA(lv_pages) = io_memory->stack_pop_i32( )->get_unsigned( ).
 

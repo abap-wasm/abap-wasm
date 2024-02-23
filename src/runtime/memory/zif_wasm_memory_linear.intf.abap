@@ -6,7 +6,7 @@ INTERFACE zif_wasm_memory_linear PUBLIC.
   METHODS set
     IMPORTING
       iv_offset TYPE int8 OPTIONAL
-      iv_bytes  TYPE xstring
+      iv_bytes  TYPE xsequence
     RAISING
       zcx_wasm.
 
@@ -26,9 +26,15 @@ INTERFACE zif_wasm_memory_linear PUBLIC.
     RAISING
       zcx_wasm.
 
-  METHODS size
+  METHODS size_in_pages
     RETURNING
       VALUE(rv_pages) TYPE int8
+    RAISING
+      zcx_wasm.
+
+  METHODS size_in_bytes
+    RETURNING
+      VALUE(rv_bytes) TYPE int8
     RAISING
       zcx_wasm.
 
