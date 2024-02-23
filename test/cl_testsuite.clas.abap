@@ -198,7 +198,7 @@ CLASS cl_testsuite IMPLEMENTATION.
     ELSE.
       go_result->add_warning(
         iv_start_time = lv_start_time
-        iv_text       = |todo, { is_command-action-type }| ).
+        iv_text       = |todo, action type: { is_command-action-type }| ).
     ENDIF.
 
   ENDMETHOD.
@@ -270,7 +270,10 @@ CLASS cl_testsuite IMPLEMENTATION.
                   go_result->add_success( |got error: { lx_error->get_text( ) }| ).
               ENDTRY.
             WHEN 'action'.
-              go_result->add_warning( |todo, action| ).
+* these are all invoke actions?
+              assert_return(
+                is_command = <ls_command>
+                io_wasm    = lo_wasm ).
             WHEN 'assert_exhaustion'.
               go_result->add_warning( |todo, assert_exhaustion| ).
             WHEN 'assert_uninstantiable'.

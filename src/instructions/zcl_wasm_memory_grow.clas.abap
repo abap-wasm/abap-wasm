@@ -18,7 +18,18 @@ CLASS zcl_wasm_memory_grow IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_memory_grow' ).
+
+* https://webassembly.github.io/spec/core/exec/instructions.html#xref-syntax-instructions-syntax-instr-memory-mathsf-memory-grow
+
+    DATA(lv_sz) = io_memory->get_linear( )->size( ).
+
+    DATA(lv_pages) = io_memory->stack_pop_i32( )->get_unsigned( ).
+
+* todo, handle error
+    io_memory->get_linear( )->grow( lv_pages ).
+
+    io_memory->stack_push( zcl_wasm_i32=>from_unsigned( lv_sz ) ).
+
   ENDMETHOD.
 
 ENDCLASS.

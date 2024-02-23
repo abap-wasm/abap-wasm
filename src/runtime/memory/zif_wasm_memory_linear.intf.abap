@@ -26,4 +26,10 @@ INTERFACE zif_wasm_memory_linear PUBLIC.
     RAISING
       zcx_wasm.
 
+  METHODS size
+    RETURNING
+      VALUE(rv_pages) TYPE int8
+    RAISING
+      zcx_wasm.
+
 ENDINTERFACE.

@@ -9,6 +9,8 @@ CLASS zcl_wasm_memory_linear DEFINITION PUBLIC.
       RAISING
         zcx_wasm.
   PRIVATE SECTION.
+    CLASS-DATA gv_empty_page TYPE xstring.
+
     DATA mv_linear TYPE xstring.
     DATA mv_max TYPE int8.
     DATA mv_min TYPE int8.
@@ -17,12 +19,42 @@ ENDCLASS.
 CLASS zcl_wasm_memory_linear IMPLEMENTATION.
 
   METHOD constructor.
+    DATA lv_hex32 TYPE x LENGTH 32.
+
     mv_min = iv_min.
     mv_max = iv_max.
+
+    IF gv_empty_page IS INITIAL.
+      lv_hex32 = '0000000000000000000000000000000000000000000000000000000000000000'.
+      DO 2048 TIMES.
+        CONCATENATE gv_empty_page lv_hex32 INTO gv_empty_page IN BYTE MODE.
+      ENDDO.
+      ASSERT xstrlen( gv_empty_page ) = zif_wasm_memory_linear=>c_page_size.
+    ENDIF.
+
+    zif_wasm_memory_linear~grow( mv_min ).
   ENDMETHOD.
 
   METHOD zif_wasm_memory_linear~grow.
-* todo
+    IF iv_pages < 0.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: linear_grow, negative pages' ).
+    ENDIF.
+
+    IF zif_wasm_memory_linear~size( ) + iv_pages >= zif_wasm_memory_linear=>c_max_pages.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: linear_grow, max pages reached' ).
+    ENDIF.
+
+    IF iv_pages >= 1000.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: todo, its too slow, and will crash node anyhow' ).
+    ENDIF.
+
+    DO iv_pages TIMES.
+      CONCATENATE mv_linear gv_empty_page INTO mv_linear IN BYTE MODE.
+    ENDDO.
+  ENDMETHOD.
+
+  METHOD zif_wasm_memory_linear~size.
+    rv_pages = xstrlen( mv_linear ) / zif_wasm_memory_linear=>c_page_size.
   ENDMETHOD.
 
   METHOD zif_wasm_memory_linear~set.
@@ -30,18 +62,17 @@ CLASS zcl_wasm_memory_linear IMPLEMENTATION.
       RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: linear_set, offset todo' ).
     ENDIF.
 
-    mv_linear = iv_bytes.
+    DATA(lv_length) = xstrlen( iv_bytes ).
+    CONCATENATE iv_bytes mv_linear+lv_length INTO mv_linear IN BYTE MODE.
   ENDMETHOD.
 
   METHOD zif_wasm_memory_linear~get.
 * https://rsms.me/wasm-intro#addressing-memory
 
-* alignment values:
-* 0 = 8-bit, 1 = 16-bit, 2 = 32-bit, and 3 = 64-bit
-
     DATA lv_byte TYPE x LENGTH 1.
 
     IF iv_length = 0 AND iv_offset = 0.
+* todo, does this respect endians?
       rv_bytes = mv_linear.
       RETURN.
     ENDIF.
