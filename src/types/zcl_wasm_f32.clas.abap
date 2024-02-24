@@ -130,6 +130,8 @@ CLASS zcl_wasm_f32 IMPLEMENTATION.
 
 * todo
     CASE mv_value.
+      WHEN -2.
+        rv_hex = 'C0000000'.
       WHEN -1.
         rv_hex = 'BF800000'.
       WHEN 0.
