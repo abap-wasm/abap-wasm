@@ -28,6 +28,14 @@ CLASS zcl_wasm_f32 DEFINITION
         VALUE(rv_value) TYPE int8
       RAISING
         zcx_wasm.
+
+    TYPES ty_hex4 TYPE x LENGTH 4.
+    METHODS to_hex
+      RETURNING
+        VALUE(rv_hex) TYPE ty_hex4
+      RAISING
+        zcx_wasm.
+
     METHODS get_value
       RETURNING
         VALUE(rv_value) TYPE f
@@ -75,6 +83,12 @@ CLASS zcl_wasm_f32 DEFINITION
         !io_memory TYPE REF TO zcl_wasm_memory
       RAISING
         zcx_wasm.
+
+    CLASS-METHODS le
+      IMPORTING
+        !io_memory TYPE REF TO zcl_wasm_memory
+      RAISING
+        zcx_wasm.
   PROTECTED SECTION.
   PRIVATE SECTION.
     DATA mv_value TYPE f .
@@ -85,6 +99,31 @@ CLASS zcl_wasm_f32 IMPLEMENTATION.
   METHOD from_float.
     ro_value = NEW #( ).
     ro_value->mv_value = iv_value.
+  ENDMETHOD.
+
+  METHOD to_hex.
+* https://gregstoll.com/~gregstoll/floattohex/
+
+* todo
+    CASE mv_value.
+      WHEN 0.
+        rv_hex = '00000000'.
+      WHEN 1.
+        rv_hex = '3F800000'.
+      WHEN 2.
+        rv_hex = '40000000'.
+      WHEN 3.
+        rv_hex = '40400000'.
+      WHEN 5.
+        rv_hex = '40A00000'.
+      WHEN 6.
+        rv_hex = '40C00000'.
+      WHEN 25.
+        rv_hex = '41C80000'.
+      WHEN OTHERS.
+        RAISE EXCEPTION NEW zcx_wasm( text = |todo: zcl_wasm_f32, to_hex, { mv_value STYLE = SCIENTIFIC }| ).
+    ENDCASE.
+
   ENDMETHOD.
 
   METHOD get_value.
@@ -100,11 +139,23 @@ CLASS zcl_wasm_f32 IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD get_unsigned_i32.
-    IF mv_value = 0.
-      RETURN.
-    ENDIF.
+    DATA lv_bit     TYPE i.
+    DATA lv_current TYPE i VALUE 1.
 
-    RAISE EXCEPTION NEW zcx_wasm( text = |todo: zcl_wasm_f32, get_unsigned_i32| ).
+    IF mv_value = 0.
+      rv_value = 0.
+    ELSE.
+      DATA(lv_hex) = to_hex( ).
+
+      DO 32 TIMES.
+        GET BIT 33 - sy-index OF lv_hex INTO lv_bit.
+        IF lv_bit = 1.
+          rv_value = rv_value + lv_current.
+        ENDIF.
+        lv_current = lv_current * 2.
+      ENDDO.
+
+    ENDIF.
   ENDMETHOD.
 
   METHOD zif_wasm_value~get_type.
@@ -200,6 +251,24 @@ CLASS zcl_wasm_f32 IMPLEMENTATION.
     ELSE.
       io_memory->stack_push( zcl_wasm_i32=>from_signed( 0 ) ).
     ENDIF.
+
+  ENDMETHOD.
+
+  METHOD le.
+
+    IF io_memory->stack_length( ) < 2.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'le, expected two variables on stack' ).
+    ENDIF.
+
+    DATA(lo_val1) = CAST zcl_wasm_f32( io_memory->stack_pop( ) ).
+    DATA(lo_val2) = CAST zcl_wasm_f32( io_memory->stack_pop( ) ).
+
+    DATA(lv_result) = 0.
+    IF lo_val1->mv_value >= lo_val2->mv_value.
+      lv_result = 1.
+    ENDIF.
+
+    io_memory->stack_push( zcl_wasm_i32=>from_signed( lv_result ) ).
 
   ENDMETHOD.
 

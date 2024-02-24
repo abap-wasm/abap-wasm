@@ -7,6 +7,7 @@ CLASS zcl_wasm_binary_stream DEFINITION
     METHODS constructor
       IMPORTING
         !iv_data TYPE xsequence .
+
     METHODS get_length
       RETURNING
         VALUE(rv_length) TYPE i .
@@ -18,6 +19,7 @@ CLASS zcl_wasm_binary_stream DEFINITION
         !iv_length     TYPE numeric
       RETURNING
         VALUE(rv_data) TYPE xstring .
+
     METHODS shift
       IMPORTING
         !iv_length     TYPE numeric
@@ -149,6 +151,10 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
 
     rv_f = rv_f * ( 2 ** lv_exponent ).
 
+    IF lv_sign > 0.
+      rv_f = 0 - rv_f.
+    ENDIF.
+
   ENDMETHOD.
 
   METHOD reverse_hex.
@@ -219,6 +225,10 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
     ENDDO.
 
     rv_f = rv_f * ( 2 ** lv_exponent ).
+
+    IF lv_sign > 0.
+      rv_f = 0 - rv_f.
+    ENDIF.
 
   ENDMETHOD.
 
