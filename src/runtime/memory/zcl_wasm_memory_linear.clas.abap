@@ -87,9 +87,9 @@ CLASS zcl_wasm_memory_linear IMPLEMENTATION.
 
     IF lv_i < iv_offset.
 * it allocates 64k bytes pages at a time?
-* hmm,      RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: linear_get, out of bounds' ).
-      rv_bytes = '00'.
-      RETURN.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: linear_get, out of bounds' ).
+      " rv_bytes = '00'.
+      " RETURN.
     ELSEIF iv_length <= 0.
       RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: linear_get, negative or zero length' ).
     ELSEIF iv_offset < 0.
