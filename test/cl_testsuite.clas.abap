@@ -92,7 +92,7 @@ CLASS cl_testsuite IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD assert_return.
-
+* todo, extract the invoke part from this method?
     DATA lv_start_time TYPE i.
     DATA lt_values     TYPE zif_wasm_value=>ty_values.
 
@@ -241,7 +241,6 @@ CLASS cl_testsuite IMPLEMENTATION.
       TRY.
           CASE <ls_command>-type.
             WHEN 'module'.
-*              WRITE / |load: { <ls_command>-filename }|.
               WRITE / '@KERNEL lv_hex.set(fs.readFileSync(lv_filename.get()).toString("hex").toUpperCase());'.
               lo_wasm = zcl_wasm=>create_with_wasm( lv_hex ).
               go_result->add_success( |loaded| ).
@@ -250,18 +249,23 @@ CLASS cl_testsuite IMPLEMENTATION.
                 is_command = <ls_command>
                 io_wasm    = lo_wasm ).
             WHEN 'assert_trap'.
-              go_result->add_warning( |todo, assert_trap| ).
+              TRY.
+                  assert_return(
+                    is_command = <ls_command>
+                    io_wasm    = lo_wasm ).
+                  go_result->add_error( |error, expected trap| ).
+                CATCH cx_root INTO DATA(lx_error).
+                  go_result->add_success( |ok, got error: { lx_error->get_text( ) }| ).
+              ENDTRY.
             WHEN 'assert_malformed'.
-*              WRITE / |load: { <ls_command>-filename }|.
               WRITE / '@KERNEL lv_hex.set(fs.readFileSync(lv_filename.get()).toString("hex").toUpperCase());'.
               TRY.
                   zcl_wasm=>create_with_wasm( lv_hex ).
                   go_result->add_error( |expected malformed| ).
-                CATCH cx_root INTO DATA(lx_error).
+                CATCH cx_root INTO lx_error.
                   go_result->add_success( |got error: { lx_error->get_text( ) }| ).
               ENDTRY.
             WHEN 'assert_invalid'.
-*              WRITE / |load: { <ls_command>-filename }|.
               WRITE / '@KERNEL lv_hex.set(fs.readFileSync(lv_filename.get()).toString("hex").toUpperCase());'.
               TRY.
                   zcl_wasm=>create_with_wasm( lv_hex ).
