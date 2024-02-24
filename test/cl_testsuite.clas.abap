@@ -48,6 +48,20 @@ CLASS cl_testsuite DEFINITION PUBLIC CREATE PUBLIC.
         io_wasm    TYPE REF TO zif_wasm
       RAISING
         zcx_wasm.
+
+    TYPES: BEGIN OF ty_results,
+             start_time TYPE i,
+             values     TYPE zif_wasm_value=>ty_values,
+           END OF ty_results.
+
+    CLASS-METHODS invoke
+      IMPORTING
+        is_command TYPE ty_json_commands
+        io_wasm    TYPE REF TO zif_wasm
+      RETURNING
+        VALUE(rs_results) TYPE ty_results
+      RAISING
+        zcx_wasm.
 ENDCLASS.
 
 
@@ -91,114 +105,119 @@ CLASS cl_testsuite IMPLEMENTATION.
 
   ENDMETHOD.
 
-  METHOD assert_return.
+  METHOD invoke.
 
-    DATA lv_start_time TYPE i.
-    DATA lt_values     TYPE zif_wasm_value=>ty_values.
+    DATA lt_values TYPE zif_wasm_value=>ty_values.
 
     IF io_wasm IS INITIAL.
       RAISE EXCEPTION NEW zcx_wasm( text = |assert_return: nothing loaded| ).
     ENDIF.
 
-    GET RUN TIME FIELD lv_start_time.
+    GET RUN TIME FIELD rs_results-start_time.
 
-    IF is_command-action-type = 'invoke'.
-      LOOP AT is_command-action-args INTO DATA(ls_arg).
-        CASE ls_arg-type.
-          WHEN 'i32'.
-            APPEND zcl_wasm_i32=>from_unsigned( CONV #( ls_arg-value ) ) TO lt_values.
-          WHEN 'i64'.
-            APPEND zcl_wasm_i64=>from_unsigned( ls_arg-value ) TO lt_values.
-          WHEN 'f32'.
-            APPEND zcl_wasm_f32=>from_unsigned_i32( CONV #( ls_arg-value ) ) TO lt_values.
+    IF is_command-action-type <> 'invoke'.
+      RAISE EXCEPTION NEW zcx_wasm( text = |invoke: unknown action type, { is_command-action-type }| ).
+    ENDIF.
+
+    LOOP AT is_command-action-args INTO DATA(ls_arg).
+      CASE ls_arg-type.
+        WHEN 'i32'.
+          APPEND zcl_wasm_i32=>from_unsigned( CONV #( ls_arg-value ) ) TO lt_values.
+        WHEN 'i64'.
+          APPEND zcl_wasm_i64=>from_unsigned( ls_arg-value ) TO lt_values.
+        WHEN 'f32'.
+          APPEND zcl_wasm_f32=>from_unsigned_i32( CONV #( ls_arg-value ) ) TO lt_values.
           " WHEN 'f64'.
           "   APPEND NEW zcl_wasm_f64( CONV #( ls_arg-value ) ) TO lt_values.
-          WHEN OTHERS.
-            RAISE EXCEPTION NEW zcx_wasm( text = |unknown type, invoke, { ls_arg-type }| ).
-        ENDCASE.
-      ENDLOOP.
+        WHEN OTHERS.
+          RAISE EXCEPTION NEW zcx_wasm( text = |unknown type, invoke, { ls_arg-type }| ).
+      ENDCASE.
+    ENDLOOP.
 
-      IF is_command-action-field = 'call'
+    IF is_command-action-field = 'call'
           OR is_command-action-field = 'call Mf.call'
           OR is_command-action-field = 'Mf.call'.
-        RAISE EXCEPTION NEW zcx_wasm( text = 'call todo' ).
-      ENDIF.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'call todo' ).
+    ENDIF.
 
-      DATA(lt_result) = io_wasm->execute_function_export(
+    rs_results-values = io_wasm->execute_function_export(
         iv_name       = is_command-action-field
         it_parameters = lt_values ).
 
-      IF lines( lt_result ) <> lines( is_command-expected ).
-        go_result->add_error(
-          iv_start_time = lv_start_time
+  ENDMETHOD.
+
+  METHOD assert_return.
+
+    DATA(ls_results) = invoke(
+      is_command = is_command
+      io_wasm    = io_wasm ).
+
+    IF lines( ls_results-values ) <> lines( is_command-expected ).
+      go_result->add_error(
+          iv_start_time = ls_results-start_time
           iv_text       = |error, wrong number of results| ).
-        RETURN.
-      ENDIF.
+      RETURN.
+    ENDIF.
 
-      DATA(lv_error) = abap_false.
-      DO lines( lt_result ) TIMES.
-        DATA(lv_index) = sy-index.
-        READ TABLE is_command-expected INDEX lv_index INTO DATA(ls_expected).
-        ASSERT sy-subrc = 0.
-        READ TABLE lt_result INDEX lv_index INTO DATA(li_result).
-        ASSERT sy-subrc = 0.
+    DATA(lv_error) = abap_false.
+    DO lines( ls_results-values ) TIMES.
+      DATA(lv_index) = sy-index.
+      READ TABLE is_command-expected INDEX lv_index INTO DATA(ls_expected).
+      ASSERT sy-subrc = 0.
+      READ TABLE ls_results-values INDEX lv_index INTO DATA(li_result).
+      ASSERT sy-subrc = 0.
 
-        TRY.
-            CASE ls_expected-type.
-              WHEN 'i32'.
-                DATA(lv_expected) = CONV int8( ls_expected-value ).
-                DATA(lv_result)   = CAST zcl_wasm_i32( li_result )->get_unsigned( ).
-                IF lv_expected <> lv_result.
-                  lv_error = abap_true.
-                  go_result->add_error(
-                    iv_start_time = lv_start_time
-                    iv_text       = |error, wrong result, expected { lv_expected }, got { lv_result }| ).
-                  EXIT. " current loop
-                ENDIF.
-              WHEN 'i64'.
-                DATA(lv_str) = CAST zcl_wasm_i64( li_result )->get_unsigned( ).
-                IF ls_expected-value <> lv_str.
-                  lv_error = abap_true.
-                  go_result->add_error(
-                    iv_start_time = lv_start_time
-                    iv_text       = |error, wrong result, expected { ls_expected-value }, got { lv_str }| ).
-                  EXIT. " current loop
-                ENDIF.
-              WHEN 'f32'.
-                lv_expected = CONV int8( ls_expected-value ).
-                lv_result   = CAST zcl_wasm_f32( li_result )->get_unsigned_i32( ).
-                IF lv_expected <> lv_result.
-                  lv_error = abap_true.
-                  go_result->add_error(
-                    iv_start_time = lv_start_time
-                    iv_text       = |error, wrong result, expected { lv_expected }, got { lv_result }| ).
-                  EXIT. " current loop
-                ENDIF.
-              WHEN OTHERS.
+      TRY.
+          CASE ls_expected-type.
+            WHEN 'i32'.
+              DATA(lv_expected) = CONV int8( ls_expected-value ).
+              DATA(lv_result)   = CAST zcl_wasm_i32( li_result )->get_unsigned( ).
+              IF lv_expected <> lv_result.
                 lv_error = abap_true.
                 go_result->add_error(
-                  iv_start_time = lv_start_time
-                  iv_text       = |unknown type, assert_return: { ls_expected-type }| ).
+                    iv_start_time = ls_results-start_time
+                    iv_text       = |error, wrong result, expected { lv_expected }, got { lv_result }| ).
                 EXIT. " current loop
-            ENDCASE.
-          CATCH cx_sy_move_cast_error.
-            lv_error = abap_true.
-            go_result->add_error(
-              iv_start_time = lv_start_time
+              ENDIF.
+            WHEN 'i64'.
+              DATA(lv_str) = CAST zcl_wasm_i64( li_result )->get_unsigned( ).
+              IF ls_expected-value <> lv_str.
+                lv_error = abap_true.
+                go_result->add_error(
+                    iv_start_time = ls_results-start_time
+                    iv_text       = |error, wrong result, expected { ls_expected-value }, got { lv_str }| ).
+                EXIT. " current loop
+              ENDIF.
+            WHEN 'f32'.
+              lv_expected = CONV int8( ls_expected-value ).
+              lv_result   = CAST zcl_wasm_f32( li_result )->get_unsigned_i32( ).
+              IF lv_expected <> lv_result.
+                lv_error = abap_true.
+                go_result->add_error(
+                    iv_start_time = ls_results-start_time
+                    iv_text       = |error, wrong result, expected { lv_expected }, got { lv_result }| ).
+                EXIT. " current loop
+              ENDIF.
+            WHEN OTHERS.
+              lv_error = abap_true.
+              go_result->add_error(
+                  iv_start_time = ls_results-start_time
+                  iv_text       = |unknown type, assert_return: { ls_expected-type }| ).
+              EXIT. " current loop
+          ENDCASE.
+        CATCH cx_sy_move_cast_error.
+          lv_error = abap_true.
+          go_result->add_error(
+              iv_start_time = ls_results-start_time
               iv_text       = |assert_return, wrong type, casting failed| ).
-            EXIT. " current loop
-        ENDTRY.
-      ENDDO.
+          EXIT. " current loop
+      ENDTRY.
+    ENDDO.
 
-      IF lv_error = abap_false.
-        go_result->add_success(
-          iv_start_time = lv_start_time
+    IF lv_error = abap_false.
+      go_result->add_success(
+          iv_start_time = ls_results-start_time
           iv_text       = |ok, result| ).
-      ENDIF.
-    ELSE.
-      go_result->add_warning(
-        iv_start_time = lv_start_time
-        iv_text       = |todo, action type: { is_command-action-type }| ).
     ENDIF.
 
   ENDMETHOD.
@@ -241,7 +260,6 @@ CLASS cl_testsuite IMPLEMENTATION.
       TRY.
           CASE <ls_command>-type.
             WHEN 'module'.
-*              WRITE / |load: { <ls_command>-filename }|.
               WRITE / '@KERNEL lv_hex.set(fs.readFileSync(lv_filename.get()).toString("hex").toUpperCase());'.
               lo_wasm = zcl_wasm=>create_with_wasm( lv_hex ).
               go_result->add_success( |loaded| ).
@@ -250,18 +268,27 @@ CLASS cl_testsuite IMPLEMENTATION.
                 is_command = <ls_command>
                 io_wasm    = lo_wasm ).
             WHEN 'assert_trap'.
-              go_result->add_warning( |todo, assert_trap| ).
+              TRY.
+                  invoke(
+                    is_command = <ls_command>
+                    io_wasm    = lo_wasm ).
+                  go_result->add_error( |error, expected trap| ).
+                CATCH cx_root INTO DATA(lx_error).
+                  IF lx_error->get_text( ) CP '*todo*'.
+                    go_result->add_error( |assert_trap, todo: { lx_error->get_text( ) }| ).
+                  ELSE.
+                    go_result->add_success( |ok, got error: { lx_error->get_text( ) }| ).
+                  ENDIF.
+              ENDTRY.
             WHEN 'assert_malformed'.
-*              WRITE / |load: { <ls_command>-filename }|.
               WRITE / '@KERNEL lv_hex.set(fs.readFileSync(lv_filename.get()).toString("hex").toUpperCase());'.
               TRY.
                   zcl_wasm=>create_with_wasm( lv_hex ).
                   go_result->add_error( |expected malformed| ).
-                CATCH cx_root INTO DATA(lx_error).
+                CATCH cx_root INTO lx_error.
                   go_result->add_success( |got error: { lx_error->get_text( ) }| ).
               ENDTRY.
             WHEN 'assert_invalid'.
-*              WRITE / |load: { <ls_command>-filename }|.
               WRITE / '@KERNEL lv_hex.set(fs.readFileSync(lv_filename.get()).toString("hex").toUpperCase());'.
               TRY.
                   zcl_wasm=>create_with_wasm( lv_hex ).
@@ -270,8 +297,7 @@ CLASS cl_testsuite IMPLEMENTATION.
                   go_result->add_success( |got error: { lx_error->get_text( ) }| ).
               ENDTRY.
             WHEN 'action'.
-* these are all invoke actions?
-              assert_return(
+              invoke(
                 is_command = <ls_command>
                 io_wasm    = lo_wasm ).
             WHEN 'assert_exhaustion'.

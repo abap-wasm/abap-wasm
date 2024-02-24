@@ -83,28 +83,20 @@ CLASS zcl_wasm_memory_linear IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    DATA(lv_i) = xstrlen( mv_linear ).
+    DATA(lv_length) = xstrlen( mv_linear ).
 
-    IF lv_i < iv_offset.
-* it allocates 64k bytes pages at a time?
-* hmm,      RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: linear_get, out of bounds' ).
-      rv_bytes = '00'.
-      RETURN.
+    IF iv_offset + iv_length > lv_length.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'linear_get: out of bounds' ).
     ELSEIF iv_length <= 0.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: linear_get, negative or zero length' ).
+      RAISE EXCEPTION NEW zcx_wasm( text = 'linear_get: negative or zero length' ).
     ELSEIF iv_offset < 0.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: linear_get, negative offset' ).
+      RAISE EXCEPTION NEW zcx_wasm( text = 'linear_get: negative offset' ).
     ENDIF.
 
 * return multiple bytes in endian order
     DATA(lv_offset) = iv_offset.
     DO iv_length TIMES.
-      IF lv_offset < lv_i.
-        lv_byte = mv_linear+lv_offset(1).
-      ELSE.
-        lv_byte = '00'.
-      ENDIF.
-
+      lv_byte = mv_linear+lv_offset(1).
       CONCATENATE lv_byte rv_bytes INTO rv_bytes IN BYTE MODE.
       lv_offset = lv_offset + 1.
     ENDDO.
