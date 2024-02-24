@@ -269,7 +269,7 @@ CLASS cl_testsuite IMPLEMENTATION.
                 io_wasm    = lo_wasm ).
             WHEN 'assert_trap'.
               TRY.
-                  assert_return(
+                  invoke(
                     is_command = <ls_command>
                     io_wasm    = lo_wasm ).
                   go_result->add_error( |error, expected trap| ).
@@ -293,8 +293,7 @@ CLASS cl_testsuite IMPLEMENTATION.
                   go_result->add_success( |got error: { lx_error->get_text( ) }| ).
               ENDTRY.
             WHEN 'action'.
-* these are all invoke actions?
-              assert_return(
+              invoke(
                 is_command = <ls_command>
                 io_wasm    = lo_wasm ).
             WHEN 'assert_exhaustion'.
