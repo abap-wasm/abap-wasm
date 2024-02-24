@@ -274,7 +274,11 @@ CLASS cl_testsuite IMPLEMENTATION.
                     io_wasm    = lo_wasm ).
                   go_result->add_error( |error, expected trap| ).
                 CATCH cx_root INTO DATA(lx_error).
-                  go_result->add_success( |ok, got error: { lx_error->get_text( ) }| ).
+                  IF lx_error->get_text( ) CP '*todo*'.
+                    go_result->add_error( |assert_trap, todo: { lx_error->get_text( ) }| ).
+                  ELSE.
+                    go_result->add_success( |ok, got error: { lx_error->get_text( ) }| ).
+                  ENDIF.
               ENDTRY.
             WHEN 'assert_malformed'.
               WRITE / '@KERNEL lv_hex.set(fs.readFileSync(lv_filename.get()).toString("hex").toUpperCase());'.

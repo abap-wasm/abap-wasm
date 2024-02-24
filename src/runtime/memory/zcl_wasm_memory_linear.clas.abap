@@ -102,6 +102,7 @@ CLASS zcl_wasm_memory_linear IMPLEMENTATION.
       IF lv_offset < lv_i.
         lv_byte = mv_linear+lv_offset(1).
       ELSE.
+* todo, trap here?
         lv_byte = '00'.
       ENDIF.
 
