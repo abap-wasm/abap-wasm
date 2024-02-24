@@ -15,7 +15,7 @@ CLASS zcl_wasm_f32_ge IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    zcl_wasm_f32=>ne( io_memory ).
+    zcl_wasm_f32=>ge( io_memory ).
   ENDMETHOD.
 
 ENDCLASS.

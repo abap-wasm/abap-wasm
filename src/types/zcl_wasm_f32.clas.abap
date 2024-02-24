@@ -48,12 +48,6 @@ CLASS zcl_wasm_f32 DEFINITION
       RAISING
         zcx_wasm.
 
-    CLASS-METHODS gt
-      IMPORTING
-        !io_memory TYPE REF TO zcl_wasm_memory
-      RAISING
-        zcx_wasm.
-
     CLASS-METHODS square_root
       IMPORTING
         !io_memory TYPE REF TO zcl_wasm_memory
@@ -97,6 +91,18 @@ CLASS zcl_wasm_f32 DEFINITION
         zcx_wasm.
 
     CLASS-METHODS ne
+      IMPORTING
+        !io_memory TYPE REF TO zcl_wasm_memory
+      RAISING
+        zcx_wasm.
+
+    CLASS-METHODS gt
+      IMPORTING
+        !io_memory TYPE REF TO zcl_wasm_memory
+      RAISING
+        zcx_wasm.
+
+    CLASS-METHODS ge
       IMPORTING
         !io_memory TYPE REF TO zcl_wasm_memory
       RAISING
@@ -196,6 +202,24 @@ CLASS zcl_wasm_f32 IMPLEMENTATION.
 
     DATA(lv_result) = 0.
     IF lo_val1->get_value( ) > lo_val2->get_value( ).
+      lv_result = 1.
+    ENDIF.
+
+    io_memory->stack_push( zcl_wasm_i32=>from_signed( lv_result ) ).
+
+  ENDMETHOD.
+
+  METHOD ge.
+
+    IF io_memory->stack_length( ) < 2.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'f32 gt, expected at least two variables on stack' ).
+    ENDIF.
+
+    DATA(lo_val1) = CAST zcl_wasm_f32( io_memory->stack_pop( ) ).
+    DATA(lo_val2) = CAST zcl_wasm_f32( io_memory->stack_pop( ) ).
+
+    DATA(lv_result) = 0.
+    IF lo_val1->get_value( ) >= lo_val2->get_value( ).
       lv_result = 1.
     ENDIF.
 
