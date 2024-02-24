@@ -151,9 +151,9 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
 
     rv_f = rv_f * ( 2 ** lv_exponent ).
 
-    " IF lv_sign > 0.
-    "   rv_f = 0 - rv_f.
-    " ENDIF.
+    IF lv_sign > 0.
+      rv_f = 0 - rv_f.
+    ENDIF.
 
   ENDMETHOD.
 
