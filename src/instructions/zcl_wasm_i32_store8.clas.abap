@@ -38,7 +38,7 @@ CLASS zcl_wasm_i32_store8 IMPLEMENTATION.
 
   METHOD zif_wasm_instruction~execute.
 
-* https://webassembly.github.io/spec/core/exec/instructions.html#t-mathsf-xref-syntax-instructions-syntax-instr-memory-mathsf-store-xref-syntax-instructions-syntax-memarg-mathit-memarg-and-t-mathsf-xref-syntax-instructions-syntax-instr-memory-mathsf-store-n-xref-syntax-instructions-syntax-memarg-mathit-memarg
+* https://webassembly.github.io/spec/core/exec/instructions.html#t-mathsf-xref-syntax-instructions-syntax-instr-memory-mathsf-store-xref-syntax-instructions-syntax-memarg-mathit-memarg-and-t-mathsf-xref-syntax-instructions-syntax-instr-memory-mathsf-store
 
     CONSTANTS lc_length TYPE int8 VALUE 1.
     DATA lv_hex TYPE x LENGTH lc_length.

@@ -45,9 +45,7 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
 
       CASE lv_section.
         WHEN zif_wasm_sections=>gc_section_custom.
-* https://webassembly.github.io/spec/core/binary/modules.html#binary-customsec
-* "ignored by the WebAssembly semantics"
-          CONTINUE.
+          zcl_wasm_custom_section=>parse( lo_body ).
         WHEN zif_wasm_sections=>gc_section_type.
           DATA(lt_types) = zcl_wasm_type_section=>parse( lo_body ).
         WHEN zif_wasm_sections=>gc_section_import.
