@@ -55,6 +55,7 @@ CLASS zcl_wasm_i64 DEFINITION
 
   PROTECTED SECTION.
   PRIVATE SECTION.
+* todo, use packed?
     DATA mv_value TYPE int8 .
 ENDCLASS.
 
