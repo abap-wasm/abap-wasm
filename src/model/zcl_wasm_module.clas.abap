@@ -180,7 +180,7 @@ CLASS zcl_wasm_module IMPLEMENTATION.
 
     READ TABLE mt_functions INDEX lv_index INTO rv_type.
     IF sy-subrc <> 0.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'get_function_by_index: not found' ).
+      RAISE EXCEPTION NEW zcx_wasm( text = |get_function_by_index: not found, { lv_index }| ).
     ENDIF.
 
   ENDMETHOD.
