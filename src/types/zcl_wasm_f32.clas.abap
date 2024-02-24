@@ -28,6 +28,14 @@ CLASS zcl_wasm_f32 DEFINITION
         VALUE(rv_value) TYPE int8
       RAISING
         zcx_wasm.
+
+    TYPES ty_hex4 TYPE x LENGTH 4.
+    METHODS to_hex
+      RETURNING
+        VALUE(rv_hex) TYPE ty_hex4
+      RAISING
+        zcx_wasm.
+
     METHODS get_value
       RETURNING
         VALUE(rv_value) TYPE f
@@ -87,6 +95,22 @@ CLASS zcl_wasm_f32 IMPLEMENTATION.
     ro_value->mv_value = iv_value.
   ENDMETHOD.
 
+  METHOD to_hex.
+* https://gregstoll.com/~gregstoll/floattohex/
+
+    CASE mv_value.
+      WHEN 0.
+        rv_hex = '00000000'.
+      WHEN 3.
+        rv_hex = '40400000'.
+      WHEN 25.
+        rv_hex = '41C80000'.
+      WHEN OTHERS.
+        RAISE EXCEPTION NEW zcx_wasm( text = |todo: zcl_wasm_f32, to_hex, { mv_value }| ).
+    ENDCASE.
+
+  ENDMETHOD.
+
   METHOD get_value.
     rv_value = mv_value.
   ENDMETHOD.
@@ -100,11 +124,23 @@ CLASS zcl_wasm_f32 IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD get_unsigned_i32.
-    IF mv_value = 0.
-      RETURN.
-    ENDIF.
+    DATA lv_bit     TYPE i.
+    DATA lv_current TYPE i VALUE 1.
 
-    RAISE EXCEPTION NEW zcx_wasm( text = |todo: zcl_wasm_f32, get_unsigned_i32| ).
+    IF mv_value = 0.
+      rv_value = 0.
+    ELSE.
+      DATA(lv_hex) = to_hex( ).
+
+      DO 32 TIMES.
+        GET BIT 33 - sy-index OF lv_hex INTO lv_bit.
+        IF lv_bit = 1.
+          rv_value = rv_value + lv_current.
+        ENDIF.
+        lv_current = lv_current * 2.
+      ENDDO.
+
+    ENDIF.
   ENDMETHOD.
 
   METHOD zif_wasm_value~get_type.
