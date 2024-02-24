@@ -15,7 +15,7 @@ CLASS zcl_wasm_f32_mul IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_f32_mul' ).
+    zcl_wasm_f32=>mul( io_memory ).
   ENDMETHOD.
 
 ENDCLASS.
