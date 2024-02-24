@@ -98,9 +98,12 @@ CLASS zcl_wasm_f32 IMPLEMENTATION.
   METHOD to_hex.
 * https://gregstoll.com/~gregstoll/floattohex/
 
+* todo
     CASE mv_value.
       WHEN 0.
         rv_hex = '00000000'.
+      WHEN 1.
+        rv_hex = '3F800000'.
       WHEN 3.
         rv_hex = '40400000'.
       WHEN 25.
