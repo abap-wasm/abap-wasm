@@ -108,6 +108,10 @@ CLASS zcl_wasm_f32 IMPLEMENTATION.
         rv_hex = '40000000'.
       WHEN 3.
         rv_hex = '40400000'.
+      WHEN 5.
+        rv_hex = '40A00000'.
+      WHEN 6.
+        rv_hex = '40C00000'.
       WHEN 25.
         rv_hex = '41C80000'.
       WHEN OTHERS.
