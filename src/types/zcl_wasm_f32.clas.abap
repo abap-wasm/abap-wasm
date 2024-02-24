@@ -104,12 +104,14 @@ CLASS zcl_wasm_f32 IMPLEMENTATION.
         rv_hex = '00000000'.
       WHEN 1.
         rv_hex = '3F800000'.
+      WHEN 2.
+        rv_hex = '40000000'.
       WHEN 3.
         rv_hex = '40400000'.
       WHEN 25.
         rv_hex = '41C80000'.
       WHEN OTHERS.
-        RAISE EXCEPTION NEW zcx_wasm( text = |todo: zcl_wasm_f32, to_hex, { mv_value }| ).
+        RAISE EXCEPTION NEW zcx_wasm( text = |todo: zcl_wasm_f32, to_hex, { mv_value STYLE = SCIENTIFIC }| ).
     ENDCASE.
 
   ENDMETHOD.
