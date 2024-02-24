@@ -48,6 +48,12 @@ CLASS zcl_wasm_f32 DEFINITION
       RAISING
         zcx_wasm.
 
+    CLASS-METHODS sub
+      IMPORTING
+        !io_memory TYPE REF TO zcl_wasm_memory
+      RAISING
+        zcx_wasm.
+
     CLASS-METHODS square_root
       IMPORTING
         !io_memory TYPE REF TO zcl_wasm_memory
@@ -124,6 +130,8 @@ CLASS zcl_wasm_f32 IMPLEMENTATION.
 
 * todo
     CASE mv_value.
+      WHEN -1.
+        rv_hex = 'BF800000'.
       WHEN 0.
         rv_hex = '00000000'.
       WHEN 1.
@@ -188,6 +196,17 @@ CLASS zcl_wasm_f32 IMPLEMENTATION.
     DATA(lo_val2) = CAST zcl_wasm_f32( io_memory->stack_pop( ) ).
 
     io_memory->stack_push( from_float( lo_val1->get_value( ) + lo_val2->get_value( ) ) ).
+
+  ENDMETHOD.
+
+  METHOD sub.
+
+    ASSERT io_memory->stack_length( ) >= 2.
+
+    DATA(lo_val1) = CAST zcl_wasm_f32( io_memory->stack_pop( ) ).
+    DATA(lo_val2) = CAST zcl_wasm_f32( io_memory->stack_pop( ) ).
+
+    io_memory->stack_push( from_float( lo_val2->get_value( ) - lo_val1->get_value( ) ) ).
 
   ENDMETHOD.
 
