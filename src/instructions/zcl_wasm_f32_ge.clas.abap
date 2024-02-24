@@ -15,7 +15,7 @@ CLASS zcl_wasm_f32_ge IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_f32_ge' ).
+    zcl_wasm_f32=>ge( io_memory ).
   ENDMETHOD.
 
 ENDCLASS.

@@ -15,7 +15,8 @@ CLASS zcl_wasm_f32_abs IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_f32_abs' ).
+    DATA(lo_val1) = CAST zcl_wasm_f32( io_memory->stack_pop( ) ).
+    io_memory->stack_push( zcl_wasm_f32=>from_float( abs( lo_val1->get_value( ) ) ) ).
   ENDMETHOD.
 
 ENDCLASS.
