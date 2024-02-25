@@ -23,7 +23,6 @@ CLASS zcl_wasm_global_get IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD parse.
-* todo, singletons?
     ri_instruction = NEW zcl_wasm_global_get( io_body->shift_u32( ) ).
   ENDMETHOD.
 
