@@ -20,7 +20,6 @@ CLASS zcl_wasm_memory_init IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD parse.
-* todo: singletons?
     ri_instruction = NEW zcl_wasm_memory_init( io_body->shift_u32( ) ).
     ASSERT io_body->shift( 1 ) = '00'.
   ENDMETHOD.

@@ -21,7 +21,6 @@ CLASS zcl_wasm_ref_func IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD parse.
-* todo: singletons?
     ri_instruction = NEW zcl_wasm_ref_func( io_body->shift_u32( ) ).
   ENDMETHOD.
 
