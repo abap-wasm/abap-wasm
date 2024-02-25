@@ -4,6 +4,7 @@ const after = JSON.parse(fs.readFileSync("../after.json", "utf-8"));
 const before = JSON.parse(fs.readFileSync("../before.json", "utf-8"));
 
 const qafter = JSON.parse(fs.readFileSync("../quickjs_after.json", "utf-8"));
+const qbefore = undefined;
 // const qbefore = JSON.parse(fs.readFileSync("../quickjs_before.json", "utf-8"));
 
 let comment = "Regression test results:\n";
