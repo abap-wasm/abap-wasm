@@ -10,7 +10,6 @@ CLASS zcl_wasm_data_drop DEFINITION PUBLIC.
       IMPORTING !io_body TYPE REF TO zcl_wasm_binary_stream
       RETURNING VALUE(ri_instruction) TYPE REF TO zif_wasm_instruction.
   PRIVATE SECTION.
-    CLASS-DATA gi_singleton TYPE REF TO zif_wasm_instruction.
     DATA mv_dataidx TYPE int8.
 ENDCLASS.
 
@@ -21,10 +20,7 @@ CLASS zcl_wasm_data_drop IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD parse.
-    IF gi_singleton IS INITIAL.
-      gi_singleton = NEW zcl_wasm_data_drop( io_body->shift_u32( ) ).
-    ENDIF.
-    ri_instruction = gi_singleton.
+    ri_instruction = NEW zcl_wasm_data_drop( io_body->shift_u32( ) ).
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.

@@ -12,7 +12,6 @@ CLASS zcl_wasm_call DEFINITION PUBLIC.
       RETURNING VALUE(ri_instruction) TYPE REF TO zif_wasm_instruction.
 
   PRIVATE SECTION.
-    CLASS-DATA gi_singleton TYPE REF TO zif_wasm_instruction.
     DATA mv_funcidx TYPE int8.
 ENDCLASS.
 
@@ -23,10 +22,7 @@ CLASS zcl_wasm_call IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD parse.
-    IF gi_singleton IS INITIAL.
-      gi_singleton = NEW zcl_wasm_call( io_body->shift_u32( ) ).
-    ENDIF.
-    ri_instruction = gi_singleton.
+    ri_instruction = NEW zcl_wasm_call( io_body->shift_u32( ) ).
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
