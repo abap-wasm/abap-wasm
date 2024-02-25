@@ -9,7 +9,7 @@ CLASS zcl_wasm_instructions DEFINITION PUBLIC.
         et_instructions TYPE zif_wasm_instruction=>ty_list
       RAISING
         zcx_wasm.
-protected section.
+  PROTECTED SECTION.
   PRIVATE SECTION.
     CLASS-METHODS initialize.
 
@@ -777,7 +777,7 @@ CLASS ZCL_WASM_INSTRUCTIONS IMPLEMENTATION.
       IF sy-subrc = 0.
         CALL METHOD (<ls_opcode>-name)=>parse
           EXPORTING
-            io_body = io_body
+            io_body        = io_body
           RECEIVING
             ri_instruction = li_instruction.
         APPEND li_instruction TO et_instructions.
