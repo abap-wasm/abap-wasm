@@ -9,6 +9,7 @@ CLASS zcl_wasm_instructions DEFINITION PUBLIC.
         et_instructions TYPE zif_wasm_instruction=>ty_list
       RAISING
         zcx_wasm.
+  PROTECTED SECTION.
   PRIVATE SECTION.
     CLASS-METHODS initialize.
 
@@ -20,7 +21,10 @@ CLASS zcl_wasm_instructions DEFINITION PUBLIC.
     CLASS-DATA gv_initialized TYPE abap_bool.
 ENDCLASS.
 
-CLASS zcl_wasm_instructions IMPLEMENTATION.
+
+
+CLASS ZCL_WASM_INSTRUCTIONS IMPLEMENTATION.
+
 
   METHOD initialize.
 
@@ -755,6 +759,7 @@ CLASS zcl_wasm_instructions IMPLEMENTATION.
     gv_initialized = abap_true.
   ENDMETHOD.
 
+
   METHOD parse.
 
     DATA li_instruction TYPE REF TO zif_wasm_instruction.
@@ -772,9 +777,9 @@ CLASS zcl_wasm_instructions IMPLEMENTATION.
       IF sy-subrc = 0.
         CALL METHOD (<ls_opcode>-name)=>parse
           EXPORTING
-            io_body = io_body
+            io_body        = io_body
           RECEIVING
-            ri_instructions = li_instruction.
+            ri_instruction = li_instruction.
         APPEND li_instruction TO et_instructions.
       ELSE.
         CASE lv_opcode.
@@ -832,5 +837,4 @@ CLASS zcl_wasm_instructions IMPLEMENTATION.
     ENDWHILE.
 
   ENDMETHOD.
-
 ENDCLASS.
