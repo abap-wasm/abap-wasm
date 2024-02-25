@@ -31,7 +31,6 @@ CLASS zcl_wasm_i64_store8 IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD parse.
-* todo: singletons?
     ri_instruction = NEW zcl_wasm_i64_store8(
       iv_align  = io_body->shift_u32( )
       iv_offset = io_body->shift_u32( ) ).
