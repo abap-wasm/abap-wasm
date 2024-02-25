@@ -1,6 +1,8 @@
 CLASS cl_quickjs DEFINITION PUBLIC.
   PUBLIC SECTION.
-    CLASS-METHODS run RAISING zcx_wasm.
+    CLASS-METHODS run
+      RETURNING VALUE(rv_json) TYPE string
+      RAISING zcx_wasm.
 ENDCLASS.
 
 CLASS cl_quickjs IMPLEMENTATION.
@@ -19,7 +21,10 @@ CLASS cl_quickjs IMPLEMENTATION.
     zcl_wasm=>create_with_wasm( lv_hex ).
     GET RUN TIME FIELD DATA(lv_end).
 
-    WRITE / |{ lv_end - lv_start }ms parsing quickjs|.
+    DATA(lv_runtime) = lv_end - lv_start.
+    WRITE / |{ lv_runtime }ms parsing QuickJS|.
+
+    rv_json = '{"runtime": "' && lv_runtime && '"}'.
 
   ENDMETHOD.
 

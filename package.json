@@ -4,10 +4,11 @@
   "scripts": {
     "downport": "rm -rf downport && cp src -r downport && cp test -r downport && abaplint --fix abaplint-downport.json",
     "testsuite": "echo RUNNING TESTSUITE && node test/testsuite.mjs",
+    "quickjs": "echo RUNNING QUICKJS && node test/quickjs.mjs",
     "unit": "rm -rf output && abap_transpile && echo RUNNING UNIT TEST && node output/index.mjs",
     "lint": "abaplint",
     "flame-graph": "0x -o test/testsuite.mjs",
-    "test": "npm run lint && npm run downport && npm run unit && npm run testsuite"
+    "test": "npm run lint && npm run downport && npm run unit && npm run testsuite && npm run quickjs"
   },
   "author": "Lars Hvam Petersen",
   "license": "MIT",
