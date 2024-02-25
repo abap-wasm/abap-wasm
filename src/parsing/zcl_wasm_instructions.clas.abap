@@ -26,6 +26,8 @@ CLASS zcl_wasm_instructions IMPLEMENTATION.
 
     DATA ls_row LIKE LINE OF gt_opcodes.
 
+    ASSERT gv_initialized = abap_false.
+
     ls_row-opcode = zif_wasm_opcodes=>c_opcodes-local_get.
     ls_row-name = 'ZCL_WASM_LOCAL_GET'.
     INSERT ls_row INTO TABLE gt_opcodes.
