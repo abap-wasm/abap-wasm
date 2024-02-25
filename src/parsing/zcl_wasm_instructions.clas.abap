@@ -754,13 +754,14 @@ CLASS zcl_wasm_instructions IMPLEMENTATION.
   METHOD parse.
 
     DATA li_instruction TYPE REF TO zif_wasm_instruction.
+    DATA lv_opcode TYPE x LENGTH 1.
 
     IF lines( gt_opcodes ) = 0.
       initialize( ).
     ENDIF.
 
     WHILE io_body->get_length( ) > 0.
-      DATA(lv_opcode) = io_body->shift( 1 ).
+      lv_opcode = io_body->shift( 1 ).
       ev_last_opcode = lv_opcode.
 
       READ TABLE gt_opcodes ASSIGNING FIELD-SYMBOL(<ls_opcode>) WITH TABLE KEY opcode = lv_opcode.
