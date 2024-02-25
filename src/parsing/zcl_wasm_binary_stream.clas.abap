@@ -91,7 +91,7 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
   METHOD shift.
 
     rv_data = peek( iv_length ).
-
+* todo: optimize, dont mutate mv_data
     mv_data = mv_data+iv_length.
 
   ENDMETHOD.
