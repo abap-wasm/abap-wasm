@@ -22,10 +22,7 @@ CLASS zcl_wasm_call IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD parse.
-* todo: singletons?
-
     ri_instruction = NEW zcl_wasm_call( io_body->shift_u32( ) ).
-
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.

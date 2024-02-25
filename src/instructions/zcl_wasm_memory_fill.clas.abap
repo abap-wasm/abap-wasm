@@ -10,7 +10,6 @@ ENDCLASS.
 CLASS zcl_wasm_memory_fill IMPLEMENTATION.
 
   METHOD parse.
-* todo: singletons?
     ri_instruction = NEW zcl_wasm_memory_fill( ).
     ASSERT io_body->shift( 1 ) = '00'.
   ENDMETHOD.

@@ -20,7 +20,6 @@ CLASS zcl_wasm_data_drop IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD parse.
-* todo: singletons?
     ri_instruction = NEW zcl_wasm_data_drop( io_body->shift_u32( ) ).
   ENDMETHOD.
 

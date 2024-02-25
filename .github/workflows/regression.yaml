@@ -18,7 +18,7 @@ jobs:
         ref: 'main'
     - run: npm ci && npm test
     - run: cp web/totals.json ../before.json
-#    - run: cp web/quickjs.json ../quickjs_before.json
+    - run: cp web/quickjs.json ../quickjs_before.json
 
     - uses: actions/checkout@v4
     - run: npm ci && npm test

@@ -18,7 +18,6 @@ CLASS zcl_wasm_memory_size IMPLEMENTATION.
       RAISE EXCEPTION NEW zcx_wasm( text = |zero byte expected| ).
     ENDIF.
 
-* todo, singleton?
     ri_instruction = NEW zcl_wasm_memory_size( ).
   ENDMETHOD.
 

@@ -7,7 +7,8 @@
     "quickjs": "echo RUNNING QUICKJS && node test/quickjs.mjs",
     "unit": "rm -rf output && abap_transpile && echo RUNNING UNIT TEST && node output/index.mjs",
     "lint": "abaplint",
-    "flame-graph": "0x -o test/testsuite.mjs",
+    "flame-graph-testsuite": "0x -o test/testsuite.mjs",
+    "flame-graph-quickjs": "0x -o test/quickjs.mjs",
     "test": "npm run lint && npm run downport && npm run unit && npm run testsuite && npm run quickjs"
   },
   "author": "Lars Hvam Petersen",

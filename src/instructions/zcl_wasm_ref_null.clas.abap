@@ -21,7 +21,6 @@ CLASS zcl_wasm_ref_null IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD parse.
-* todo: singletons?
     ri_instruction = NEW zcl_wasm_ref_null( io_body->shift( 1 ) ).
   ENDMETHOD.
 
