@@ -17,6 +17,7 @@ CLASS zcl_wasm_instructions DEFINITION PUBLIC.
              name   TYPE string,
            END OF ty_opcodes.
     CLASS-DATA gt_opcodes TYPE HASHED TABLE OF ty_opcodes WITH UNIQUE KEY opcode.
+    CLASS-DATA gv_initialized TYPE abap_bool.
 ENDCLASS.
 
 CLASS zcl_wasm_instructions IMPLEMENTATION.
@@ -749,14 +750,15 @@ CLASS zcl_wasm_instructions IMPLEMENTATION.
     ls_row-name = 'ZCL_WASM_DROP'.
     INSERT ls_row INTO TABLE gt_opcodes.
 
+    gv_initialized = abap_true.
   ENDMETHOD.
 
   METHOD parse.
 
     DATA li_instruction TYPE REF TO zif_wasm_instruction.
-    DATA lv_opcode TYPE x LENGTH 1.
+    DATA lv_opcode      TYPE x LENGTH 1.
 
-    IF lines( gt_opcodes ) = 0.
+    IF gv_initialized = abap_false.
       initialize( ).
     ENDIF.
 
