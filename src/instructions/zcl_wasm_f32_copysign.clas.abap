@@ -15,6 +15,9 @@ CLASS zcl_wasm_f32_copysign IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
+
+* https://webassembly.github.io/spec/core/exec/numerics.html#xref-exec-numerics-op-fcopysign-mathrm-fcopysign-n-z-1-z-2
+
     RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_f32_copysign' ).
   ENDMETHOD.
 
