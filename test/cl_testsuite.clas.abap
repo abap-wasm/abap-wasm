@@ -77,28 +77,28 @@ CLASS cl_testsuite IMPLEMENTATION.
 
     go_result = NEW #( ).
 
-    WRITE / '@KERNEL const fs = await import("fs");'.
-    WRITE / '@KERNEL const folders = fs.readdirSync("./testsuite/").filter(a => a.includes(".") === false);'.
-    WRITE / '@KERNEL for (const folder of folders) {'.
+    WRITE '@KERNEL const fs = await import("fs");'.
+    WRITE '@KERNEL const folders = fs.readdirSync("./testsuite/").filter(a => a.includes(".") === false);'.
+    WRITE '@KERNEL for (const folder of folders) {'.
     CLEAR lt_files.
-    WRITE / '@KERNEL   lv_folder.set(folder);'.
-    WRITE / '@KERNEL   const filenames = fs.readdirSync("./testsuite/" + folder);'.
-    WRITE / '@KERNEL   for (const filename of filenames) {'.
-    WRITE / '@KERNEL     lv_filename.set(filename);'.
-    WRITE / '@KERNEL     lv_hex.set(fs.readFileSync("./testsuite/" + folder + "/" + filename).toString("hex").toUpperCase());'.
+    WRITE '@KERNEL   lv_folder.set(folder);'.
+    WRITE '@KERNEL   const filenames = fs.readdirSync("./testsuite/" + folder);'.
+    WRITE '@KERNEL   for (const filename of filenames) {'.
+    WRITE '@KERNEL     lv_filename.set(filename);'.
+    WRITE '@KERNEL     lv_hex.set(fs.readFileSync("./testsuite/" + folder + "/" + filename).toString("hex").toUpperCase());'.
 
-    WRITE / '@KERNEL     lv_wast.set(fs.readFileSync("./testsuite/" + folder + ".wast").toString("hex").toUpperCase());'.
+    WRITE '@KERNEL     lv_wast.set(fs.readFileSync("./testsuite/" + folder + ".wast").toString("hex").toUpperCase());'.
     APPEND VALUE #(
       filename = condense( lv_filename )
       hex      = lv_hex ) TO lt_files.
-    WRITE / '@KERNEL   }'.
+    WRITE '@KERNEL   }'.
 
     run_folder(
       iv_folder = lv_folder
       iv_wast   = cl_abap_codepage=>convert_from( lv_wast )
       it_files  = lt_files ).
 
-    WRITE / '@KERNEL }'.
+    WRITE '@KERNEL }'.
 
     go_result->end( ).
     ro_html = go_result.
@@ -154,8 +154,8 @@ CLASS cl_testsuite IMPLEMENTATION.
 
     IF lines( ls_results-values ) <> lines( is_command-expected ).
       go_result->add_error(
-          iv_start_time = ls_results-start_time
-          iv_text       = |error, wrong number of results| ).
+        iv_start_time = ls_results-start_time
+        iv_text       = |error, wrong number of results| ).
       RETURN.
     ENDIF.
 
