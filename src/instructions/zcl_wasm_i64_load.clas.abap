@@ -37,10 +37,18 @@ CLASS zcl_wasm_i64_load IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
+    CONSTANTS lc_length TYPE int8 VALUE 8.
+    DATA lv_hex TYPE x LENGTH lc_length.
+    DATA lv_int TYPE i.
+
     DATA(lv_i) = io_memory->stack_pop_i32( )->get_signed( ).
     IF lv_i < 0.
       RAISE EXCEPTION NEW zcx_wasm( text = 'load: out of bounds' ).
     ENDIF.
+    lv_hex = io_memory->get_linear( )->get(
+      iv_length = lc_length
+      iv_align  = mv_align
+      iv_offset = mv_offset + lv_i ).
 
     RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_i64_load' ).
   ENDMETHOD.
