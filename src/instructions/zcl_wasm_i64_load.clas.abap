@@ -37,6 +37,11 @@ CLASS zcl_wasm_i64_load IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
+    DATA(lv_i) = io_memory->stack_pop_i32( )->get_signed( ).
+    IF lv_i < 0.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'load: out of bounds' ).
+    ENDIF.
+
     RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_i64_load' ).
   ENDMETHOD.
 
