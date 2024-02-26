@@ -117,7 +117,8 @@ CLASS cl_result IMPLEMENTATION.
       data        = is_command ).
 
     mv_html = mv_html && |<pre>| && lv_command && |</pre>\n|.
-    IF is_command-type = 'assert_return'.
+    IF is_command-type = 'assert_return'
+        OR is_command-type = 'assert_trap'.
       mv_html = mv_html && |<pre>| && iv_wast && |</pre>\n|.
     ENDIF.
   ENDMETHOD.
