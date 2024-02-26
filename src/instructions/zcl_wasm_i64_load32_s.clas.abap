@@ -43,6 +43,9 @@ CLASS zcl_wasm_i64_load32_s IMPLEMENTATION.
     DATA lv_int8 TYPE int8.
 
     DATA(lv_i) = io_memory->stack_pop_i32( )->get_signed( ).
+    IF lv_i < 0.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'load: out of bounds' ).
+    ENDIF.
     lv_hex = io_memory->get_linear( )->get(
       iv_length = lc_length
       iv_align  = mv_align

@@ -81,7 +81,7 @@ CLASS zcl_wasm_i64 IMPLEMENTATION.
       RAISE EXCEPTION NEW zcx_wasm( text = 'i64, from_unsigned, unexpected value' ).
     ENDIF.
 
-    IF strlen( iv_value ) > 8.
+    IF strlen( iv_value ) > 18.
       RAISE EXCEPTION NEW zcx_wasm( text = 'i64, from_unsigned, value too long, todo' ).
     ENDIF.
 
