@@ -64,6 +64,9 @@ CLASS zcl_wasm_module DEFINITION
     METHODS get_memory_section
       RETURNING
         VALUE(ro_memory_section) TYPE REF TO zcl_wasm_memory_section.
+    METHODS get_global_section
+      RETURNING
+        VALUE(ro_global_section) TYPE REF TO zcl_wasm_global_section.
     METHODS get_code_by_index
       IMPORTING
         !iv_index      TYPE int8
@@ -162,6 +165,9 @@ CLASS zcl_wasm_module IMPLEMENTATION.
 
   ENDMETHOD.
 
+  METHOD get_global_section.
+    ro_global_section = mo_global_section.
+  ENDMETHOD.
 
   METHOD get_exports.
     rt_result = mt_exports.

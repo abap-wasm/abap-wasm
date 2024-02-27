@@ -20,6 +20,12 @@ CLASS zcl_wasm_global_section DEFINITION PUBLIC.
       IMPORTING
         it_globals TYPE ty_globals OPTIONAL.
 
+    METHODS instantiate
+      IMPORTING
+        io_memory TYPE REF TO zcl_wasm_memory
+      RAISING
+        zcx_wasm.
+
   PRIVATE SECTION.
     DATA mt_globals TYPE ty_globals.
 ENDCLASS.
@@ -28,6 +34,10 @@ CLASS zcl_wasm_global_section IMPLEMENTATION.
 
   METHOD constructor.
     mt_globals = it_globals.
+  ENDMETHOD.
+
+  METHOD instantiate.
+* todo
   ENDMETHOD.
 
   METHOD parse.

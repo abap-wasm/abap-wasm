@@ -95,6 +95,7 @@ CLASS zcl_wasm IMPLEMENTATION.
     ENDLOOP.
 
     mo_module->get_memory_section( )->instantiate( lo_memory ).
+    mo_module->get_global_section( )->instantiate( lo_memory ).
     mo_module->get_data_section( )->instantiate( lo_memory ).
 
     NEW zcl_wasm_vm(
