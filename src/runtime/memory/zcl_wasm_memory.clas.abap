@@ -29,23 +29,13 @@ CLASS zcl_wasm_memory DEFINITION
       RETURNING
         VALUE(rv_length) TYPE i .
 
-*********** LOCAL
-    METHODS local_push
-      IMPORTING
-        !ii_value TYPE REF TO zif_wasm_value .
-    METHODS local_get
-      IMPORTING
-        !iv_index       TYPE int8
-      RETURNING
-        VALUE(ri_value) TYPE REF TO zif_wasm_value
-      RAISING
-        zcx_wasm.
-    METHODS local_set
-      IMPORTING
-        iv_index TYPE int8
-        ii_value TYPE REF TO zif_wasm_value
-      RAISING
-        zcx_wasm.
+* Frames with locals
+    METHODS push_frame.
+    METHODS get_frame
+      RETURNING VALUE(ri_frame) TYPE REF TO zif_wasm_memory_frame
+      RAISING zcx_wasm.
+    METHODS pop_frame
+      RAISING zcx_wasm.
 
 *********** GLOBAL
 * todo
@@ -67,14 +57,34 @@ CLASS zcl_wasm_memory DEFINITION
 
   PROTECTED SECTION.
     DATA mt_stack  TYPE STANDARD TABLE OF REF TO zif_wasm_value WITH DEFAULT KEY.
-    DATA mt_locals TYPE STANDARD TABLE OF REF TO zif_wasm_value WITH DEFAULT KEY.
     DATA mi_linear TYPE REF TO zif_wasm_memory_linear.
+    DATA mt_frames TYPE STANDARD TABLE OF REF TO zif_wasm_memory_frame WITH DEFAULT KEY.
   PRIVATE SECTION.
 ENDCLASS.
 
 
 
 CLASS zcl_wasm_memory IMPLEMENTATION.
+
+  METHOD push_frame.
+    DATA(lo_frame) = NEW zcl_wasm_memory_frame( ).
+    APPEND lo_frame TO mt_frames.
+  ENDMETHOD.
+
+  METHOD pop_frame.
+    IF lines( mt_frames ) = 0.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: no frames, pop' ).
+    ENDIF.
+    DELETE mt_frames INDEX lines( mt_frames ).
+  ENDMETHOD.
+
+  METHOD get_frame.
+    DATA(lv_last) = lines( mt_frames ).
+    READ TABLE mt_frames INDEX lv_last INTO ri_frame.
+    IF sy-subrc <> 0.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: no frames, get' ).
+    ENDIF.
+  ENDMETHOD.
 
   METHOD get_linear.
     IF mi_linear IS INITIAL.
@@ -92,42 +102,9 @@ CLASS zcl_wasm_memory IMPLEMENTATION.
     mi_linear = ii_linear.
   ENDMETHOD.
 
-  METHOD local_get.
-
-    DATA(lv_index) = iv_index + 1.
-    READ TABLE mt_locals INDEX lv_index INTO ri_value.
-    IF sy-subrc <> 0.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: not found in local memory, local_get' ).
-    ENDIF.
-
-  ENDMETHOD.
-
-
-  METHOD local_push.
-
-* note: locals are popped from the stack in reverse order
-    INSERT ii_value INTO mt_locals INDEX 1.
-
-  ENDMETHOD.
-
-
-  METHOD local_set.
-
-    DATA(lv_index) = iv_index + 1.
-    MODIFY mt_locals INDEX lv_index FROM ii_value.
-    IF sy-subrc <> 0.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: not found in local memory, local_set' ).
-    ENDIF.
-
-  ENDMETHOD.
-
-
   METHOD stack_length.
-
     rv_length = lines( mt_stack ).
-
   ENDMETHOD.
-
 
   METHOD stack_peek.
 

@@ -32,7 +32,7 @@ CLASS zcl_wasm_local_set IMPLEMENTATION.
 
     DATA(li_value) = io_memory->stack_pop( ).
 
-    io_memory->local_set(
+    io_memory->get_frame( )->local_set(
       iv_index = mv_localidx
       ii_value = li_value ).
 
