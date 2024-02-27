@@ -49,8 +49,7 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
         WHEN zif_wasm_sections=>gc_section_type.
           DATA(lt_types) = zcl_wasm_type_section=>parse( lo_body ).
         WHEN zif_wasm_sections=>gc_section_import.
-* todo
-          zcl_wasm_import_section=>parse( lo_body ).
+          DATA(lo_import_section) = zcl_wasm_import_section=>parse( lo_body ).
         WHEN zif_wasm_sections=>gc_section_function.
           DATA(lt_functions) = zcl_wasm_function_section=>parse( lo_body ).
         WHEN zif_wasm_sections=>gc_section_table.
@@ -87,6 +86,7 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
       io_data_section   = lo_data_section
       io_memory_section = lo_memory_section
       io_global_section = lo_global_section
+      io_import_section = lo_import_section
       it_functions      = lt_functions ).
 
   ENDMETHOD.

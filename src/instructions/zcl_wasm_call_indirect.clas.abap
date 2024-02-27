@@ -23,10 +23,6 @@ CLASS zcl_wasm_call_indirect IMPLEMENTATION.
     mv_tableidx = iv_tableidx.
   ENDMETHOD.
 
-  METHOD zif_wasm_instruction~execute.
-    RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_call_indirect' ).
-  ENDMETHOD.
-
   METHOD parse.
 
     DATA(lv_typeidx) = io_body->shift_u32( ).
@@ -36,6 +32,11 @@ CLASS zcl_wasm_call_indirect IMPLEMENTATION.
       iv_typeidx  = lv_typeidx
       iv_tableidx = lv_tableidx ).
 
+  ENDMETHOD.
+
+  METHOD zif_wasm_instruction~execute.
+* https://webassembly.github.io/spec/core/exec/instructions.html#xref-syntax-instructions-syntax-instr-control-mathsf-call-indirect-x-y
+    RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_call_indirect' ).
   ENDMETHOD.
 
 ENDCLASS.
