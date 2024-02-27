@@ -167,6 +167,13 @@ CLASS cl_testsuite IMPLEMENTATION.
       READ TABLE ls_results-values INDEX lv_index INTO DATA(li_result).
       ASSERT sy-subrc = 0.
 
+      IF li_result IS INITIAL.
+        go_result->add_error(
+          iv_start_time = ls_results-start_time
+          iv_text       = |error, expected non initial value| ).
+        EXIT. " current loop
+      ENDIF.
+
       TRY.
           CASE ls_expected-type.
             WHEN 'i32'.

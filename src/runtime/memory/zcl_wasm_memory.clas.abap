@@ -41,13 +41,13 @@ CLASS zcl_wasm_memory DEFINITION
 *********** GLOBAL
     METHODS global_get
       IMPORTING
-        iv_index TYPE i
+        iv_index TYPE int8
       RETURNING
         VALUE(rv_value) TYPE REF TO zif_wasm_value
       RAISING zcx_wasm.
     METHODS global_set
       IMPORTING
-        iv_index TYPE i
+        iv_index TYPE int8
         ii_value TYPE REF TO zif_wasm_value
       RAISING zcx_wasm.
     METHODS global_initialize IMPORTING iv_count TYPE i.
@@ -80,17 +80,17 @@ ENDCLASS.
 CLASS zcl_wasm_memory IMPLEMENTATION.
 
   METHOD global_get.
-    READ TABLE mt_globals INDEX iv_index INTO rv_value.
+    READ TABLE mt_globals INDEX iv_index + 1 INTO rv_value.
     IF sy-subrc <> 0.
       RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: global_get, not found' ).
     ENDIF.
   ENDMETHOD.
 
   METHOD global_set.
-    IF lines( mt_globals ) < iv_index.
+    IF lines( mt_globals ) < iv_index + 1.
       RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: global_set, not found' ).
     ENDIF.
-    mt_globals[ iv_index ] = ii_value.
+    mt_globals[ iv_index + 1 ] = ii_value.
   ENDMETHOD.
 
   METHOD global_initialize.
@@ -156,6 +156,10 @@ CLASS zcl_wasm_memory IMPLEMENTATION.
     DATA(lv_last) = lines( mt_stack ).
     READ TABLE mt_stack INDEX lv_last INTO ri_value.
     DELETE mt_stack INDEX lv_last.
+
+    IF ri_value IS INITIAL.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: stack popped initial value' ).
+    ENDIF.
 
   ENDMETHOD.
 
