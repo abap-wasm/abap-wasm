@@ -5,6 +5,12 @@ CLASS zcl_wasm_import_section DEFINITION PUBLIC.
         !io_body          TYPE REF TO zcl_wasm_binary_stream
       RAISING
         zcx_wasm.
+  PRIVATE SECTION.
+    " TYPES: BEGIN OF ty_import,
+    "        module TYPE string,
+    "        name   TYPE string,
+    "        desc   TYPE xstring,
+    "      END OF ty_import.
 ENDCLASS.
 
 CLASS zcl_wasm_import_section IMPLEMENTATION.

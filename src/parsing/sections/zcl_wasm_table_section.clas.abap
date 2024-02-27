@@ -17,7 +17,7 @@ CLASS zcl_wasm_table_section IMPLEMENTATION.
       DATA(lv_reftype) = io_body->shift( 1 ).
 
       CASE lv_reftype.
-        WHEN '70' OR '6F'.
+        WHEN zcl_wasm_types=>c_reftype-funcref OR zcl_wasm_types=>c_reftype-externref.
           DATA(lv_limit) = io_body->shift( 1 ).
 
           CASE lv_limit.

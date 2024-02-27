@@ -18,6 +18,13 @@ CLASS zcl_wasm_types DEFINITION
         f64 TYPE ty_type VALUE '7C',
       END OF c_value_type .
 
+    CONSTANTS c_vector_type TYPE ty_type VALUE '7B'.
+
+    CONSTANTS: BEGIN OF c_reftype,
+                 funcref   TYPE ty_type VALUE '70',
+                 externref TYPE ty_type VALUE '6F',
+               END OF c_reftype.
+
 * https://webassembly.github.io/spec/core/binary/types.html#function-types
     CONSTANTS c_function_type TYPE ty_type VALUE '60'.
 

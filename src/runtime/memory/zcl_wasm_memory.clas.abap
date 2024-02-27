@@ -87,6 +87,7 @@ CLASS zcl_wasm_memory IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD global_set.
+* todo: raise error if the set changes the type of the global?
     IF lines( mt_globals ) < iv_index + 1.
       RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: global_set, not found' ).
     ENDIF.

@@ -42,9 +42,9 @@ CLASS zcl_wasm_module DEFINITION
         !it_types         TYPE ty_types OPTIONAL
         !it_codes         TYPE ty_codes OPTIONAL
         !it_exports       TYPE ty_exports OPTIONAL
-        io_data_section   TYPE REF TO zcl_wasm_data_section
-        io_memory_section TYPE REF TO zcl_wasm_memory_section
-        io_global_section TYPE REF TO zcl_wasm_global_section
+        io_data_section   TYPE REF TO zcl_wasm_data_section OPTIONAL
+        io_memory_section TYPE REF TO zcl_wasm_memory_section OPTIONAL
+        io_global_section TYPE REF TO zcl_wasm_global_section OPTIONAL
         !it_functions     TYPE ty_functions OPTIONAL .
     METHODS get_types
       RETURNING
