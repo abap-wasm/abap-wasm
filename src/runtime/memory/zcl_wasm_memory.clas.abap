@@ -29,16 +29,28 @@ CLASS zcl_wasm_memory DEFINITION
       RETURNING
         VALUE(rv_length) TYPE i .
 
-* Frames with locals
+*********** Frames with locals
     METHODS push_frame.
     METHODS get_frame
-      RETURNING VALUE(ri_frame) TYPE REF TO zif_wasm_memory_frame
+      RETURNING
+        VALUE(ri_frame) TYPE REF TO zif_wasm_memory_frame
       RAISING zcx_wasm.
     METHODS pop_frame
       RAISING zcx_wasm.
 
 *********** GLOBAL
-* todo
+    METHODS global_get
+      IMPORTING
+        iv_index TYPE i
+      RETURNING
+        VALUE(rv_value) TYPE REF TO zif_wasm_value
+      RAISING zcx_wasm.
+    METHODS global_set
+      IMPORTING
+        iv_index TYPE i
+        ii_value TYPE REF TO zif_wasm_value
+      RAISING zcx_wasm.
+    METHODS global_initialize IMPORTING iv_count TYPE i.
 
 *********** DEFAULT LINEAR
     METHODS get_linear
@@ -59,12 +71,33 @@ CLASS zcl_wasm_memory DEFINITION
     DATA mt_stack  TYPE STANDARD TABLE OF REF TO zif_wasm_value WITH DEFAULT KEY.
     DATA mi_linear TYPE REF TO zif_wasm_memory_linear.
     DATA mt_frames TYPE STANDARD TABLE OF REF TO zif_wasm_memory_frame WITH DEFAULT KEY.
+    DATA mt_globals TYPE STANDARD TABLE OF REF TO zif_wasm_value WITH EMPTY KEY.
   PRIVATE SECTION.
 ENDCLASS.
 
 
 
 CLASS zcl_wasm_memory IMPLEMENTATION.
+
+  METHOD global_get.
+    READ TABLE mt_globals INDEX iv_index INTO rv_value.
+    IF sy-subrc <> 0.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: global_get, not found' ).
+    ENDIF.
+  ENDMETHOD.
+
+  METHOD global_set.
+    IF lines( mt_globals ) < iv_index.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: global_set, not found' ).
+    ENDIF.
+    mt_globals[ iv_index ] = ii_value.
+  ENDMETHOD.
+
+  METHOD global_initialize.
+    DO iv_count TIMES.
+      APPEND INITIAL LINE TO mt_globals.
+    ENDDO.
+  ENDMETHOD.
 
   METHOD push_frame.
     DATA(lo_frame) = NEW zcl_wasm_memory_frame( ).

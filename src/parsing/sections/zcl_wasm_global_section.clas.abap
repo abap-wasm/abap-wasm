@@ -37,7 +37,11 @@ CLASS zcl_wasm_global_section IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD instantiate.
+
+    io_memory->global_initialize( lines( mt_globals ) ).
+
 * todo
+
   ENDMETHOD.
 
   METHOD parse.

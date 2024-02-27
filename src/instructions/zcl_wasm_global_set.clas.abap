@@ -26,6 +26,7 @@ CLASS zcl_wasm_global_set IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
+* https://webassembly.github.io/spec/core/exec/instructions.html#xref-syntax-instructions-syntax-instr-variable-mathsf-global-set-x
     RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_global_set' ).
   ENDMETHOD.
 
