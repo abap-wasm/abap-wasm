@@ -129,6 +129,18 @@ CLASS cl_testsuite IMPLEMENTATION.
           APPEND zcl_wasm_f32=>from_unsigned_i32( CONV #( ls_arg-value ) ) TO lt_values.
           " WHEN 'f64'.
           "   APPEND NEW zcl_wasm_f64( CONV #( ls_arg-value ) ) TO lt_values.
+        WHEN 'funcref'.
+          IF ls_arg-value = 'null'.
+            APPEND NEW zcl_wasm_funcref( -1 ) TO lt_values.
+          ELSE.
+            APPEND NEW zcl_wasm_funcref( CONV #( ls_arg-value ) ) TO lt_values.
+          ENDIF.
+        WHEN 'externref'.
+          IF ls_arg-value = 'null'.
+            APPEND NEW zcl_wasm_externref( -1 ) TO lt_values.
+          ELSE.
+            APPEND NEW zcl_wasm_externref( CONV #( ls_arg-value ) ) TO lt_values.
+          ENDIF.
         WHEN OTHERS.
           RAISE EXCEPTION NEW zcx_wasm( text = |unknown type, invoke, { ls_arg-type }| ).
       ENDCASE.
@@ -204,6 +216,34 @@ CLASS cl_testsuite IMPLEMENTATION.
                     iv_start_time = ls_results-start_time
                     iv_text       = |error, wrong result, expected { lv_expected }, got { lv_result }| ).
                 EXIT. " current loop
+              ENDIF.
+            WHEN 'externref'.
+              IF ls_expected-value = 'null'.
+                IF CAST zcl_wasm_externref( li_result )->is_null( ) = abap_false.
+                  lv_error = abap_true.
+                  go_result->add_error(
+                    iv_start_time = ls_results-start_time
+                    iv_text       = |externref not null| ).
+                  EXIT. " current loop
+                ENDIF.
+              ELSE.
+                go_result->add_error(
+                  iv_start_time = ls_results-start_time
+                  iv_text       = |todo, externref check non null| ).
+              ENDIF.
+            WHEN 'funcref'.
+              IF ls_expected-value = 'null'.
+                IF CAST zcl_wasm_funcref( li_result )->is_null( ) = abap_false.
+                  lv_error = abap_true.
+                  go_result->add_error(
+                    iv_start_time = ls_results-start_time
+                    iv_text       = |funcref not null| ).
+                  EXIT. " current loop
+                ENDIF.
+              ELSE.
+                go_result->add_error(
+                  iv_start_time = ls_results-start_time
+                  iv_text       = |todo, funcref check non null| ).
               ENDIF.
             WHEN OTHERS.
               lv_error = abap_true.
