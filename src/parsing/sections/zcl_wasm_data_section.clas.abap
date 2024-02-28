@@ -101,11 +101,10 @@ CLASS zcl_wasm_data_section IMPLEMENTATION.
           RAISE EXCEPTION NEW zcx_wasm( text = |instantiate data, failed to execute instructions: { lx_error->get_text( ) }| ).
       ENDTRY.
 
-      DATA(lv_offset) = io_memory->stack_pop_i32( )->get_signed( ).
-      WRITE / lv_offset.
+      DATA(lv_offset) = io_memory->stack_pop_i32( )->get_unsigned( ).
 
       io_memory->get_linear( )->set(
-        iv_offset = 0 " todo
+        iv_offset = lv_offset
         iv_bytes  = ls_active-bytes ).
     ENDLOOP.
 
