@@ -29,11 +29,10 @@ CLASS zcl_wasm DEFINITION
   PROTECTED SECTION.
   PRIVATE SECTION.
 
-    DATA mo_module TYPE REF TO zcl_wasm_module .
+    DATA mo_module TYPE REF TO zcl_wasm_module.
+    DATA mo_memory TYPE REF TO zcl_wasm_memory.
 
     METHODS instantiate
-      IMPORTING
-        io_memory TYPE REF TO zcl_wasm_memory
       RAISING
         zcx_wasm.
 ENDCLASS.
@@ -42,18 +41,13 @@ ENDCLASS.
 
 CLASS zcl_wasm IMPLEMENTATION.
 
-
   METHOD constructor.
-
     mo_module = io_module.
-
   ENDMETHOD.
 
 
   METHOD create_with_wasm.
-
     ri_wasm = NEW zcl_wasm( NEW zcl_wasm_parser( )->parse( iv_wasm ) ).
-
   ENDMETHOD.
 
   METHOD create_with_base64.
@@ -95,30 +89,33 @@ CLASS zcl_wasm IMPLEMENTATION.
       RAISE EXCEPTION NEW zcx_wasm( text = 'execute_function_export: number of parameters doesnt match' ).
     ENDIF.
 
-    DATA(lo_memory) = NEW zcl_wasm_memory( ).
-    instantiate( lo_memory ).
+    IF mo_memory IS INITIAL.
+      instantiate( ).
+    ENDIF.
 
     LOOP AT it_parameters INTO DATA(li_value).
-      lo_memory->stack_push( li_value ).
+      mo_memory->stack_push( li_value ).
     ENDLOOP.
 
     NEW zcl_wasm_vm(
-      io_memory = lo_memory
+      io_memory = mo_memory
       io_module = mo_module )->call( ls_export-index ).
 
     DO xstrlen( ls_type-result_types ) TIMES.
-      APPEND lo_memory->stack_pop( ) TO rt_results.
+      APPEND mo_memory->stack_pop( ) TO rt_results.
     ENDDO.
 
   ENDMETHOD.
 
   METHOD instantiate.
+    mo_memory = NEW zcl_wasm_memory( ).
+
 * The improts component of a module defines a set of imports that are required for instantiation.
-    mo_module->get_import_section( )->import( io_memory ).
+    mo_module->get_import_section( )->import( mo_memory ).
 * do instantiation
-    mo_module->get_memory_section( )->instantiate( io_memory ).
-    mo_module->get_global_section( )->instantiate( io_memory ).
-    mo_module->get_data_section( )->instantiate( io_memory ).
+    mo_module->get_memory_section( )->instantiate( mo_memory ).
+    mo_module->get_global_section( )->instantiate( mo_memory ).
+    mo_module->get_data_section( )->instantiate( mo_memory ).
   ENDMETHOD.
 
   METHOD zif_wasm~list_function_exports.
