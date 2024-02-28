@@ -45,7 +45,6 @@ CLASS zcl_wasm_memory_init IMPLEMENTATION.
       iv_offset = lv_destination
       iv_bytes  = lv_bytes(lv_number) ).
 
-    RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_memory_init' ).
   ENDMETHOD.
 
 ENDCLASS.
