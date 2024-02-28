@@ -19,13 +19,19 @@ CLASS cl_quickjs IMPLEMENTATION.
     WRITE '@KERNEL lv_hex.set(fs.readFileSync("./node_modules/@jitl/quickjs-wasmfile-debug-sync/dist/emscripten-module.wasm").toString("hex").toUpperCase());'.
 
     GET RUN TIME FIELD DATA(lv_start).
-    zcl_wasm=>create_with_wasm( lv_hex ).
+    DATA(li_wasm) = zcl_wasm=>create_with_wasm( lv_hex ).
     GET RUN TIME FIELD DATA(lv_end).
 
     DATA(lv_runtime) = lv_end - lv_start.
     WRITE / |{ lv_runtime }ms parsing QuickJS|.
 
     rv_json = '{"runtime": "' && lv_runtime && '"}'.
+
+    " li_wasm->execute_function_export(
+    "   iv_name       = 'QTS_Eval'
+    "   it_parameters = VALUE #(
+    "     ( zcl_wasm_i32=>from_signed( 0 ) )
+    "     ( zcl_wasm_i32=>from_signed( 0 ) ) ) ).
 
   ENDMETHOD.
 
