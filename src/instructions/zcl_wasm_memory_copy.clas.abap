@@ -24,7 +24,6 @@ CLASS zcl_wasm_memory_copy IMPLEMENTATION.
     DATA(lv_destination) = io_memory->stack_pop_i32( )->get_unsigned( ).
 
     DATA(li_linear) = io_memory->get_linear( ).
-
     IF lv_source + lv_number > li_linear->size_in_bytes( )
         OR lv_destination + lv_number > li_linear->size_in_bytes( ).
       RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory_copy: out of bounds memory access' ).
