@@ -50,7 +50,10 @@ CLASS zcl_wasm_memory DEFINITION
         iv_index TYPE int8
         ii_value TYPE REF TO zif_wasm_value
       RAISING zcx_wasm.
-    METHODS global_initialize IMPORTING iv_count TYPE i.
+    METHODS global_initialize
+      IMPORTING iv_count TYPE i.
+    METHODS global_append
+      RETURNING VALUE(rv_index) TYPE i.
 
 *********** DEFAULT LINEAR
     METHODS get_linear
@@ -100,6 +103,11 @@ CLASS zcl_wasm_memory IMPLEMENTATION.
     ENDDO.
   ENDMETHOD.
 
+  METHOD global_append.
+    APPEND INITIAL LINE TO mt_globals.
+    rv_index = lines( mt_globals ) - 1.
+  ENDMETHOD.
+
   METHOD push_frame.
     DATA(lo_frame) = NEW zcl_wasm_memory_frame( ).
     APPEND lo_frame TO mt_frames.
@@ -141,10 +149,8 @@ CLASS zcl_wasm_memory IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD stack_peek.
-
     DATA(lv_last) = lines( mt_stack ).
     READ TABLE mt_stack INDEX lv_last INTO ri_value.
-
   ENDMETHOD.
 
 

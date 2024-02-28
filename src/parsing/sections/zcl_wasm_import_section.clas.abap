@@ -117,7 +117,26 @@ CLASS zcl_wasm_import_section IMPLEMENTATION.
   METHOD import.
 
     LOOP AT mt_imports INTO DATA(ls_import).
+      CASE ls_import-type.
+        WHEN c_importdesc-func.
 * todo
+        WHEN c_importdesc-table.
+* todo
+        WHEN c_importdesc-mem.
+* todo
+        WHEN c_importdesc-global.
+* todo, handle mut
+          CASE ls_import-global-valtype.
+            WHEN zcl_wasm_types=>c_value_type-i32.
+            WHEN zcl_wasm_types=>c_value_type-i64.
+            WHEN zcl_wasm_types=>c_value_type-f32.
+            WHEN zcl_wasm_types=>c_value_type-f64.
+            WHEN OTHERS.
+              RAISE EXCEPTION NEW zcx_wasm( text = |import: unknown global import type| ).
+          ENDCASE.
+        WHEN OTHERS.
+          RAISE EXCEPTION NEW zcx_wasm( text = |import: unknown import type| ).
+      ENDCASE.
     ENDLOOP.
 
   ENDMETHOD.
