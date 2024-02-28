@@ -28,6 +28,7 @@ CLASS zcl_wasm_call IMPLEMENTATION.
   METHOD zif_wasm_instruction~execute.
 
 * https://webassembly.github.io/spec/core/syntax/instructions.html#control-instructions
+* https://webassembly.github.io/spec/core/exec/instructions.html#exec-invoke
 
 * The call instruction invokes another function, consuming the necessary arguments from the stack
 * and returning the result values of the call
@@ -37,27 +38,23 @@ CLASS zcl_wasm_call IMPLEMENTATION.
     DATA(ls_code) = io_module->get_code_by_index( mv_funcidx ).
 
 * consume values from stack into locals
-    DATA(lo_memory) = NEW zcl_wasm_memory( ).
+    io_memory->push_frame( ).
     DO xstrlen( ls_type-parameter_types ) TIMES.
-      lo_memory->local_push( io_memory->stack_pop( ) ).
+      io_memory->get_frame( )->local_push( io_memory->stack_pop( ) ).
     ENDDO.
 
-    IF io_memory->has_linear( ) = abap_true.
-      lo_memory->set_linear( io_memory->get_linear( ) ).
-    ENDIF.
-
-* add the locals
+* add the locals for the function
     LOOP AT ls_code-locals INTO DATA(ls_local).
       DO ls_local-count TIMES.
         CASE ls_local-type.
           WHEN zcl_wasm_types=>c_value_type-i32.
-            lo_memory->local_push( NEW zcl_wasm_i32( ) ).
+            io_memory->get_frame( )->local_push( NEW zcl_wasm_i32( ) ).
           WHEN zcl_wasm_types=>c_value_type-i64.
-            lo_memory->local_push( NEW zcl_wasm_i64( ) ).
+            io_memory->get_frame( )->local_push( NEW zcl_wasm_i64( ) ).
           WHEN zcl_wasm_types=>c_value_type-f32.
-            lo_memory->local_push( NEW zcl_wasm_f32( ) ).
+            io_memory->get_frame( )->local_push( NEW zcl_wasm_f32( ) ).
           WHEN zcl_wasm_types=>c_value_type-f64.
-            lo_memory->local_push( NEW zcl_wasm_f64( ) ).
+            io_memory->get_frame( )->local_push( NEW zcl_wasm_f64( ) ).
           WHEN OTHERS.
             RAISE EXCEPTION NEW zcx_wasm( text = |call: unknown type| ).
         ENDCASE.
@@ -65,13 +62,10 @@ CLASS zcl_wasm_call IMPLEMENTATION.
     ENDLOOP.
 
     NEW zcl_wasm_vm(
-      io_memory = lo_memory
+      io_memory = io_memory
       io_module = io_module )->execute( ls_code-instructions ).
 
-* return to stack
-    DO xstrlen( ls_type-result_types ) TIMES.
-      io_memory->stack_push( lo_memory->stack_pop( ) ).
-    ENDDO.
+    io_memory->pop_frame( ).
 
   ENDMETHOD.
 

@@ -2,34 +2,137 @@ CLASS zcl_wasm_global_section DEFINITION PUBLIC.
   PUBLIC SECTION.
     CLASS-METHODS parse
       IMPORTING
-        !io_body          TYPE REF TO zcl_wasm_binary_stream
+        !io_body         TYPE REF TO zcl_wasm_binary_stream
+      RETURNING
+        VALUE(ro_global) TYPE REF TO zcl_wasm_global_section
       RAISING
         zcx_wasm.
+
+    TYPES:
+      BEGIN OF ty_global,
+        type         TYPE x LENGTH 1,
+        mut          TYPE x LENGTH 1,
+        instructions TYPE zif_wasm_instruction=>ty_list,
+      END OF ty_global.
+    TYPES: ty_globals TYPE STANDARD TABLE OF ty_global WITH EMPTY KEY.
+
+    METHODS constructor
+      IMPORTING
+        it_globals TYPE ty_globals OPTIONAL.
+
+    METHODS instantiate
+      IMPORTING
+        io_memory TYPE REF TO zcl_wasm_memory
+      RAISING
+        zcx_wasm.
+
+    CONSTANTS: BEGIN OF c_mut,
+                 const TYPE x VALUE '00',
+                 var   TYPE x VALUE '01',
+               END OF c_mut.
+
+  PRIVATE SECTION.
+    DATA mt_globals TYPE ty_globals.
 ENDCLASS.
 
 CLASS zcl_wasm_global_section IMPLEMENTATION.
+
+  METHOD constructor.
+    mt_globals = it_globals.
+  ENDMETHOD.
+
+  METHOD instantiate.
+
+    DATA lv_index TYPE int8.
+
+    io_memory->global_initialize( lines( mt_globals ) ).
+
+* todo, use imports instead of new memory
+    DATA(lo_memory) = NEW zcl_wasm_memory( ).
+    lo_memory->global_initialize( 2 ).
+    lo_memory->global_set(
+      iv_index = 0
+      ii_value = NEW zcl_wasm_i32( ) ).
+    lo_memory->global_set(
+      iv_index = 1
+      ii_value = NEW zcl_wasm_i64( ) ).
+
+    LOOP AT mt_globals INTO DATA(ls_global).
+      lv_index = sy-tabix - 1.
+
+      TRY.
+          LOOP AT ls_global-instructions INTO DATA(lo_instruction).
+            lo_instruction->execute(
+              io_memory = lo_memory
+              io_module = NEW zcl_wasm_module( ) ).
+          ENDLOOP.
+        CATCH cx_static_check INTO DATA(lx_error).
+          RAISE EXCEPTION NEW zcx_wasm( text = |instantiate_global, failed to execute instructions: { lx_error->get_text( ) }| ).
+      ENDTRY.
+      DATA(li_value) = lo_memory->stack_pop( ).
+      IF li_value IS INITIAL.
+        RAISE EXCEPTION NEW zcx_wasm( text = |instantiate_global, initial value on stack| ).
+      ENDIF.
+
+      CASE ls_global-type.
+        WHEN zcl_wasm_types=>c_value_type-i32
+            OR zcl_wasm_types=>c_value_type-i64
+            OR zcl_wasm_types=>c_value_type-f32
+            OR zcl_wasm_types=>c_value_type-f64.
+          IF li_value->get_type( ) <> ls_global-type.
+            RAISE EXCEPTION NEW zcx_wasm( text = |instantiate_global, type mismatch: { ls_global-type } vs { li_value->get_type( ) }, index { lv_index }| ).
+          ENDIF.
+          io_memory->global_set(
+            iv_index = lv_index
+            ii_value = li_value ).
+        WHEN zcl_wasm_types=>c_vector_type.
+          " RAISE EXCEPTION NEW zcx_wasm( text = |instantiate_global, todo vector type| ).
+        WHEN zcl_wasm_types=>c_reftype-funcref.
+          " RAISE EXCEPTION NEW zcx_wasm( text = |instantiate_global, todo funcref| ).
+        WHEN zcl_wasm_types=>c_reftype-externref.
+          " RAISE EXCEPTION NEW zcx_wasm( text = |instantiate_global, todo externref| ).
+        WHEN OTHERS.
+          RAISE EXCEPTION NEW zcx_wasm( text = |instantiate_global, unknown type| ).
+      ENDCASE.
+
+      CASE ls_global-mut.
+        WHEN c_mut-const.
+* todo
+        WHEN c_mut-var.
+* todo
+        WHEN OTHERS.
+          RAISE EXCEPTION NEW zcx_wasm( text = |instantiate_global, unknown mut| ).
+      ENDCASE.
+
+    ENDLOOP.
+
+  ENDMETHOD.
 
   METHOD parse.
 
 * https://webassembly.github.io/spec/core/binary/modules.html#binary-globalsec
 
-    DO io_body->shift_u32( ) TIMES.
-      DATA(lv_type) = io_body->shift( 1 ).
-      DATA(lv_mut) = io_body->shift( 1 ).
+    DATA lt_globals TYPE ty_globals.
+    DATA ls_global  LIKE LINE OF lt_globals.
 
-      " WRITE: / 'type:', lv_type.
-      " WRITE: / 'mut:', lv_mut.
+    DO io_body->shift_u32( ) TIMES.
+      CLEAR ls_global.
+      ls_global-type = io_body->shift( 1 ).
+      ls_global-mut = io_body->shift( 1 ).
 
       zcl_wasm_instructions=>parse(
         EXPORTING
           io_body         = io_body
         IMPORTING
           ev_last_opcode  = DATA(lv_last_opcode)
-          et_instructions = DATA(lt_instructions) ).
+          et_instructions = ls_global-instructions ).
       IF lv_last_opcode <> zif_wasm_opcodes=>c_opcodes-end.
         RAISE EXCEPTION NEW zcx_wasm( text = |parse_global, expected end| ).
       ENDIF.
+      INSERT ls_global INTO TABLE lt_globals.
     ENDDO.
+
+    ro_global = NEW zcl_wasm_global_section( lt_globals ).
 
   ENDMETHOD.
 

@@ -19,7 +19,7 @@ CLASS zcl_wasm_f32_div IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_f32_div' ).
+    zcl_wasm_f32=>div( io_memory ).
   ENDMETHOD.
 
 ENDCLASS.

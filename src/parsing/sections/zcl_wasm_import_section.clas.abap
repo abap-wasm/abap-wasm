@@ -3,8 +3,22 @@ CLASS zcl_wasm_import_section DEFINITION PUBLIC.
     CLASS-METHODS parse
       IMPORTING
         !io_body          TYPE REF TO zcl_wasm_binary_stream
+      RETURNING
+        VALUE(ro_import) TYPE REF TO zcl_wasm_import_section
       RAISING
         zcx_wasm.
+
+    METHODS import
+      IMPORTING
+        io_memory  TYPE REF TO zcl_wasm_memory
+      RAISING
+        zcx_wasm.
+  PRIVATE SECTION.
+    " TYPES: BEGIN OF ty_import,
+    "        module TYPE string,
+    "        name   TYPE string,
+    "        desc   TYPE xstring,
+    "      END OF ty_import.
 ENDCLASS.
 
 CLASS zcl_wasm_import_section IMPLEMENTATION.
@@ -58,6 +72,13 @@ CLASS zcl_wasm_import_section IMPLEMENTATION.
 
     ENDDO.
 
+* todo
+    ro_import = NEW #( ).
+
+  ENDMETHOD.
+
+  METHOD import.
+* todo
   ENDMETHOD.
 
 ENDCLASS.

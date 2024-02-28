@@ -94,7 +94,11 @@ CLASS zcl_wasm IMPLEMENTATION.
       lo_memory->stack_push( li_value ).
     ENDLOOP.
 
+* The improts component of a module defines a set of imports that are required for instantiation.
+    mo_module->get_import_section( )->import( lo_memory ).
+* do instantiation
     mo_module->get_memory_section( )->instantiate( lo_memory ).
+    mo_module->get_global_section( )->instantiate( lo_memory ).
     mo_module->get_data_section( )->instantiate( lo_memory ).
 
     NEW zcl_wasm_vm(

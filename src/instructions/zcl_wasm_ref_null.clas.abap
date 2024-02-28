@@ -25,7 +25,18 @@ CLASS zcl_wasm_ref_null IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_ref_null' ).
+
+* https://webassembly.github.io/spec/core/exec/instructions.html#xref-syntax-instructions-syntax-instr-ref-mathsf-ref-null-t
+
+    CASE mv_ref_type.
+      WHEN zcl_wasm_types=>c_reftype-funcref.
+        io_memory->stack_push( NEW zcl_wasm_funcref( -1 ) ).
+      WHEN zcl_wasm_types=>c_reftype-externref.
+        io_memory->stack_push( NEW zcl_wasm_externref( -1 ) ).
+      WHEN OTHERS.
+        RAISE EXCEPTION NEW zcx_wasm( text = |zcl_wasm_ref_null: Unknown ref type { mv_ref_type }| ).
+    ENDCASE.
+
   ENDMETHOD.
 
 ENDCLASS.

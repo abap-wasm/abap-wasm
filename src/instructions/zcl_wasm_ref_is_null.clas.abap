@@ -19,7 +19,28 @@ CLASS zcl_wasm_ref_is_null IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_ref_is_null' ).
+
+* https://webassembly.github.io/spec/core/exec/instructions.html#xref-syntax-instructions-syntax-instr-ref-mathsf-ref-is-null
+
+    DATA lv_null TYPE abap_bool.
+
+    DATA(li_value) = io_memory->stack_pop( ).
+
+    CASE li_value->get_type( ).
+      WHEN zcl_wasm_types=>c_reftype-externref.
+        lv_null = CAST zcl_wasm_externref( li_value )->is_null( ).
+      WHEN zcl_wasm_types=>c_reftype-funcref.
+        lv_null = CAST zcl_wasm_funcref( li_value )->is_null( ).
+      WHEN OTHERS.
+        RAISE EXCEPTION NEW zcx_wasm( text = |zcl_wasm_ref_is_null: Expected ref, got { li_value->get_type( ) }| ).
+    ENDCASE.
+
+    IF lv_null = abap_true.
+      io_memory->stack_push( zcl_wasm_i32=>from_signed( 1 ) ).
+    ELSE.
+      io_memory->stack_push( zcl_wasm_i32=>from_signed( 0 ) ).
+    ENDIF.
+
   ENDMETHOD.
 
 ENDCLASS.

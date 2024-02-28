@@ -27,7 +27,11 @@ CLASS zcl_wasm_global_get IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_global_get' ).
+* https://webassembly.github.io/spec/core/exec/instructions.html#xref-syntax-instructions-syntax-instr-variable-mathsf-global-get-x
+
+    DATA(li_value) = io_memory->global_get( mv_globalidx ).
+    io_memory->stack_push( li_value ).
+
   ENDMETHOD.
 
 ENDCLASS.

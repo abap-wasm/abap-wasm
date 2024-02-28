@@ -42,8 +42,10 @@ CLASS zcl_wasm_module DEFINITION
         !it_types         TYPE ty_types OPTIONAL
         !it_codes         TYPE ty_codes OPTIONAL
         !it_exports       TYPE ty_exports OPTIONAL
-        io_data_section   TYPE REF TO zcl_wasm_data_section
-        io_memory_section TYPE REF TO zcl_wasm_memory_section
+        io_data_section   TYPE REF TO zcl_wasm_data_section OPTIONAL
+        io_memory_section TYPE REF TO zcl_wasm_memory_section OPTIONAL
+        io_global_section TYPE REF TO zcl_wasm_global_section OPTIONAL
+        io_import_section TYPE REF TO zcl_wasm_import_section OPTIONAL
         !it_functions     TYPE ty_functions OPTIONAL .
     METHODS get_types
       RETURNING
@@ -63,6 +65,12 @@ CLASS zcl_wasm_module DEFINITION
     METHODS get_memory_section
       RETURNING
         VALUE(ro_memory_section) TYPE REF TO zcl_wasm_memory_section.
+    METHODS get_global_section
+      RETURNING
+        VALUE(ro_global_section) TYPE REF TO zcl_wasm_global_section.
+    METHODS get_import_section
+      RETURNING
+        VALUE(ro_import_section) TYPE REF TO zcl_wasm_import_section.
     METHODS get_code_by_index
       IMPORTING
         !iv_index      TYPE int8
@@ -101,6 +109,8 @@ CLASS zcl_wasm_module DEFINITION
 
     DATA mo_data_section TYPE REF TO zcl_wasm_data_section.
     DATA mo_memory_section TYPE REF TO zcl_wasm_memory_section.
+    DATA mo_global_section TYPE REF TO zcl_wasm_global_section.
+    DATA mo_import_section TYPE REF TO zcl_wasm_import_section.
 ENDCLASS.
 
 
@@ -126,6 +136,25 @@ CLASS zcl_wasm_module IMPLEMENTATION.
     ELSE.
       mo_memory_section = io_memory_section.
     ENDIF.
+
+    IF io_global_section IS INITIAL.
+* none specified, create the empty data section,
+      mo_global_section = NEW #( ).
+    ELSE.
+      mo_global_section = io_global_section.
+    ENDIF.
+
+    IF io_import_section IS INITIAL.
+* none specified, create the empty data section,
+      mo_import_section = NEW #( ).
+    ELSE.
+      mo_import_section = io_import_section.
+    ENDIF.
+
+  ENDMETHOD.
+
+  METHOD get_import_section.
+    ro_import_section = mo_import_section.
   ENDMETHOD.
 
   METHOD get_data_section.
@@ -152,6 +181,9 @@ CLASS zcl_wasm_module IMPLEMENTATION.
 
   ENDMETHOD.
 
+  METHOD get_global_section.
+    ro_global_section = mo_global_section.
+  ENDMETHOD.
 
   METHOD get_exports.
     rt_result = mt_exports.
