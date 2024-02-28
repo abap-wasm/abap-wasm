@@ -88,6 +88,16 @@ CLASS zcl_wasm_data_section IMPLEMENTATION.
 * In the current version of WebAssembly, at most one memory is allowed in a module.
 
     LOOP AT mt_active INTO DATA(ls_active).
+      " TRY.
+      "     LOOP AT ls_active-instructions INTO DATA(lo_instruction).
+      "       lo_instruction->execute(
+      "         io_memory = io_memory
+      "         io_module = NEW zcl_wasm_module( ) ).
+      "     ENDLOOP.
+      "   CATCH cx_static_check INTO DATA(lx_error).
+      "     RAISE EXCEPTION NEW zcx_wasm( text = |instantiate data, failed to execute instructions: { lx_error->get_text( ) }| ).
+      " ENDTRY.
+
       io_memory->get_linear( )->set(
         iv_offset = 0 " todo
         iv_bytes  = ls_active-bytes ).

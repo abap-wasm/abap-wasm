@@ -205,6 +205,7 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
 
   METHOD from_unsigned.
     ro_value = NEW #( ).
+* todo: throw error if input is too large?
     IF iv_value > cl_abap_math=>max_int4.
       ro_value->mv_value = iv_value - cl_abap_math=>max_int4 - cl_abap_math=>max_int4 - 2.
     ELSE.
