@@ -20,6 +20,16 @@ INTERFACE zif_wasm_memory_linear PUBLIC.
     RAISING
       zcx_wasm.
 
+  METHODS get_raw
+    IMPORTING
+      iv_length       TYPE int8 OPTIONAL
+      iv_offset       TYPE int8 OPTIONAL
+      iv_align        TYPE int8 OPTIONAL
+    RETURNING
+      VALUE(rv_bytes) TYPE xstring
+    RAISING
+      zcx_wasm.
+
   METHODS grow
     IMPORTING
       iv_pages TYPE int8
