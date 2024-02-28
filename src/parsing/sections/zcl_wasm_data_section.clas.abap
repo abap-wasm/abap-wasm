@@ -29,10 +29,13 @@ CLASS zcl_wasm_data_section IMPLEMENTATION.
 
 * https://webassembly.github.io/spec/core/binary/modules.html#binary-datasec
 
+    DATA lt_instructions TYPE zif_wasm_instruction=>ty_list.
+
     ro_data = NEW zcl_wasm_data_section( ).
 
     DO io_body->shift_u32( ) TIMES.
       DATA(lv_type) = io_body->shift_u32( ).
+      CLEAR lt_instructions.
 
       CASE lv_type.
         WHEN 0.
@@ -42,7 +45,7 @@ CLASS zcl_wasm_data_section IMPLEMENTATION.
               io_body         = io_body
             IMPORTING
               ev_last_opcode  = DATA(lv_last_opcode)
-              et_instructions = DATA(lt_instructions) ).
+              et_instructions = lt_instructions ).
           ASSERT lv_last_opcode = zif_wasm_opcodes=>c_opcodes-end.
 
           DATA(lv_bytes) = io_body->shift( io_body->shift_u32( ) ).
@@ -88,8 +91,20 @@ CLASS zcl_wasm_data_section IMPLEMENTATION.
 * In the current version of WebAssembly, at most one memory is allowed in a module.
 
     LOOP AT mt_active INTO DATA(ls_active).
+      TRY.
+          LOOP AT ls_active-instructions INTO DATA(lo_instruction).
+            lo_instruction->execute(
+              io_memory = io_memory
+              io_module = NEW zcl_wasm_module( ) ).
+          ENDLOOP.
+        CATCH cx_static_check INTO DATA(lx_error).
+          RAISE EXCEPTION NEW zcx_wasm( text = |instantiate data, failed to execute instructions: { lx_error->get_text( ) }| ).
+      ENDTRY.
+
+      DATA(lv_offset) = io_memory->stack_pop_i32( )->get_unsigned( ).
+
       io_memory->get_linear( )->set(
-        iv_offset = 0 " todo
+        iv_offset = lv_offset
         iv_bytes  = ls_active-bytes ).
     ENDLOOP.
 

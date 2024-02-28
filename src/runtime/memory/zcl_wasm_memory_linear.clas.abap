@@ -103,4 +103,26 @@ CLASS zcl_wasm_memory_linear IMPLEMENTATION.
 
   ENDMETHOD.
 
+  METHOD zif_wasm_memory_linear~get_raw.
+* https://rsms.me/wasm-intro#addressing-memory
+
+    IF iv_length = 0 AND iv_offset = 0.
+      rv_bytes = mv_linear.
+      RETURN.
+    ENDIF.
+
+    DATA(lv_length) = xstrlen( mv_linear ).
+
+    IF iv_offset + iv_length > lv_length.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'linear_get: out of bounds' ).
+    ELSEIF iv_length <= 0.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'linear_get: negative or zero length' ).
+    ELSEIF iv_offset < 0.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'linear_get: negative offset' ).
+    ENDIF.
+
+    rv_bytes = mv_linear+iv_offset(iv_length).
+
+  ENDMETHOD.
+
 ENDCLASS.
