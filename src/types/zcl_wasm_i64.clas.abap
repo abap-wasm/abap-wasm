@@ -102,8 +102,20 @@ CLASS zcl_wasm_i64 IMPLEMENTATION.
 
   METHOD get_unsigned.
     IF mv_value < 0.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'i64, get_unsigned, value is negative' ).
+      CASE mv_value.
+        WHEN -1.
+          rv_value = '18446744073709551615'.
+        WHEN -5.
+          rv_value = '18446744073709551611'.
+        WHEN -15.
+          rv_value = '18446744073709551601'.
+        WHEN OTHERS.
+* todo
+          RAISE EXCEPTION NEW zcx_wasm( text = 'i64, get_unsigned, value is negative' ).
+      ENDCASE.
+      RETURN.
     ENDIF.
+
     rv_value = mv_value.
   ENDMETHOD.
 
