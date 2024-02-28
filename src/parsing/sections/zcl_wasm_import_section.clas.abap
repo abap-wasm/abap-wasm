@@ -49,7 +49,7 @@ CLASS zcl_wasm_import_section IMPLEMENTATION.
               lv_min = io_body->shift_u32( ).
               lv_max = io_body->shift_u32( ).
             WHEN OTHERS.
-              RAISE EXCEPTION NEW zcx_wasm( text = |parse_import: todo| ).
+              RAISE EXCEPTION NEW zcx_wasm( text = |parse_import: malformed import kind| ).
           ENDCASE.
         WHEN '02'.
           lv_limit = io_body->shift( 1 ).
@@ -61,13 +61,13 @@ CLASS zcl_wasm_import_section IMPLEMENTATION.
               lv_min = io_body->shift_u32( ).
               lv_max = io_body->shift_u32( ).
             WHEN OTHERS.
-              RAISE EXCEPTION NEW zcx_wasm( text = |parse_import: todo| ).
+              RAISE EXCEPTION NEW zcx_wasm( text = |parse_import: malformed import kind| ).
           ENDCASE.
         WHEN '03'.
           DATA(lv_valtype) = io_body->shift( 1 ).
           DATA(lv_mut) = io_body->shift( 1 ).
         WHEN OTHERS.
-          RAISE EXCEPTION NEW zcx_wasm( text = |parse_import: todo| ).
+          RAISE EXCEPTION NEW zcx_wasm( text = |parse_import: malformed import kind| ).
       ENDCASE.
 
     ENDDO.
