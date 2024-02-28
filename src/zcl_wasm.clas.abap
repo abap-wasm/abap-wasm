@@ -96,11 +96,11 @@ CLASS zcl_wasm IMPLEMENTATION.
     ENDIF.
 
     DATA(lo_memory) = NEW zcl_wasm_memory( ).
+    instantiate( lo_memory ).
+
     LOOP AT it_parameters INTO DATA(li_value).
       lo_memory->stack_push( li_value ).
     ENDLOOP.
-
-    instantiate( lo_memory ).
 
     NEW zcl_wasm_vm(
       io_memory = lo_memory
