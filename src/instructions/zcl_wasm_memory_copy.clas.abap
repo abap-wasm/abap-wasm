@@ -19,6 +19,25 @@ CLASS zcl_wasm_memory_copy IMPLEMENTATION.
 
 * https://webassembly.github.io/spec/core/exec/instructions.html#xref-syntax-instructions-syntax-instr-memory-mathsf-memory-copy
 
+    DATA(lv_number) = io_memory->stack_pop_i32( )->get_signed( ).
+    IF lv_number < 0.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory_copy: out of bounds memory access' ).
+    ENDIF.
+    DATA(lv_source) = io_memory->stack_pop_i32( )->get_signed( ).
+    IF lv_source < 0.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory_copy: out of bounds memory access' ).
+    ENDIF.
+    DATA(lv_destination) = io_memory->stack_pop_i32( )->get_signed( ).
+    IF lv_destination < 0.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory_copy: out of bounds memory access' ).
+    ENDIF.
+
+    IF lv_source + lv_number > io_memory->get_linear( )->size_in_bytes( )
+        OR lv_destination + lv_number > io_memory->get_linear( )->size_in_bytes( ).
+      RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory_copy: out of bounds memory access' ).
+    ENDIF.
+
+* todo,
     RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_memory_copy' ).
 
   ENDMETHOD.
