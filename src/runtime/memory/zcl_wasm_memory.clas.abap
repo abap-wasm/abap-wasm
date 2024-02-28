@@ -44,16 +44,19 @@ CLASS zcl_wasm_memory DEFINITION
         iv_index TYPE int8
       RETURNING
         VALUE(rv_value) TYPE REF TO zif_wasm_value
-      RAISING zcx_wasm.
+      RAISING
+        zcx_wasm.
     METHODS global_set
       IMPORTING
         iv_index TYPE int8
         ii_value TYPE REF TO zif_wasm_value
-      RAISING zcx_wasm.
-    METHODS global_initialize
-      IMPORTING iv_count TYPE i.
+      RAISING
+        zcx_wasm.
     METHODS global_append
-      RETURNING VALUE(rv_index) TYPE i.
+      IMPORTING
+        ii_value TYPE REF TO zif_wasm_value
+      RETURNING
+        VALUE(rv_index) TYPE i.
 
 *********** DEFAULT LINEAR
     METHODS get_linear
@@ -85,7 +88,7 @@ CLASS zcl_wasm_memory IMPLEMENTATION.
   METHOD global_get.
     READ TABLE mt_globals INDEX iv_index + 1 INTO rv_value.
     IF sy-subrc <> 0.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: global_get, not found' ).
+      RAISE EXCEPTION NEW zcx_wasm( text = |zcl_wasm_memory: global_get, not found, index { iv_index }| ).
     ENDIF.
   ENDMETHOD.
 
@@ -97,14 +100,8 @@ CLASS zcl_wasm_memory IMPLEMENTATION.
     mt_globals[ iv_index + 1 ] = ii_value.
   ENDMETHOD.
 
-  METHOD global_initialize.
-    DO iv_count TIMES.
-      APPEND INITIAL LINE TO mt_globals.
-    ENDDO.
-  ENDMETHOD.
-
   METHOD global_append.
-    APPEND INITIAL LINE TO mt_globals.
+    APPEND ii_value TO mt_globals.
     rv_index = lines( mt_globals ) - 1.
   ENDMETHOD.
 

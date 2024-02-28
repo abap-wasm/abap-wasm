@@ -125,12 +125,16 @@ CLASS zcl_wasm_import_section IMPLEMENTATION.
         WHEN c_importdesc-mem.
 * todo
         WHEN c_importdesc-global.
-* todo, handle mut
+* todo, handle ls_import-global-mut
           CASE ls_import-global-valtype.
             WHEN zcl_wasm_types=>c_value_type-i32.
+              io_memory->global_append( NEW zcl_wasm_i32( ) ).
             WHEN zcl_wasm_types=>c_value_type-i64.
+              io_memory->global_append( NEW zcl_wasm_i64( ) ).
             WHEN zcl_wasm_types=>c_value_type-f32.
+              io_memory->global_append( NEW zcl_wasm_f32( ) ).
             WHEN zcl_wasm_types=>c_value_type-f64.
+              io_memory->global_append( NEW zcl_wasm_f64( ) ).
             WHEN OTHERS.
               RAISE EXCEPTION NEW zcx_wasm( text = |import: unknown global import type| ).
           ENDCASE.
