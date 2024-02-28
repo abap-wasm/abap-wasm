@@ -63,17 +63,15 @@ CLASS zcl_wasm_global_section IMPLEMENTATION.
         WHEN zcl_wasm_types=>c_value_type-i32
             OR zcl_wasm_types=>c_value_type-i64
             OR zcl_wasm_types=>c_value_type-f32
-            OR zcl_wasm_types=>c_value_type-f64.
+            OR zcl_wasm_types=>c_value_type-f64
+            OR zcl_wasm_types=>c_reftype-funcref
+            OR zcl_wasm_types=>c_reftype-externref.
           IF li_value->get_type( ) <> ls_global-type.
             RAISE EXCEPTION NEW zcx_wasm( text = |instantiate_global, type mismatch: { ls_global-type } vs { li_value->get_type( ) }| ).
           ENDIF.
           io_memory->global_append( li_value ).
         WHEN zcl_wasm_types=>c_vector_type.
-          " RAISE EXCEPTION NEW zcx_wasm( text = |instantiate_global, todo vector type| ).
-        WHEN zcl_wasm_types=>c_reftype-funcref.
-          " RAISE EXCEPTION NEW zcx_wasm( text = |instantiate_global, todo funcref| ).
-        WHEN zcl_wasm_types=>c_reftype-externref.
-          " RAISE EXCEPTION NEW zcx_wasm( text = |instantiate_global, todo externref| ).
+          RAISE EXCEPTION NEW zcx_wasm( text = |instantiate_global, todo vector type| ).
         WHEN OTHERS.
           RAISE EXCEPTION NEW zcx_wasm( text = |instantiate_global, unknown type| ).
       ENDCASE.
