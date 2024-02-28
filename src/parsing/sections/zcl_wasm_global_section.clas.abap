@@ -43,33 +43,18 @@ CLASS zcl_wasm_global_section IMPLEMENTATION.
 
   METHOD instantiate.
 
-    DATA lv_index TYPE int8.
-
-    io_memory->global_initialize( lines( mt_globals ) ).
-
-* todo, use imports instead of new memory
-    DATA(lo_memory) = NEW zcl_wasm_memory( ).
-    lo_memory->global_initialize( 2 ).
-    lo_memory->global_set(
-      iv_index = 0
-      ii_value = NEW zcl_wasm_i32( ) ).
-    lo_memory->global_set(
-      iv_index = 1
-      ii_value = NEW zcl_wasm_i64( ) ).
-
     LOOP AT mt_globals INTO DATA(ls_global).
-      lv_index = sy-tabix - 1.
-
       TRY.
           LOOP AT ls_global-instructions INTO DATA(lo_instruction).
             lo_instruction->execute(
-              io_memory = lo_memory
+              io_memory = io_memory
               io_module = NEW zcl_wasm_module( ) ).
           ENDLOOP.
         CATCH cx_static_check INTO DATA(lx_error).
           RAISE EXCEPTION NEW zcx_wasm( text = |instantiate_global, failed to execute instructions: { lx_error->get_text( ) }| ).
       ENDTRY.
-      DATA(li_value) = lo_memory->stack_pop( ).
+
+      DATA(li_value) = io_memory->stack_pop( ).
       IF li_value IS INITIAL.
         RAISE EXCEPTION NEW zcx_wasm( text = |instantiate_global, initial value on stack| ).
       ENDIF.
@@ -78,19 +63,15 @@ CLASS zcl_wasm_global_section IMPLEMENTATION.
         WHEN zcl_wasm_types=>c_value_type-i32
             OR zcl_wasm_types=>c_value_type-i64
             OR zcl_wasm_types=>c_value_type-f32
-            OR zcl_wasm_types=>c_value_type-f64.
+            OR zcl_wasm_types=>c_value_type-f64
+            OR zcl_wasm_types=>c_reftype-funcref
+            OR zcl_wasm_types=>c_reftype-externref.
           IF li_value->get_type( ) <> ls_global-type.
-            RAISE EXCEPTION NEW zcx_wasm( text = |instantiate_global, type mismatch: { ls_global-type } vs { li_value->get_type( ) }, index { lv_index }| ).
+            RAISE EXCEPTION NEW zcx_wasm( text = |instantiate_global, type mismatch: { ls_global-type } vs { li_value->get_type( ) }| ).
           ENDIF.
-          io_memory->global_set(
-            iv_index = lv_index
-            ii_value = li_value ).
+          io_memory->global_append( li_value ).
         WHEN zcl_wasm_types=>c_vector_type.
-          " RAISE EXCEPTION NEW zcx_wasm( text = |instantiate_global, todo vector type| ).
-        WHEN zcl_wasm_types=>c_reftype-funcref.
-          " RAISE EXCEPTION NEW zcx_wasm( text = |instantiate_global, todo funcref| ).
-        WHEN zcl_wasm_types=>c_reftype-externref.
-          " RAISE EXCEPTION NEW zcx_wasm( text = |instantiate_global, todo externref| ).
+          RAISE EXCEPTION NEW zcx_wasm( text = |instantiate_global, todo vector type| ).
         WHEN OTHERS.
           RAISE EXCEPTION NEW zcx_wasm( text = |instantiate_global, unknown type| ).
       ENDCASE.

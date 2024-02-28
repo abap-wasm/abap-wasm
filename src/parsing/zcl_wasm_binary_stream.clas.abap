@@ -235,6 +235,8 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
 
   METHOD shift_i64.
 
+* https://en.wikipedia.org/wiki/LEB128
+
     DATA lv_hex   TYPE x LENGTH 1.
     DATA lv_bit   TYPE c LENGTH 1.
     DATA lv_shift TYPE i VALUE 1.
@@ -250,7 +252,8 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
       IF lv_bit = '0'.
         GET BIT 2 OF lv_hex INTO lv_bit.
         IF lv_bit = '1'.
-          rv_int = 0 - rv_int.
+* hmm, this will overflow?
+          rv_int = rv_int - lv_shift * 128.
         ENDIF.
         RETURN.
       ENDIF.
