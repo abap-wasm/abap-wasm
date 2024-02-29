@@ -13,14 +13,15 @@ let comment = "Regression test results:\n\n";
 comment += "|           | Successes | Warnings | Errors | Runtime |\n";
 comment += "| :---      | ---:      | ---:     | ---:   | ---:    |\n";
 
+const good = " :white_check_mark:";
+const bad = " :small_red_triangle_down:"
+
 let totalSuccessesAfter = 0;
 let totalSuccessesBefore = 0;
 for (const folder of folders) {
   const after = JSON.parse(fs.readFileSync(`../after/${folder}.json`, "utf-8"));
   const before = JSON.parse(fs.readFileSync(`../before/${folder}.json`, "utf-8"));
 
-  const good = " :white_check_mark:";
-  const bad = " :small_red_triangle_down:"
   let successes = after.successes;
   totalSuccessesAfter += after.successes;
   totalSuccessesBefore += before.successes;
