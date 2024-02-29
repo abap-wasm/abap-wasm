@@ -28,9 +28,9 @@ CLASS zcl_wasm_i32_shr_s IMPLEMENTATION.
     DATA(lv_int) = li_val->get_signed( ).
 
     IF lv_count < 0.
-      RAISE EXCEPTION NEW zcx_wasm( text = |zcl_wasm_i32_shr_u, count negative| ).
+      RAISE EXCEPTION NEW zcx_wasm( text = |zcl_wasm_i32_shr_s, count negative| ).
     ELSEIF lv_count > 100.
-      RAISE EXCEPTION NEW zcx_wasm( text = |zcl_wasm_i32_shr_u, more than 100 bits| ).
+      RAISE EXCEPTION NEW zcx_wasm( text = |zcl_wasm_i32_shr_s, more than 100 bits| ).
     ENDIF.
 
     IF lv_count = 0.
