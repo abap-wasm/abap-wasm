@@ -12,12 +12,12 @@ for (const dir of fs.readdirSync("testsuite", {withFileTypes: true})) {
   folders.push(dir.name);
 }
 
-fs.rmSync("web", {recursive: true});
+fs.rmSync("web", {recursive: true, force: true});
 if (fs.existsSync("web") === false) {
   fs.mkdirSync("web");
 }
 
-const numCPUs = Math.min(os.availableParallelism() - 1, folders.length);
+const numCPUs = Math.max(Math.min(os.availableParallelism() - 1, folders.length), 1);
 console.log("CPUs: " + numCPUs);
 
 for (const folder of folders) {
