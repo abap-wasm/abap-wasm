@@ -27,12 +27,6 @@ CLASS zcl_wasm_i32_shr_u IMPLEMENTATION.
     DATA(li_val) = io_memory->stack_pop_i32( ).
     DATA(lv_int) = li_val->get_unsigned( ).
 
-    IF lv_count < 0.
-      RAISE EXCEPTION NEW zcx_wasm( text = |zcl_wasm_i32_shr_u, count negative| ).
-    ELSEIF lv_count > 100.
-      RAISE EXCEPTION NEW zcx_wasm( text = |zcl_wasm_i32_shr_u, more than 100 bits| ).
-    ENDIF.
-
     IF lv_count = 0.
       io_memory->stack_push( li_val ).
     ELSE.
