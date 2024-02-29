@@ -32,21 +32,36 @@ let html = `<html><body>
 <table>
 <tr>
 <th align="left">Folder</th>
-<th align="left">Errors</th>
-<th align="left">Warnings</th>
 <th align="left">Successes</th>
+<th align="left">Warnings</th>
+<th align="left">Errors</th>
 <th align="left">Runtime</th>
 </tr>\n`;
+let totalSuccesses = 0;
+let totalWarnings = 0;
+let totalErrors = 0;
+let totalRuntime = 0;
 for (const folder of folders) {
   const json = JSON.parse(fs.readFileSync("web/" + folder + ".json"));
   html += `<tr>
   <td><a href="./${folder}.html">${folder}</a></td>
-  <td align="right">${json.errors}</td>
-  <td align="right">${json.warnings}</td>
   <td align="right">${json.successes}</td>
+  <td align="right">${json.warnings}</td>
+  <td align="right">${json.errors}</td>
   <td align="right">${json.runtime}s</td>
   </tr>\n`;
+  totalSuccesses += json.successes;
+  totalWarnings += json.warnings;
+  totalErrors += json.errors;
+  totalRuntime += json.runtime;
 }
-html += "</table>\n";
-html += "</body></html>";
+html += `<tr>
+  <td><b>Total</b></td>
+  <td align="right"><b>${totalSuccesses}</b></td>
+  <td align="right"><b>${totalWarnings}</b></td>
+  <td align="right"><b>${totalErrors}</b></td>
+  <td align="right"><b>${totalRuntime}s</b></td>
+  </tr>
+</table>
+</body></html>`;
 fs.writeFileSync("web/index.html", html);
