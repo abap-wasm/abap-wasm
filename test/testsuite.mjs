@@ -65,3 +65,5 @@ html += `<tr>
 </table>
 </body></html>`;
 fs.writeFileSync("web/index.html", html);
+
+console.log("\n\nSuccesses: " + totalSuccesses);
