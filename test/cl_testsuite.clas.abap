@@ -1,6 +1,8 @@
 CLASS cl_testsuite DEFINITION PUBLIC CREATE PUBLIC.
   PUBLIC SECTION.
     CLASS-METHODS run
+      IMPORTING
+        iv_folder      TYPE string
       RETURNING
         VALUE(ro_html) TYPE REF TO cl_result.
 
@@ -70,7 +72,6 @@ CLASS cl_testsuite IMPLEMENTATION.
 
   METHOD run.
 
-    DATA lv_folder   TYPE string.
     DATA lv_filename TYPE string.
     DATA lv_hex      TYPE xstring.
     DATA lv_wast     TYPE xstring.
@@ -78,28 +79,22 @@ CLASS cl_testsuite IMPLEMENTATION.
 
     go_result = NEW #( ).
 
-    WRITE '@KERNEL const fs = await import("fs");'.
-    WRITE '@KERNEL const folders = fs.readdirSync("./testsuite/").filter(a => a.includes(".") === false);'.
-    WRITE '@KERNEL for (const folder of folders) {'.
     CLEAR lt_files.
-    WRITE '@KERNEL   lv_folder.set(folder);'.
-    WRITE '@KERNEL   const filenames = fs.readdirSync("./testsuite/" + folder);'.
-    WRITE '@KERNEL   for (const filename of filenames) {'.
-    WRITE '@KERNEL     lv_filename.set(filename);'.
-    WRITE '@KERNEL     lv_hex.set(fs.readFileSync("./testsuite/" + folder + "/" + filename).toString("hex").toUpperCase());'.
-
-    WRITE '@KERNEL     lv_wast.set(fs.readFileSync("./testsuite/" + folder + ".wast").toString("hex").toUpperCase());'.
+    WRITE '@KERNEL const fs = await import("fs");'.
+    WRITE '@KERNEL lv_wast.set(fs.readFileSync("./testsuite/" + iv_folder.get() + ".wast").toString("hex").toUpperCase());'.
+    WRITE '@KERNEL const filenames = fs.readdirSync("./testsuite/" + iv_folder.get());'.
+    WRITE '@KERNEL for (const filename of filenames) {'.
+    WRITE '@KERNEL   lv_filename.set(filename);'.
+    WRITE '@KERNEL   lv_hex.set(fs.readFileSync("./testsuite/" + iv_folder.get() + "/" + filename).toString("hex").toUpperCase());'.
     APPEND VALUE #(
       filename = condense( lv_filename )
       hex      = lv_hex ) TO lt_files.
-    WRITE '@KERNEL   }'.
+    WRITE '@KERNEL }'.
 
     run_folder(
-      iv_folder = lv_folder
+      iv_folder = iv_folder
       iv_wast   = cl_abap_codepage=>convert_from( lv_wast )
       it_files  = lt_files ).
-
-    WRITE '@KERNEL }'.
 
     go_result->end( ).
     ro_html = go_result.
