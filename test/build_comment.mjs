@@ -37,7 +37,7 @@ for (const folder of folders) {
   comment += `| ${folder} | ${successes} | ${warnings}  | ${errors} | ${runtime}s |\n`;
 }
 
-comment += `| | *${totalSuccessesAfter}*`;
+comment += `| | **${totalSuccessesAfter}**`;
 if (totalSuccessesBefore !== totalSuccessesAfter) {
   let delta = totalSuccessesAfter - totalSuccessesBefore;
   comment += " (" + delta + (delta > 0 ? good : bad ) + ")";
