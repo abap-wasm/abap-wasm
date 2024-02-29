@@ -21,11 +21,19 @@ CLASS zcl_wasm_i32_shr_u IMPLEMENTATION.
   METHOD zif_wasm_instruction~execute.
 * shift right unsigned
 
+    DATA(lv_count) = io_memory->stack_pop_i32( )->get_signed( ).
     DATA(lv_int) = io_memory->stack_pop_i32( )->get_unsigned( ).
 
-    lv_int = lv_int DIV 2.
+    IF lv_count < 0 OR lv_count > 100.
+      RAISE EXCEPTION NEW zcx_wasm( text = |shift, unexpected count| ).
+    ENDIF.
+
+    DO lv_count TIMES.
+      lv_int = lv_int DIV 2.
+    ENDDO.
 
     io_memory->stack_push( zcl_wasm_i32=>from_unsigned( lv_int ) ).
+
   ENDMETHOD.
 
 ENDCLASS.
