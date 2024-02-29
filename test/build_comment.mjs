@@ -42,7 +42,7 @@ if (totalSuccessesBefore !== totalSuccessesAfter) {
   let delta = totalSuccessesAfter - totalSuccessesBefore;
   comment += " (" + delta + (delta > 0 ? good : bad ) + ")";
 }
-comment += " | | ${totalErrors} | |\n";
+comment += ` | | ${totalErrors} | |\n`;
 
 comment += "\nUpdated: " + new Date().toISOString() + "\n";
 comment += "\nSHA: " + process.env.GITHUB_SHA + "\n";
