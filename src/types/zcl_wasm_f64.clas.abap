@@ -24,12 +24,30 @@ CLASS zcl_wasm_f64 DEFINITION
         !io_memory TYPE REF TO zcl_wasm_memory
       RAISING
         zcx_wasm.
+
+    METHODS get_sign
+      RETURNING
+        VALUE(rv_negative) TYPE abap_bool.
+
+    METHODS get_value
+      RETURNING
+        VALUE(rv_value) TYPE f
+      RAISING
+        zcx_wasm.
   PROTECTED SECTION.
   PRIVATE SECTION.
     DATA mv_value TYPE f .
 ENDCLASS.
 
 CLASS zcl_wasm_f64 IMPLEMENTATION.
+
+  METHOD get_sign.
+    rv_negative = xsdbool( mv_value < 0 ).
+  ENDMETHOD.
+
+  METHOD get_value.
+    rv_value = mv_value.
+  ENDMETHOD.
 
   METHOD from_float.
     ro_value = NEW #( ).
