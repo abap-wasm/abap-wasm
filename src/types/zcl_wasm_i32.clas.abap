@@ -457,6 +457,10 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
     DATA(lv_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ).
     DATA(lv_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ).
 
+    IF lv_val1 = 0.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'i32.rem_s, division by zero' ).
+    ENDIF.
+
     DATA(lv_result) = abs( lv_val2 ) MOD abs( lv_val1 ).
     IF lv_val2 < 0.
       lv_result = lv_result * -1.
@@ -471,6 +475,10 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
 
     DATA(lv_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_unsigned( ).
     DATA(lv_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_unsigned( ).
+
+    IF lv_val1 = 0.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'i32.rem_u, division by zero' ).
+    ENDIF.
 
     IF lv_val1 < 0.
       lv_val1 = lv_val1 * -1.
