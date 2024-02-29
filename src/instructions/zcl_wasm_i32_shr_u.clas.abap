@@ -22,7 +22,7 @@ CLASS zcl_wasm_i32_shr_u IMPLEMENTATION.
 * https://webassembly.github.io/spec/core/exec/numerics.html#xref-exec-numerics-op-ishr-u-mathrm-ishr-u-n-i-1-i-2
 * shift right unsigned
 
-    DATA(lv_count) = io_memory->stack_pop_i32( )->get_signed( ).
+    DATA(lv_count) = io_memory->stack_pop_i32( )->get_signed( ) MOD 32.
 
     DATA(li_val) = io_memory->stack_pop_i32( ).
     DATA(lv_int) = li_val->get_unsigned( ).
@@ -33,7 +33,7 @@ CLASS zcl_wasm_i32_shr_u IMPLEMENTATION.
       RAISE EXCEPTION NEW zcx_wasm( text = |zcl_wasm_i32_shr_u, more than 100 bits| ).
     ENDIF.
 
-    IF lv_count = 0 OR lv_count = 32.
+    IF lv_count = 0.
       io_memory->stack_push( li_val ).
     ELSE.
       DO lv_count TIMES.
