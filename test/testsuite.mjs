@@ -67,3 +67,4 @@ html += `<tr>
 fs.writeFileSync("web/index.html", html);
 
 console.log("\n\nSuccesses: " + totalSuccesses);
+console.log("\Runtime: " + totalRuntime + "s");
