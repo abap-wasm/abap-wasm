@@ -17,13 +17,13 @@ jobs:
       with:
         ref: 'main'
     - run: npm ci && npm test
-    - run: cp web/totals.json ../before.json
-    - run: cp web/quickjs.json ../quickjs_before.json
+    - run: mkdir ../before
+    - run: cp web/*.json ../before/
 
     - uses: actions/checkout@v4
     - run: npm ci && npm test
-    - run: cp web/totals.json ../after.json
-    - run: cp web/quickjs.json ../quickjs_after.json
+    - run: mkdir ../after
+    - run: cp web/*.json ../after/
 
     - run: node test/build_comment.mjs
 

@@ -8,3 +8,4 @@ foo.txt
 web
 *.0x
 isolate-*
+comment-regression.txt

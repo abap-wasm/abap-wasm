@@ -1,20 +1,34 @@
 import fs from "fs";
 
-const after = JSON.parse(fs.readFileSync("../after.json", "utf-8"));
-const before = JSON.parse(fs.readFileSync("../before.json", "utf-8"));
+let folders = [];
+for (const dir of fs.readdirSync("testsuite", {withFileTypes: true})) {
+  if (dir.isDirectory() === false) {
+    continue;
+  }
+  folders.push(dir.name);
+}
 
-const qafter = JSON.parse(fs.readFileSync("../quickjs_after.json", "utf-8"));
-const qbefore = JSON.parse(fs.readFileSync("../quickjs_before.json", "utf-8"));
+let comment = "Regression test results:\n\n";
 
-let comment = "Regression test results:\n";
+comment += "|           | Successes | Warnings | Errors | Runtime |\n";
+comment += "| :---      | ---:      | ---:     | ---:   | ---:    |\n";
 
-comment += "|           | Before | After | Delta |\n";
-comment += "| :---      | ---:   | ---:  | ---:  |\n";
-comment += `| :green_circle: Successes | ${before.successes}  | ${after.successes}  | ${after.successes - before.successes} |\n`;
-comment += `| :yellow_circle: Warnings | ${before.warnings}   | ${after.warnings}   | ${after.warnings - before.warnings} |\n`;
-comment += `| :red_circle: Errors      | ${before.errors}     | ${after.errors}     | ${after.errors - before.errors} |\n`;
-comment += `| :running_man: Runtime    | ${before.runtime}s   | ${after.runtime}s   | ${after.runtime - before.runtime}s |\n`;
-comment += `| :partying_face: QuickJS  | ${qbefore.runtime}ms | ${qafter.runtime}ms | ${qafter.runtime - qbefore.runtime}ms |\n`;
+for (const folder of folders) {
+  const after = JSON.parse(fs.readFileSync(`../after/${folder}.json`, "utf-8"));
+  const before = JSON.parse(fs.readFileSync(`../before/${folder}.json`, "utf-8"));
+
+  const good = ":white_check_mark:";
+  const bad = ":small_red_triangle_down:"
+  let successes = after.successes;
+  if (before.successes !== after.successes) {
+    let delta = after.succeses - before.successes;
+    successes += " (" + delta + (delta > 0 ? good : bad ) + ")";
+  }
+  let warnings = after.warnings;
+  let errors = after.errors;
+  let runtime = after.runtime;
+  comment += `| ${folder} | ${successes}  | ${warnings}  | ${errors} | ${runtime}s |\n`;
+}
 
 comment += "\nUpdated: " + new Date().toISOString() + "\n";
 comment += "\nSHA: " + process.env.GITHUB_SHA + "\n";
