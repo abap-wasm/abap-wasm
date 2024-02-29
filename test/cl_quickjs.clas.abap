@@ -30,7 +30,7 @@ CLASS cl_quickjs IMPLEMENTATION.
 * https://github.com/justjake/quickjs-emscripten/blob/main/c/interface.c
 
 * JSRuntime *QTS_NewRuntime() {
-    " DATA(lt_result) = li_wasm->execute_function_export( 'QTS_NewRuntime' ).
+*    DATA(lt_result) = li_wasm->execute_function_export( 'QTS_NewRuntime' ).
 
 * JSContext *QTS_NewContext(JSRuntime *rt, IntrinsicsFlags intrinsics) {
 * todo
