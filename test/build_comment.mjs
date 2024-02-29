@@ -31,15 +31,15 @@ for (const folder of folders) {
   let warnings = after.warnings;
   let errors = after.errors;
   let runtime = after.runtime;
-  comment += `| ${folder} | ${successes}  | ${warnings}  | ${errors} | ${runtime}s |\n`;
+  comment += `| ${folder} | ${successes} | ${warnings}  | ${errors} | ${runtime}s |\n`;
 }
 
-comment += `Total Succeses: *${totalSuccessesAfter}*`;
+comment += `| | *${totalSuccessesAfter}*`;
 if (totalSuccessesBefore !== totalSuccessesAfter) {
   let delta = totalSuccessesAfter - totalSuccessesBefore;
   comment += " (" + delta + (delta > 0 ? good : bad ) + ")";
 }
-comment += "\n";
+comment += " | | | |\n";
 
 comment += "\nUpdated: " + new Date().toISOString() + "\n";
 comment += "\nSHA: " + process.env.GITHUB_SHA + "\n";
