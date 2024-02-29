@@ -19,7 +19,13 @@ CLASS zcl_wasm_i32_shr_u IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_i32_shr_u' ).
+* shift right unsigned
+
+    DATA(lv_int) = io_memory->stack_pop_i32( )->get_unsigned( ).
+
+    lv_int = lv_int DIV 2.
+
+    io_memory->stack_push( zcl_wasm_i32=>from_unsigned( lv_int ) ).
   ENDMETHOD.
 
 ENDCLASS.
