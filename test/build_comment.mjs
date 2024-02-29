@@ -18,12 +18,14 @@ const bad = " :small_red_triangle_down:"
 
 let totalSuccessesAfter = 0;
 let totalSuccessesBefore = 0;
+let totalErrors = 0;
 for (const folder of folders) {
   const after = JSON.parse(fs.readFileSync(`../after/${folder}.json`, "utf-8"));
   const before = JSON.parse(fs.readFileSync(`../before/${folder}.json`, "utf-8"));
 
   let successes = after.successes;
   totalSuccessesAfter += after.successes;
+  totalErrors += after.errors;
   totalSuccessesBefore += before.successes;
   if (before.successes !== after.successes) {
     let delta = after.successes - before.successes;
@@ -40,7 +42,7 @@ if (totalSuccessesBefore !== totalSuccessesAfter) {
   let delta = totalSuccessesAfter - totalSuccessesBefore;
   comment += " (" + delta + (delta > 0 ? good : bad ) + ")";
 }
-comment += " | | | |\n";
+comment += " | | ${totalErrors} | |\n";
 
 comment += "\nUpdated: " + new Date().toISOString() + "\n";
 comment += "\nSHA: " + process.env.GITHUB_SHA + "\n";
