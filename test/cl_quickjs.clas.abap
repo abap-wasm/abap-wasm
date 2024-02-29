@@ -27,6 +27,15 @@ CLASS cl_quickjs IMPLEMENTATION.
 
     rv_json = '{"runtime": "' && lv_runtime && '"}'.
 
+* https://github.com/justjake/quickjs-emscripten/blob/main/c/interface.c
+
+* JSRuntime *QTS_NewRuntime() {
+    " DATA(lt_result) = li_wasm->execute_function_export( 'QTS_NewRuntime' ).
+
+* JSContext *QTS_NewContext(JSRuntime *rt, IntrinsicsFlags intrinsics) {
+* todo
+
+* MaybeAsync(JSValue *) QTS_Eval(JSContext *ctx, BorrowedHeapChar *js_code, size_t js_code_length, const char *filename, EvalDetectModule detectModule, EvalFlags evalFlags) {
     " li_wasm->execute_function_export(
     "   iv_name       = 'QTS_Eval'
     "   it_parameters = VALUE #(

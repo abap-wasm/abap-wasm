@@ -10,6 +10,7 @@ CLASS zcl_wasm_memory_section DEFINITION PUBLIC.
 
     METHODS constructor
       IMPORTING
+        iv_has_memory TYPE abap_bool OPTIONAL
         iv_min TYPE int8 OPTIONAL
         iv_max TYPE int8 OPTIONAL.
 
@@ -22,6 +23,7 @@ CLASS zcl_wasm_memory_section DEFINITION PUBLIC.
   PRIVATE SECTION.
     DATA mv_min TYPE int8.
     DATA mv_max TYPE int8.
+    DATA mv_has_memory TYPE abap_bool.
 ENDCLASS.
 
 CLASS zcl_wasm_memory_section IMPLEMENTATION.
@@ -29,6 +31,7 @@ CLASS zcl_wasm_memory_section IMPLEMENTATION.
   METHOD constructor.
     mv_min = iv_min.
     mv_max = iv_max.
+    mv_has_memory = iv_has_memory.
   ENDMETHOD.
 
   METHOD parse.
@@ -66,18 +69,21 @@ CLASS zcl_wasm_memory_section IMPLEMENTATION.
     ENDIF.
 
     ro_memory = NEW #(
-      iv_min = lv_min
-      iv_max = lv_max ).
+      iv_has_memory = abap_true
+      iv_min        = lv_min
+      iv_max        = lv_max ).
 
   ENDMETHOD.
 
   METHOD instantiate.
 
-    DATA(lo_linear) = NEW zcl_wasm_memory_linear(
-      iv_min = mv_min
-      iv_max = mv_max ).
+    IF mv_has_memory = abap_true.
+      DATA(lo_linear) = NEW zcl_wasm_memory_linear(
+        iv_min = mv_min
+        iv_max = mv_max ).
 
-    io_memory->set_linear( lo_linear ).
+      io_memory->set_linear( lo_linear ).
+    ENDIF.
 
   ENDMETHOD.
 
