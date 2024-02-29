@@ -4,7 +4,7 @@ import * as os from "node:os";
 import {initializeABAP} from "../output/init.mjs";
 await initializeABAP();
 
-const folders = [];
+let folders = [];
 for (const dir of fs.readdirSync("testsuite", {withFileTypes: true})) {
   if (dir.isDirectory() === false) {
     continue;
@@ -20,6 +20,7 @@ if (fs.existsSync("web") === false) {
 const numCPUs = Math.min(os.availableParallelism() - 1, folders.length);
 console.log("CPUs: " + numCPUs);
 
+// folders = ["memory_grow"];
 for (const folder of folders) {
   const lo_result = await abap.Classes["CL_TESTSUITE"].run({iv_folder: new abap.types.String().set(folder)});
   const html = (await lo_result.get().render_html()).get();
