@@ -27,6 +27,7 @@ CLASS cl_testsuite DEFINITION PUBLIC CREATE PUBLIC.
                 args  TYPE STANDARD TABLE OF ty_type_value WITH DEFAULT KEY,
              END OF action,
              expected TYPE STANDARD TABLE OF ty_type_value WITH DEFAULT KEY,
+             as       TYPE string,
            END OF ty_json_commands.
 
     TYPES: BEGIN OF ty_json,

@@ -82,8 +82,8 @@ CLASS zcl_wasm IMPLEMENTATION.
       RAISE EXCEPTION NEW zcx_wasm( text = 'execute_function_export: expected type func' ).
     ENDIF.
 
-    DATA(lv_type) = mo_module->get_function_by_index( ls_export-index ).
-    DATA(ls_type) = mo_module->get_type_by_index( CONV #( lv_type ) ).
+    DATA(ls_function) = mo_module->get_function_by_index( ls_export-index ).
+    DATA(ls_type) = mo_module->get_type_by_index( CONV #( ls_function-typeidx ) ).
 
     IF lines( it_parameters ) <> xstrlen( ls_type-parameter_types ).
       RAISE EXCEPTION NEW zcx_wasm( text = |execute_function_export: number of parameters doesnt match, expected { ls_type-parameter_types }| ).

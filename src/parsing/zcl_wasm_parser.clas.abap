@@ -59,7 +59,11 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
             CHANGING
               ct_functions      = lt_functions ).
         WHEN zif_wasm_sections=>gc_section_function.
-          lt_functions = zcl_wasm_function_section=>parse( lo_body ).
+          zcl_wasm_function_section=>parse(
+            EXPORTING
+              io_body      = lo_body
+            CHANGING
+              ct_functions = lt_functions ).
         WHEN zif_wasm_sections=>gc_section_table.
 * todo
           zcl_wasm_table_section=>parse( lo_body ).

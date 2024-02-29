@@ -34,8 +34,11 @@ CLASS zcl_wasm_module DEFINITION
     TYPES:
       ty_exports TYPE HASHED TABLE OF ty_export WITH UNIQUE KEY name .
 
-    TYPES:
-      ty_functions TYPE STANDARD TABLE OF i WITH DEFAULT KEY .
+    TYPES: BEGIN OF ty_function,
+             typeidx TYPE i,
+             codeidx TYPE i,
+           END OF ty_function.
+    TYPES ty_functions TYPE STANDARD TABLE OF ty_function WITH DEFAULT KEY .
 
     METHODS constructor
       IMPORTING
@@ -80,9 +83,9 @@ CLASS zcl_wasm_module DEFINITION
         zcx_wasm.
     METHODS get_function_by_index
       IMPORTING
-        !iv_index      TYPE int8
+        iv_index           TYPE int8
       RETURNING
-        VALUE(rv_type) TYPE i
+        VALUE(rs_function) TYPE ty_function
       RAISING
         zcx_wasm.
     METHODS get_export_by_name
@@ -171,12 +174,16 @@ CLASS zcl_wasm_module IMPLEMENTATION.
 
   METHOD get_code_by_index.
 
+    IF iv_index < 0.
+      RAISE EXCEPTION NEW zcx_wasm( text = |get_code_by_index: negative index, { iv_index }| ).
+    ENDIF.
+
 * index is zero based
     DATA(lv_index) = iv_index + 1.
 
     READ TABLE mt_codes INDEX lv_index INTO rs_code.
     IF sy-subrc <> 0.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'get_code_by_index: not found' ).
+      RAISE EXCEPTION NEW zcx_wasm( text = |get_code_by_index: not found, { lv_index }| ).
     ENDIF.
 
   ENDMETHOD.
@@ -210,7 +217,7 @@ CLASS zcl_wasm_module IMPLEMENTATION.
 * index is zero based
     DATA(lv_index) = iv_index + 1.
 
-    READ TABLE mt_functions INDEX lv_index INTO rv_type.
+    READ TABLE mt_functions INDEX lv_index INTO rs_function.
     IF sy-subrc <> 0.
       RAISE EXCEPTION NEW zcx_wasm( text = |get_function_by_index: not found, { lv_index }| ).
     ENDIF.
