@@ -25,6 +25,8 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
     CONSTANTS lc_magic   TYPE x LENGTH 4 VALUE '0061736D'.
     CONSTANTS lc_version TYPE x LENGTH 4 VALUE '01000000'.
 
+    DATA lt_functions TYPE zcl_wasm_module=>ty_functions.
+
     DATA(lo_stream) = NEW zcl_wasm_binary_stream( iv_wasm ).
 
 * https://webassembly.github.io/spec/core/binary/modules.html#binary-module
@@ -49,9 +51,19 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
         WHEN zif_wasm_sections=>gc_section_type.
           DATA(lt_types) = zcl_wasm_type_section=>parse( lo_body ).
         WHEN zif_wasm_sections=>gc_section_import.
-          DATA(lo_import_section) = zcl_wasm_import_section=>parse( lo_body ).
+          zcl_wasm_import_section=>parse(
+            EXPORTING
+              io_body           = lo_body
+            IMPORTING
+              eo_import_section = DATA(lo_import_section)
+            CHANGING
+              ct_functions      = lt_functions ).
         WHEN zif_wasm_sections=>gc_section_function.
-          DATA(lt_functions) = zcl_wasm_function_section=>parse( lo_body ).
+          zcl_wasm_function_section=>parse(
+            EXPORTING
+              io_body      = lo_body
+            CHANGING
+              ct_functions = lt_functions ).
         WHEN zif_wasm_sections=>gc_section_table.
 * todo
           zcl_wasm_table_section=>parse( lo_body ).

@@ -77,16 +77,22 @@ CLASS zcl_wasm IMPLEMENTATION.
 
   METHOD zif_wasm~execute_function_export.
 
+    DATA lv_got TYPE xstring.
+
     DATA(ls_export) = mo_module->get_export_by_name( iv_name ).
     IF ls_export-type <> zcl_wasm_types=>c_export_type-func.
       RAISE EXCEPTION NEW zcx_wasm( text = 'execute_function_export: expected type func' ).
     ENDIF.
 
-    DATA(lv_type) = mo_module->get_function_by_index( ls_export-index ).
-    DATA(ls_type) = mo_module->get_type_by_index( CONV #( lv_type ) ).
+    DATA(ls_function) = mo_module->get_function_by_index( ls_export-index ).
+    DATA(ls_type) = mo_module->get_type_by_index( CONV #( ls_function-typeidx ) ).
 
     IF lines( it_parameters ) <> xstrlen( ls_type-parameter_types ).
-      RAISE EXCEPTION NEW zcx_wasm( text = 'execute_function_export: number of parameters doesnt match' ).
+      LOOP AT it_parameters INTO DATA(li_param).
+        CONCATENATE lv_got li_param->get_type( ) INTO lv_got IN BYTE MODE.
+      ENDLOOP.
+      RAISE EXCEPTION NEW zcx_wasm( text = |execute_function_export: number of parameters doesnt match, expected {
+        ls_type-parameter_types }, got { lv_got }| ).
     ENDIF.
 
     IF mo_memory IS INITIAL.

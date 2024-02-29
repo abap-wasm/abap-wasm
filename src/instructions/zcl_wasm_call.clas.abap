@@ -33,9 +33,9 @@ CLASS zcl_wasm_call IMPLEMENTATION.
 * The call instruction invokes another function, consuming the necessary arguments from the stack
 * and returning the result values of the call
 
-    DATA(lv_type) = io_module->get_function_by_index( mv_funcidx ).
-    DATA(ls_type) = io_module->get_type_by_index( CONV #( lv_type ) ).
-    DATA(ls_code) = io_module->get_code_by_index( mv_funcidx ).
+    DATA(ls_function) = io_module->get_function_by_index( mv_funcidx ).
+    DATA(ls_type) = io_module->get_type_by_index( CONV #( ls_function-typeidx ) ).
+    DATA(ls_code) = io_module->get_code_by_index( CONV #( ls_function-codeidx ) ).
 
 * consume values from stack into locals
     io_memory->push_frame( ).

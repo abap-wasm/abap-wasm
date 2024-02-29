@@ -29,9 +29,22 @@ CLASS zcl_wasm_memory_init IMPLEMENTATION.
 
 * https://webassembly.github.io/spec/core/exec/instructions.html#xref-syntax-instructions-syntax-instr-memory-mathsf-memory-init-x
 
-*    io_module->get_data_section( )->
+    DATA(lv_number) = io_memory->stack_pop_i32( )->get_unsigned( ).
+    DATA(lv_source) = io_memory->stack_pop_i32( )->get_unsigned( ).
+    DATA(lv_destination) = io_memory->stack_pop_i32( )->get_unsigned( ).
 
-    RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_memory_init' ).
+    DATA(li_linear) = io_memory->get_linear( ).
+    IF lv_source + lv_number > li_linear->size_in_bytes( )
+        OR lv_destination + lv_number > li_linear->size_in_bytes( ).
+      RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory_copy: out of bounds memory access' ).
+    ENDIF.
+
+    DATA(lv_bytes) = io_module->get_data_section( )->get_passive( mv_dataidx ).
+
+    li_linear->set(
+      iv_offset = lv_destination
+      iv_bytes  = lv_bytes(lv_number) ).
+
   ENDMETHOD.
 
 ENDCLASS.

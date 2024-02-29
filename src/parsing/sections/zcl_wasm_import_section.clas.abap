@@ -2,9 +2,11 @@ CLASS zcl_wasm_import_section DEFINITION PUBLIC.
   PUBLIC SECTION.
     CLASS-METHODS parse
       IMPORTING
-        !io_body          TYPE REF TO zcl_wasm_binary_stream
-      RETURNING
-        VALUE(ro_import) TYPE REF TO zcl_wasm_import_section
+        !io_body  TYPE REF TO zcl_wasm_binary_stream
+      EXPORTING
+        eo_import_section TYPE REF TO zcl_wasm_import_section
+      CHANGING
+        ct_functions TYPE zcl_wasm_module=>ty_functions
       RAISING
         zcx_wasm.
 
@@ -77,6 +79,9 @@ CLASS zcl_wasm_import_section IMPLEMENTATION.
       CASE ls_import-type.
         WHEN c_importdesc-func.
           ls_import-func-typeidx = io_body->shift_u32( ).
+          INSERT VALUE #(
+            typeidx = ls_import-func-typeidx
+            codeidx = -1 ) INTO TABLE ct_functions.
         WHEN c_importdesc-table.
           ls_import-table-reftype = io_body->shift( 1 ).
           ls_import-table-limit = io_body->shift( 1 ).
@@ -110,7 +115,7 @@ CLASS zcl_wasm_import_section IMPLEMENTATION.
       INSERT ls_import INTO TABLE lt_imports.
     ENDDO.
 
-    ro_import = NEW #( lt_imports ).
+    eo_import_section = NEW #( lt_imports ).
 
   ENDMETHOD.
 
@@ -119,7 +124,7 @@ CLASS zcl_wasm_import_section IMPLEMENTATION.
     LOOP AT mt_imports INTO DATA(ls_import).
       CASE ls_import-type.
         WHEN c_importdesc-func.
-* todo
+          CONTINUE. " nothing here
         WHEN c_importdesc-table.
 * todo
         WHEN c_importdesc-mem.

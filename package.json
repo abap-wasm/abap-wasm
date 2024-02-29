@@ -4,7 +4,7 @@
   "scripts": {
     "downport": "rm -rf downport && cp src -r downport && cp test -r downport && abaplint --fix abaplint-downport.json",
     "testsuite": "echo RUNNING TESTSUITE && node test/testsuite.mjs",
-    "quickjs": "echo RUNNING QUICKJS && node test/quickjs.mjs",
+    "quickjs": "echo RUNNING QuickJS && node test/quickjs.mjs",
     "unit": "rm -rf output && abap_transpile && echo RUNNING UNIT TEST && node output/index.mjs",
     "lint": "abaplint",
     "flame-graph-testsuite": "0x -o test/testsuite.mjs",
@@ -14,9 +14,9 @@
   "author": "Lars Hvam Petersen",
   "license": "MIT",
   "dependencies": {
-    "@abaplint/cli": "^2.105.23",
-    "@abaplint/runtime": "^2.7.162",
-    "@abaplint/transpiler-cli": "^2.7.162",
+    "@abaplint/cli": "^2.105.26",
+    "@abaplint/runtime": "^2.7.163",
+    "@abaplint/transpiler-cli": "^2.7.163",
     "@jitl/quickjs-wasmfile-debug-sync": "^0.29.0",
     "@jitl/quickjs-wasmfile-release-sync": "^0.29.0",
     "0x": "^5.7.0"

@@ -14,6 +14,14 @@ CLASS zcl_wasm_data_section DEFINITION PUBLIC.
       RAISING
         zcx_wasm.
 
+    METHODS get_passive
+      IMPORTING
+        iv_dataidx      TYPE int8
+      RETURNING
+        VALUE(rv_bytes) TYPE xstring
+      RAISING
+        zcx_wasm.
+
   PRIVATE SECTION.
     TYPES: BEGIN OF ty_active,
               memidx       TYPE i,
@@ -21,9 +29,26 @@ CLASS zcl_wasm_data_section DEFINITION PUBLIC.
               bytes        TYPE xstring,
            END OF ty_active.
     DATA mt_active TYPE STANDARD TABLE OF ty_active WITH DEFAULT KEY.
+
+    TYPES: BEGIN OF ty_passive,
+              dataidx TYPE int8,
+              bytes   TYPE xstring,
+           END OF ty_passive.
+    DATA mt_passive TYPE STANDARD TABLE OF ty_passive WITH DEFAULT KEY.
 ENDCLASS.
 
 CLASS zcl_wasm_data_section IMPLEMENTATION.
+
+  METHOD get_passive.
+
+    READ TABLE mt_passive ASSIGNING FIELD-SYMBOL(<ls_passive>) WITH KEY dataidx = iv_dataidx.
+    IF sy-subrc <> 0.
+      RAISE EXCEPTION NEW zcx_wasm( text = |get_passive, dataidx: { iv_dataidx } not found| ).
+    ENDIF.
+
+    rv_bytes = <ls_passive>-bytes.
+
+  ENDMETHOD.
 
   METHOD parse.
 
@@ -34,6 +59,7 @@ CLASS zcl_wasm_data_section IMPLEMENTATION.
     ro_data = NEW zcl_wasm_data_section( ).
 
     DO io_body->shift_u32( ) TIMES.
+      DATA(lv_index) = sy-index - 1.
       DATA(lv_type) = io_body->shift_u32( ).
       CLEAR lt_instructions.
 
@@ -57,7 +83,9 @@ CLASS zcl_wasm_data_section IMPLEMENTATION.
         WHEN 1.
 * passive
           lv_bytes = io_body->shift( io_body->shift_u32( ) ).
-* todo
+          APPEND VALUE #(
+            dataidx = lv_index
+            bytes   = lv_bytes ) TO ro_data->mt_passive.
         WHEN 2.
 * active, memidx = dynamic
           DATA(lv_memidx) = io_body->shift_u32( ).
@@ -102,6 +130,10 @@ CLASS zcl_wasm_data_section IMPLEMENTATION.
       ENDTRY.
 
       DATA(lv_offset) = io_memory->stack_pop_i32( )->get_unsigned( ).
+
+      IF io_memory->has_linear( ) = abap_false.
+        RAISE EXCEPTION NEW zcx_wasm( text = |instantiate data, no linear memory| ).
+      ENDIF.
 
       io_memory->get_linear( )->set(
         iv_offset = lv_offset
