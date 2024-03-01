@@ -2,7 +2,7 @@ CLASS ltcl_test DEFINITION FOR TESTING DURATION MEDIUM RISK LEVEL HARMLESS.
 
   PRIVATE SECTION.
     METHODS empty FOR TESTING RAISING cx_static_check.
-    METHODS negative FOR TESTING RAISING cx_static_check.
+    METHODS negative_input FOR TESTING RAISING cx_static_check.
 
 ENDCLASS.
 
@@ -41,7 +41,7 @@ CLASS ltcl_test IMPLEMENTATION.
       exp = 0 ).
   ENDMETHOD.
 
-  METHOD negative.
+  METHOD negative_input.
 
 " (module
 "   (func (export "name") (result i32)
@@ -49,11 +49,11 @@ CLASS ltcl_test IMPLEMENTATION.
 "     i32.const -1
 "     i32.store
 "     i32.const 0
-"     i32.load8_s)
+"     i32.load8_u)
 "   (memory (;0;) 1)
 " )
 
-    DATA(lv_wasm) = `AGFzbQEAAAABBQFgAAF/AwIBAAUDAQABBwgBBG5hbWUAAAoQAQ4AQQBBfzYCAEEALAAACwAKBG5hbWUCAwEAAA==`.
+    DATA(lv_wasm) = `AGFzbQEAAAABBQFgAAF/AwIBAAUDAQABBwgBBG5hbWUAAAoQAQ4AQQBBfzYCAEEALQAACwAKBG5hbWUCAwEAAA==`.
 
     DATA(li_wasm) = zcl_wasm=>create_with_base64( lv_wasm ).
 
@@ -67,7 +67,8 @@ CLASS ltcl_test IMPLEMENTATION.
 
     cl_abap_unit_assert=>assert_equals(
       act = lo_value->get_signed( )
-      exp = -1 ).
+      exp = 255 ).
+
   ENDMETHOD.
 
 ENDCLASS.

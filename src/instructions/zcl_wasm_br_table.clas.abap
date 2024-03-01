@@ -13,7 +13,8 @@ CLASS zcl_wasm_br_table DEFINITION PUBLIC.
       IMPORTING
         !io_body TYPE REF TO zcl_wasm_binary_stream
       RETURNING
-        VALUE(ri_instruction) TYPE REF TO zif_wasm_instruction.
+        VALUE(ri_instruction) TYPE REF TO zif_wasm_instruction
+        RAISING zcx_wasm.
 
   PRIVATE SECTION.
     DATA mt_branches TYPE ty_branches.

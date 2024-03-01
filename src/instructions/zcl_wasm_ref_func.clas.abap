@@ -8,7 +8,8 @@ CLASS zcl_wasm_ref_func DEFINITION PUBLIC.
 
     CLASS-METHODS parse
       IMPORTING !io_body TYPE REF TO zcl_wasm_binary_stream
-      RETURNING VALUE(ri_instruction) TYPE REF TO zif_wasm_instruction.
+      RETURNING VALUE(ri_instruction) TYPE REF TO zif_wasm_instruction
+      RAISING zcx_wasm.
 
   PRIVATE SECTION.
     DATA mv_funcidx TYPE int8.

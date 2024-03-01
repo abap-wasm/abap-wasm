@@ -27,7 +27,9 @@ CLASS zcl_wasm_binary_stream DEFINITION
         VALUE(rv_data) TYPE xstring .
     METHODS shift_u32
       RETURNING
-        VALUE(rv_int) TYPE int8 .
+        VALUE(rv_int) TYPE int8
+      RAISING
+        zcx_wasm.
     METHODS shift_f32
       RETURNING
         VALUE(rv_f) TYPE f .
@@ -36,13 +38,18 @@ CLASS zcl_wasm_binary_stream DEFINITION
         VALUE(rv_f) TYPE f .
     METHODS shift_i64
       RETURNING
-        VALUE(rv_int) TYPE int8 .
+        VALUE(rv_int) TYPE int8
+      RAISING
+        zcx_wasm.
     METHODS shift_i32
       RETURNING
-        VALUE(rv_int) TYPE i .
+        VALUE(rv_int) TYPE i
+      RAISING
+        zcx_wasm.
     METHODS shift_utf8
       RETURNING
-        VALUE(rv_name) TYPE string .
+        VALUE(rv_name) TYPE string
+      RAISING zcx_wasm.
   PROTECTED SECTION.
   PRIVATE SECTION.
 
@@ -242,6 +249,11 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
     DATA lv_shift TYPE i VALUE 1.
 
     DO.
+      " leb128 can be at most 10 bytes
+      IF sy-index > 10.
+        RAISE EXCEPTION NEW zcx_wasm( text = 'integer representation too long' ).
+      ENDIF.
+
       lv_hex = shift( 1 ).
 
       GET BIT 1 OF lv_hex INTO lv_bit.
@@ -268,7 +280,35 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
 
 * https://webassembly.github.io/spec/core/binary/values.html#binary-int
 
-    rv_int = shift_i64( ).
+* https://en.wikipedia.org/wiki/LEB128
+
+    DATA lv_hex   TYPE x LENGTH 1.
+    DATA lv_bit   TYPE c LENGTH 1.
+    DATA lv_shift TYPE i VALUE 1.
+
+    DO.
+      IF sy-index > 5.
+        RAISE EXCEPTION NEW zcx_wasm( text = 'integer representation too long' ).
+      ENDIF.
+
+      lv_hex = shift( 1 ).
+
+      GET BIT 1 OF lv_hex INTO lv_bit.
+      SET BIT 1 OF lv_hex TO 0.
+
+      rv_int = rv_int + CONV i( lv_hex ) * lv_shift.
+
+      IF lv_bit = '0'.
+        GET BIT 2 OF lv_hex INTO lv_bit.
+        IF lv_bit = '1'.
+* hmm, this will overflow?
+          rv_int = rv_int - lv_shift * 128.
+        ENDIF.
+        RETURN.
+      ENDIF.
+
+      lv_shift = lv_shift * 128.
+    ENDDO.
 
   ENDMETHOD.
 
@@ -283,6 +323,10 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
     DATA lv_shift TYPE int8 VALUE 1.
 
     DO.
+      IF sy-index > 5.
+        RAISE EXCEPTION NEW zcx_wasm( text = 'integer representation too long' ).
+      ENDIF.
+
       lv_hex = shift( 1 ).
 
       GET BIT 1 OF lv_hex INTO lv_bit.
