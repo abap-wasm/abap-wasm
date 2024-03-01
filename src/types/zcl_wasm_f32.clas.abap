@@ -154,6 +154,7 @@ CLASS zcl_wasm_f32 IMPLEMENTATION.
     DATA lv_integer  TYPE i.
     DATA lv_bit      TYPE c LENGTH 1.
     DATA lv_hex1     TYPE x LENGTH 1.
+    DATA lv_exponent TYPE i.
 
     DATA lv_integer_bits  TYPE string.
     DATA lv_fraction_bits TYPE string.
@@ -183,9 +184,19 @@ CLASS zcl_wasm_f32 IMPLEMENTATION.
             lv_fraction_bits = lv_fraction_bits && '0'.
           ENDIF.
         ENDWHILE.
+        IF lv_fraction_bits = ''.
+          lv_fraction_bits = '0'.
+        ENDIF.
+        WRITE: / 'fraction bits:', lv_fraction_bits.
 
 * todo, moving decimal point to the right for lower numbers
-        DATA(lv_exponent) = 127 + strlen( lv_integer_bits ) - 1.
+        IF lv_integer_bits <> '0'.
+          lv_exponent = 127 + strlen( lv_integer_bits ) - 1.
+        ELSE.
+          FIND FIRST OCCURRENCE OF '1' IN lv_fraction_bits MATCH OFFSET lv_exponent.
+          lv_fraction_bits = lv_fraction_bits+lv_exponent.
+          lv_exponent = 127 - lv_exponent - 1.
+        ENDIF.
         IF lv_exponent > 255.
           RAISE EXCEPTION NEW zcx_wasm( text = |exponent too large: { lv_exponent }| ).
         ENDIF.
