@@ -84,6 +84,7 @@ CLASS cl_result IMPLEMENTATION.
   METHOD render_html.
     DATA lv_top TYPE string.
 
+    lv_top = lv_top && |<a href="./index.html">Home</a><br>|.
     lv_top = lv_top && |<h3>Errors: { mv_errors }</h3>\n|.
     lv_top = lv_top && |<h3>Warnings: { mv_warnings }</h3>\n|.
     lv_top = lv_top && |<h3>Successes: { mv_success }</h3>\n|.

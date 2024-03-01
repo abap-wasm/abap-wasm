@@ -19,6 +19,10 @@ CLASS zcl_wasm_i32_rotl IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
+* https://webassembly.github.io/spec/core/exec/numerics.html#xref-exec-numerics-op-irotl-mathrm-irotl-n-i-1-i-2
+
+    DATA(lv_count) = io_memory->stack_pop_i32( )->get_signed( ) MOD 32.
+
     RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_i32_rotl' ).
   ENDMETHOD.
 

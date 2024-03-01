@@ -180,15 +180,12 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD shl.
+* https://webassembly.github.io/spec/core/exec/numerics.html#xref-exec-numerics-op-ishl-mathrm-ishl-n-i-1-i-2
 
     ASSERT io_memory->stack_length( ) >= 2.
 
-    DATA(lv_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ).
+    DATA(lv_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ) MOD 32.
     DATA(lv_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ).
-
-    IF lv_val1 > 1000.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'shl, large shift, todo' ).
-    ENDIF.
 
     DO lv_val1 TIMES.
       lv_val2 = lv_val2 * 2.
@@ -396,6 +393,10 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
     DATA(lv_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ).
     DATA(lv_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ).
 
+    IF lv_val1 = 0.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'i32.div_s, division by zero' ).
+    ENDIF.
+
 * division is truncating, so round towards zero
     IF sign( lv_val1 ) <> sign( lv_val2 ).
       io_memory->stack_push( from_signed( -1 * ( abs( lv_val2 ) DIV abs( lv_val1 ) ) ) ).
@@ -456,6 +457,10 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
     DATA(lv_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ).
     DATA(lv_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ).
 
+    IF lv_val1 = 0.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'i32.rem_s, division by zero' ).
+    ENDIF.
+
     DATA(lv_result) = abs( lv_val2 ) MOD abs( lv_val1 ).
     IF lv_val2 < 0.
       lv_result = lv_result * -1.
@@ -470,6 +475,10 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
 
     DATA(lv_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_unsigned( ).
     DATA(lv_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_unsigned( ).
+
+    IF lv_val1 = 0.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'i32.rem_u, division by zero' ).
+    ENDIF.
 
     IF lv_val1 < 0.
       lv_val1 = lv_val1 * -1.
@@ -492,6 +501,10 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
 
     DATA(lv_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_unsigned( ).
     DATA(lv_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_unsigned( ).
+
+    IF lv_val1 = 0.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'i32.div_u, division by zero' ).
+    ENDIF.
 
     io_memory->stack_push( from_unsigned( lv_val2 DIV lv_val1 ) ).
 

@@ -19,7 +19,7 @@ CLASS zcl_wasm_i64_add IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    zcl_wasm_i32=>add( io_memory ).
+    zcl_wasm_i64=>add( io_memory ).
   ENDMETHOD.
 
 ENDCLASS.
