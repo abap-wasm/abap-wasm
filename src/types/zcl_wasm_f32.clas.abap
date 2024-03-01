@@ -148,6 +148,7 @@ CLASS zcl_wasm_f32 IMPLEMENTATION.
   METHOD to_hex.
 * https://gregstoll.com/~gregstoll/floattohex/
 * https://en.wikipedia.org/wiki/Single-precision_floating-point_format
+* https://webassembly.github.io/spec/core/exec/numerics.html#rounding
 
     DATA lv_fraction TYPE f.
     DATA lv_integer  TYPE i.
@@ -164,21 +165,7 @@ CLASS zcl_wasm_f32 IMPLEMENTATION.
         rv_hex = 'BF800000'.
       WHEN 0.
         rv_hex = '00000000'.
-      WHEN 1.
-        rv_hex = '3F800000'.
-      WHEN 2.
-        rv_hex = '40000000'.
-      WHEN 3.
-        rv_hex = '40400000'.
-      WHEN 5.
-        rv_hex = '40A00000'.
-      WHEN 6.
-        rv_hex = '40C00000'.
-      WHEN 25.
-        rv_hex = '41C80000'.
       WHEN OTHERS.
-* https://webassembly.github.io/spec/core/exec/numerics.html#rounding
-
         lv_integer = trunc( abs( mv_value ) ).
         IF lv_integer = 0.
           lv_integer_bits = '0'.
@@ -189,7 +176,6 @@ CLASS zcl_wasm_f32 IMPLEMENTATION.
             lv_integer_bits = lv_bit && lv_integer_bits.
           ENDWHILE.
         ENDIF.
-        WRITE / lv_integer_bits.
 
         lv_fraction = frac( mv_value ).
         WHILE lv_fraction > 0 AND strlen( lv_fraction_bits ) < 23.
@@ -201,7 +187,6 @@ CLASS zcl_wasm_f32 IMPLEMENTATION.
             lv_fraction_bits = lv_fraction_bits && '0'.
           ENDIF.
         ENDWHILE.
-        WRITE / lv_fraction_bits.
 
 * todo, moving decimal point to the right for lower numbers
         DATA(lv_exponent) = 127 + strlen( lv_integer_bits ) - 1.
@@ -225,7 +210,6 @@ CLASS zcl_wasm_f32 IMPLEMENTATION.
         IF strlen( lv_fraction_bits ) > 23.
           lv_fraction_bits = lv_fraction_bits(23).
         ENDIF.
-        WRITE / lv_fraction_bits.
         DO strlen( lv_fraction_bits ) TIMES.
           lv_offset = sy-index - 1.
           lv_bit = lv_fraction_bits+lv_offset(1).
