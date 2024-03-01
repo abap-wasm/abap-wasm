@@ -7,6 +7,8 @@ CLASS ltcl_test DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS FINAL.
 
     METHODS to_hex_0 FOR TESTING RAISING cx_static_check.
     METHODS to_hex_25 FOR TESTING RAISING cx_static_check.
+    METHODS to_hex_12_375 FOR TESTING RAISING cx_static_check.
+    METHODS to_hex_0_0625 FOR TESTING RAISING cx_static_check.
 
     METHODS get_unsigned_32 FOR TESTING RAISING cx_static_check.
 
@@ -55,6 +57,20 @@ CLASS ltcl_test IMPLEMENTATION.
     cl_abap_unit_assert=>assert_equals(
       act = lv_unsigned
       exp = 1077936128 ).
+  ENDMETHOD.
+
+  METHOD to_hex_12_375.
+    DATA(lv_hex) = zcl_wasm_f32=>from_float( '12.375' )->to_hex( ).
+    cl_abap_unit_assert=>assert_equals(
+      act = lv_hex
+      exp = '41460000' ).
+  ENDMETHOD.
+
+  METHOD to_hex_0_0625.
+    DATA(lv_hex) = zcl_wasm_f32=>from_float( '0.0625' )->to_hex( ).
+    cl_abap_unit_assert=>assert_equals(
+      act = lv_hex
+      exp = '3D800000' ).
   ENDMETHOD.
 
 ENDCLASS.

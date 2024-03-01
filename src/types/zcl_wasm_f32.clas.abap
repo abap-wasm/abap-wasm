@@ -147,29 +147,87 @@ CLASS zcl_wasm_f32 IMPLEMENTATION.
 
   METHOD to_hex.
 * https://gregstoll.com/~gregstoll/floattohex/
+* https://en.wikipedia.org/wiki/Single-precision_floating-point_format
+* https://webassembly.github.io/spec/core/exec/numerics.html#rounding
 
-* todo
+    DATA lv_fraction TYPE f.
+    DATA lv_integer  TYPE i.
+    DATA lv_bit      TYPE c LENGTH 1.
+    DATA lv_hex1     TYPE x LENGTH 1.
+    DATA lv_exponent TYPE i.
+
+    DATA lv_integer_bits  TYPE string.
+    DATA lv_fraction_bits TYPE string.
+
     CASE mv_value.
-      WHEN -2.
-        rv_hex = 'C0000000'.
-      WHEN -1.
-        rv_hex = 'BF800000'.
       WHEN 0.
         rv_hex = '00000000'.
-      WHEN 1.
-        rv_hex = '3F800000'.
-      WHEN 2.
-        rv_hex = '40000000'.
-      WHEN 3.
-        rv_hex = '40400000'.
-      WHEN 5.
-        rv_hex = '40A00000'.
-      WHEN 6.
-        rv_hex = '40C00000'.
-      WHEN 25.
-        rv_hex = '41C80000'.
       WHEN OTHERS.
-        RAISE EXCEPTION NEW zcx_wasm( text = |todo: zcl_wasm_f32, to_hex, { mv_value STYLE = SCIENTIFIC }| ).
+        lv_integer = trunc( abs( mv_value ) ).
+        IF lv_integer = 0.
+          lv_integer_bits = '0'.
+        ELSE.
+          WHILE lv_integer > 0.
+            lv_bit = lv_integer MOD 2.
+            lv_integer = lv_integer DIV 2.
+            lv_integer_bits = lv_bit && lv_integer_bits.
+          ENDWHILE.
+        ENDIF.
+
+        lv_fraction = frac( mv_value ).
+        WHILE lv_fraction > 0 AND strlen( lv_fraction_bits ) < 23.
+          lv_fraction = lv_fraction * 2.
+          IF lv_fraction >= 1.
+            lv_fraction = lv_fraction - 1.
+            lv_fraction_bits = lv_fraction_bits && '1'.
+          ELSE.
+            lv_fraction_bits = lv_fraction_bits && '0'.
+          ENDIF.
+        ENDWHILE.
+        IF lv_fraction_bits = ''.
+          lv_fraction_bits = '0'.
+        ENDIF.
+*        WRITE: / 'fraction bits:', lv_fraction_bits.
+
+* todo, moving decimal point to the right for lower numbers
+        IF lv_integer_bits <> '0'.
+          lv_exponent = 127 + strlen( lv_integer_bits ) - 1.
+        ELSE.
+          FIND FIRST OCCURRENCE OF '1' IN lv_fraction_bits MATCH OFFSET lv_exponent.
+          lv_exponent = lv_exponent + 1.
+          lv_fraction_bits = lv_fraction_bits+lv_exponent.
+          lv_exponent = 127 - lv_exponent.
+*          WRITE: / 'fraction bits, adjusted:', lv_fraction_bits.
+        ENDIF.
+        IF lv_exponent > 255.
+          RAISE EXCEPTION NEW zcx_wasm( text = |exponent too large: { lv_exponent }| ).
+        ENDIF.
+*        WRITE: / 'exponent:', lv_exponent.
+        lv_hex1 = lv_exponent.
+
+        lv_fraction_bits = lv_integer_bits+1 && lv_fraction_bits.
+
+        IF mv_value < 0.
+          SET BIT 1 OF rv_hex TO 1.
+        ENDIF.
+
+        DO 8 TIMES.
+          GET BIT sy-index OF lv_hex1 INTO lv_bit.
+          DATA(lv_offset) = sy-index + 1.
+          SET BIT lv_offset OF rv_hex TO lv_bit.
+        ENDDO.
+
+        IF strlen( lv_fraction_bits ) > 23.
+          lv_fraction_bits = lv_fraction_bits(23).
+        ENDIF.
+        DO strlen( lv_fraction_bits ) TIMES.
+          lv_offset = sy-index - 1.
+          lv_bit = lv_fraction_bits+lv_offset(1).
+          lv_offset = sy-index + 9.
+          SET BIT lv_offset OF rv_hex TO lv_bit.
+        ENDDO.
+
+*        RAISE EXCEPTION NEW zcx_wasm( text = |todo: zcl_wasm_f32, to_hex, { mv_value STYLE = SCIENTIFIC }| ).
     ENDCASE.
 
   ENDMETHOD.

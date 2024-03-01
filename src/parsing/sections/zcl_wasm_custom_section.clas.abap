@@ -17,7 +17,35 @@ CLASS zcl_wasm_custom_section IMPLEMENTATION.
 
 * "ignored by the WebAssembly semantics", but must validate utf8, see utf8-custom-section-id.wast
 
-* todo
+    DATA(lv_str) = io_body->shift_utf8( ).
+    IF lv_str <> 'name'.
+      RETURN.
+    ENDIF.
+
+    WHILE io_body->get_length( ) > 0.
+      DATA(lv_byte) = io_body->shift( 1 ).
+      CASE lv_byte.
+        WHEN '00'.
+* module name
+          RAISE EXCEPTION NEW zcx_wasm( text = |custom section: todo, module names| ).
+        WHEN '01'.
+* function names
+          DATA(lv_size) = io_body->shift_u32( ).
+
+          DATA(lv_len) = io_body->shift_u32( ).
+          DO lv_len TIMES.
+            io_body->shift_u32( ).
+            io_body->shift_utf8( ).
+          ENDDO.
+        WHEN '02'.
+* local names
+          lv_size = io_body->shift_u32( ).
+* for now, just skip it,
+          io_body->shift( lv_size ).
+        WHEN OTHERS.
+          RAISE EXCEPTION NEW zcx_wasm( text = |unexpected custom subsection id| ).
+      ENDCASE.
+    ENDWHILE.
 
   ENDMETHOD.
 
