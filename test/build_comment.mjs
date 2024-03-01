@@ -42,7 +42,13 @@ if (totalSuccessesBefore !== totalSuccessesAfter) {
   let delta = totalSuccessesAfter - totalSuccessesBefore;
   comment += " (" + delta + (delta > 0 ? good : bad ) + ")";
 }
-comment += ` | | ${totalErrors} | |\n`;
+comment += ` | | ${totalErrors} | |\n\n\n`;
+
+const qafter = JSON.parse(fs.readFileSync(`../after/quickjs.json`, "utf-8"));
+const qbefore = JSON.parse(fs.readFileSync(`../before/quickjs.json`, "utf-8"));
+comment += "|           | Before | After | Delta |\n";
+comment += "| :---      | ---:   | ---:  | ---:  |\n";
+comment += `| :partying_face: QuickJS | ${qbefore.runtime}ms | ${qafter.runtime}ms | ${qafter.runtime - qbefore.runtime}ms |\n`;
 
 comment += "\nUpdated: " + new Date().toISOString() + "\n";
 comment += "\nSHA: " + process.env.GITHUB_SHA + "\n";
