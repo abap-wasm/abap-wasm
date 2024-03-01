@@ -42,7 +42,16 @@ if (totalSuccessesBefore !== totalSuccessesAfter) {
   let delta = totalSuccessesAfter - totalSuccessesBefore;
   comment += " (" + delta + (delta > 0 ? good : bad ) + ")";
 }
-comment += ` | | ${totalErrors} | |\n`;
+comment += ` | | ${totalErrors} | |\n\n\n`;
+
+const quickjsAfter = JSON.parse(fs.readFileSync(`../after/quickjs.json`, "utf-8"));
+const quickjsBefore = JSON.parse(fs.readFileSync(`../before/quickjs.json`, "utf-8"));
+const scryptAfter = JSON.parse(fs.readFileSync(`../after/scrypt.json`, "utf-8"));
+const scryptBefore = JSON.parse(fs.readFileSync(`../before/scrypt.json`, "utf-8"));
+comment += "|           | Before | After | Delta |\n";
+comment += "| :---      | ---:   | ---:  | ---:  |\n";
+comment += `| :partying_face: QuickJS | ${quickjsBefore.runtime}ms | ${quickjsAfter.runtime}ms | ${quickjsAfter.runtime - quickjsBefore.runtime}ms |\n`;
+comment += `| :money_mouth_face: Scrypt | ${scryptBefore.runtime}ms | ${scryptAfter.runtime}ms | ${scryptAfter.runtime - scryptBefore.runtime}ms |\n`;
 
 comment += "\nUpdated: " + new Date().toISOString() + "\n";
 comment += "\nSHA: " + process.env.GITHUB_SHA + "\n";
