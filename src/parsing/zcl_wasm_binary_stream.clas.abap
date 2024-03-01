@@ -50,16 +50,15 @@ CLASS zcl_wasm_binary_stream DEFINITION
       RETURNING
         VALUE(rv_name) TYPE string
       RAISING zcx_wasm.
-  PROTECTED SECTION.
-  PRIVATE SECTION.
 
-    DATA mv_data TYPE xstring .
-
-    METHODS reverse_hex
+    CLASS-METHODS reverse_hex
       IMPORTING
         iv_hex        TYPE xsequence
       RETURNING
         VALUE(rv_hex) TYPE xstring.
+  PROTECTED SECTION.
+  PRIVATE SECTION.
+    DATA mv_data TYPE xstring .
 ENDCLASS.
 
 
@@ -125,6 +124,8 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
       RETURN.
     ENDIF.
     " WRITE: / 'input:', lv_hex.
+
+    lv_hex = reverse_hex( lv_hex ).
 
     GET BIT 1 OF lv_hex INTO lv_bit.
     DATA(lv_sign) = lv_bit.
