@@ -36,10 +36,14 @@ CLASS zcl_wasm_binary_stream DEFINITION
         VALUE(rv_f) TYPE f .
     METHODS shift_i64
       RETURNING
-        VALUE(rv_int) TYPE int8 .
+        VALUE(rv_int) TYPE int8
+      RAISING
+        zcx_wasm.
     METHODS shift_i32
       RETURNING
-        VALUE(rv_int) TYPE i .
+        VALUE(rv_int) TYPE i
+      RAISING
+        zcx_wasm.
     METHODS shift_utf8
       RETURNING
         VALUE(rv_name) TYPE string .
@@ -242,6 +246,10 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
     DATA lv_shift TYPE i VALUE 1.
 
     DO.
+      IF sy-index = 9.
+        RAISE EXCEPTION NEW zcx_wasm( text = 'integer representation too long' ).
+      ENDIF.
+
       lv_hex = shift( 1 ).
 
       GET BIT 1 OF lv_hex INTO lv_bit.
