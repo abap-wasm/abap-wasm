@@ -155,14 +155,10 @@ CLASS zcl_wasm_f32 IMPLEMENTATION.
     DATA lv_bit      TYPE c LENGTH 1.
     DATA lv_hex1     TYPE x LENGTH 1.
 
-    DATA lv_integer_bits TYPE string.
+    DATA lv_integer_bits  TYPE string.
     DATA lv_fraction_bits TYPE string.
 
     CASE mv_value.
-      WHEN -2.
-        rv_hex = 'C0000000'.
-      WHEN -1.
-        rv_hex = 'BF800000'.
       WHEN 0.
         rv_hex = '00000000'.
       WHEN OTHERS.
