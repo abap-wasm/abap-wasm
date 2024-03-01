@@ -10,7 +10,7 @@ CLASS zcl_wasm_i32_const DEFINITION PUBLIC.
       IMPORTING io_body TYPE REF TO zcl_wasm_binary_stream
       RETURNING VALUE(ri_instruction) TYPE REF TO zif_wasm_instruction.
   PRIVATE SECTION.
-    DATA mv_value TYPE i.
+    DATA mi_value TYPE REF TO zcl_wasm_i32.
 ENDCLASS.
 
 CLASS zcl_wasm_i32_const IMPLEMENTATION.
@@ -20,13 +20,13 @@ CLASS zcl_wasm_i32_const IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD constructor.
-    mv_value = iv_value.
+    mi_value = zcl_wasm_i32=>from_signed( iv_value ).
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
 
 * https://webassembly.github.io/spec/core/exec/instructions.html#t-mathsf-xref-syntax-instructions-syntax-instr-numeric-mathsf-const-c
-    io_memory->stack_push( zcl_wasm_i32=>from_signed( mv_value ) ).
+    io_memory->stack_push( mi_value ).
   ENDMETHOD.
 
 ENDCLASS.
