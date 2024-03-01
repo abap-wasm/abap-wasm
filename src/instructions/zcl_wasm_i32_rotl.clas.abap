@@ -21,9 +21,26 @@ CLASS zcl_wasm_i32_rotl IMPLEMENTATION.
   METHOD zif_wasm_instruction~execute.
 * https://webassembly.github.io/spec/core/exec/numerics.html#xref-exec-numerics-op-irotl-mathrm-irotl-n-i-1-i-2
 
-    DATA(lv_count) = io_memory->stack_pop_i32( )->get_signed( ) MOD 32.
+    DATA lv_hex TYPE x LENGTH 4.
+    DATA lv_int TYPE i.
 
-    RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_i32_rotl' ).
+    DATA(lv_bits) = io_memory->stack_pop_i32( )->get_signed( ) MOD 32.
+    lv_hex = io_memory->stack_pop_i32( )->get_signed( ).
+
+    DATA(lv_bytes) = lv_bits / 8.
+    lv_bits = lv_bits MOD 8.
+
+    IF lv_bytes > 0.
+      SHIFT lv_hex LEFT BY lv_bytes PLACES IN BYTE MODE CIRCULAR.
+    ENDIF.
+
+    IF lv_bits > 0.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_i32_rotl, shift bits' ).
+    ENDIF.
+
+    lv_int = lv_hex.
+    io_memory->stack_push( zcl_wasm_i32=>from_signed( lv_int ) ).
+
   ENDMETHOD.
 
 ENDCLASS.
