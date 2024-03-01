@@ -59,10 +59,10 @@ CLASS ltcl_test IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD to_hex_12_375.
-    " DATA(lv_hex) = zcl_wasm_f32=>from_float( '12.375' )->to_hex( ).
-    " cl_abap_unit_assert=>assert_equals(
-    "   act = lv_hex
-    "   exp = '41460000' ).
+    DATA(lv_hex) = zcl_wasm_f32=>from_float( '12.375' )->to_hex( ).
+    cl_abap_unit_assert=>assert_equals(
+      act = lv_hex
+      exp = '41460000' ).
   ENDMETHOD.
 
 ENDCLASS.
