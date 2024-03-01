@@ -20,6 +20,7 @@ CLASS zcl_wasm_i32_const IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD constructor.
+* the value objects are immutable, so we can reuse them
     mi_value = zcl_wasm_i32=>from_signed( iv_value ).
   ENDMETHOD.
 
