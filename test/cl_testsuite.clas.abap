@@ -223,9 +223,11 @@ CLASS cl_testsuite IMPLEMENTATION.
                   EXIT. " current loop
                 ENDIF.
               ELSE.
+                lv_error = abap_true.
                 go_result->add_error(
                   iv_start_time = ls_results-start_time
                   iv_text       = |todo, externref check non null| ).
+                EXIT. " current loop
               ENDIF.
             WHEN 'funcref'.
               IF ls_expected-value = 'null'.
@@ -237,9 +239,11 @@ CLASS cl_testsuite IMPLEMENTATION.
                   EXIT. " current loop
                 ENDIF.
               ELSE.
+                lv_error = abap_true.
                 go_result->add_error(
                   iv_start_time = ls_results-start_time
                   iv_text       = |todo, funcref check non null| ).
+                EXIT. " current loop
               ENDIF.
             WHEN OTHERS.
               lv_error = abap_true.

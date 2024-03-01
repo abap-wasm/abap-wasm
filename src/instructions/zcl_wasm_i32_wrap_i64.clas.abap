@@ -19,6 +19,7 @@ CLASS zcl_wasm_i32_wrap_i64 IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
+* https://webassembly.github.io/spec/core/exec/numerics.html#xref-exec-numerics-op-wrap-mathrm-wrap-m-n-i
     RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_i32_wrap_i64' ).
   ENDMETHOD.
 
