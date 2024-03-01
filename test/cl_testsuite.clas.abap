@@ -323,19 +323,16 @@ CLASS cl_testsuite IMPLEMENTATION.
                     go_result->add_success( |ok, got error: { lx_error->get_text( ) }| ).
                   ENDIF.
               ENDTRY.
-            WHEN 'assert_malformed'.
+            WHEN 'assert_malformed'
+                OR 'assert_invalid'
+                OR 'assert_uninstantiable'.
               WRITE / '@KERNEL lv_hex.set(fs.readFileSync(lv_filename.get()).toString("hex").toUpperCase());'.
               TRY.
-                  zcl_wasm=>create_with_wasm( lv_hex ).
-                  go_result->add_error( |expected malformed| ).
-                CATCH cx_root INTO lx_error.
-                  go_result->add_success( |got error: { lx_error->get_text( ) }| ).
-              ENDTRY.
-            WHEN 'assert_invalid'.
-              WRITE / '@KERNEL lv_hex.set(fs.readFileSync(lv_filename.get()).toString("hex").toUpperCase());'.
-              TRY.
-                  zcl_wasm=>create_with_wasm( lv_hex ).
-                  go_result->add_error( |expected invalid| ).
+                  DATA(li_wasm) = zcl_wasm=>create_with_wasm( lv_hex ).
+                  IF <ls_command>-type = 'assert_uninstantiable'.
+                    li_wasm->instantiate( ).
+                  ENDIF.
+                  go_result->add_error( |expected error| ).
                 CATCH cx_root INTO lx_error.
                   go_result->add_success( |got error: { lx_error->get_text( ) }| ).
               ENDTRY.
@@ -345,8 +342,6 @@ CLASS cl_testsuite IMPLEMENTATION.
                 io_wasm    = lo_wasm ).
             WHEN 'assert_exhaustion'.
               go_result->add_warning( |todo, assert_exhaustion| ).
-            WHEN 'assert_uninstantiable'.
-              go_result->add_warning( |todo, assert_uninstantiable| ).
             WHEN 'register'.
               go_result->add_warning( |todo, register| ).
             WHEN 'assert_unlinkable'.

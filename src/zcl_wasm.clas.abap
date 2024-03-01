@@ -28,13 +28,8 @@ CLASS zcl_wasm DEFINITION
 
   PROTECTED SECTION.
   PRIVATE SECTION.
-
     DATA mo_module TYPE REF TO zcl_wasm_module.
     DATA mo_memory TYPE REF TO zcl_wasm_memory.
-
-    METHODS instantiate
-      RAISING
-        zcx_wasm.
 ENDCLASS.
 
 
@@ -96,7 +91,7 @@ CLASS zcl_wasm IMPLEMENTATION.
     ENDIF.
 
     IF mo_memory IS INITIAL.
-      instantiate( ).
+      zif_wasm~instantiate( ).
     ENDIF.
 
     LOOP AT it_parameters INTO DATA(li_value).
@@ -113,7 +108,8 @@ CLASS zcl_wasm IMPLEMENTATION.
 
   ENDMETHOD.
 
-  METHOD instantiate.
+  METHOD zif_wasm~instantiate.
+    ASSERT mo_memory IS INITIAL.
     mo_memory = NEW zcl_wasm_memory( ).
 
 * The improts component of a module defines a set of imports that are required for instantiation.
