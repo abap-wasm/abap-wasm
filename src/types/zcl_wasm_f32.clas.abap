@@ -147,8 +147,15 @@ CLASS zcl_wasm_f32 IMPLEMENTATION.
 
   METHOD to_hex.
 * https://gregstoll.com/~gregstoll/floattohex/
+* https://en.wikipedia.org/wiki/Single-precision_floating-point_format
 
-* todo
+    DATA lv_fraction TYPE f.
+    DATA lv_integer TYPE i.
+    DATA lv_bit TYPE c LENGTH 1.
+
+    DATA lv_integer_bits TYPE string.
+    DATA lv_fraction_bits TYPE string.
+
     CASE mv_value.
       WHEN -2.
         rv_hex = 'C0000000'.
@@ -169,6 +176,23 @@ CLASS zcl_wasm_f32 IMPLEMENTATION.
       WHEN 25.
         rv_hex = '41C80000'.
       WHEN OTHERS.
+        " WRITE: / mv_value.
+        " lv_integer = trunc( abs( mv_value ) ).
+        " WRITE / lv_integer.
+        " IF lv_integer = 0.
+        "   lv_integer_bits = '0'.
+        " ELSE.
+        "   WHILE lv_integer > 0.
+        "     lv_bit = lv_integer MOD 2.
+        "     lv_integer = lv_integer DIV 2.
+        "     lv_integer_bits = lv_bit && lv_integer_bits.
+        "   ENDWHILE.
+        " ENDIF.
+        " WRITE / lv_integer_bits.
+
+        " lv_fraction = frac( mv_value ).
+        " WRITE / lv_fraction.
+
         RAISE EXCEPTION NEW zcx_wasm( text = |todo: zcl_wasm_f32, to_hex, { mv_value STYLE = SCIENTIFIC }| ).
     ENDCASE.
 
