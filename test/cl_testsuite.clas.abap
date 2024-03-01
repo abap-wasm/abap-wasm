@@ -145,7 +145,7 @@ CLASS cl_testsuite IMPLEMENTATION.
     IF is_command-action-field = 'call'
           OR is_command-action-field = 'call Mf.call'
           OR is_command-action-field = 'Mf.call'.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'call todo' ).
+      RAISE EXCEPTION NEW zcx_wasm( text = 'call todo, cl_testsuite' ).
     ENDIF.
 
     rs_results-values = io_wasm->execute_function_export(
