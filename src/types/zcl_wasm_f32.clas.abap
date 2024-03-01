@@ -187,19 +187,22 @@ CLASS zcl_wasm_f32 IMPLEMENTATION.
         IF lv_fraction_bits = ''.
           lv_fraction_bits = '0'.
         ENDIF.
-        WRITE: / 'fraction bits:', lv_fraction_bits.
+*        WRITE: / 'fraction bits:', lv_fraction_bits.
 
 * todo, moving decimal point to the right for lower numbers
         IF lv_integer_bits <> '0'.
           lv_exponent = 127 + strlen( lv_integer_bits ) - 1.
         ELSE.
           FIND FIRST OCCURRENCE OF '1' IN lv_fraction_bits MATCH OFFSET lv_exponent.
+          lv_exponent = lv_exponent + 1.
           lv_fraction_bits = lv_fraction_bits+lv_exponent.
-          lv_exponent = 127 - lv_exponent - 1.
+          lv_exponent = 127 - lv_exponent.
+*          WRITE: / 'fraction bits, adjusted:', lv_fraction_bits.
         ENDIF.
         IF lv_exponent > 255.
           RAISE EXCEPTION NEW zcx_wasm( text = |exponent too large: { lv_exponent }| ).
         ENDIF.
+*        WRITE: / 'exponent:', lv_exponent.
         lv_hex1 = lv_exponent.
 
         lv_fraction_bits = lv_integer_bits+1 && lv_fraction_bits.
