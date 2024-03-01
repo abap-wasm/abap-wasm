@@ -280,7 +280,35 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
 
 * https://webassembly.github.io/spec/core/binary/values.html#binary-int
 
-    rv_int = shift_i64( ).
+* https://en.wikipedia.org/wiki/LEB128
+
+    DATA lv_hex   TYPE x LENGTH 1.
+    DATA lv_bit   TYPE c LENGTH 1.
+    DATA lv_shift TYPE i VALUE 1.
+
+    DO.
+      IF sy-index > 5.
+        RAISE EXCEPTION NEW zcx_wasm( text = 'integer representation too long' ).
+      ENDIF.
+
+      lv_hex = shift( 1 ).
+
+      GET BIT 1 OF lv_hex INTO lv_bit.
+      SET BIT 1 OF lv_hex TO 0.
+
+      rv_int = rv_int + CONV i( lv_hex ) * lv_shift.
+
+      IF lv_bit = '0'.
+        GET BIT 2 OF lv_hex INTO lv_bit.
+        IF lv_bit = '1'.
+* hmm, this will overflow?
+          rv_int = rv_int - lv_shift * 128.
+        ENDIF.
+        RETURN.
+      ENDIF.
+
+      lv_shift = lv_shift * 128.
+    ENDDO.
 
   ENDMETHOD.
 
