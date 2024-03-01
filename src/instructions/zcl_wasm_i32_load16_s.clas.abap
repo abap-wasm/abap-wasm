@@ -45,12 +45,21 @@ CLASS zcl_wasm_i32_load16_s IMPLEMENTATION.
     IF lv_i < 0.
       RAISE EXCEPTION NEW zcx_wasm( text = 'load: out of bounds' ).
     ENDIF.
+
     lv_hex = io_memory->get_linear( )->get(
       iv_length = lc_length
       iv_align  = mv_align
       iv_offset = mv_offset + lv_i ).
 
+    GET BIT 1 OF lv_hex INTO DATA(lv_sign).
+    SET BIT 1 OF lv_hex TO 0.
+
     lv_int = lv_hex.
+
+    IF lv_sign = 1.
+      lv_int = lv_int - 32768.
+    ENDIF.
+
     io_memory->stack_push( zcl_wasm_i32=>from_signed( lv_int ) ).
   ENDMETHOD.
 

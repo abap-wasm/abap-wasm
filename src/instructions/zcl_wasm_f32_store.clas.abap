@@ -37,6 +37,7 @@ CLASS zcl_wasm_f32_store IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
+* todo, converting f32 to hex?
     RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_f32_store' ).
   ENDMETHOD.
 
