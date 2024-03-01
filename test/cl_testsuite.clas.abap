@@ -339,8 +339,6 @@ CLASS cl_testsuite IMPLEMENTATION.
                 io_wasm    = lo_wasm ).
             WHEN 'assert_exhaustion'.
               go_result->add_warning( |todo, assert_exhaustion| ).
-            WHEN 'assert_uninstantiable'.
-              go_result->add_warning( |todo, assert_uninstantiable| ).
             WHEN 'register'.
               go_result->add_warning( |todo, register| ).
             WHEN 'assert_unlinkable'.
