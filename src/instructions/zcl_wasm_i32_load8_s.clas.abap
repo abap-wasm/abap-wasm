@@ -50,8 +50,15 @@ CLASS zcl_wasm_i32_load8_s IMPLEMENTATION.
       iv_align  = mv_align
       iv_offset = mv_offset + lv_i ).
 
-* todo: not sure how load8_s is different from load8_u
+    GET BIT 1 OF lv_hex INTO DATA(lv_sign).
+    SET BIT 1 OF lv_hex TO 0.
+
     lv_int = lv_hex.
+
+    IF lv_sign = 1.
+      lv_int = lv_int - 128.
+    ENDIF.
+
     io_memory->stack_push( zcl_wasm_i32=>from_signed( lv_int ) ).
   ENDMETHOD.
 
