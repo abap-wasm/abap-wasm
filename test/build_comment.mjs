@@ -19,6 +19,7 @@ const bad = " :small_red_triangle_down:"
 let totalSuccessesAfter = 0;
 let totalSuccessesBefore = 0;
 let totalErrors = 0;
+let totalRuntime = 0;
 for (const folder of folders) {
   const after = JSON.parse(fs.readFileSync(`../after/${folder}.json`, "utf-8"));
   const before = JSON.parse(fs.readFileSync(`../before/${folder}.json`, "utf-8"));
@@ -34,6 +35,7 @@ for (const folder of folders) {
   let warnings = after.warnings;
   let errors = after.errors;
   let runtime = after.runtime;
+  totalRuntime += runtime;
   comment += `| ${folder} | ${successes} | ${warnings}  | ${errors} | ${runtime}s |\n`;
 }
 
@@ -42,7 +44,7 @@ if (totalSuccessesBefore !== totalSuccessesAfter) {
   let delta = totalSuccessesAfter - totalSuccessesBefore;
   comment += " (" + delta + (delta > 0 ? good : bad ) + ")";
 }
-comment += ` | | ${totalErrors} | |\n\n\n`;
+comment += ` | | ${totalErrors} | ${totalRuntime}s |\n\n\n`;
 
 const quickjsAfter = JSON.parse(fs.readFileSync(`../after/quickjs.json`, "utf-8"));
 const quickjsBefore = JSON.parse(fs.readFileSync(`../before/quickjs.json`, "utf-8"));
