@@ -21,4 +21,9 @@ INTERFACE zif_wasm PUBLIC.
     RAISING
       zcx_wasm.
 
+* not mandatory to call, must be called max once before execute_function_export
+  METHODS instantiate
+    RAISING
+      zcx_wasm.
+
 ENDINTERFACE.

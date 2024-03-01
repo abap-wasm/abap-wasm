@@ -328,7 +328,10 @@ CLASS cl_testsuite IMPLEMENTATION.
                 OR 'assert_uninstantiable'.
               WRITE / '@KERNEL lv_hex.set(fs.readFileSync(lv_filename.get()).toString("hex").toUpperCase());'.
               TRY.
-                  zcl_wasm=>create_with_wasm( lv_hex ).
+                  DATA(li_wasm) = zcl_wasm=>create_with_wasm( lv_hex ).
+                  IF <ls_command>-type = 'assert_uninstantiable'.
+                    li_wasm->instantiate( ).
+                  ENDIF.
                   go_result->add_error( |expected error| ).
                 CATCH cx_root INTO lx_error.
                   go_result->add_success( |got error: { lx_error->get_text( ) }| ).
