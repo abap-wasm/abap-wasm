@@ -246,7 +246,8 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
     DATA lv_shift TYPE i VALUE 1.
 
     DO.
-      IF sy-index = 9.
+      " leb128 can be at most 10 bytes
+      IF sy-index > 10.
         RAISE EXCEPTION NEW zcx_wasm( text = 'integer representation too long' ).
       ENDIF.
 
