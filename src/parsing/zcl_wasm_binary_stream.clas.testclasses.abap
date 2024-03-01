@@ -65,7 +65,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
   METHOD shift_f32_25.
 
-    DATA(lo_stream) = NEW zcl_wasm_binary_stream( CONV xstring( |41C80000| ) ).
+    DATA(lo_stream) = NEW zcl_wasm_binary_stream( CONV xstring( |0000C841| ) ).
     cl_abap_unit_assert=>assert_equals(
       act = lo_stream->shift_f32( )
       exp = 25 ).

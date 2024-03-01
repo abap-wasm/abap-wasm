@@ -241,6 +241,7 @@ CLASS zcl_wasm_f32 IMPLEMENTATION.
     DATA(lv_int) = zcl_wasm_i32=>from_unsigned( iv_value )->get_signed( ).
     lv_hex = lv_int.
     ro_value = NEW #( ).
+    lv_hex = zcl_wasm_binary_stream=>reverse_hex( lv_hex ).
     ro_value->mv_value = NEW zcl_wasm_binary_stream( lv_hex )->shift_f32( ).
   ENDMETHOD.
 

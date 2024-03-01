@@ -23,6 +23,31 @@ CLASS cl_scrypt IMPLEMENTATION.
 
     rv_json = '{"runtime": "' && lv_runtime && '"}'.
 
+    DATA lv_password TYPE string VALUE 'password'.
+    DATA lv_salt TYPE string VALUE 'salt'.
+
+    DATA(lt_results) = li_wasm->execute_function_export( '__wbindgen_global_argument_ptr' ).
+    DATA(lv_retptr) = lt_results[ 1 ].
+
+    " todo, 5 should be the encoded length of the password
+    " lt_results = li_wasm->execute_function_export(
+    "   iv_name       = '__wbindgen_malloc'
+    "   it_parameters = VALUE #( ( zcl_wasm_i32=>from_signed( 5 ) ) ) ).
+
+* "scrypt" function export takes 9 x i32
+    " li_wasm->execute_function_export(
+    "   iv_name       = 'scrypt'
+    "   it_parameters = VALUE #(
+    "     ( lv_retptr )
+    "     ( todo )
+    "     ( todo )
+    "     ( todo )
+    "     ( todo )
+    "     ( todo )
+    "     ( todo )
+    "     ( todo )
+    "     ( todo ) ) ).
+
   ENDMETHOD.
 
 ENDCLASS.
