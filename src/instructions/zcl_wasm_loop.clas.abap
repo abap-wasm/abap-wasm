@@ -65,7 +65,7 @@ CLASS zcl_wasm_loop IMPLEMENTATION.
             CONTINUE.
           ENDIF.
 
-          RAISE EXCEPTION NEW zcx_wasm_branch( depth = lx_branch->depth - 1 ).
+          RAISE EXCEPTION TYPE zcx_wasm_branch EXPORTING depth = lx_branch->depth - 1.
       ENDTRY.
 
       EXIT.

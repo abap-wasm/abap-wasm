@@ -60,7 +60,7 @@ CLASS zcl_wasm_block IMPLEMENTATION.
           io_module = io_module )->execute( mt_instructions ).
       CATCH zcx_wasm_branch INTO DATA(lx_branch).
         IF lx_branch->depth > 0.
-          RAISE EXCEPTION NEW zcx_wasm_branch( depth = lx_branch->depth - 1 ).
+          RAISE EXCEPTION TYPE zcx_wasm_branch EXPORTING depth = lx_branch->depth - 1.
         ENDIF.
     ENDTRY.
 
