@@ -46,6 +46,7 @@ CLASS zcl_wasm_i64_load8_s IMPLEMENTATION.
     IF lv_i < 0.
       RAISE EXCEPTION NEW zcx_wasm( text = 'load: out of bounds' ).
     ENDIF.
+
     lv_hex = io_memory->get_linear( )->get(
       iv_length = lc_length
       iv_align  = mv_align
