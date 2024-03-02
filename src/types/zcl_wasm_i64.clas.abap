@@ -24,6 +24,29 @@ CLASS zcl_wasm_i64 DEFINITION
       RAISING
         zcx_wasm.
 
+    CLASS-METHODS gt_s
+      IMPORTING
+        !io_memory TYPE REF TO zcl_wasm_memory
+      RAISING
+        zcx_wasm.
+    CLASS-METHODS ge_s
+      IMPORTING
+        !io_memory TYPE REF TO zcl_wasm_memory
+      RAISING
+        zcx_wasm.
+
+    CLASS-METHODS lt_s
+      IMPORTING
+        !io_memory TYPE REF TO zcl_wasm_memory
+      RAISING
+        zcx_wasm.
+
+    CLASS-METHODS le_s
+      IMPORTING
+        !io_memory TYPE REF TO zcl_wasm_memory
+      RAISING
+        zcx_wasm.
+
     CLASS-METHODS mul
       IMPORTING
         !io_memory TYPE REF TO zcl_wasm_memory
@@ -96,6 +119,24 @@ CLASS zcl_wasm_i64 IMPLEMENTATION.
 
   ENDMETHOD.
 
+  METHOD le_s.
+
+    IF io_memory->stack_length( ) < 2.
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'le_s, expected two variables on stack'.
+    ENDIF.
+
+    DATA(lo_val1) = CAST zcl_wasm_i64( io_memory->stack_pop( ) ).
+    DATA(lo_val2) = CAST zcl_wasm_i64( io_memory->stack_pop( ) ).
+
+    DATA(lv_result) = 0.
+    IF lo_val1->get_signed( ) >= lo_val2->get_signed( ).
+      lv_result = 1.
+    ENDIF.
+
+    io_memory->stack_push( zcl_wasm_i32=>from_signed( lv_result ) ).
+
+  ENDMETHOD.
+
   METHOD div_s.
 
     ASSERT io_memory->stack_length( ) >= 2.
@@ -113,6 +154,30 @@ CLASS zcl_wasm_i64 IMPLEMENTATION.
     ELSE.
       io_memory->stack_push( from_signed( lv_val2 DIV lv_val1 ) ).
     ENDIF.
+
+  ENDMETHOD.
+
+  METHOD lt_s.
+
+* https://webassembly.github.io/spec/core/exec/instructions.html#t-mathsf-xref-syntax-instructions-syntax-relop-mathit-relop
+
+    IF io_memory->stack_length( ) < 2.
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'lt_s, expected two variables on stack'.
+    ENDIF.
+
+    TRY.
+        DATA(lo_val1) = CAST zcl_wasm_i64( io_memory->stack_pop( ) ).
+        DATA(lo_val2) = CAST zcl_wasm_i64( io_memory->stack_pop( ) ).
+      CATCH cx_sy_move_cast_error.
+        RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'lt_s, wrong types on stack'.
+    ENDTRY.
+
+    DATA(lv_result) = 0.
+    IF lo_val1->get_signed( ) > lo_val2->get_signed( ).
+      lv_result = 1.
+    ENDIF.
+
+    io_memory->stack_push( zcl_wasm_i32=>from_signed( lv_result ) ).
 
   ENDMETHOD.
 
@@ -145,6 +210,42 @@ CLASS zcl_wasm_i64 IMPLEMENTATION.
     DATA(lo_val2) = CAST zcl_wasm_i64( io_memory->stack_pop( ) ).
 
     io_memory->stack_push( from_signed( lo_val1->get_signed( ) + lo_val2->get_signed( ) ) ).
+
+  ENDMETHOD.
+
+  METHOD gt_s.
+
+    IF io_memory->stack_length( ) < 2.
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'gt_s, expected two variables on stack'.
+    ENDIF.
+
+    DATA(lo_val1) = CAST zcl_wasm_i64( io_memory->stack_pop( ) ).
+    DATA(lo_val2) = CAST zcl_wasm_i64( io_memory->stack_pop( ) ).
+
+    DATA(lv_result) = 0.
+    IF lo_val1->get_signed( ) < lo_val2->get_signed( ).
+      lv_result = 1.
+    ENDIF.
+
+    io_memory->stack_push( zcl_wasm_i32=>from_signed( lv_result ) ).
+
+  ENDMETHOD.
+
+  METHOD ge_s.
+
+    IF io_memory->stack_length( ) < 2.
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'ge_s, expected two variables on stack'.
+    ENDIF.
+
+    DATA(lo_val1) = CAST zcl_wasm_i64( io_memory->stack_pop( ) ).
+    DATA(lo_val2) = CAST zcl_wasm_i64( io_memory->stack_pop( ) ).
+
+    DATA(lv_result) = 0.
+    IF lo_val1->get_signed( ) <= lo_val2->get_signed( ).
+      lv_result = 1.
+    ENDIF.
+
+    io_memory->stack_push( zcl_wasm_i32=>from_signed( lv_result ) ).
 
   ENDMETHOD.
 
