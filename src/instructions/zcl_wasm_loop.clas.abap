@@ -53,10 +53,13 @@ CLASS zcl_wasm_loop IMPLEMENTATION.
 
     DO.
       TRY.
-          NEW zcl_wasm_vm(
+          rv_control = NEW zcl_wasm_vm(
             io_memory = io_memory
             io_module = io_module )->execute( mt_instructions ).
 
+          IF rv_control = zif_wasm_instruction=>c_control-return_.
+            RETURN.
+          ENDIF.
         CATCH zcx_wasm_branch INTO DATA(lx_branch).
           IF lx_branch->depth = 0.
             CONTINUE.
