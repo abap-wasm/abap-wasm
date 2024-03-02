@@ -136,9 +136,9 @@ CLASS zcl_wasm_i64 IMPLEMENTATION.
     DATA(lv_val1) = CAST zcl_wasm_i64( io_memory->stack_pop( ) )->mv_value.
 
     IF lv_val1 = 0.
-      io_memory->stack_push( from_signed( 1 ) ).
+      io_memory->stack_push( zcl_wasm_i32=>from_signed( 1 ) ).
     ELSE.
-      io_memory->stack_push( from_signed( 0 ) ).
+      io_memory->stack_push( zcl_wasm_i32=>from_signed( 0 ) ).
     ENDIF.
 
   ENDMETHOD.
@@ -151,9 +151,9 @@ CLASS zcl_wasm_i64 IMPLEMENTATION.
     DATA(lv_val2) = CAST zcl_wasm_i64( io_memory->stack_pop( ) )->get_signed( ).
 
     IF lv_val1 <> lv_val2.
-      io_memory->stack_push( from_signed( 1 ) ).
+      io_memory->stack_push( zcl_wasm_i32=>from_signed( 1 ) ).
     ELSE.
-      io_memory->stack_push( from_signed( 0 ) ).
+      io_memory->stack_push( zcl_wasm_i32=>from_signed( 0 ) ).
     ENDIF.
 
   ENDMETHOD.
@@ -166,9 +166,9 @@ CLASS zcl_wasm_i64 IMPLEMENTATION.
     DATA(lv_val2) = CAST zcl_wasm_i64( io_memory->stack_pop( ) )->get_signed( ).
 
     IF lv_val1 = lv_val2.
-      io_memory->stack_push( from_signed( 1 ) ).
+      io_memory->stack_push( zcl_wasm_i32=>from_signed( 1 ) ).
     ELSE.
-      io_memory->stack_push( from_signed( 0 ) ).
+      io_memory->stack_push( zcl_wasm_i32=>from_signed( 0 ) ).
     ENDIF.
 
   ENDMETHOD.
