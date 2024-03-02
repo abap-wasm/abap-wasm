@@ -17,7 +17,7 @@ CLASS zcl_wasm_type_section IMPLEMENTATION.
 
     DO io_body->shift_u32( ) TIMES.
       IF io_body->shift( 1 ) <> zcl_wasm_types=>c_function_type.
-        RAISE EXCEPTION NEW zcx_wasm( text = |parse type section, expected function type| ).
+        RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |parse type section, expected function type|.
       ENDIF.
 
       APPEND VALUE #(

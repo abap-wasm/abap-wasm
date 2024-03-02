@@ -19,7 +19,7 @@ CLASS zcl_wasm_f64_abs IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_f64_abs' ).
+    RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'todo, execute instruction zcl_wasm_f64_abs'.
   ENDMETHOD.
 
 ENDCLASS.

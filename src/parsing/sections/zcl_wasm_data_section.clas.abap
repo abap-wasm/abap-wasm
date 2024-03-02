@@ -43,7 +43,7 @@ CLASS zcl_wasm_data_section IMPLEMENTATION.
 
     READ TABLE mt_passive ASSIGNING FIELD-SYMBOL(<ls_passive>) WITH KEY dataidx = iv_dataidx.
     IF sy-subrc <> 0.
-      RAISE EXCEPTION NEW zcx_wasm( text = |get_passive, dataidx: { iv_dataidx } not found| ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |get_passive, dataidx: { iv_dataidx } not found|.
     ENDIF.
 
     rv_bytes = <ls_passive>-bytes.
@@ -105,7 +105,7 @@ CLASS zcl_wasm_data_section IMPLEMENTATION.
             instructions = lt_instructions
             bytes        = lv_bytes ) TO ro_data->mt_active.
         WHEN OTHERS.
-          RAISE EXCEPTION NEW zcx_wasm( text = |parse_data, type: { lv_type }| ).
+          RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |parse_data, type: { lv_type }|.
       ENDCASE.
 
     ENDDO.
@@ -126,13 +126,13 @@ CLASS zcl_wasm_data_section IMPLEMENTATION.
               io_module = NEW zcl_wasm_module( ) ).
           ENDLOOP.
         CATCH cx_static_check INTO DATA(lx_error).
-          RAISE EXCEPTION NEW zcx_wasm( text = |instantiate data, failed to execute instructions: { lx_error->get_text( ) }| ).
+          RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |instantiate data, failed to execute instructions: { lx_error->get_text( ) }|.
       ENDTRY.
 
       DATA(lv_offset) = io_memory->stack_pop_i32( )->get_unsigned( ).
 
       IF io_memory->has_linear( ) = abap_false.
-        RAISE EXCEPTION NEW zcx_wasm( text = |instantiate data, no linear memory| ).
+        RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |instantiate data, no linear memory|.
       ENDIF.
 
       io_memory->get_linear( )->set(

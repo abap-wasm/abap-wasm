@@ -57,7 +57,7 @@ CLASS zcl_wasm_call IMPLEMENTATION.
           WHEN zcl_wasm_types=>c_value_type-f64.
             io_memory->get_frame( )->local_push_last( NEW zcl_wasm_f64( ) ).
           WHEN OTHERS.
-            RAISE EXCEPTION NEW zcx_wasm( text = |call: unknown type| ).
+            RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |call: unknown type|.
         ENDCASE.
       ENDDO.
     ENDLOOP.

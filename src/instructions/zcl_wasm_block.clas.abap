@@ -41,7 +41,7 @@ CLASS zcl_wasm_block IMPLEMENTATION.
         et_instructions = DATA(lt_instructions) ).
 
     IF lv_last_opcode <> zif_wasm_opcodes=>c_opcodes-end.
-      RAISE EXCEPTION NEW zcx_wasm( text = |block, expected end| ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |block, expected end|.
     ENDIF.
 
     ri_instruction = NEW zcl_wasm_block(

@@ -34,7 +34,7 @@ CLASS zcl_wasm_br_if IMPLEMENTATION.
 
     DATA(li_value) = io_memory->stack_pop( ).
     IF li_value->get_type( ) <> zcl_wasm_types=>c_value_type-i32.
-      RAISE EXCEPTION NEW zcx_wasm( text = |zcl_wasm_br_if: expected i32, got { li_value->get_type( ) }| ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |zcl_wasm_br_if: expected i32, got { li_value->get_type( ) }|.
     ENDIF.
 
     IF CAST zcl_wasm_i32( li_value )->get_signed( ) = 0.

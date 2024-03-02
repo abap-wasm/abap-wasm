@@ -27,7 +27,7 @@ CLASS zcl_wasm_custom_section IMPLEMENTATION.
       CASE lv_byte.
         WHEN '00'.
 * module name
-          RAISE EXCEPTION NEW zcx_wasm( text = |custom section: todo, module names| ).
+          RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |custom section: todo, module names|.
         WHEN '01'.
 * function names
           DATA(lv_size) = io_body->shift_u32( ).
@@ -43,7 +43,7 @@ CLASS zcl_wasm_custom_section IMPLEMENTATION.
 * for now, just skip it,
           io_body->shift( lv_size ).
         WHEN OTHERS.
-          RAISE EXCEPTION NEW zcx_wasm( text = |unexpected custom subsection id| ).
+          RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |unexpected custom subsection id|.
       ENDCASE.
     ENDWHILE.
 

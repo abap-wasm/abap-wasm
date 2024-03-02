@@ -28,10 +28,10 @@ CLASS zcl_wasm_table_section IMPLEMENTATION.
               lv_min = io_body->shift_u32( ).
               lv_max = io_body->shift_u32( ).
             WHEN OTHERS.
-              RAISE EXCEPTION NEW zcx_wasm( text = |parse_table: todo| ).
+              RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |parse_table: todo|.
           ENDCASE.
         WHEN OTHERS.
-          RAISE EXCEPTION NEW zcx_wasm( text = |parse_table: todo| ).
+          RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |parse_table: todo|.
       ENDCASE.
 
     ENDDO.

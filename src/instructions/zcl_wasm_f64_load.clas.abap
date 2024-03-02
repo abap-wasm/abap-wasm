@@ -23,7 +23,7 @@ CLASS zcl_wasm_f64_load IMPLEMENTATION.
 
   METHOD constructor.
     IF iv_align > zcl_wasm_memory=>c_alignment_64bit.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'alignment must not be larger than natural' ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'alignment must not be larger than natural'.
     ENDIF.
 
     mv_align  = iv_align.
@@ -44,7 +44,7 @@ CLASS zcl_wasm_f64_load IMPLEMENTATION.
 
     DATA(lv_i) = io_memory->stack_pop_i32( )->get_signed( ).
     IF lv_i < 0.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'load: out of bounds' ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'load: out of bounds'.
     ENDIF.
     lv_hex = io_memory->get_linear( )->get(
       iv_length = lc_length
@@ -54,7 +54,7 @@ CLASS zcl_wasm_f64_load IMPLEMENTATION.
     IF lv_hex = '0000000000000000'.
       io_memory->stack_push( zcl_wasm_f64=>from_float( 0 ) ).
     ELSE.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_f64_load' ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'todo, execute instruction zcl_wasm_f64_load'.
     ENDIF.
 
   ENDMETHOD.

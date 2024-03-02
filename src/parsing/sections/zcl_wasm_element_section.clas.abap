@@ -25,7 +25,7 @@ CLASS zcl_wasm_element_section IMPLEMENTATION.
               ev_last_opcode  = DATA(lv_last_opcode)
               et_instructions = DATA(lt_instructions) ).
           IF lv_last_opcode <> zif_wasm_opcodes=>c_opcodes-end.
-            RAISE EXCEPTION NEW zcx_wasm( text = |parse_element: expected end| ).
+            RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |parse_element: expected end|.
           ENDIF.
 
           DO io_body->shift_u32( ) TIMES.
@@ -49,7 +49,7 @@ CLASS zcl_wasm_element_section IMPLEMENTATION.
               ev_last_opcode  = lv_last_opcode
               et_instructions = lt_instructions ).
           IF lv_last_opcode <> zif_wasm_opcodes=>c_opcodes-end.
-            RAISE EXCEPTION NEW zcx_wasm( text = |parse_element: expected end| ).
+            RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |parse_element: expected end|.
           ENDIF.
 
           lv_elemkind = io_body->shift( 1 ).
@@ -72,7 +72,7 @@ CLASS zcl_wasm_element_section IMPLEMENTATION.
               ev_last_opcode  = lv_last_opcode
               et_instructions = lt_instructions ).
           IF lv_last_opcode <> zif_wasm_opcodes=>c_opcodes-end.
-            RAISE EXCEPTION NEW zcx_wasm( text = |parse_element: expected end| ).
+            RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |parse_element: expected end|.
           ENDIF.
 
           DO io_body->shift_u32( ) TIMES.
@@ -83,7 +83,7 @@ CLASS zcl_wasm_element_section IMPLEMENTATION.
                 ev_last_opcode  = lv_last_opcode
                 et_instructions = lt_instructions ).
             IF lv_last_opcode <> zif_wasm_opcodes=>c_opcodes-end.
-              RAISE EXCEPTION NEW zcx_wasm( text = |parse_element: expected end| ).
+              RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |parse_element: expected end|.
             ENDIF.
           ENDDO.
         WHEN 5.
@@ -97,7 +97,7 @@ CLASS zcl_wasm_element_section IMPLEMENTATION.
                 ev_last_opcode  = lv_last_opcode
                 et_instructions = lt_instructions ).
             IF lv_last_opcode <> zif_wasm_opcodes=>c_opcodes-end.
-              RAISE EXCEPTION NEW zcx_wasm( text = |parse_element: expected end| ).
+              RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |parse_element: expected end|.
             ENDIF.
           ENDDO.
         WHEN 6.
@@ -110,7 +110,7 @@ CLASS zcl_wasm_element_section IMPLEMENTATION.
               ev_last_opcode  = lv_last_opcode
               et_instructions = lt_instructions ).
           IF lv_last_opcode <> zif_wasm_opcodes=>c_opcodes-end.
-            RAISE EXCEPTION NEW zcx_wasm( text = |parse_element: expected end| ).
+            RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |parse_element: expected end|.
           ENDIF.
 
           lv_reftype = io_body->shift( 1 ).
@@ -123,7 +123,7 @@ CLASS zcl_wasm_element_section IMPLEMENTATION.
                 ev_last_opcode  = lv_last_opcode
                 et_instructions = lt_instructions ).
             IF lv_last_opcode <> zif_wasm_opcodes=>c_opcodes-end.
-              RAISE EXCEPTION NEW zcx_wasm( text = |parse_element: expected end| ).
+              RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |parse_element: expected end|.
             ENDIF.
           ENDDO.
         WHEN 7.
@@ -137,11 +137,11 @@ CLASS zcl_wasm_element_section IMPLEMENTATION.
                 ev_last_opcode  = lv_last_opcode
                 et_instructions = lt_instructions ).
             IF lv_last_opcode <> zif_wasm_opcodes=>c_opcodes-end.
-              RAISE EXCEPTION NEW zcx_wasm( text = |parse_element: expected end| ).
+              RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |parse_element: expected end|.
             ENDIF.
           ENDDO.
         WHEN OTHERS.
-          RAISE EXCEPTION NEW zcx_wasm( text = |elementtype: { lv_type }| ).
+          RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |elementtype: { lv_type }|.
       ENDCASE.
 
     ENDDO.

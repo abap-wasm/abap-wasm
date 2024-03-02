@@ -204,7 +204,7 @@ CLASS zcl_wasm_f32 IMPLEMENTATION.
 *          WRITE: / 'fraction bits, adjusted:', lv_fraction_bits.
         ENDIF.
         IF lv_exponent > 255.
-          RAISE EXCEPTION NEW zcx_wasm( text = |exponent too large: { lv_exponent }| ).
+          RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |exponent too large: { lv_exponent }|.
         ENDIF.
 *        WRITE: / 'exponent:', lv_exponent.
         lv_hex1 = lv_exponent.
@@ -231,7 +231,7 @@ CLASS zcl_wasm_f32 IMPLEMENTATION.
           SET BIT lv_offset OF rv_hex TO lv_bit.
         ENDDO.
 
-*        RAISE EXCEPTION NEW zcx_wasm( text = |todo: zcl_wasm_f32, to_hex, { mv_value STYLE = SCIENTIFIC }| ).
+*        RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |todo: zcl_wasm_f32, to_hex, { mv_value STYLE = SCIENTIFIC }| ).
     ENDCASE.
 
   ENDMETHOD.
@@ -320,7 +320,7 @@ CLASS zcl_wasm_f32 IMPLEMENTATION.
   METHOD gt.
 
     IF io_memory->stack_length( ) < 2.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'f32 gt, expected at least two variables on stack' ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'f32 gt, expected at least two variables on stack'.
     ENDIF.
 
     DATA(lo_val1) = CAST zcl_wasm_f32( io_memory->stack_pop( ) ).
@@ -338,7 +338,7 @@ CLASS zcl_wasm_f32 IMPLEMENTATION.
   METHOD ge.
 
     IF io_memory->stack_length( ) < 2.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'f32 gt, expected at least two variables on stack' ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'f32 gt, expected at least two variables on stack'.
     ENDIF.
 
     DATA(lo_val1) = CAST zcl_wasm_f32( io_memory->stack_pop( ) ).
@@ -356,7 +356,7 @@ CLASS zcl_wasm_f32 IMPLEMENTATION.
   METHOD square_root.
 
     IF io_memory->stack_length( ) < 1.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'f32 sqrt, expected at least one variables on stack' ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'f32 sqrt, expected at least one variables on stack'.
     ENDIF.
 
     DATA(lo_val) = CAST zcl_wasm_f32( io_memory->stack_pop( ) ).
@@ -368,7 +368,7 @@ CLASS zcl_wasm_f32 IMPLEMENTATION.
   METHOD floor_value.
 
     IF io_memory->stack_length( ) < 1.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'f32 floor, expected at least one variables on stack' ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'f32 floor, expected at least one variables on stack'.
     ENDIF.
 
     DATA(lo_val) = CAST zcl_wasm_f32( io_memory->stack_pop( ) ).
@@ -380,7 +380,7 @@ CLASS zcl_wasm_f32 IMPLEMENTATION.
   METHOD ceil_value.
 
     IF io_memory->stack_length( ) < 1.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'f32 ceil, expected at least one variables on stack' ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'f32 ceil, expected at least one variables on stack'.
     ENDIF.
 
     DATA(lo_val) = CAST zcl_wasm_f32( io_memory->stack_pop( ) ).
@@ -392,7 +392,7 @@ CLASS zcl_wasm_f32 IMPLEMENTATION.
   METHOD trunc_value.
 
     IF io_memory->stack_length( ) < 1.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'f32 trunc, expected at least one variables on stack' ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'f32 trunc, expected at least one variables on stack'.
     ENDIF.
 
     DATA(lo_val) = CAST zcl_wasm_f32( io_memory->stack_pop( ) ).
@@ -419,7 +419,7 @@ CLASS zcl_wasm_f32 IMPLEMENTATION.
   METHOD le.
 
     IF io_memory->stack_length( ) < 2.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'le, expected two variables on stack' ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'le, expected two variables on stack'.
     ENDIF.
 
     DATA(lo_val1) = CAST zcl_wasm_f32( io_memory->stack_pop( ) ).
@@ -437,7 +437,7 @@ CLASS zcl_wasm_f32 IMPLEMENTATION.
   METHOD lt.
 
     IF io_memory->stack_length( ) < 2.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'lt, expected two variables on stack' ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'lt, expected two variables on stack'.
     ENDIF.
 
     DATA(lo_val1) = CAST zcl_wasm_f32( io_memory->stack_pop( ) ).
@@ -455,7 +455,7 @@ CLASS zcl_wasm_f32 IMPLEMENTATION.
   METHOD ne.
 
     IF io_memory->stack_length( ) < 2.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'ne, expected two variables on stack' ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'ne, expected two variables on stack'.
     ENDIF.
 
     DATA(lo_val1) = CAST zcl_wasm_f32( io_memory->stack_pop( ) ).

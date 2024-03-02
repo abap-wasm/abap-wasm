@@ -21,7 +21,7 @@ CLASS zcl_wasm_select IMPLEMENTATION.
     TRY.
         lo_c ?= io_memory->stack_pop( ).
       CATCH cx_sy_move_cast_error.
-        RAISE EXCEPTION NEW zcx_wasm( text = 'select: expected i32' ).
+        RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'select: expected i32'.
     ENDTRY.
 
     DATA(lo_val1) = io_memory->stack_pop( ).

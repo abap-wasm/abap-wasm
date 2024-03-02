@@ -45,7 +45,7 @@ CLASS zcl_wasm_vm IMPLEMENTATION.
           io_memory = mo_memory
           io_module = mo_module ).
       CATCH zcx_wasm_branch.
-        RAISE EXCEPTION NEW zcx_wasm( text = 'call(), branching exception, should not happen' ).
+        RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'call(), branching exception, should not happen'.
     ENDTRY.
   ENDMETHOD.
 

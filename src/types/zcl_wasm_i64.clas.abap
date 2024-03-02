@@ -88,11 +88,11 @@ CLASS zcl_wasm_i64 IMPLEMENTATION.
 
   METHOD from_unsigned.
     IF iv_value CN '-0123456789'.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'i64, from_unsigned, unexpected value' ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'i64, from_unsigned, unexpected value'.
     ENDIF.
 
     IF strlen( iv_value ) > 18.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'i64, from_unsigned, value too long, todo' ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'i64, from_unsigned, value too long, todo'.
     ENDIF.
 
     ro_value = NEW #( ).
@@ -115,7 +115,7 @@ CLASS zcl_wasm_i64 IMPLEMENTATION.
           rv_value = '18446744073709551601'.
         WHEN OTHERS.
 * todo
-          RAISE EXCEPTION NEW zcx_wasm( text = 'i64, get_unsigned, value is negative' ).
+          RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'i64, get_unsigned, value is negative'.
       ENDCASE.
       RETURN.
     ENDIF.
@@ -130,7 +130,7 @@ CLASS zcl_wasm_i64 IMPLEMENTATION.
   METHOD eqz.
 
     IF io_memory->stack_length( ) < 1.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'i64, eqz, expected value on stack' ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'i64, eqz, expected value on stack'.
     ENDIF.
 
     DATA(lv_val1) = CAST zcl_wasm_i64( io_memory->stack_pop( ) )->mv_value.

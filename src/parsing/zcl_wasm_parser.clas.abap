@@ -31,10 +31,10 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
 
 * https://webassembly.github.io/spec/core/binary/modules.html#binary-module
     IF lo_stream->shift( 4 ) <> lc_magic.
-      RAISE EXCEPTION NEW zcx_wasm( text = |unexpected magic number| ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |unexpected magic number|.
     ENDIF.
     IF lo_stream->shift( 4 ) <> lc_version.
-      RAISE EXCEPTION NEW zcx_wasm( text = |unexpected version| ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |unexpected version|.
     ENDIF.
 
     WHILE lo_stream->get_length( ) > 0.
@@ -87,7 +87,7 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
         WHEN zif_wasm_sections=>gc_section_data_count.
           DATA(lv_data_count) = lo_body->shift_u32( ).
         WHEN OTHERS.
-          RAISE EXCEPTION NEW zcx_wasm( text = |unknown section: { lv_section }| ).
+          RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |unknown section: { lv_section }|.
       ENDCASE.
     ENDWHILE.
 

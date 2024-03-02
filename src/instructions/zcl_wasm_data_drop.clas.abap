@@ -26,7 +26,7 @@ CLASS zcl_wasm_data_drop IMPLEMENTATION.
 
   METHOD zif_wasm_instruction~execute.
 * prevents further use of a passive data segment
-    RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_data_drop' ).
+    RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'todo, execute instruction zcl_wasm_data_drop'.
   ENDMETHOD.
 
 ENDCLASS.

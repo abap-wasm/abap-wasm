@@ -23,7 +23,7 @@ CLASS zcl_wasm_f32_store IMPLEMENTATION.
 
   METHOD constructor.
     IF iv_align > zcl_wasm_memory=>c_alignment_32bit.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'alignment must not be larger than natural' ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'alignment must not be larger than natural'.
     ENDIF.
 
     mv_align  = iv_align.
@@ -38,7 +38,7 @@ CLASS zcl_wasm_f32_store IMPLEMENTATION.
 
   METHOD zif_wasm_instruction~execute.
 * todo, converting f32 to hex?
-    RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_f32_store' ).
+    RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'todo, execute instruction zcl_wasm_f32_store'.
   ENDMETHOD.
 
 ENDCLASS.

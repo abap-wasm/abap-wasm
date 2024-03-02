@@ -23,7 +23,7 @@ CLASS zcl_wasm_f32_load IMPLEMENTATION.
 
   METHOD constructor.
     IF iv_align > zcl_wasm_memory=>c_alignment_32bit.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'alignment must not be larger than natural' ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'alignment must not be larger than natural'.
     ENDIF.
 
     mv_align  = iv_align.
@@ -46,12 +46,12 @@ CLASS zcl_wasm_f32_load IMPLEMENTATION.
 
     DATA(li_value) = io_memory->stack_pop( ).
     IF li_value->get_type( ) <> zcl_wasm_types=>c_value_type-i32.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_f32_load: expected i32' ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_f32_load: expected i32'.
     ENDIF.
 
     DATA(lv_i) = CAST zcl_wasm_i32( li_value )->get_signed( ).
     IF lv_i < 0.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'load: out of bounds' ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'load: out of bounds'.
     ENDIF.
 
     lv_hex = io_memory->get_linear( )->get(
@@ -62,7 +62,7 @@ CLASS zcl_wasm_f32_load IMPLEMENTATION.
     IF lv_hex = '00000000'.
       io_memory->stack_push( zcl_wasm_f32=>from_float( 0 ) ).
     ELSE.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_f32_load' ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'todo, execute instruction zcl_wasm_f32_load'.
     ENDIF.
 
   ENDMETHOD.

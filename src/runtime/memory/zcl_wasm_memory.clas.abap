@@ -88,14 +88,14 @@ CLASS zcl_wasm_memory IMPLEMENTATION.
   METHOD global_get.
     READ TABLE mt_globals INDEX iv_index + 1 INTO rv_value.
     IF sy-subrc <> 0.
-      RAISE EXCEPTION NEW zcx_wasm( text = |zcl_wasm_memory: global_get, not found, index { iv_index }| ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |zcl_wasm_memory: global_get, not found, index { iv_index }|.
     ENDIF.
   ENDMETHOD.
 
   METHOD global_set.
 * todo: raise error if the set changes the type of the global?
     IF lines( mt_globals ) < iv_index + 1.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: global_set, not found' ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_memory: global_set, not found'.
     ENDIF.
     mt_globals[ iv_index + 1 ] = ii_value.
   ENDMETHOD.
@@ -112,7 +112,7 @@ CLASS zcl_wasm_memory IMPLEMENTATION.
 
   METHOD pop_frame.
     IF lines( mt_frames ) = 0.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: no frames, pop' ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_memory: no frames, pop'.
     ENDIF.
     DELETE mt_frames INDEX lines( mt_frames ).
   ENDMETHOD.
@@ -121,13 +121,13 @@ CLASS zcl_wasm_memory IMPLEMENTATION.
     DATA(lv_last) = lines( mt_frames ).
     READ TABLE mt_frames INDEX lv_last INTO ri_frame.
     IF sy-subrc <> 0.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: no frames, get' ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_memory: no frames, get'.
     ENDIF.
   ENDMETHOD.
 
   METHOD get_linear.
     IF mi_linear IS INITIAL.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: no linear memory' ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_memory: no linear memory'.
     ENDIF.
 
     ri_linear = mi_linear.
@@ -154,7 +154,7 @@ CLASS zcl_wasm_memory IMPLEMENTATION.
   METHOD stack_pop.
 
     IF lines( mt_stack ) = 0.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: nothing to pop' ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_memory: nothing to pop'.
     ENDIF.
 
     DATA(lv_last) = lines( mt_stack ).
@@ -162,7 +162,7 @@ CLASS zcl_wasm_memory IMPLEMENTATION.
     DELETE mt_stack INDEX lv_last.
 
     IF ri_value IS INITIAL.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: stack popped initial value' ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_memory: stack popped initial value'.
     ENDIF.
 
   ENDMETHOD.
@@ -173,7 +173,7 @@ CLASS zcl_wasm_memory IMPLEMENTATION.
     DATA(li_pop) = stack_pop( ).
 
     IF li_pop->get_type( ) <> zcl_wasm_types=>c_value_type-i32.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: pop, expected i32' ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_memory: pop, expected i32'.
     ENDIF.
 
     ro_value ?= li_pop.
