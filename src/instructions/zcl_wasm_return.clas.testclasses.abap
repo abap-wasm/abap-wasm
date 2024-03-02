@@ -23,7 +23,9 @@ CLASS ltcl_test IMPLEMENTATION.
 
     DATA(li_wasm) = zcl_wasm=>create_with_base64( lv_wasm ).
 
-    DATA(lt_values) = li_wasm->execute_function_export( 'ret' ).
+    DATA(lt_values) = li_wasm->execute_function_export(
+      iv_name       = 'ret'
+      it_parameters = VALUE #( ( zcl_wasm_i32=>from_signed( 2 ) ) ) ).
 
     cl_abap_unit_assert=>assert_equals(
       act = lines( lt_values )
