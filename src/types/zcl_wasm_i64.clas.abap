@@ -24,6 +24,12 @@ CLASS zcl_wasm_i64 DEFINITION
       RAISING
         zcx_wasm.
 
+    CLASS-METHODS mul
+      IMPORTING
+        !io_memory TYPE REF TO zcl_wasm_memory
+      RAISING
+        zcx_wasm.
+
     CLASS-METHODS add
       IMPORTING
         !io_memory TYPE REF TO zcl_wasm_memory
@@ -59,6 +65,12 @@ CLASS zcl_wasm_i64 DEFINITION
       RAISING
         zcx_wasm.
 
+    CLASS-METHODS sub
+      IMPORTING
+        !io_memory TYPE REF TO zcl_wasm_memory
+      RAISING
+        zcx_wasm.
+
   PROTECTED SECTION.
   PRIVATE SECTION.
 * todo, use packed? nah int8 is long enough, but need to handle unsigned
@@ -66,6 +78,30 @@ CLASS zcl_wasm_i64 DEFINITION
 ENDCLASS.
 
 CLASS zcl_wasm_i64 IMPLEMENTATION.
+
+  METHOD mul.
+
+    ASSERT io_memory->stack_length( ) >= 2.
+
+    DATA(lo_val1) = CAST zcl_wasm_i64( io_memory->stack_pop( ) ).
+    DATA(lo_val2) = CAST zcl_wasm_i64( io_memory->stack_pop( ) ).
+
+    io_memory->stack_push( from_signed( lo_val1->get_signed( ) * lo_val2->get_signed( ) ) ).
+
+  ENDMETHOD.
+
+  METHOD sub.
+
+* https://webassembly.github.io/spec/core/exec/instructions.html#t-mathsf-xref-syntax-instructions-syntax-binop-mathit-binop
+
+    ASSERT io_memory->stack_length( ) >= 2.
+
+    DATA(lo_val1) = CAST zcl_wasm_i64( io_memory->stack_pop( ) ).
+    DATA(lo_val2) = CAST zcl_wasm_i64( io_memory->stack_pop( ) ).
+
+    io_memory->stack_push( from_signed( lo_val2->get_signed( ) - lo_val1->get_signed( ) ) ).
+
+  ENDMETHOD.
 
   METHOD get_signed.
     rv_value = mv_value.
