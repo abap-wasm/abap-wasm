@@ -23,41 +23,42 @@ CLASS cl_scrypt IMPLEMENTATION.
 
     rv_json = '{"runtime": "' && lv_runtime && '"}'.
 
-    DATA lv_password TYPE string VALUE 'password'.
-    DATA lv_salt TYPE string VALUE 'salt'.
+**********************************************************************
 
-    " DATA(lt_results) = li_wasm->execute_function_export( '__wbindgen_global_argument_ptr' ).
-    " DATA(lv_retptr) = lt_results[ 1 ].
+    CONSTANTS lc_password TYPE xstring VALUE 'AABBCCAABBCC'.
+    CONSTANTS lc_salt     TYPE xstring VALUE 'AABBCC'.
 
-    " todo, 5 should be the encoded length of the password
-    " malloc is function 38
-    " TRY.
-    "     DATA(lt_results) = li_wasm->execute_function_export(
-    "       iv_name       = '__wbindgen_malloc'
-    "       it_parameters = VALUE #( ( zcl_wasm_i32=>from_signed( 6 ) ) ) ).
-    "   CATCH zcx_wasm INTO DATA(lx_wasm).
-    "     WRITE / li_wasm->dump_stack( ).
-    "     WRITE / li_wasm->dump_linear_memory( ).
+    DATA(lt_results) = li_wasm->execute_function_export(
+      iv_name       = '__wbindgen_malloc'
+      it_parameters = VALUE #( ( zcl_wasm_i32=>from_signed( xstrlen( lc_password ) ) ) ) ).
+    DATA(lo_password_ptr) = CAST zcl_wasm_i32( lt_results[ 1 ] ).
+    " WRITE: / 'password ptr offset:', lo_password_ptr->get_signed( ).
 
-        " DATA(lv_mem) = li_wasm->get_memory( )->get_linear( )->get(
-        "   iv_length = 22
-        "   iv_offset = 1050832 ).
-        " WRITE / lv_mem.
-    " ENDTRY.
+    CLEAR lt_results.
+    lt_results = li_wasm->execute_function_export(
+      iv_name       = '__wbindgen_malloc'
+      it_parameters = VALUE #( ( zcl_wasm_i32=>from_signed( xstrlen( lc_salt ) ) ) ) ).
+    DATA(lo_salt_ptr) = CAST zcl_wasm_i32( lt_results[ 1 ] ).
+    " WRITE: / 'salt ptr offset:', lo_salt_ptr->get_signed( ).
+
+    CLEAR lt_results.
+    lt_results = li_wasm->execute_function_export( '__wbindgen_global_argument_ptr' ).
+    DATA(lo_retptr) = lt_results[ 1 ].
+    " WRITE: / 'gbl ptr:', lo_salt_ptr->get_signed( ).
 
 * "scrypt" function export takes 9 x i32
     " li_wasm->execute_function_export(
     "   iv_name       = 'scrypt'
     "   it_parameters = VALUE #(
-    "     ( lv_retptr )
-    "     ( password_ptr )
-    "     ( password_len )
-    "     ( salt_ptr )
-    "     ( salt_len )
-    "     ( todo )
-    "     ( todo )
-    "     ( todo )
-    "     ( todo ) ) ).
+    "     ( lo_retptr )
+    "     ( lo_password_ptr )
+    "     ( zcl_wasm_i32=>from_signed( xstrlen( lc_password ) ) )
+    "     ( lo_salt_ptr )
+    "     ( zcl_wasm_i32=>from_signed( xstrlen( lc_salt ) ) )
+    "     ( zcl_wasm_i32=>from_signed( 1 ) )
+    "     ( zcl_wasm_i32=>from_signed( 1 ) )
+    "     ( zcl_wasm_i32=>from_signed( 1 ) )
+    "     ( zcl_wasm_i32=>from_signed( 1 ) ) ) ).
 
   ENDMETHOD.
 
