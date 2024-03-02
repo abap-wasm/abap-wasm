@@ -142,23 +142,23 @@ CLASS ltcl_test IMPLEMENTATION.
 "     unreachable
 " ))
 
-    " DATA(lv_wasm) = `AGFzbQEAAAABBgFgAX8BfwMCAQAHCgEGbWFsbG9jAAAKEAEOAQJ/AkAgAEF8Sw8LAAsACgRuYW1lAgMBAAA=`.
+    DATA(lv_wasm) = `AGFzbQEAAAABBgFgAX8BfwMCAQAHCgEGbWFsbG9jAAAKEAEOAQJ/AkAgAEF8Sw8LAAsACgRuYW1lAgMBAAA=`.
 
-    " DATA(li_wasm) = zcl_wasm=>create_with_base64( lv_wasm ).
+    DATA(li_wasm) = zcl_wasm=>create_with_base64( lv_wasm ).
 
-    " DATA(lt_values) = li_wasm->execute_function_export(
-    "   iv_name       = 'malloc'
-    "   it_parameters = VALUE #( ( zcl_wasm_i32=>from_signed( 10 ) ) ) ).
+    DATA(lt_values) = li_wasm->execute_function_export(
+      iv_name       = 'malloc'
+      it_parameters = VALUE #( ( zcl_wasm_i32=>from_signed( 10 ) ) ) ).
 
-    " cl_abap_unit_assert=>assert_equals(
-    "   act = lines( lt_values )
-    "   exp = 1 ).
+    cl_abap_unit_assert=>assert_equals(
+      act = lines( lt_values )
+      exp = 1 ).
 
-    " DATA(lo_value) = CAST zcl_wasm_i32( lt_values[ 1 ] ).
+    DATA(lo_value) = CAST zcl_wasm_i32( lt_values[ 1 ] ).
 
-    " cl_abap_unit_assert=>assert_equals(
-    "   act = lo_value->get_signed( )
-    "   exp = 0 ).
+    cl_abap_unit_assert=>assert_equals(
+      act = lo_value->get_signed( )
+      exp = 0 ).
 
   ENDMETHOD.
 
@@ -179,23 +179,23 @@ CLASS ltcl_test IMPLEMENTATION.
 "     unreachable
 " ))
 
-    " DATA(lv_wasm) = `AGFzbQEAAAABBgFgAX8BfwMCAQAHCgEGbWFsbG9jAAAKFwEVAQJ/AkAgAEF8SyIBDQBB+wAPCwALAAoEbmFtZQIDAQAA`.
+    DATA(lv_wasm) = `AGFzbQEAAAABBgFgAX8BfwMCAQAHCgEGbWFsbG9jAAAKFwEVAQJ/AkAgAEF8SyIBDQBB+wAPCwALAAoEbmFtZQIDAQAA`.
 
-    " DATA(li_wasm) = zcl_wasm=>create_with_base64( lv_wasm ).
+    DATA(li_wasm) = zcl_wasm=>create_with_base64( lv_wasm ).
 
-    " DATA(lt_values) = li_wasm->execute_function_export(
-    "   iv_name       = 'malloc'
-    "   it_parameters = VALUE #( ( zcl_wasm_i32=>from_signed( 10 ) ) ) ).
+    DATA(lt_values) = li_wasm->execute_function_export(
+      iv_name       = 'malloc'
+      it_parameters = VALUE #( ( zcl_wasm_i32=>from_signed( 10 ) ) ) ).
 
-    " cl_abap_unit_assert=>assert_equals(
-    "   act = lines( lt_values )
-    "   exp = 1 ).
+    cl_abap_unit_assert=>assert_equals(
+      act = lines( lt_values )
+      exp = 1 ).
 
-    " DATA(lo_value) = CAST zcl_wasm_i32( lt_values[ 1 ] ).
+    DATA(lo_value) = CAST zcl_wasm_i32( lt_values[ 1 ] ).
 
-    " cl_abap_unit_assert=>assert_equals(
-    "   act = lo_value->get_signed( )
-    "   exp = 123 ).
+    cl_abap_unit_assert=>assert_equals(
+      act = lo_value->get_signed( )
+      exp = 123 ).
 
   ENDMETHOD.
 
