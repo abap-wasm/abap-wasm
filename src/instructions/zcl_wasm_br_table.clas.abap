@@ -51,7 +51,7 @@ CLASS zcl_wasm_br_table IMPLEMENTATION.
 
     DATA(li_value) = io_memory->stack_pop( ).
     IF li_value->get_type( ) <> zcl_wasm_types=>c_value_type-i32.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_br_table: expected i32' ).
+      RAISE EXCEPTION NEW zcx_wasm( text = |zcl_wasm_br_table: expected i32, got { li_value->get_type( ) }| ).
     ENDIF.
 
 * todo, this has to be get_unsigned() ?
