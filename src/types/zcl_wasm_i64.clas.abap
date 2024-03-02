@@ -283,7 +283,7 @@ CLASS zcl_wasm_i64 IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    rv_value = mv_value.
+    rv_value = |{ mv_value }|.
   ENDMETHOD.
 
   METHOD zif_wasm_value~get_type.

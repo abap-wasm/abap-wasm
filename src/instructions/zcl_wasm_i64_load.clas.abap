@@ -38,14 +38,16 @@ CLASS zcl_wasm_i64_load IMPLEMENTATION.
 
   METHOD zif_wasm_instruction~execute.
     CONSTANTS lc_length TYPE int8 VALUE 8.
-    DATA lv_hex TYPE x LENGTH lc_length.
-    DATA lv_int TYPE i.
-    DATA lv_int8 TYPE int8.
+    DATA lv_hex    TYPE x LENGTH lc_length.
+    DATA lv_int    TYPE i.
+    DATA lv_int8   TYPE int8.
+    DATA lv_factor TYPE int8.
 
     DATA(lv_i) = io_memory->stack_pop_i32( )->get_signed( ).
     IF lv_i < 0.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'load: out of bounds'.
     ENDIF.
+
     lv_hex = io_memory->get_linear( )->get(
       iv_length = lc_length
       iv_align  = mv_align
@@ -54,10 +56,32 @@ CLASS zcl_wasm_i64_load IMPLEMENTATION.
     IF lv_hex(4) = '00000000'.
       lv_int = lv_hex+4.
       lv_int8 = lv_int.
-      io_memory->stack_push( zcl_wasm_i64=>from_signed( lv_int8 ) ).
     ELSE.
-      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'todo, execute instruction zcl_wasm_i64_load'.
+      GET BIT 1 OF lv_hex INTO DATA(lv_sign).
+      " WRITE: / 'sign', lv_sign.
+
+      IF lv_sign = 1.
+        lv_hex = lv_hex BIT-XOR 'FFFFFFFFFFFFFFFF'.
+      ENDIF.
+      " WRITE / lv_hex.
+
+      lv_factor = 1.
+      DO 63 TIMES.
+        DATA(lv_offset) = 65 - sy-index.
+        GET BIT lv_offset OF lv_hex INTO DATA(lv_bit).
+        IF lv_bit = 1.
+          lv_int8 = lv_int8 + lv_factor.
+        ENDIF.
+        lv_factor = lv_factor * 2.
+      ENDDO.
+
+      IF lv_sign = 1.
+        lv_int8 = lv_int8 + 1.
+        lv_int8 = lv_int8 * -1.
+      ENDIF.
     ENDIF.
+
+    io_memory->stack_push( zcl_wasm_i64=>from_signed( lv_int8 ) ).
   ENDMETHOD.
 
 ENDCLASS.
