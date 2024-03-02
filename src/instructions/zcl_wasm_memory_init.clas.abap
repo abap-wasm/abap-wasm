@@ -7,23 +7,29 @@ CLASS zcl_wasm_memory_init DEFINITION PUBLIC.
         iv_dataidx TYPE int8.
 
     CLASS-METHODS parse
-      IMPORTING !io_body TYPE REF TO zcl_wasm_binary_stream
+      IMPORTING !io_body              TYPE REF TO zcl_wasm_binary_stream
       RETURNING VALUE(ri_instruction) TYPE REF TO zif_wasm_instruction
-      RAISING zcx_wasm.
+      RAISING   zcx_wasm.
+  PROTECTED SECTION.
   PRIVATE SECTION.
     DATA mv_dataidx TYPE int8.
 ENDCLASS.
 
-CLASS zcl_wasm_memory_init IMPLEMENTATION.
+
+
+CLASS ZCL_WASM_MEMORY_INIT IMPLEMENTATION.
+
 
   METHOD constructor.
     mv_dataidx = iv_dataidx.
   ENDMETHOD.
 
+
   METHOD parse.
     ri_instruction = NEW zcl_wasm_memory_init( io_body->shift_u32( ) ).
     ASSERT io_body->shift( 1 ) = '00'.
   ENDMETHOD.
+
 
   METHOD zif_wasm_instruction~execute.
 * copy passive data to memory
@@ -41,11 +47,11 @@ CLASS zcl_wasm_memory_init IMPLEMENTATION.
     ENDIF.
 
     DATA(lv_bytes) = io_module->get_data_section( )->get_passive( mv_dataidx ).
+    lv_bytes = lv_bytes(lv_number).
 
     li_linear->set(
       iv_offset = lv_destination
-      iv_bytes  = lv_bytes(lv_number) ).
+      iv_bytes  = lv_bytes ).
 
   ENDMETHOD.
-
 ENDCLASS.
