@@ -37,6 +37,30 @@ CLASS zcl_wasm_f64 DEFINITION
       RAISING
         zcx_wasm.
 
+    CLASS-METHODS add
+      IMPORTING
+        !io_memory TYPE REF TO zcl_wasm_memory
+      RAISING
+        zcx_wasm.
+
+    CLASS-METHODS sub
+      IMPORTING
+        !io_memory TYPE REF TO zcl_wasm_memory
+      RAISING
+        zcx_wasm.
+
+    CLASS-METHODS mul
+      IMPORTING
+        !io_memory TYPE REF TO zcl_wasm_memory
+      RAISING
+        zcx_wasm.
+
+    CLASS-METHODS div
+      IMPORTING
+        !io_memory TYPE REF TO zcl_wasm_memory
+      RAISING
+        zcx_wasm.
+
     METHODS get_sign
       RETURNING
         VALUE(rv_negative) TYPE abap_bool.
@@ -144,6 +168,50 @@ CLASS zcl_wasm_f64 IMPLEMENTATION.
     ENDIF.
 
     io_memory->stack_push( zcl_wasm_i32=>from_signed( lv_result ) ).
+
+  ENDMETHOD.
+
+  METHOD add.
+
+    ASSERT io_memory->stack_length( ) >= 2.
+
+    DATA(lo_val1) = CAST zcl_wasm_f64( io_memory->stack_pop( ) ).
+    DATA(lo_val2) = CAST zcl_wasm_f64( io_memory->stack_pop( ) ).
+
+    io_memory->stack_push( from_float( lo_val1->get_value( ) + lo_val2->get_value( ) ) ).
+
+  ENDMETHOD.
+
+  METHOD sub.
+
+    ASSERT io_memory->stack_length( ) >= 2.
+
+    DATA(lo_val1) = CAST zcl_wasm_f64( io_memory->stack_pop( ) ).
+    DATA(lo_val2) = CAST zcl_wasm_f64( io_memory->stack_pop( ) ).
+
+    io_memory->stack_push( from_float( lo_val2->get_value( ) - lo_val1->get_value( ) ) ).
+
+  ENDMETHOD.
+
+  METHOD mul.
+
+    ASSERT io_memory->stack_length( ) >= 2.
+
+    DATA(lo_val1) = CAST zcl_wasm_f64( io_memory->stack_pop( ) ).
+    DATA(lo_val2) = CAST zcl_wasm_f64( io_memory->stack_pop( ) ).
+
+    io_memory->stack_push( from_float( lo_val2->get_value( ) * lo_val1->get_value( ) ) ).
+
+  ENDMETHOD.
+
+  METHOD div.
+
+    ASSERT io_memory->stack_length( ) >= 2.
+
+    DATA(lo_val1) = CAST zcl_wasm_f64( io_memory->stack_pop( ) ).
+    DATA(lo_val2) = CAST zcl_wasm_f64( io_memory->stack_pop( ) ).
+
+    io_memory->stack_push( from_float( lo_val2->get_value( ) / lo_val1->get_value( ) ) ).
 
   ENDMETHOD.
 
