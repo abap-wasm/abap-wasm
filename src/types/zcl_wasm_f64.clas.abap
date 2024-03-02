@@ -40,6 +40,18 @@ CLASS zcl_wasm_f64 DEFINITION
         !io_memory TYPE REF TO zcl_wasm_memory
       RAISING
         zcx_wasm.
+
+    CLASS-METHODS le
+      IMPORTING
+        !io_memory TYPE REF TO zcl_wasm_memory
+      RAISING
+        zcx_wasm.
+
+    CLASS-METHODS lt
+      IMPORTING
+        !io_memory TYPE REF TO zcl_wasm_memory
+      RAISING
+        zcx_wasm.
   PROTECTED SECTION.
   PRIVATE SECTION.
     DATA mv_value TYPE f .
@@ -49,6 +61,42 @@ CLASS zcl_wasm_f64 IMPLEMENTATION.
 
   METHOD zif_wasm_value~human_readable_value.
     rv_string = |f64: { mv_value STYLE = SCIENTIFIC }|.
+  ENDMETHOD.
+
+  METHOD lt.
+
+    IF io_memory->stack_length( ) < 2.
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'lt, expected two variables on stack'.
+    ENDIF.
+
+    DATA(lo_val1) = CAST zcl_wasm_f64( io_memory->stack_pop( ) ).
+    DATA(lo_val2) = CAST zcl_wasm_f64( io_memory->stack_pop( ) ).
+
+    DATA(lv_result) = 0.
+    IF lo_val1->mv_value > lo_val2->mv_value.
+      lv_result = 1.
+    ENDIF.
+
+    io_memory->stack_push( zcl_wasm_i32=>from_signed( lv_result ) ).
+
+  ENDMETHOD.
+
+  METHOD le.
+
+    IF io_memory->stack_length( ) < 2.
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'le, expected two variables on stack'.
+    ENDIF.
+
+    DATA(lo_val1) = CAST zcl_wasm_f64( io_memory->stack_pop( ) ).
+    DATA(lo_val2) = CAST zcl_wasm_f64( io_memory->stack_pop( ) ).
+
+    DATA(lv_result) = 0.
+    IF lo_val1->mv_value >= lo_val2->mv_value.
+      lv_result = 1.
+    ENDIF.
+
+    io_memory->stack_push( zcl_wasm_i32=>from_signed( lv_result ) ).
+
   ENDMETHOD.
 
   METHOD ne.
