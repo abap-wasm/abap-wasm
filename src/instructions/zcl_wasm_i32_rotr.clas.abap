@@ -35,7 +35,7 @@ CLASS zcl_wasm_i32_rotr IMPLEMENTATION.
     ENDIF.
 
     IF lv_bits > 0.
-      RAISE EXCEPTION NEW zcx_wasm( text = |todo, execute instruction zcl_wasm_i32_rotr, shift { lv_bits } bits| ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |todo, execute instruction zcl_wasm_i32_rotr, shift { lv_bits } bits|.
     ENDIF.
 
     lv_int = lv_hex.

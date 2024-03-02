@@ -175,7 +175,7 @@ CLASS zcl_wasm_module IMPLEMENTATION.
   METHOD get_code_by_index.
 
     IF iv_index < 0.
-      RAISE EXCEPTION NEW zcx_wasm( text = |get_code_by_index: negative index, { iv_index }| ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |get_code_by_index: negative index, { iv_index }|.
     ENDIF.
 
 * index is zero based
@@ -183,7 +183,7 @@ CLASS zcl_wasm_module IMPLEMENTATION.
 
     READ TABLE mt_codes INDEX lv_index INTO rs_code.
     IF sy-subrc <> 0.
-      RAISE EXCEPTION NEW zcx_wasm( text = |get_code_by_index: not found, { lv_index }| ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |get_code_by_index: not found, { lv_index }|.
     ENDIF.
 
   ENDMETHOD.
@@ -201,7 +201,7 @@ CLASS zcl_wasm_module IMPLEMENTATION.
 
     READ TABLE mt_exports WITH TABLE KEY name = iv_name INTO rs_export.
     IF sy-subrc <> 0.
-      RAISE EXCEPTION NEW zcx_wasm( text = |get_export_by_name, not found: { iv_name }| ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |get_export_by_name, not found: { iv_name }|.
     ENDIF.
 
   ENDMETHOD.
@@ -219,7 +219,7 @@ CLASS zcl_wasm_module IMPLEMENTATION.
 
     READ TABLE mt_functions INDEX lv_index INTO rs_function.
     IF sy-subrc <> 0.
-      RAISE EXCEPTION NEW zcx_wasm( text = |get_function_by_index: not found, { lv_index }| ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |get_function_by_index: not found, { lv_index }|.
     ENDIF.
 
   ENDMETHOD.
@@ -237,7 +237,7 @@ CLASS zcl_wasm_module IMPLEMENTATION.
 
     READ TABLE mt_types INDEX lv_index INTO rs_type.
     IF sy-subrc <> 0.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'get_type_by_index: not found' ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'get_type_by_index: not found'.
     ENDIF.
 
   ENDMETHOD.

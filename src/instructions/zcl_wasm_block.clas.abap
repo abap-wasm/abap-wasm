@@ -41,7 +41,7 @@ CLASS zcl_wasm_block IMPLEMENTATION.
         et_instructions = DATA(lt_instructions) ).
 
     IF lv_last_opcode <> zif_wasm_opcodes=>c_opcodes-end.
-      RAISE EXCEPTION NEW zcx_wasm( text = |block, expected end| ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |block, expected end|.
     ENDIF.
 
     ri_instruction = NEW zcl_wasm_block(
@@ -60,7 +60,7 @@ CLASS zcl_wasm_block IMPLEMENTATION.
           io_module = io_module )->execute( mt_instructions ).
       CATCH zcx_wasm_branch INTO DATA(lx_branch).
         IF lx_branch->depth > 0.
-          RAISE EXCEPTION NEW zcx_wasm_branch( depth = lx_branch->depth - 1 ).
+          RAISE EXCEPTION TYPE zcx_wasm_branch EXPORTING depth = lx_branch->depth - 1.
         ENDIF.
     ENDTRY.
 

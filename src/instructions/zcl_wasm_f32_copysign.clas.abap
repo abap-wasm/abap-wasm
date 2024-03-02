@@ -26,13 +26,13 @@ CLASS zcl_wasm_f32_copysign IMPLEMENTATION.
 
     DATA(li_val1) = io_memory->stack_pop( ).
     IF li_val1->get_type( ) <> zcl_wasm_types=>c_value_type-f32.
-      RAISE EXCEPTION NEW zcx_wasm( text = |zcl_wasm_f32_copysign: expected f32, got { li_val1->get_type( ) }| ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |zcl_wasm_f32_copysign: expected f32, got { li_val1->get_type( ) }|.
     ENDIF.
     DATA(li_z1) = CAST zcl_wasm_f32( li_val1 ).
 
     DATA(li_val2) = io_memory->stack_pop( ).
     IF li_val2->get_type( ) <> zcl_wasm_types=>c_value_type-f32.
-      RAISE EXCEPTION NEW zcx_wasm( text = |zcl_wasm_f32_copysign: expected f32, got { li_val2->get_type( ) }| ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |zcl_wasm_f32_copysign: expected f32, got { li_val2->get_type( ) }|.
     ENDIF.
     DATA(li_z2) = CAST zcl_wasm_f32( li_val2 ).
 

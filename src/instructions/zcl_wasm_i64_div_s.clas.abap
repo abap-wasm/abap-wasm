@@ -22,10 +22,10 @@ CLASS zcl_wasm_i64_div_s IMPLEMENTATION.
 
     DATA(lv_val1) = CAST zcl_wasm_i64( io_memory->stack_pop( ) )->get_signed( ).
     IF lv_val1 = 0.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'i64.div_s, division by zero' ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'i64.div_s, division by zero'.
     ENDIF.
 
-    RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_i64_div_s' ).
+    RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'todo, execute instruction zcl_wasm_i64_div_s'.
   ENDMETHOD.
 
 ENDCLASS.

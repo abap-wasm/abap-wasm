@@ -92,7 +92,7 @@ CLASS zcl_wasm_import_section IMPLEMENTATION.
             WHEN '01'.
               ls_import-table-max = io_body->shift_u32( ).
             WHEN OTHERS.
-              RAISE EXCEPTION NEW zcx_wasm( text = |parse_import: malformed import kind| ).
+              RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |parse_import: malformed import kind|.
           ENDCASE.
         WHEN c_importdesc-mem.
           ls_import-mem-limit = io_body->shift( 1 ).
@@ -103,13 +103,13 @@ CLASS zcl_wasm_import_section IMPLEMENTATION.
             WHEN '01'.
               ls_import-mem-max = io_body->shift_u32( ).
             WHEN OTHERS.
-              RAISE EXCEPTION NEW zcx_wasm( text = |parse_import: malformed import kind| ).
+              RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |parse_import: malformed import kind|.
           ENDCASE.
         WHEN c_importdesc-global.
           ls_import-global-valtype = io_body->shift( 1 ).
           ls_import-global-mut = io_body->shift( 1 ).
         WHEN OTHERS.
-          RAISE EXCEPTION NEW zcx_wasm( text = |parse_import: malformed import kind| ).
+          RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |parse_import: malformed import kind|.
       ENDCASE.
 
       INSERT ls_import INTO TABLE lt_imports.
@@ -141,10 +141,10 @@ CLASS zcl_wasm_import_section IMPLEMENTATION.
             WHEN zcl_wasm_types=>c_value_type-f64.
               io_memory->global_append( NEW zcl_wasm_f64( ) ).
             WHEN OTHERS.
-              RAISE EXCEPTION NEW zcx_wasm( text = |import: unknown global import type| ).
+              RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |import: unknown global import type|.
           ENDCASE.
         WHEN OTHERS.
-          RAISE EXCEPTION NEW zcx_wasm( text = |import: unknown import type| ).
+          RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |import: unknown import type|.
       ENDCASE.
     ENDLOOP.
 

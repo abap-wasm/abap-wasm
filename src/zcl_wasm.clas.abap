@@ -34,16 +34,13 @@ ENDCLASS.
 
 
 
-CLASS zcl_wasm IMPLEMENTATION.
+CLASS ZCL_WASM IMPLEMENTATION.
+
 
   METHOD constructor.
     mo_module = io_module.
   ENDMETHOD.
 
-
-  METHOD create_with_wasm.
-    ri_wasm = NEW zcl_wasm( NEW zcl_wasm_parser( )->parse( iv_wasm ) ).
-  ENDMETHOD.
 
   METHOD create_with_base64.
 
@@ -70,13 +67,40 @@ CLASS zcl_wasm IMPLEMENTATION.
   ENDMETHOD.
 
 
+  METHOD create_with_wasm.
+    ri_wasm = NEW zcl_wasm( NEW zcl_wasm_parser( )->parse( iv_wasm ) ).
+  ENDMETHOD.
+
+
+  METHOD zif_wasm~dump_linear_memory.
+    IF mo_memory->has_linear( ) = abap_false.
+      rv_dump = 'no linear memory'.
+      RETURN.
+    ENDIF.
+
+    DATA(li_linear) = mo_memory->get_linear( ).
+    rv_dump = rv_dump && |Linear memory: { li_linear->size_in_bytes( ) } bytes\n|.
+  ENDMETHOD.
+
+
+  METHOD zif_wasm~dump_stack.
+    DATA(lv_length) = mo_memory->stack_length( ).
+    rv_dump = |Stack length: { lv_length } values\n|.
+    DO lv_length TIMES.
+      DATA(lv_index) = sy-index.
+      DATA(li_value) = mo_memory->stack_pop( ).
+      rv_dump = rv_dump && |{ lv_index } - { li_value->get_type( ) } - { li_value->human_readable_value( ) }\n|.
+    ENDDO.
+  ENDMETHOD.
+
+
   METHOD zif_wasm~execute_function_export.
 
     DATA lv_got TYPE xstring.
 
     DATA(ls_export) = mo_module->get_export_by_name( iv_name ).
     IF ls_export-type <> zcl_wasm_types=>c_export_type-func.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'execute_function_export: expected type func' ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'execute_function_export: expected type func'.
     ENDIF.
 
     DATA(ls_function) = mo_module->get_function_by_index( ls_export-index ).
@@ -84,10 +108,11 @@ CLASS zcl_wasm IMPLEMENTATION.
 
     IF lines( it_parameters ) <> xstrlen( ls_type-parameter_types ).
       LOOP AT it_parameters INTO DATA(li_param).
-        CONCATENATE lv_got li_param->get_type( ) INTO lv_got IN BYTE MODE.
+        DATA(lv_type) = li_param->get_type( ).
+        CONCATENATE lv_got lv_type INTO lv_got IN BYTE MODE.
       ENDLOOP.
-      RAISE EXCEPTION NEW zcx_wasm( text = |execute_function_export: number of parameters doesnt match, expected {
-        ls_type-parameter_types }, got { lv_got }| ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |execute_function_export: number of parameters doesnt match, expected {
+        ls_type-parameter_types }, got { lv_got }|.
     ENDIF.
 
     IF mo_memory IS INITIAL.
@@ -108,6 +133,12 @@ CLASS zcl_wasm IMPLEMENTATION.
 
   ENDMETHOD.
 
+
+  METHOD zif_wasm~get_memory.
+    ro_memory = mo_memory.
+  ENDMETHOD.
+
+
   METHOD zif_wasm~instantiate.
     ASSERT mo_memory IS INITIAL.
     mo_memory = NEW zcl_wasm_memory( ).
@@ -119,6 +150,7 @@ CLASS zcl_wasm IMPLEMENTATION.
     mo_module->get_global_section( )->instantiate( mo_memory ).
     mo_module->get_data_section( )->instantiate( mo_memory ).
   ENDMETHOD.
+
 
   METHOD zif_wasm~list_function_exports.
 
@@ -135,29 +167,4 @@ CLASS zcl_wasm IMPLEMENTATION.
     ENDLOOP.
 
   ENDMETHOD.
-
-  METHOD zif_wasm~dump_linear_memory.
-    IF mo_memory->has_linear( ) = abap_false.
-      rv_dump = 'no linear memory'.
-      RETURN.
-    ENDIF.
-
-    DATA(li_linear) = mo_memory->get_linear( ).
-    rv_dump &&= |Linear memory: { li_linear->size_in_bytes( ) } bytes\n|.
-  ENDMETHOD.
-
-  METHOD zif_wasm~dump_stack.
-    DATA(lv_length) = mo_memory->stack_length( ).
-    rv_dump = |Stack length: { lv_length } values\n|.
-    DO lv_length TIMES.
-      DATA(lv_index) = sy-index.
-      DATA(li_value) = mo_memory->stack_pop( ).
-      rv_dump &&= |{ lv_index } - { li_value->get_type( ) } - { li_value->human_readable_value( ) }\n|.
-    ENDDO.
-  ENDMETHOD.
-
-  METHOD zif_wasm~get_memory.
-    ro_memory = mo_memory.
-  ENDMETHOD.
-
 ENDCLASS.

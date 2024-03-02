@@ -37,15 +37,15 @@ CLASS zcl_wasm_memory_linear IMPLEMENTATION.
 
   METHOD zif_wasm_memory_linear~grow.
     IF iv_pages < 0.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: linear_grow, negative pages' ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_memory: linear_grow, negative pages'.
     ENDIF.
 
     IF zif_wasm_memory_linear~size_in_pages( ) + iv_pages >= zif_wasm_memory_linear=>c_max_pages.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: linear_grow, max pages reached' ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_memory: linear_grow, max pages reached'.
     ENDIF.
 
     IF iv_pages >= 1000.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory: todo, its too slow, and will crash node anyhow' ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_memory: todo, its too slow, and will crash node anyhow'.
     ENDIF.
 
     DO iv_pages TIMES.
@@ -86,11 +86,11 @@ CLASS zcl_wasm_memory_linear IMPLEMENTATION.
     DATA(lv_length) = xstrlen( mv_linear ).
 
     IF iv_offset + iv_length > lv_length.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'linear_get: out of bounds' ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'linear_get: out of bounds'.
     ELSEIF iv_length <= 0.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'linear_get: negative or zero length' ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'linear_get: negative or zero length'.
     ELSEIF iv_offset < 0.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'linear_get: negative offset' ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'linear_get: negative offset'.
     ENDIF.
 
 * return multiple bytes in endian order
@@ -114,11 +114,11 @@ CLASS zcl_wasm_memory_linear IMPLEMENTATION.
     DATA(lv_length) = xstrlen( mv_linear ).
 
     IF iv_offset + iv_length > lv_length.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'linear_get: out of bounds' ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'linear_get: out of bounds'.
     ELSEIF iv_length <= 0.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'linear_get: negative or zero length' ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'linear_get: negative or zero length'.
     ELSEIF iv_offset < 0.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'linear_get: negative offset' ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'linear_get: negative offset'.
     ENDIF.
 
     rv_bytes = mv_linear+iv_offset(iv_length).

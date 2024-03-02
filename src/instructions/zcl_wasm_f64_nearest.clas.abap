@@ -19,7 +19,7 @@ CLASS zcl_wasm_f64_nearest IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_f64_nearest' ).
+    RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'todo, execute instruction zcl_wasm_f64_nearest'.
   ENDMETHOD.
 
 ENDCLASS.

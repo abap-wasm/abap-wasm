@@ -51,12 +51,12 @@ CLASS zcl_wasm_global_section IMPLEMENTATION.
               io_module = NEW zcl_wasm_module( ) ).
           ENDLOOP.
         CATCH cx_static_check INTO DATA(lx_error).
-          RAISE EXCEPTION NEW zcx_wasm( text = |instantiate_global, failed to execute instructions: { lx_error->get_text( ) }| ).
+          RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |instantiate_global, failed to execute instructions: { lx_error->get_text( ) }|.
       ENDTRY.
 
       DATA(li_value) = io_memory->stack_pop( ).
       IF li_value IS INITIAL.
-        RAISE EXCEPTION NEW zcx_wasm( text = |instantiate_global, initial value on stack| ).
+        RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |instantiate_global, initial value on stack|.
       ENDIF.
 
       CASE ls_global-type.
@@ -67,13 +67,13 @@ CLASS zcl_wasm_global_section IMPLEMENTATION.
             OR zcl_wasm_types=>c_reftype-funcref
             OR zcl_wasm_types=>c_reftype-externref.
           IF li_value->get_type( ) <> ls_global-type.
-            RAISE EXCEPTION NEW zcx_wasm( text = |instantiate_global, type mismatch: { ls_global-type } vs { li_value->get_type( ) }| ).
+            RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |instantiate_global, type mismatch: { ls_global-type } vs { li_value->get_type( ) }|.
           ENDIF.
           io_memory->global_append( li_value ).
         WHEN zcl_wasm_types=>c_vector_type.
-          RAISE EXCEPTION NEW zcx_wasm( text = |instantiate_global, todo vector type| ).
+          RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |instantiate_global, todo vector type|.
         WHEN OTHERS.
-          RAISE EXCEPTION NEW zcx_wasm( text = |instantiate_global, unknown type| ).
+          RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |instantiate_global, unknown type|.
       ENDCASE.
 
       CASE ls_global-mut.
@@ -82,7 +82,7 @@ CLASS zcl_wasm_global_section IMPLEMENTATION.
         WHEN c_mut-var.
 * todo
         WHEN OTHERS.
-          RAISE EXCEPTION NEW zcx_wasm( text = |instantiate_global, unknown mut| ).
+          RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |instantiate_global, unknown mut|.
       ENDCASE.
 
     ENDLOOP.
@@ -108,7 +108,7 @@ CLASS zcl_wasm_global_section IMPLEMENTATION.
           ev_last_opcode  = DATA(lv_last_opcode)
           et_instructions = ls_global-instructions ).
       IF lv_last_opcode <> zif_wasm_opcodes=>c_opcodes-end.
-        RAISE EXCEPTION NEW zcx_wasm( text = |parse_global, expected end| ).
+        RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |parse_global, expected end|.
       ENDIF.
       INSERT ls_global INTO TABLE lt_globals.
     ENDDO.

@@ -19,7 +19,7 @@ CLASS zcl_wasm_i64_xor IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_i64_xor' ).
+    RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'todo, execute instruction zcl_wasm_i64_xor'.
   ENDMETHOD.
 
 ENDCLASS.

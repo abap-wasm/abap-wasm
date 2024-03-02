@@ -34,7 +34,7 @@ CLASS zcl_wasm_ref_null IMPLEMENTATION.
       WHEN zcl_wasm_types=>c_reftype-externref.
         io_memory->stack_push( NEW zcl_wasm_externref( -1 ) ).
       WHEN OTHERS.
-        RAISE EXCEPTION NEW zcx_wasm( text = |zcl_wasm_ref_null: Unknown ref type { mv_ref_type }| ).
+        RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |zcl_wasm_ref_null: Unknown ref type { mv_ref_type }|.
     ENDCASE.
 
   ENDMETHOD.

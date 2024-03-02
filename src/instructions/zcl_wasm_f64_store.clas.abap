@@ -23,7 +23,7 @@ CLASS zcl_wasm_f64_store IMPLEMENTATION.
 
   METHOD constructor.
     IF iv_align > zcl_wasm_memory=>c_alignment_64bit.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'alignment must not be larger than natural' ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'alignment must not be larger than natural'.
     ENDIF.
 
     mv_align  = iv_align.
@@ -37,7 +37,7 @@ CLASS zcl_wasm_f64_store IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_f64_store' ).
+    RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'todo, execute instruction zcl_wasm_f64_store'.
   ENDMETHOD.
 
 ENDCLASS.

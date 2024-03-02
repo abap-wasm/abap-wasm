@@ -19,7 +19,7 @@ CLASS zcl_wasm_f32_neg IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_f32_neg' ).
+    RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'todo, execute instruction zcl_wasm_f32_neg'.
   ENDMETHOD.
 
 ENDCLASS.

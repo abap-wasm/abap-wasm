@@ -67,7 +67,7 @@ CLASS zcl_wasm_f64 IMPLEMENTATION.
   METHOD floor_value.
 
     IF io_memory->stack_length( ) < 1.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'f64 floor, expected at least one variables on stack' ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'f64 floor, expected at least one variables on stack'.
     ENDIF.
 
     DATA(lo_val) = CAST zcl_wasm_f64( io_memory->stack_pop( ) ).

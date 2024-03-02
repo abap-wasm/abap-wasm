@@ -19,7 +19,7 @@ CLASS zcl_wasm_unreachable IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    RAISE EXCEPTION NEW zcx_wasm( text = 'instruction zcl_wasm_unreachable' ).
+    RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'instruction zcl_wasm_unreachable'.
   ENDMETHOD.
 
 ENDCLASS.

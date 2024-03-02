@@ -106,13 +106,13 @@ CLASS cl_testsuite IMPLEMENTATION.
     DATA lt_values TYPE zif_wasm_value=>ty_values.
 
     IF io_wasm IS INITIAL.
-      RAISE EXCEPTION NEW zcx_wasm( text = |assert_return: nothing loaded| ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |assert_return: nothing loaded|.
     ENDIF.
 
     GET RUN TIME FIELD rs_results-start_time.
 
     IF is_command-action-type <> 'invoke'.
-      RAISE EXCEPTION NEW zcx_wasm( text = |invoke: unknown action type, { is_command-action-type }| ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |invoke: unknown action type, { is_command-action-type }|.
     ENDIF.
 
     LOOP AT is_command-action-args INTO DATA(ls_arg).
@@ -138,7 +138,7 @@ CLASS cl_testsuite IMPLEMENTATION.
             APPEND NEW zcl_wasm_externref( CONV #( ls_arg-value ) ) TO lt_values.
           ENDIF.
         WHEN OTHERS.
-          RAISE EXCEPTION NEW zcx_wasm( text = |unknown type, invoke, { ls_arg-type }| ).
+          RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |unknown type, invoke, { ls_arg-type }|.
       ENDCASE.
     ENDLOOP.
 

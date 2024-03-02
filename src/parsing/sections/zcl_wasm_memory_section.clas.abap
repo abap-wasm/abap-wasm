@@ -44,9 +44,9 @@ CLASS zcl_wasm_memory_section IMPLEMENTATION.
     IF lv_count = 0.
       RETURN.
     ELSEIF lv_count > 1.
-      RAISE EXCEPTION NEW zcx_wasm( text = |multiple memories| ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |multiple memories|.
     ELSEIF lv_count <> 1.
-      RAISE EXCEPTION NEW zcx_wasm( text = |not just one memory| ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |not just one memory|.
     ENDIF.
 
     DATA(lv_limit) = io_body->shift( 1 ).
@@ -59,13 +59,13 @@ CLASS zcl_wasm_memory_section IMPLEMENTATION.
         lv_min = io_body->shift_u32( ).
         lv_max = io_body->shift_u32( ).
       WHEN OTHERS.
-        RAISE EXCEPTION NEW zcx_wasm( text = |parse_memory: todo| ).
+        RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |parse_memory: todo|.
     ENDCASE.
 
     IF lv_max < lv_min.
-      RAISE EXCEPTION NEW zcx_wasm( text = |size minimum must not be greater than maximum| ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |size minimum must not be greater than maximum|.
     ELSEIF lv_max > zif_wasm_memory_linear=>c_max_pages.
-      RAISE EXCEPTION NEW zcx_wasm( text = |memory size must be at most { zif_wasm_memory_linear=>c_max_pages } pages (4GiB)| ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |memory size must be at most { zif_wasm_memory_linear=>c_max_pages } pages (4GiB)|.
     ENDIF.
 
     ro_memory = NEW #(

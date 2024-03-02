@@ -37,7 +37,7 @@ CLASS zcl_wasm_loop IMPLEMENTATION.
         et_instructions = DATA(lt_instructions) ).
 
     IF lv_last_opcode <> zif_wasm_opcodes=>c_opcodes-end.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'loop: expected end opcode' ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'loop: expected end opcode'.
     ENDIF.
 
     ri_instruction = NEW zcl_wasm_loop(
@@ -53,16 +53,19 @@ CLASS zcl_wasm_loop IMPLEMENTATION.
 
     DO.
       TRY.
-          NEW zcl_wasm_vm(
+          rv_control = NEW zcl_wasm_vm(
             io_memory = io_memory
             io_module = io_module )->execute( mt_instructions ).
 
+          IF rv_control = zif_wasm_instruction=>c_control-return_.
+            RETURN.
+          ENDIF.
         CATCH zcx_wasm_branch INTO DATA(lx_branch).
           IF lx_branch->depth = 0.
             CONTINUE.
           ENDIF.
 
-          RAISE EXCEPTION NEW zcx_wasm_branch( depth = lx_branch->depth - 1 ).
+          RAISE EXCEPTION TYPE zcx_wasm_branch EXPORTING depth = lx_branch->depth - 1.
       ENDTRY.
 
       EXIT.

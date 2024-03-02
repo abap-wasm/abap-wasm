@@ -25,13 +25,13 @@ CLASS zcl_wasm_memory_fill IMPLEMENTATION.
     DATA(lo_d) = io_memory->stack_pop_i32( ).
 
     IF lo_n->get_signed( ) + lo_d->get_signed( ) > li_linear->size_in_bytes( ).
-      RAISE EXCEPTION NEW zcx_wasm( text = 'memory_fill: trap' ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'memory_fill: trap'.
     ELSEIF lo_n->get_signed( ) = 0.
       RETURN.
     ENDIF.
 
     IF lo_n->get_signed( ) > 1000.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_memory_fill, refactor to iteration instead of recursion' ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_memory_fill, refactor to iteration instead of recursion'.
     ENDIF.
 
     io_memory->stack_push( lo_d ).

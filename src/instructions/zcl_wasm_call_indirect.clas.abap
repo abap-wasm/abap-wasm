@@ -37,7 +37,7 @@ CLASS zcl_wasm_call_indirect IMPLEMENTATION.
 
   METHOD zif_wasm_instruction~execute.
 * https://webassembly.github.io/spec/core/exec/instructions.html#xref-syntax-instructions-syntax-instr-control-mathsf-call-indirect-x-y
-    RAISE EXCEPTION NEW zcx_wasm( text = 'todo, execute instruction zcl_wasm_call_indirect' ).
+    RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'todo, execute instruction zcl_wasm_call_indirect'.
   ENDMETHOD.
 
 ENDCLASS.

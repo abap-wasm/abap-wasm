@@ -32,7 +32,7 @@ CLASS zcl_wasm_ref_is_null IMPLEMENTATION.
       WHEN zcl_wasm_types=>c_reftype-funcref.
         lv_null = CAST zcl_wasm_funcref( li_value )->is_null( ).
       WHEN OTHERS.
-        RAISE EXCEPTION NEW zcx_wasm( text = |zcl_wasm_ref_is_null: Expected ref, got { li_value->get_type( ) }| ).
+        RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |zcl_wasm_ref_is_null: Expected ref, got { li_value->get_type( ) }|.
     ENDCASE.
 
     IF lv_null = abap_true.

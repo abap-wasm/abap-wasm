@@ -252,7 +252,7 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
     DO.
       " leb128 can be at most 10 bytes
       IF sy-index > 10.
-        RAISE EXCEPTION NEW zcx_wasm( text = 'integer representation too long' ).
+        RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'integer representation too long'.
       ENDIF.
 
       lv_hex = shift( 1 ).
@@ -289,7 +289,7 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
 
     DO.
       IF sy-index > 5.
-        RAISE EXCEPTION NEW zcx_wasm( text = 'integer representation too long' ).
+        RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'integer representation too long'.
       ENDIF.
 
       lv_hex = shift( 1 ).
@@ -325,7 +325,7 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
 
     DO.
       IF sy-index > 5.
-        RAISE EXCEPTION NEW zcx_wasm( text = 'integer representation too long' ).
+        RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'integer representation too long'.
       ENDIF.
 
       lv_hex = shift( 1 ).

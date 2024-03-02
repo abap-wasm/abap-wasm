@@ -23,7 +23,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_WASM_INSTRUCTIONS IMPLEMENTATION.
+CLASS zcl_wasm_instructions IMPLEMENTATION.
 
 
   METHOD initialize.
@@ -823,7 +823,7 @@ CLASS ZCL_WASM_INSTRUCTIONS IMPLEMENTATION.
               WHEN zif_wasm_opcodes=>c_opcodes-table_fill.
                 APPEND zcl_wasm_table_fill=>parse( io_body ) TO et_instructions.
               WHEN OTHERS.
-                RAISE EXCEPTION NEW zcx_wasm( text = |illegal opcode FC: { lv_opcodei }| ).
+                RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |illegal opcode FC: { lv_opcodei }|.
             ENDCASE.
           WHEN zif_wasm_opcodes=>c_opcodes-end.
             APPEND zcl_wasm_end=>parse( io_body ) TO et_instructions.
@@ -831,7 +831,7 @@ CLASS ZCL_WASM_INSTRUCTIONS IMPLEMENTATION.
           WHEN zif_wasm_opcodes=>c_opcodes-else_.
             RETURN.
           WHEN OTHERS.
-            RAISE EXCEPTION NEW zcx_wasm( text = |illegal opcode: { lv_opcode }| ).
+            RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |illegal opcode: { lv_opcode }|.
         ENDCASE.
       ENDIF.
     ENDWHILE.

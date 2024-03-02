@@ -164,7 +164,7 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
         DATA(lo_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
         DATA(lo_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
       CATCH cx_sy_move_cast_error.
-        RAISE EXCEPTION NEW zcx_wasm( text = 'i32 add, wrong types on stack' ).
+        RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'i32 add, wrong types on stack'.
     ENDTRY.
 
     io_memory->stack_push( from_signed( lo_val1->get_signed( ) + lo_val2->get_signed( ) ) ).
@@ -230,14 +230,14 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
 * https://webassembly.github.io/spec/core/exec/instructions.html#t-mathsf-xref-syntax-instructions-syntax-relop-mathit-relop
 
     IF io_memory->stack_length( ) < 2.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'lt_s, expected two variables on stack' ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'lt_s, expected two variables on stack'.
     ENDIF.
 
     TRY.
         DATA(lo_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
         DATA(lo_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
       CATCH cx_sy_move_cast_error.
-        RAISE EXCEPTION NEW zcx_wasm( text = 'lt_s, wrong types on stack' ).
+        RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'lt_s, wrong types on stack'.
     ENDTRY.
 
     DATA(lv_result) = 0.
@@ -252,7 +252,7 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
   METHOD le_s.
 
     IF io_memory->stack_length( ) < 2.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'le_s, expected two variables on stack' ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'le_s, expected two variables on stack'.
     ENDIF.
 
     DATA(lo_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
@@ -270,7 +270,7 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
   METHOD gt_s.
 
     IF io_memory->stack_length( ) < 2.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'le_s, expected two variables on stack' ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'le_s, expected two variables on stack'.
     ENDIF.
 
     DATA(lo_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
@@ -288,7 +288,7 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
   METHOD ge_s.
 
     IF io_memory->stack_length( ) < 2.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'ge_s, expected two variables on stack' ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'ge_s, expected two variables on stack'.
     ENDIF.
 
     DATA(lo_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
@@ -306,7 +306,7 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
   METHOD ge_u.
 
     IF io_memory->stack_length( ) < 2.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'ge_u, expected two variables on stack' ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'ge_u, expected two variables on stack'.
     ENDIF.
 
     DATA(lo_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
@@ -324,7 +324,7 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
   METHOD gt_u.
 
     IF io_memory->stack_length( ) < 2.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'gt_u, expected two variables on stack' ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'gt_u, expected two variables on stack'.
     ENDIF.
 
     DATA(lo_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
@@ -342,7 +342,7 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
   METHOD le_u.
 
     IF io_memory->stack_length( ) < 2.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'lt_u, expected two variables on stack' ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'lt_u, expected two variables on stack'.
     ENDIF.
 
     DATA(lo_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
@@ -360,7 +360,7 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
   METHOD lt_u.
 
     IF io_memory->stack_length( ) < 2.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'lt_u, expected two variables on stack' ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'lt_u, expected two variables on stack'.
     ENDIF.
 
     DATA(lo_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
@@ -397,7 +397,7 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
     DATA(lv_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ).
 
     IF lv_val1 = 0.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'i32.div_s, division by zero' ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'i32.div_s, division by zero'.
     ENDIF.
 
 * division is truncating, so round towards zero
@@ -461,7 +461,7 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
     DATA(lv_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ).
 
     IF lv_val1 = 0.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'i32.rem_s, division by zero' ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'i32.rem_s, division by zero'.
     ENDIF.
 
     DATA(lv_result) = abs( lv_val2 ) MOD abs( lv_val1 ).
@@ -480,7 +480,7 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
     DATA(lv_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_unsigned( ).
 
     IF lv_val1 = 0.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'i32.rem_u, division by zero' ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'i32.rem_u, division by zero'.
     ENDIF.
 
     IF lv_val1 < 0.
@@ -506,7 +506,7 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
     DATA(lv_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_unsigned( ).
 
     IF lv_val1 = 0.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'i32.div_u, division by zero' ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'i32.div_u, division by zero'.
     ENDIF.
 
     io_memory->stack_push( from_unsigned( lv_val2 DIV lv_val1 ) ).

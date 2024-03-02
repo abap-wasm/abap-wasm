@@ -14,7 +14,7 @@
     }
   ],
   "syntax": {
-    "version": "v755",
+    "version": "v750",
     "errorNamespace": ""
   },
   "rules": {
@@ -52,7 +52,7 @@
     "no_yoda_conditions": true,
     "nrob_consistency": true,
     "omit_preceding_zeros": true,
-    "prefer_raise_exception_new": true,
+    "prefer_raise_exception_new": false,
     "select_add_order_by": true,
     "select_performance": true,
     "slow_parameter_passing": true,
@@ -106,7 +106,7 @@
     "definitions_top": false,
     "description_empty": true,
     "double_space": true,
-    "downport": true,
+    "downport": false,
     "empty_line_in_statement": true,
     "empty_statement": true,
     "empty_structure": false,
