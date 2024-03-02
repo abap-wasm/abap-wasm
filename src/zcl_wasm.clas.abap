@@ -138,8 +138,26 @@ CLASS zcl_wasm IMPLEMENTATION.
 
   METHOD zif_wasm~dump_linear_memory.
     IF mo_memory->has_linear( ) = abap_false.
-      WRITE / 'no linear memory'.
+      rv_dump = 'no linear memory'.
+      RETURN.
     ENDIF.
+
+    DATA(li_linear) = mo_memory->get_linear( ).
+    rv_dump &&= |Linear memory: { li_linear->size_in_bytes( ) } bytes\n|.
+  ENDMETHOD.
+
+  METHOD zif_wasm~dump_stack.
+    DATA(lv_length) = mo_memory->stack_length( ).
+    rv_dump = |Stack length: { lv_length } values\n|.
+    DO lv_length TIMES.
+      DATA(lv_index) = sy-index.
+      DATA(li_value) = mo_memory->stack_pop( ).
+      rv_dump &&= |{ lv_index } - { li_value->get_type( ) } - { li_value->human_readable_value( ) }\n|.
+    ENDDO.
+  ENDMETHOD.
+
+  METHOD zif_wasm~get_memory.
+    ro_memory = mo_memory.
   ENDMETHOD.
 
 ENDCLASS.

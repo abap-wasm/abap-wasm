@@ -61,7 +61,7 @@ CLASS zcl_wasm_i64 DEFINITION
 
   PROTECTED SECTION.
   PRIVATE SECTION.
-* todo, use packed?
+* todo, use packed? nah int8 is long enough, but need to handle unsigned
     DATA mv_value TYPE int8 .
 ENDCLASS.
 
@@ -69,6 +69,10 @@ CLASS zcl_wasm_i64 IMPLEMENTATION.
 
   METHOD get_signed.
     rv_value = mv_value.
+  ENDMETHOD.
+
+  METHOD zif_wasm_value~human_readable_value.
+    rv_string = |i64: { mv_value }|.
   ENDMETHOD.
 
   METHOD add.

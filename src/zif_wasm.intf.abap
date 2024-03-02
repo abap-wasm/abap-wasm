@@ -26,6 +26,24 @@ INTERFACE zif_wasm PUBLIC.
     RAISING
       zcx_wasm.
 
-  METHODS dump_linear_memory.
+* todo: move this method to zif_wasm_linear_memory?
+  METHODS dump_linear_memory
+    RETURNING
+      VALUE(rv_dump) TYPE string
+    RAISING
+      zcx_wasm.
+
+* note: this destorys the stack
+  METHODS dump_stack
+    RETURNING
+      VALUE(rv_dump) TYPE string
+    RAISING
+      zcx_wasm.
+
+  METHODS get_memory
+    RETURNING
+      VALUE(ro_memory) TYPE REF TO zcl_wasm_memory
+    RAISING
+      zcx_wasm.
 
 ENDINTERFACE.

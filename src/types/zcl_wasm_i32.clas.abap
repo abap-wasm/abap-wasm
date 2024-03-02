@@ -150,6 +150,9 @@ ENDCLASS.
 
 CLASS zcl_wasm_i32 IMPLEMENTATION.
 
+  METHOD zif_wasm_value~human_readable_value.
+    rv_string = |i32: { mv_value }|.
+  ENDMETHOD.
 
   METHOD add.
 
