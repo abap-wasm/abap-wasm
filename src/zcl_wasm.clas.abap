@@ -135,4 +135,11 @@ CLASS zcl_wasm IMPLEMENTATION.
     ENDLOOP.
 
   ENDMETHOD.
+
+  METHOD zif_wasm~dump_linear_memory.
+    IF mo_memory->has_linear( ) = abap_false.
+      WRITE / 'no linear memory'.
+    ENDIF.
+  ENDMETHOD.
+
 ENDCLASS.

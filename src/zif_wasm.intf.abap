@@ -26,4 +26,6 @@ INTERFACE zif_wasm PUBLIC.
     RAISING
       zcx_wasm.
 
+  METHODS dump_linear_memory.
+
 ENDINTERFACE.
