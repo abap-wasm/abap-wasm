@@ -71,6 +71,12 @@ CLASS zcl_wasm_i64 DEFINITION
       RAISING
         zcx_wasm.
 
+    CLASS-METHODS div_s
+      IMPORTING
+        !io_memory TYPE REF TO zcl_wasm_memory
+      RAISING
+        zcx_wasm.
+
   PROTECTED SECTION.
   PRIVATE SECTION.
 * todo, use packed? nah int8 is long enough, but need to handle unsigned
@@ -87,6 +93,26 @@ CLASS zcl_wasm_i64 IMPLEMENTATION.
     DATA(lo_val2) = CAST zcl_wasm_i64( io_memory->stack_pop( ) ).
 
     io_memory->stack_push( from_signed( lo_val1->get_signed( ) * lo_val2->get_signed( ) ) ).
+
+  ENDMETHOD.
+
+  METHOD div_s.
+
+    ASSERT io_memory->stack_length( ) >= 2.
+
+    DATA(lv_val1) = CAST zcl_wasm_i64( io_memory->stack_pop( ) )->get_signed( ).
+    DATA(lv_val2) = CAST zcl_wasm_i64( io_memory->stack_pop( ) )->get_signed( ).
+
+    IF lv_val1 = 0.
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'i64.div_s, division by zero'.
+    ENDIF.
+
+* division is truncating, so round towards zero
+    IF sign( lv_val1 ) <> sign( lv_val2 ).
+      io_memory->stack_push( from_signed( -1 * ( abs( lv_val2 ) DIV abs( lv_val1 ) ) ) ).
+    ELSE.
+      io_memory->stack_push( from_signed( lv_val2 DIV lv_val1 ) ).
+    ENDIF.
 
   ENDMETHOD.
 
