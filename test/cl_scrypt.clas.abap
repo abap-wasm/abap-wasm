@@ -31,19 +31,19 @@ CLASS cl_scrypt IMPLEMENTATION.
 
     " todo, 5 should be the encoded length of the password
     " malloc is function 38
-    TRY.
-        DATA(lt_results) = li_wasm->execute_function_export(
-          iv_name       = '__wbindgen_malloc'
-          it_parameters = VALUE #( ( zcl_wasm_i32=>from_signed( 6 ) ) ) ).
-      CATCH zcx_wasm INTO DATA(lx_wasm).
-        WRITE / li_wasm->dump_stack( ).
-        WRITE / li_wasm->dump_linear_memory( ).
+    " TRY.
+    "     DATA(lt_results) = li_wasm->execute_function_export(
+    "       iv_name       = '__wbindgen_malloc'
+    "       it_parameters = VALUE #( ( zcl_wasm_i32=>from_signed( 6 ) ) ) ).
+    "   CATCH zcx_wasm INTO DATA(lx_wasm).
+    "     WRITE / li_wasm->dump_stack( ).
+    "     WRITE / li_wasm->dump_linear_memory( ).
 
         " DATA(lv_mem) = li_wasm->get_memory( )->get_linear( )->get(
         "   iv_length = 22
         "   iv_offset = 1050832 ).
         " WRITE / lv_mem.
-    ENDTRY.
+    " ENDTRY.
 
 * "scrypt" function export takes 9 x i32
     " li_wasm->execute_function_export(

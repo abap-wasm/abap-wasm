@@ -11,6 +11,7 @@ CLASS ltcl_test DEFINITION FOR TESTING DURATION MEDIUM RISK LEVEL HARMLESS.
     METHODS add_two FOR TESTING RAISING cx_static_check.
     METHODS fibonacci FOR TESTING RAISING cx_static_check.
     METHODS factorial FOR TESTING RAISING cx_static_check.
+    METHODS malloc1 FOR TESTING RAISING cx_static_check.
 
     METHODS parse_testsuite_i32 FOR TESTING RAISING cx_static_check.
     METHODS parse_testsuite_address FOR TESTING RAISING cx_static_check.
@@ -124,6 +125,43 @@ CLASS ltcl_test IMPLEMENTATION.
 
   METHOD parse_testsuite_func.
     zcl_wasm=>create_with_wasm( zcl_wasm_test_data=>testsuite_func( ) ).
+  ENDMETHOD.
+
+  METHOD malloc1.
+
+" (module
+"   (func (export "malloc") (param i32) (result i32)
+"     (local i32 i32)
+"     block  ;; label = @1
+"       local.get 0
+"       i32.const -4
+"       i32.gt_u
+"       local.tee 1
+"       br_if 0 (;@1;)
+"       i32.const 123
+"       return
+"     end
+"     unreachable
+" ))
+
+    DATA(lv_wasm) = `AGFzbQEAAAABBgFgAX8BfwMCAQAHCgEGbWFsbG9jAAAKFwEVAQJ/AkAgAEF8SyIBDQBB+wAPCwALAAoEbmFtZQIDAQAA`.
+
+    DATA(li_wasm) = zcl_wasm=>create_with_base64( lv_wasm ).
+
+    DATA(lt_values) = li_wasm->execute_function_export(
+      iv_name       = 'malloc'
+      it_parameters = VALUE #( ( zcl_wasm_i32=>from_signed( 10 ) ) ) ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lines( lt_values )
+      exp = 1 ).
+
+    DATA(lo_value) = CAST zcl_wasm_i32( lt_values[ 1 ] ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lo_value->get_signed( )
+      exp = 123 ).
+
   ENDMETHOD.
 
 ENDCLASS.
