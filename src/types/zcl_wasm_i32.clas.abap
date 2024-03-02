@@ -150,6 +150,9 @@ ENDCLASS.
 
 CLASS zcl_wasm_i32 IMPLEMENTATION.
 
+  METHOD zif_wasm_value~human_readable_value.
+    rv_string = |i32: { mv_value }|.
+  ENDMETHOD.
 
   METHOD add.
 
@@ -321,7 +324,7 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
   METHOD gt_u.
 
     IF io_memory->stack_length( ) < 2.
-      RAISE EXCEPTION NEW zcx_wasm( text = 'le_s, expected two variables on stack' ).
+      RAISE EXCEPTION NEW zcx_wasm( text = 'gt_u, expected two variables on stack' ).
     ENDIF.
 
     DATA(lo_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).

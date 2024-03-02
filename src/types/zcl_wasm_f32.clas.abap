@@ -136,6 +136,10 @@ ENDCLASS.
 
 CLASS zcl_wasm_f32 IMPLEMENTATION.
 
+  METHOD zif_wasm_value~human_readable_value.
+    rv_string = |f32: { mv_value STYLE = SCIENTIFIC }|.
+  ENDMETHOD.
+
   METHOD get_sign.
     rv_negative = xsdbool( mv_value < 0 ).
   ENDMETHOD.

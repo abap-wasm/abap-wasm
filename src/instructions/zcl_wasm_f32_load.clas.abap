@@ -38,14 +38,22 @@ CLASS zcl_wasm_f32_load IMPLEMENTATION.
 
   METHOD zif_wasm_instruction~execute.
 
+* https://webassembly.github.io/spec/core/exec/instructions.html#t-mathsf-xref-syntax-instructions-syntax-instr-memory-mathsf-load-xref-syntax-instructions-syntax-memarg-mathit-memarg-and-t-mathsf-xref-syntax-instructions-syntax-instr-memory-mathsf-load-n-mathsf-xref-syntax-instructions-syntax-sx-mathit-sx-xref-syntax-instructions-syntax-memarg-mathit-memarg
+
     CONSTANTS lc_length TYPE int8 VALUE 4.
     DATA lv_hex TYPE x LENGTH lc_length.
     DATA lv_int TYPE i.
 
-    DATA(lv_i) = io_memory->stack_pop_i32( )->get_signed( ).
+    DATA(li_value) = io_memory->stack_pop( ).
+    IF li_value->get_type( ) <> zcl_wasm_types=>c_value_type-i32.
+      RAISE EXCEPTION NEW zcx_wasm( text = 'zcl_wasm_f32_load: expected i32' ).
+    ENDIF.
+
+    DATA(lv_i) = CAST zcl_wasm_i32( li_value )->get_signed( ).
     IF lv_i < 0.
       RAISE EXCEPTION NEW zcx_wasm( text = 'load: out of bounds' ).
     ENDIF.
+
     lv_hex = io_memory->get_linear( )->get(
       iv_length = lc_length
       iv_align  = mv_align

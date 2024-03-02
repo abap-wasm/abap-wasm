@@ -1,6 +1,10 @@
 INTERFACE zif_wasm_memory_frame PUBLIC.
 
-  METHODS local_push
+  METHODS local_push_first
+    IMPORTING
+      !ii_value TYPE REF TO zif_wasm_value.
+
+  METHODS local_push_last
     IMPORTING
       !ii_value TYPE REF TO zif_wasm_value.
 

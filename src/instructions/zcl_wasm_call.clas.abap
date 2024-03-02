@@ -41,7 +41,7 @@ CLASS zcl_wasm_call IMPLEMENTATION.
 * consume values from stack into locals
     io_memory->push_frame( ).
     DO xstrlen( ls_type-parameter_types ) TIMES.
-      io_memory->get_frame( )->local_push( io_memory->stack_pop( ) ).
+      io_memory->get_frame( )->local_push_first( io_memory->stack_pop( ) ).
     ENDDO.
 
 * add the locals for the function
@@ -49,13 +49,13 @@ CLASS zcl_wasm_call IMPLEMENTATION.
       DO ls_local-count TIMES.
         CASE ls_local-type.
           WHEN zcl_wasm_types=>c_value_type-i32.
-            io_memory->get_frame( )->local_push( NEW zcl_wasm_i32( ) ).
+            io_memory->get_frame( )->local_push_last( NEW zcl_wasm_i32( ) ).
           WHEN zcl_wasm_types=>c_value_type-i64.
-            io_memory->get_frame( )->local_push( NEW zcl_wasm_i64( ) ).
+            io_memory->get_frame( )->local_push_last( NEW zcl_wasm_i64( ) ).
           WHEN zcl_wasm_types=>c_value_type-f32.
-            io_memory->get_frame( )->local_push( NEW zcl_wasm_f32( ) ).
+            io_memory->get_frame( )->local_push_last( NEW zcl_wasm_f32( ) ).
           WHEN zcl_wasm_types=>c_value_type-f64.
-            io_memory->get_frame( )->local_push( NEW zcl_wasm_f64( ) ).
+            io_memory->get_frame( )->local_push_last( NEW zcl_wasm_f64( ) ).
           WHEN OTHERS.
             RAISE EXCEPTION NEW zcx_wasm( text = |call: unknown type| ).
         ENDCASE.
