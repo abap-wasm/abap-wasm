@@ -46,11 +46,14 @@ CLASS zcl_wasm_i32_store IMPLEMENTATION.
     DATA(lv_c) = io_memory->stack_pop_i32( )->get_signed( ).
     lv_hex = lv_c.
     DATA(lv_i) = io_memory->stack_pop_i32( )->get_signed( ).
+    IF lv_i < 0.
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'i32 store: out of bounds'.
+    ENDIF.
 
 * convert to little endian
     CONCATENATE lv_hex+3 lv_hex+2(1) lv_hex+1(1) lv_hex(1) INTO lv_hex IN BYTE MODE.
 
-    io_memory->get_linear( )->set(
+    li_linear->set(
       iv_offset = mv_offset + lv_i
       iv_bytes  = lv_hex ).
 

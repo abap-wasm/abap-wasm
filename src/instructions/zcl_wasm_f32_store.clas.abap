@@ -37,8 +37,20 @@ CLASS zcl_wasm_f32_store IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-* todo, converting f32 to hex?
-    RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'todo, execute instruction zcl_wasm_f32_store'.
+
+    DATA(li_linear) = io_memory->get_linear( ).
+
+    DATA(lv_hex) = CAST zcl_wasm_f32( io_memory->stack_pop( ) )->to_hex( ).
+
+    DATA(lv_i) = io_memory->stack_pop_i32( )->get_signed( ).
+    IF lv_i < 0.
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'i32 store: out of bounds'.
+    ENDIF.
+
+    li_linear->set(
+      iv_offset = mv_offset + lv_i
+      iv_bytes  = lv_hex ).
+
   ENDMETHOD.
 
 ENDCLASS.
