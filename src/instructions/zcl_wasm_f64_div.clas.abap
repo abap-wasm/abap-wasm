@@ -19,7 +19,7 @@ CLASS zcl_wasm_f64_div IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'todo, execute instruction zcl_wasm_f64_div'.
+    zcl_wasm_f64=>div( io_memory ).
   ENDMETHOD.
 
 ENDCLASS.

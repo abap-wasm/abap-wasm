@@ -19,7 +19,7 @@ CLASS zcl_wasm_f64_ge IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'todo, execute instruction zcl_wasm_f64_ge'.
+    zcl_wasm_f64=>ge( io_memory ).
   ENDMETHOD.
 
 ENDCLASS.

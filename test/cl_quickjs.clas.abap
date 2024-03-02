@@ -31,6 +31,7 @@ CLASS cl_quickjs IMPLEMENTATION.
 
 * JSRuntime *QTS_NewRuntime() {
 *    DATA(lt_result) = li_wasm->execute_function_export( 'QTS_NewRuntime' ).
+* todo: instantiate data, no linear memory
 
 * JSContext *QTS_NewContext(JSRuntime *rt, IntrinsicsFlags intrinsics) {
 * todo

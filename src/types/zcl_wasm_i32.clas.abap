@@ -270,7 +270,7 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
   METHOD gt_s.
 
     IF io_memory->stack_length( ) < 2.
-      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'le_s, expected two variables on stack'.
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'gt_s, expected two variables on stack'.
     ENDIF.
 
     DATA(lo_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).

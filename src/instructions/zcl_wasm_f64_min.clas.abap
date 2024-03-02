@@ -19,7 +19,18 @@ CLASS zcl_wasm_f64_min IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'todo, execute instruction zcl_wasm_f64_min'.
+
+    ASSERT io_memory->stack_length( ) >= 2.
+
+    DATA(lo_val1) = CAST zcl_wasm_f64( io_memory->stack_pop( ) ).
+    DATA(lo_val2) = CAST zcl_wasm_f64( io_memory->stack_pop( ) ).
+
+    IF lo_val1->get_value( ) < lo_val2->get_value( ).
+      io_memory->stack_push( lo_val1 ).
+    ELSE.
+      io_memory->stack_push( lo_val2 ).
+    ENDIF.
+
   ENDMETHOD.
 
 ENDCLASS.

@@ -23,7 +23,7 @@ CLASS zcl_wasm_global_set IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD parse.
-    ri_instruction = NEW zcl_wasm_global_get( io_body->shift_u32( ) ).
+    ri_instruction = NEW zcl_wasm_global_set( io_body->shift_u32( ) ).
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
