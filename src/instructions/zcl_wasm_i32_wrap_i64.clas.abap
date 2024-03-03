@@ -19,7 +19,13 @@ CLASS zcl_wasm_i32_wrap_i64 IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
+
 * https://webassembly.github.io/spec/core/exec/numerics.html#xref-exec-numerics-op-wrap-mathrm-wrap-m-n-i
+
+    DATA lv_int8 TYPE int8.
+
+    lv_int8 = io_memory->stack_pop_i64( )->get_signed( ).
+
     RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'todo, execute instruction zcl_wasm_i32_wrap_i64'.
   ENDMETHOD.
 
