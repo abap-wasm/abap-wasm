@@ -19,6 +19,16 @@ CLASS zcl_wasm_i64_rem_u IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
+
+    ASSERT io_memory->stack_length( ) >= 2.
+
+    DATA(lv_val1) = CAST zcl_wasm_i64( io_memory->stack_pop( ) )->get_signed( ).
+    DATA(lv_val2) = CAST zcl_wasm_i64( io_memory->stack_pop( ) )->get_signed( ).
+
+    IF lv_val1 = 0.
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'i64.rem_u, division by zero'.
+    ENDIF.
+
     RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'todo, execute instruction zcl_wasm_i64_rem_u'.
   ENDMETHOD.
 
