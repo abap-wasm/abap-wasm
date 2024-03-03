@@ -47,18 +47,18 @@ CLASS cl_scrypt IMPLEMENTATION.
     " WRITE: / 'gbl ptr:', lo_salt_ptr->get_signed( ).
 
 * "scrypt" function export takes 9 x i32
-    " li_wasm->execute_function_export(
-    "   iv_name       = 'scrypt'
-    "   it_parameters = VALUE #(
-    "     ( lo_retptr )
-    "     ( lo_password_ptr )
-    "     ( zcl_wasm_i32=>from_signed( xstrlen( lc_password ) ) )
-    "     ( lo_salt_ptr )
-    "     ( zcl_wasm_i32=>from_signed( xstrlen( lc_salt ) ) )
-    "     ( zcl_wasm_i32=>from_signed( 1 ) )
-    "     ( zcl_wasm_i32=>from_signed( 1 ) )
-    "     ( zcl_wasm_i32=>from_signed( 1 ) )
-    "     ( zcl_wasm_i32=>from_signed( 1 ) ) ) ).
+    li_wasm->execute_function_export(
+      iv_name       = 'scrypt'
+      it_parameters = VALUE #(
+        ( lo_retptr )
+        ( lo_password_ptr )
+        ( zcl_wasm_i32=>from_signed( xstrlen( lc_password ) ) )
+        ( lo_salt_ptr )
+        ( zcl_wasm_i32=>from_signed( xstrlen( lc_salt ) ) )
+        ( zcl_wasm_i32=>from_signed( 1 ) )
+        ( zcl_wasm_i32=>from_signed( 1 ) )
+        ( zcl_wasm_i32=>from_signed( 1 ) )
+        ( zcl_wasm_i32=>from_signed( 1 ) ) ) ).
 
   ENDMETHOD.
 
