@@ -34,7 +34,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_WASM IMPLEMENTATION.
+CLASS zcl_wasm IMPLEMENTATION.
 
 
   METHOD constructor.
@@ -128,7 +128,7 @@ CLASS ZCL_WASM IMPLEMENTATION.
       io_module = mo_module )->call( ls_export-index ).
 
     DO xstrlen( ls_type-result_types ) TIMES.
-      APPEND mo_memory->stack_pop( ) TO rt_results.
+      INSERT mo_memory->stack_pop( ) INTO rt_results INDEX 1.
     ENDDO.
 
   ENDMETHOD.

@@ -21,6 +21,7 @@ CLASS ltcl_test DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS FINAL.
     METHODS test_unsigned_minus_seven FOR TESTING RAISING cx_static_check.
     METHODS test_unsigned_zero FOR TESTING RAISING cx_static_check.
     METHODS test_unsigned_one FOR TESTING RAISING cx_static_check.
+    METHODS test_unsigned_2147483647 FOR TESTING RAISING cx_static_check.
 
 ENDCLASS.
 
@@ -184,6 +185,20 @@ CLASS ltcl_test IMPLEMENTATION.
     cl_abap_unit_assert=>assert_equals(
       act = lo_int->get_unsigned( )
       exp = 1 ).
+
+  ENDMETHOD.
+
+  METHOD test_unsigned_2147483647.
+
+    DATA(lo_int) = zcl_wasm_i32=>from_unsigned( 2147483647 ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lo_int->get_signed( )
+      exp = 2147483647 ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lo_int->get_unsigned( )
+      exp = 2147483647 ).
 
   ENDMETHOD.
 

@@ -6,21 +6,23 @@
     "testsuite": "echo RUNNING TESTSUITE && node test/testsuite.mjs",
     "quickjs": "echo RUNNING QuickJS && node test/quickjs.mjs",
     "scrypt": "echo RUNNING Scrypt-WASM && node test/scrypt.mjs",
+    "sha256": "echo RUNNING SHA256 && node test/sha256.mjs",
     "unit": "rm -rf output && abap_transpile && echo RUNNING UNIT TEST && node output/index.mjs",
     "lint": "abaplint",
     "flame-graph-testsuite": "0x -o test/testsuite.mjs",
     "flame-graph-quickjs": "0x -o test/quickjs.mjs",
-    "test": "npm run lint && npm run downport && npm run unit && npm run testsuite && npm run quickjs && npm run scrypt"
+    "test": "npm run lint && npm run downport && npm run unit && npm run testsuite && npm run quickjs && npm run scrypt && npm run sha256"
   },
   "author": "Lars Hvam Petersen",
   "license": "MIT",
   "dependencies": {
     "@abaplint/cli": "^2.105.26",
-    "@abaplint/runtime": "^2.8.4",
-    "@abaplint/transpiler-cli": "^2.8.4",
+    "@abaplint/runtime": "^2.8.5",
+    "@abaplint/transpiler-cli": "^2.8.5",
     "@jitl/quickjs-wasmfile-debug-sync": "^0.29.0",
     "@jitl/quickjs-wasmfile-release-sync": "^0.29.0",
     "0x": "^5.7.0",
-    "scrypt-wasm": "^0.1.1"
+    "scrypt-wasm": "^0.1.1",
+    "sha256-wasm": "^2.2.2"
   }
 }
