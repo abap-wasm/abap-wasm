@@ -56,7 +56,7 @@ CLASS zcl_wasm_i64_store16 IMPLEMENTATION.
     lv_hex = CAST zcl_wasm_i64( lv_c )->get_signed( ).
 
 * convert to little endian
-    CONCATENATE lv_hex+1 lv_hex(1) INTO lv_hex IN BYTE MODE.
+    CONCATENATE lv_hex+1(1) lv_hex(1) INTO lv_hex IN BYTE MODE.
 
     li_linear->set(
       iv_offset = mv_offset + lv_i
