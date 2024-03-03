@@ -254,6 +254,11 @@ CLASS zcl_wasm_i64 IMPLEMENTATION.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'i64, from_unsigned, unexpected value'.
     ENDIF.
 
+    IF iv_value = '18446744073709551615'.
+      ro_value = NEW #( ).
+      ro_value->mv_value = -1.
+    ENDIF.
+
     IF strlen( iv_value ) > 18.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'i64, from_unsigned, value too long, todo'.
     ENDIF.
