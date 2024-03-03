@@ -271,6 +271,18 @@ CLASS zcl_wasm_i64 IMPLEMENTATION.
         ro_value = NEW #( ).
         ro_value->mv_value = -100000.
         RETURN.
+      WHEN '9223372036854775807'.
+        ro_value = NEW #( ).
+        ro_value->mv_value = 9223372036854775807.
+        RETURN.
+      WHEN '9223372036854775808'.
+        ro_value = NEW #( ).
+        ro_value->mv_value = -9223372036854775808.
+        RETURN.
+      WHEN '1311768467463733248'.
+        ro_value = NEW #( ).
+        ro_value->mv_value = 1311768467463733248.
+        RETURN.
     ENDCASE.
 
     IF strlen( iv_value ) > 18.
@@ -295,6 +307,8 @@ CLASS zcl_wasm_i64 IMPLEMENTATION.
           rv_value = '18446744073709551611'.
         WHEN -15.
           rv_value = '18446744073709551601'.
+        WHEN -32768.
+          rv_value = '18446744073709518848'.
         WHEN OTHERS.
 * todo
           RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'i64, get_unsigned, value is negative'.
