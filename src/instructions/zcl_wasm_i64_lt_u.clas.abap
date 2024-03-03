@@ -26,10 +26,13 @@ CLASS zcl_wasm_i64_lt_u IMPLEMENTATION.
     DATA(lv_val1) = io_memory->stack_pop_i64( )->get_signed( ).
     DATA(lv_val2) = io_memory->stack_pop_i64( )->get_signed( ).
 
+* this can probably be done with fewer comparisons
     IF lv_val1 >= 0 AND lv_val2 >= 0.
       lv_result = xsdbool( lv_val1 > lv_val2 ).
     ELSEIF lv_val1 < 0 AND lv_val2 < 0.
       lv_result = xsdbool( lv_val1 > lv_val2 ).
+    ELSEIF lv_val1 < 0 AND lv_val2 >= 0.
+      lv_result = abap_true.
     ELSE.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_i64_lt_u, todo'.
     ENDIF.
