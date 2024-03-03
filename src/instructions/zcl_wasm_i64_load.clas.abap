@@ -42,6 +42,7 @@ CLASS zcl_wasm_i64_load IMPLEMENTATION.
     DATA lv_int    TYPE i.
     DATA lv_int8   TYPE int8.
     DATA lv_factor TYPE int8.
+    DATA lv_ff     TYPE x LENGTH 16.
 
     DATA(lv_i) = io_memory->stack_pop_i32( )->get_signed( ).
     IF lv_i < 0.
@@ -61,7 +62,8 @@ CLASS zcl_wasm_i64_load IMPLEMENTATION.
       " WRITE: / 'sign', lv_sign.
 
       IF lv_sign = 1.
-        lv_hex = lv_hex BIT-XOR 'FFFFFFFFFFFFFFFF'.
+        lv_ff = 'FFFFFFFFFFFFFFFF'.
+        lv_hex = lv_hex BIT-XOR lv_ff.
       ENDIF.
       " WRITE / lv_hex.
 
