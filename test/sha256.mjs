@@ -5,7 +5,6 @@ import {initializeABAP} from "../output/init.mjs";
 await initializeABAP();
 
 // https://www.npmjs.com/package/sha256-wasm
-
 var hash = sha256.default().update('hello world').digest('hex');
 console.log(hash);
 
