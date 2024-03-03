@@ -20,9 +20,8 @@ CLASS zcl_wasm_i64_extend8_s IMPLEMENTATION.
 
   METHOD zif_wasm_instruction~execute.
 
-    DATA lv_int     TYPE int8.
-    DATA lv_hex     TYPE x LENGTH 8.
-    DATA lv_overlay TYPE x LENGTH 8 VALUE 'FFFFFFFFFFFFFF00'.
+    DATA lv_int TYPE int8.
+    DATA lv_hex TYPE x LENGTH 8.
 
     DATA(li_value) = io_memory->stack_pop( ).
     IF li_value->get_type( ) <> zcl_wasm_types=>c_value_type-i64.
@@ -32,7 +31,7 @@ CLASS zcl_wasm_i64_extend8_s IMPLEMENTATION.
 
     GET BIT 57 OF lv_hex INTO DATA(lv_sign).
     IF lv_sign = 1.
-      lv_hex = lv_overlay BIT-OR lv_hex.
+      lv_hex(7) = 'FFFFFFFFFFFFFF'.
     ELSE.
       lv_hex(7) = '00000000000000'.
     ENDIF.
