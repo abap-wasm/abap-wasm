@@ -38,6 +38,9 @@ CLASS zcl_wasm_i64_store8 IMPLEMENTATION.
 
   METHOD zif_wasm_instruction~execute.
 
+    CONSTANTS lc_length TYPE int8 VALUE 1.
+    DATA lv_hex TYPE x LENGTH lc_length.
+
     DATA(li_linear) = io_memory->get_linear( ).
 
     DATA(lv_c) = io_memory->stack_pop( ).
@@ -50,7 +53,11 @@ CLASS zcl_wasm_i64_store8 IMPLEMENTATION.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'i64 store8: out of bounds'.
     ENDIF.
 
-    RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'todo, execute instruction zcl_wasm_i64_store8'.
+    lv_hex = CAST zcl_wasm_i64( lv_c )->get_signed( ).
+
+    li_linear->set(
+      iv_offset = mv_offset + lv_i
+      iv_bytes  = lv_hex ).
   ENDMETHOD.
 
 ENDCLASS.
