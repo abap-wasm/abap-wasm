@@ -98,14 +98,13 @@ CLASS ltcl_test IMPLEMENTATION.
       iv_name       = 'hmm'
       it_parameters = VALUE #( ( zcl_wasm_i32=>from_signed( -4242 ) ) ) ).
 
+    cl_abap_unit_assert=>assert_equals(
+      act = lines( lt_values )
+      exp = 1 ).
+
+    DATA(lo_value) = CAST zcl_wasm_i32( lt_values[ 1 ] ).
+
     " todo
-
-    " cl_abap_unit_assert=>assert_equals(
-    "   act = lines( lt_values )
-    "   exp = 1 ).
-
-    " DATA(lo_value) = CAST zcl_wasm_i32( lt_values[ 1 ] ).
-
     " cl_abap_unit_assert=>assert_equals(
     "   act = lo_value->get_signed( )
     "   exp = -4242 ).
