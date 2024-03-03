@@ -25,6 +25,7 @@ CLASS zcl_wasm_i64_shl IMPLEMENTATION.
     DATA(lv_val2) = CAST zcl_wasm_i64( io_memory->stack_pop( ) )->get_signed( ).
 
     DO lv_val1 TIMES.
+* todo, handle overflow? do it in binary intead?
       lv_val2 = lv_val2 * 2.
     ENDDO.
 
