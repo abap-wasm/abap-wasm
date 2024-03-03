@@ -19,7 +19,25 @@ CLASS zcl_wasm_i64_ctz IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'todo, execute instruction zcl_wasm_i64_ctz'.
+* count trailing zeros
+    DATA lv_zeros TYPE int8.
+    DATA lv_bit TYPE i.
+    DATA lv_hex TYPE x LENGTH 8.
+
+    lv_hex = io_memory->stack_pop_i64( )->get_signed( ).
+
+    DO 64 TIMES.
+      DATA(lv_index) = 64 - sy-index + 1.
+      GET BIT lv_index OF lv_hex INTO lv_bit.
+      IF lv_bit = 0.
+        lv_zeros = lv_zeros + 1.
+      ELSE.
+        EXIT.
+      ENDIF.
+    ENDDO.
+
+    io_memory->stack_push( zcl_wasm_i64=>from_signed( lv_zeros ) ).
+
   ENDMETHOD.
 
 ENDCLASS.
