@@ -22,7 +22,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_WASM_I64_LOAD IMPLEMENTATION.
+CLASS zcl_wasm_i64_load IMPLEMENTATION.
 
 
   METHOD constructor.
@@ -60,6 +60,7 @@ CLASS ZCL_WASM_I64_LOAD IMPLEMENTATION.
       iv_align  = mv_align
       iv_offset = mv_offset + lv_i ).
 
+* todo: all of this code can be reduced to single statement? just take care of the endianess? lv_int8 = lv_hex8.
     IF lv_hex(5) = '0000000000'.
       lv_int = lv_hex+4.
       lv_int8 = lv_int.
