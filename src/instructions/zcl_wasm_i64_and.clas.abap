@@ -19,7 +19,17 @@ CLASS zcl_wasm_i64_and IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'todo, execute instruction zcl_wasm_i64_and'.
+    DATA lv_hex1 TYPE x LENGTH 8.
+    DATA lv_hex2 TYPE x LENGTH 8.
+    DATA lv_int8 TYPE int8.
+
+    lv_hex1 = CAST zcl_wasm_i64( io_memory->stack_pop( ) )->get_signed( ).
+    lv_hex2 = CAST zcl_wasm_i64( io_memory->stack_pop( ) )->get_signed( ).
+
+    lv_hex1 = lv_hex1 BIT-AND lv_hex2.
+    lv_int8 = lv_hex1.
+
+    io_memory->stack_push( zcl_wasm_i64=>from_signed( lv_int8 ) ).
   ENDMETHOD.
 
 ENDCLASS.

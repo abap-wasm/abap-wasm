@@ -32,21 +32,21 @@ CLASS cl_scrypt IMPLEMENTATION.
       iv_name       = '__wbindgen_malloc'
       it_parameters = VALUE #( ( zcl_wasm_i32=>from_signed( xstrlen( lc_password ) ) ) ) ).
     DATA(lo_password_ptr) = CAST zcl_wasm_i32( lt_results[ 1 ] ).
-    " WRITE: / 'password ptr offset:', lo_password_ptr->get_signed( ).
+    WRITE: / 'password ptr:', lo_password_ptr->get_signed( ).
 
     CLEAR lt_results.
     lt_results = li_wasm->execute_function_export(
       iv_name       = '__wbindgen_malloc'
       it_parameters = VALUE #( ( zcl_wasm_i32=>from_signed( xstrlen( lc_salt ) ) ) ) ).
     DATA(lo_salt_ptr) = CAST zcl_wasm_i32( lt_results[ 1 ] ).
-    " WRITE: / 'salt ptr offset:', lo_salt_ptr->get_signed( ).
+    WRITE: / 'salt ptr:', lo_salt_ptr->get_signed( ).
 
     CLEAR lt_results.
     lt_results = li_wasm->execute_function_export( '__wbindgen_global_argument_ptr' ).
-    DATA(lo_retptr) = lt_results[ 1 ].
-    " WRITE: / 'gbl ptr:', lo_salt_ptr->get_signed( ).
+    DATA(lo_retptr) = CAST zcl_wasm_i32( lt_results[ 1 ] ).
+    WRITE: / 'ret ptr:', lo_retptr->get_signed( ).
 
-* "scrypt" function export takes 9 x i32
+* "scrypt" function export takes 9 x i32 IMPORTING, no EXPORTING
     " li_wasm->execute_function_export(
     "   iv_name       = 'scrypt'
     "   it_parameters = VALUE #(

@@ -19,7 +19,29 @@ CLASS zcl_wasm_i64_le_u IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'todo, execute instruction zcl_wasm_i64_le_u'.
+* unsigned less than or equals, using signed comparison
+
+    DATA lv_result TYPE abap_bool.
+
+    DATA(lv_val1) = io_memory->stack_pop_i64( )->get_signed( ).
+    DATA(lv_val2) = io_memory->stack_pop_i64( )->get_signed( ).
+
+* this can probably be done with fewer comparisons
+    IF lv_val1 >= 0 AND lv_val2 >= 0.
+      lv_result = xsdbool( lv_val1 >= lv_val2 ).
+    ELSEIF lv_val1 < 0 AND lv_val2 < 0.
+      lv_result = xsdbool( lv_val1 >= lv_val2 ).
+    ELSEIF lv_val1 < 0 AND lv_val2 >= 0.
+      lv_result = abap_true.
+    ELSE.
+      lv_result = abap_false.
+    ENDIF.
+
+    IF lv_result = abap_true.
+      io_memory->stack_push( zcl_wasm_i32=>from_signed( 1 ) ).
+    ELSE.
+      io_memory->stack_push( zcl_wasm_i32=>from_signed( 0 ) ).
+    ENDIF.
   ENDMETHOD.
 
 ENDCLASS.

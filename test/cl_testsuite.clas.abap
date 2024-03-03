@@ -242,15 +242,15 @@ CLASS cl_testsuite IMPLEMENTATION.
             WHEN OTHERS.
               lv_error = abap_true.
               go_result->add_error(
-                  iv_start_time = ls_results-start_time
-                  iv_text       = |unknown type, assert_return: { ls_expected-type }| ).
+                iv_start_time = ls_results-start_time
+                iv_text       = |unknown type, assert_return: { ls_expected-type }| ).
               EXIT. " current loop
           ENDCASE.
         CATCH cx_sy_move_cast_error.
           lv_error = abap_true.
           go_result->add_error(
-              iv_start_time = ls_results-start_time
-              iv_text       = |assert_return, wrong type, casting failed| ).
+            iv_start_time = ls_results-start_time
+            iv_text       = |assert_return, wrong type, casting failed, got { li_result->get_type( ) }| ).
           EXIT. " current loop
       ENDTRY.
     ENDDO.
