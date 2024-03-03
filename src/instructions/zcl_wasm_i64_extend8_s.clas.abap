@@ -19,7 +19,26 @@ CLASS zcl_wasm_i64_extend8_s IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'todo, execute instruction zcl_wasm_i64_extend8_s'.
+
+    DATA lv_int TYPE int8.
+    DATA lv_hex TYPE x LENGTH 8.
+
+    DATA(li_value) = io_memory->stack_pop( ).
+    IF li_value->get_type( ) <> zcl_wasm_types=>c_value_type-i64.
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |zcl_wasm_i64_extend8_s: expected i64, got { li_value->get_type( ) }|.
+    ENDIF.
+    lv_hex = CAST zcl_wasm_i64( li_value )->get_signed( ).
+
+    GET BIT 57 OF lv_hex INTO DATA(lv_sign).
+    IF lv_sign = 1.
+      lv_hex(7) = 'FFFFFFFFFFFFFF'.
+    ELSE.
+      lv_hex(7) = '00000000000000'.
+    ENDIF.
+
+    lv_int = lv_hex.
+    io_memory->stack_push( zcl_wasm_i64=>from_signed( lv_int ) ).
+
   ENDMETHOD.
 
 ENDCLASS.

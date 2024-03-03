@@ -20,7 +20,22 @@ CLASS zcl_wasm_i32_extend8_s IMPLEMENTATION.
 
   METHOD zif_wasm_instruction~execute.
 * https://webassembly.github.io/spec/core/exec/numerics.html#xref-exec-numerics-op-extend-s-mathrm-extend-mathsf-s-m-n-i
-    RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'todo, execute instruction zcl_wasm_i32_extend8_s'.
+
+    DATA lv_int     TYPE i.
+    DATA lv_hex     TYPE x LENGTH 4.
+    DATA lv_overlay TYPE x LENGTH 4 VALUE 'FFFFFF00'.
+
+    lv_hex = io_memory->stack_pop_i32( )->get_signed( ).
+
+    GET BIT 25 OF lv_hex INTO DATA(lv_sign).
+    IF lv_sign = 1.
+      lv_hex = lv_overlay BIT-OR lv_hex.
+    ELSE.
+      lv_hex(3) = '000000'.
+    ENDIF.
+
+    lv_int = lv_hex.
+    io_memory->stack_push( zcl_wasm_i32=>from_signed( lv_int ) ).
   ENDMETHOD.
 
 ENDCLASS.

@@ -19,7 +19,9 @@ CLASS zcl_wasm_i64_extend_i32_s IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'todo, execute instruction zcl_wasm_i64_extend_i32_s'.
+    DATA lv_val TYPE int8.
+    lv_val = io_memory->stack_pop_i32( )->get_signed( ).
+    io_memory->stack_push( zcl_wasm_i64=>from_signed( lv_val ) ).
   ENDMETHOD.
 
 ENDCLASS.
