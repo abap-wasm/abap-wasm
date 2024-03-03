@@ -128,10 +128,9 @@ CLASS ltcl_test IMPLEMENTATION.
       act = lo_value->get_signed( )
       exp = 9219994337134247936 ).
 
-* TOOOODOOOOOOO
-    " cl_abap_unit_assert=>assert_equals(
-    "   act = lo_value->get_unsigned( )
-    "   exp = |9219994337134247936| ).
+    cl_abap_unit_assert=>assert_equals(
+      act = lo_value->get_unsigned( )
+      exp = |9219994337134247936| ).
 
   ENDMETHOD.
 

@@ -37,7 +37,30 @@ CLASS zcl_wasm_i64_store16 IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'todo, execute instruction zcl_wasm_i64_store16'.
+
+    CONSTANTS lc_length TYPE int8 VALUE 2.
+    DATA lv_hex TYPE x LENGTH lc_length.
+
+    DATA(li_linear) = io_memory->get_linear( ).
+
+    DATA(lv_c) = io_memory->stack_pop( ).
+    IF lv_c->get_type( ) <> zcl_wasm_types=>c_value_type-i64.
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'i64 store16: expected i64'.
+    ENDIF.
+
+    DATA(lv_i) = io_memory->stack_pop_i32( )->get_signed( ).
+    IF lv_i < 0.
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'i64 store16: out of bounds'.
+    ENDIF.
+
+    lv_hex = CAST zcl_wasm_i64( lv_c )->get_signed( ).
+
+* convert to little endian
+    CONCATENATE lv_hex+1(1) lv_hex(1) INTO lv_hex IN BYTE MODE.
+
+    li_linear->set(
+      iv_offset = mv_offset + lv_i
+      iv_bytes  = lv_hex ).
   ENDMETHOD.
 
 ENDCLASS.

@@ -10,16 +10,20 @@ CLASS zcl_wasm_i64_load DEFINITION PUBLIC.
         zcx_wasm.
 
     CLASS-METHODS parse
-      IMPORTING !io_body TYPE REF TO zcl_wasm_binary_stream
+      IMPORTING !io_body              TYPE REF TO zcl_wasm_binary_stream
       RETURNING VALUE(ri_instruction) TYPE REF TO zif_wasm_instruction
-      RAISING zcx_wasm.
+      RAISING   zcx_wasm.
 
+  PROTECTED SECTION.
   PRIVATE SECTION.
     DATA mv_align TYPE int8.
     DATA mv_offset TYPE int8.
 ENDCLASS.
 
+
+
 CLASS zcl_wasm_i64_load IMPLEMENTATION.
+
 
   METHOD constructor.
     IF iv_align > zcl_wasm_memory=>c_alignment_64bit.
@@ -30,11 +34,13 @@ CLASS zcl_wasm_i64_load IMPLEMENTATION.
     mv_offset = iv_offset.
   ENDMETHOD.
 
+
   METHOD parse.
     ri_instruction = NEW zcl_wasm_i64_load(
       iv_align  = io_body->shift_u32( )
       iv_offset = io_body->shift_u32( ) ).
   ENDMETHOD.
+
 
   METHOD zif_wasm_instruction~execute.
     CONSTANTS lc_length TYPE int8 VALUE 8.
@@ -42,6 +48,7 @@ CLASS zcl_wasm_i64_load IMPLEMENTATION.
     DATA lv_int    TYPE i.
     DATA lv_int8   TYPE int8.
     DATA lv_factor TYPE int8.
+    DATA lv_ff     TYPE x LENGTH 16.
 
     DATA(lv_i) = io_memory->stack_pop_i32( )->get_signed( ).
     IF lv_i < 0.
@@ -53,7 +60,9 @@ CLASS zcl_wasm_i64_load IMPLEMENTATION.
       iv_align  = mv_align
       iv_offset = mv_offset + lv_i ).
 
-    IF lv_hex(4) = '00000000'.
+* todo: all of this code can be reduced to single statement? just take care of the endianess? lv_int8 = lv_hex8.
+* and make sure the transpiler works
+    IF lv_hex(5) = '0000000000'.
       lv_int = lv_hex+4.
       lv_int8 = lv_int.
     ELSE.
@@ -61,7 +70,8 @@ CLASS zcl_wasm_i64_load IMPLEMENTATION.
       " WRITE: / 'sign', lv_sign.
 
       IF lv_sign = 1.
-        lv_hex = lv_hex BIT-XOR 'FFFFFFFFFFFFFFFF'.
+        lv_ff = 'FFFFFFFFFFFFFFFF'.
+        lv_hex = lv_hex BIT-XOR lv_ff.
       ENDIF.
       " WRITE / lv_hex.
 
@@ -72,7 +82,9 @@ CLASS zcl_wasm_i64_load IMPLEMENTATION.
         IF lv_bit = 1.
           lv_int8 = lv_int8 + lv_factor.
         ENDIF.
-        lv_factor = lv_factor * 2.
+        IF lv_offset <> 2.
+          lv_factor = lv_factor * 2.
+        ENDIF.
       ENDDO.
 
       IF lv_sign = 1.
@@ -83,5 +95,4 @@ CLASS zcl_wasm_i64_load IMPLEMENTATION.
 
     io_memory->stack_push( zcl_wasm_i64=>from_signed( lv_int8 ) ).
   ENDMETHOD.
-
 ENDCLASS.
