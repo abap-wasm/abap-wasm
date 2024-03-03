@@ -61,6 +61,7 @@ CLASS zcl_wasm_i64_load IMPLEMENTATION.
       iv_offset = mv_offset + lv_i ).
 
 * todo: all of this code can be reduced to single statement? just take care of the endianess? lv_int8 = lv_hex8.
+* and make sure the transpiler works
     IF lv_hex(5) = '0000000000'.
       lv_int = lv_hex+4.
       lv_int8 = lv_int.
