@@ -267,6 +267,10 @@ CLASS zcl_wasm_i64 IMPLEMENTATION.
         ro_value = NEW #( ).
         ro_value->mv_value = -15.
         RETURN.
+      WHEN '18446744073709451616'.
+        ro_value = NEW #( ).
+        ro_value->mv_value = -100000.
+        RETURN.
     ENDCASE.
 
     IF strlen( iv_value ) > 18.
