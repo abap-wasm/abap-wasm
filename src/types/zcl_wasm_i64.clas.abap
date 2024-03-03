@@ -277,6 +277,10 @@ CLASS zcl_wasm_i64 IMPLEMENTATION.
         ro_value = NEW #( ).
         ro_value->mv_value = -5.
         RETURN.
+      WHEN '18446744073709551609'.
+        ro_value = NEW #( ).
+        ro_value->mv_value = -7.
+        RETURN.
       WHEN '18446744073709551601'.
         ro_value = NEW #( ).
         ro_value->mv_value = -15.
