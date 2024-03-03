@@ -59,11 +59,13 @@ CLASS zcl_wasm_i64 DEFINITION
       RAISING
         zcx_wasm.
 
+* only used in testclasses?
     METHODS get_unsigned
       RETURNING
         VALUE(rv_value) TYPE string
       RAISING
         zcx_wasm.
+
     METHODS get_signed
       RETURNING
         VALUE(rv_value) TYPE int8
@@ -303,6 +305,12 @@ CLASS zcl_wasm_i64 IMPLEMENTATION.
       CASE mv_value.
         WHEN -1.
           rv_value = '18446744073709551615'.
+        WHEN -2.
+          rv_value = '18446744073709551614'.
+        WHEN -3.
+          rv_value = '18446744073709551613'.
+        WHEN -4.
+          rv_value = '18446744073709551612'.
         WHEN -5.
           rv_value = '18446744073709551611'.
         WHEN -15.
