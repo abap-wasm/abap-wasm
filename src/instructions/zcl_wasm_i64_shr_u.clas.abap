@@ -19,6 +19,7 @@ CLASS zcl_wasm_i64_shr_u IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
+* todo
     RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'todo, execute instruction zcl_wasm_i64_shr_u'.
   ENDMETHOD.
 

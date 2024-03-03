@@ -23,8 +23,6 @@ CLASS cl_sha256 IMPLEMENTATION.
 
     rv_json = '{"runtime": "' && lv_runtime && '"}'.
 
-    " todo, execute instruction zcl_wasm_i32_wrap_i64
-
     " takes 4 x i32 as input
     " DATA(lt_results) = li_wasm->execute_function_export(
     "   iv_name       = 'sha256'
