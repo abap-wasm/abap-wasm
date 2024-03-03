@@ -34,7 +34,7 @@ CLASS zcl_wasm_i64_lt_u IMPLEMENTATION.
     ELSEIF lv_val1 < 0 AND lv_val2 >= 0.
       lv_result = abap_true.
     ELSE.
-      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_i64_lt_u, todo'.
+      lv_result = abap_false.
     ENDIF.
 
     IF lv_result = abap_true.
