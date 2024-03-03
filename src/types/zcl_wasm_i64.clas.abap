@@ -261,6 +261,18 @@ CLASS zcl_wasm_i64 IMPLEMENTATION.
         ro_value = NEW #( ).
         ro_value->mv_value = -1.
         RETURN.
+      WHEN '18446744073709551614'.
+        ro_value = NEW #( ).
+        ro_value->mv_value = -2.
+        RETURN.
+      WHEN '18446744073709551613'.
+        ro_value = NEW #( ).
+        ro_value->mv_value = -3.
+        RETURN.
+      WHEN '18446744073709551612'.
+        ro_value = NEW #( ).
+        ro_value->mv_value = -4.
+        RETURN.
       WHEN '18446744073709551611'.
         ro_value = NEW #( ).
         ro_value->mv_value = -5.
@@ -272,6 +284,10 @@ CLASS zcl_wasm_i64 IMPLEMENTATION.
       WHEN '18446744073709451616'.
         ro_value = NEW #( ).
         ro_value->mv_value = -100000.
+        RETURN.
+      WHEN '1152921504606846976'.
+        ro_value = NEW #( ).
+        ro_value->mv_value = 1152921504606846976.
         RETURN.
       WHEN '9223372036854775807'.
         ro_value = NEW #( ).
@@ -318,8 +334,7 @@ CLASS zcl_wasm_i64 IMPLEMENTATION.
         WHEN -32768.
           rv_value = '18446744073709518848'.
         WHEN OTHERS.
-* todo
-          RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'i64, get_unsigned, value is negative'.
+          RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |i64, todo get_unsigned, value is negative: { mv_value }|.
       ENDCASE.
       RETURN.
     ENDIF.
