@@ -29,7 +29,7 @@ CLASS zcl_wasm_i64_extend16_s IMPLEMENTATION.
     ENDIF.
     lv_hex = CAST zcl_wasm_i64( li_value )->get_signed( ).
 
-    GET BIT 46 OF lv_hex INTO DATA(lv_sign).
+    GET BIT 49 OF lv_hex INTO DATA(lv_sign).
     IF lv_sign = 1.
       lv_hex(6) = 'FFFFFFFFFFFF'.
     ELSE.
