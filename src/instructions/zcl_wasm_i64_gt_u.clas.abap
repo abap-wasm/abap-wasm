@@ -19,7 +19,7 @@ CLASS zcl_wasm_i64_gt_u IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-* unsigned less than, using signed comparison
+* unsigned greater than, using signed comparison
 
     DATA lv_result TYPE abap_bool.
 
