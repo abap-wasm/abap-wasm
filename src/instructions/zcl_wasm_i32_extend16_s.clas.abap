@@ -22,8 +22,8 @@ CLASS zcl_wasm_i32_extend16_s IMPLEMENTATION.
 
 * https://en.wikipedia.org/wiki/Sign_extension
 
-    DATA lv_hex     TYPE x LENGTH 4.
     DATA lv_int     TYPE i.
+    DATA lv_hex     TYPE x LENGTH 4.
     DATA lv_overlay TYPE x LENGTH 4 VALUE 'FFFF0000'.
 
     lv_hex = io_memory->stack_pop_i32( )->get_signed( ).

@@ -21,9 +21,9 @@ CLASS zcl_wasm_i32_extend8_s IMPLEMENTATION.
   METHOD zif_wasm_instruction~execute.
 * https://webassembly.github.io/spec/core/exec/numerics.html#xref-exec-numerics-op-extend-s-mathrm-extend-mathsf-s-m-n-i
 
-    DATA lv_hex     TYPE x LENGTH 4.
     DATA lv_int     TYPE i.
-    DATA lv_overlay TYPE x LENGTH 3 VALUE 'FFFFFF00'.
+    DATA lv_hex     TYPE x LENGTH 4.
+    DATA lv_overlay TYPE x LENGTH 4 VALUE 'FFFFFF00'.
 
     lv_hex = io_memory->stack_pop_i32( )->get_signed( ).
 
