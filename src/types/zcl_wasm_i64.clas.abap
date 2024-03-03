@@ -257,10 +257,11 @@ CLASS zcl_wasm_i64 IMPLEMENTATION.
     IF iv_value = '18446744073709551615'.
       ro_value = NEW #( ).
       ro_value->mv_value = -1.
+      RETURN.
     ENDIF.
 
     IF strlen( iv_value ) > 18.
-      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'i64, from_unsigned, value too long, todo'.
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |i64, from_unsigned, value too long, todo, "{ iv_value }"|.
     ENDIF.
 
     ro_value = NEW #( ).
