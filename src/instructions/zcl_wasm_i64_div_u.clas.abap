@@ -19,7 +19,18 @@ CLASS zcl_wasm_i64_div_u IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'todo, execute instruction zcl_wasm_i64_div_u'.
+    ASSERT io_memory->stack_length( ) >= 2.
+
+    DATA(lv_val1) = CAST zcl_wasm_i64( io_memory->stack_pop( ) )->get_signed( ).
+    DATA(lv_val2) = CAST zcl_wasm_i64( io_memory->stack_pop( ) )->get_signed( ).
+
+    IF lv_val1 = 0.
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'i64.div_u, division by zero'.
+    ELSEIF lv_val1 < 0 OR lv_val2 < 0.
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'i64.div_u, todo negative numbers'.
+    ENDIF.
+
+    io_memory->stack_push( zcl_wasm_i64=>from_signed( lv_val2 DIV lv_val1 ) ).
   ENDMETHOD.
 
 ENDCLASS.
