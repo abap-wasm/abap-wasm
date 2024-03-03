@@ -33,9 +33,14 @@ CLASS zcl_wasm_i64_shr_u IMPLEMENTATION.
       SHIFT lv_hex8 RIGHT BY lv_bytes PLACES IN BYTE MODE.
     ENDIF.
 
-    IF lv_bits > 0.
-      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |todo, execute instruction zcl_wasm_i64_shr_u, shift { lv_bits } bits|.
-    ENDIF.
+    DO lv_bits TIMES.
+      DO 63 TIMES.
+        DATA(lv_offset) = 63 - sy-index + 1.
+        GET BIT lv_offset OF lv_hex8 INTO DATA(lv_val).
+        lv_offset = lv_offset + 1.
+        SET BIT lv_offset OF lv_hex8 TO lv_val.
+      ENDDO.
+    ENDDO.
 
     lv_int8 = lv_hex8.
     io_memory->stack_push( zcl_wasm_i64=>from_signed( lv_int8 ) ).
