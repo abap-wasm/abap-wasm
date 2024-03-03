@@ -21,25 +21,20 @@ CLASS zcl_wasm_i32_extend8_s IMPLEMENTATION.
   METHOD zif_wasm_instruction~execute.
 * https://webassembly.github.io/spec/core/exec/numerics.html#xref-exec-numerics-op-extend-s-mathrm-extend-mathsf-s-m-n-i
 
-    DATA lv_hex TYPE x LENGTH 4.
-    DATA lv_hex1 TYPE x LENGTH 1.
-    DATA lv_ff TYPE x LENGTH 1 VALUE 'FF'.
-    DATA lv_int TYPE i.
+    DATA lv_hex     TYPE x LENGTH 4.
+    DATA lv_int     TYPE i.
+    DATA lv_overlay TYPE x LENGTH 3 VALUE 'FFFFFF00'.
 
     lv_hex = io_memory->stack_pop_i32( )->get_signed( ).
-    lv_hex1 = lv_hex+3(1).
 
-    GET BIT 1 OF lv_hex1 INTO DATA(lv_sign).
+    GET BIT 25 OF lv_hex INTO DATA(lv_sign).
     IF lv_sign = 1.
-      lv_hex1 = lv_hex1 BIT-XOR lv_ff.
+      lv_hex = lv_overlay BIT-OR lv_hex.
+    ELSE.
+      lv_hex(3) = '000000'.
     ENDIF.
 
-    lv_int = lv_hex1.
-    IF lv_sign = 1.
-      lv_int = lv_int + 1.
-      lv_int = lv_int * -1.
-    ENDIF.
-
+    lv_int = lv_hex.
     io_memory->stack_push( zcl_wasm_i32=>from_signed( lv_int ) ).
   ENDMETHOD.
 
