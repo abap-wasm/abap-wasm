@@ -9,7 +9,15 @@ CLASS cl_sha256 IMPLEMENTATION.
 
   METHOD run.
 
-    DATA lv_hex TYPE xstring.
+    CONSTANTS lc_statebytes   TYPE i VALUE 108.
+    CONSTANTS lc_input_offset TYPE int8 VALUE 40.
+    CONSTANTS lc_block_size   TYPE i VALUE 64.
+    CONSTANTS lc_sha256_bytes TYPE int8 VALUE 32.
+
+    DATA lv_hex   TYPE xstring.
+    DATA lv_head  TYPE i.
+    DATA lv_input TYPE string.
+
 
     WRITE '@KERNEL const fs = await import("fs");'.
     WRITE '@KERNEL lv_hex.set(fs.readFileSync("./test/sha256.wasm").toString("hex").toUpperCase());'.
@@ -23,17 +31,43 @@ CLASS cl_sha256 IMPLEMENTATION.
 
     rv_json = '{"runtime": "' && lv_runtime && '"}'.
 
-    " todo, execute instruction zcl_wasm_i32_wrap_i64
+****************************************************************************************************
 
-    " takes 4 x i32 as input
-    " DATA(lt_results) = li_wasm->execute_function_export(
-    "   iv_name       = 'sha256'
-    "   it_parameters = VALUE #(
-    "     ( zcl_wasm_i32=>from_signed( 1 ) )
-    "     ( zcl_wasm_i32=>from_signed( 1 ) )
-    "     ( zcl_wasm_i32=>from_signed( 1 ) )
-    "     ( zcl_wasm_i32=>from_signed( 1 ) )
-    "   ) ).
+    lv_head = lv_head + lc_statebytes.
+    lv_input = 'hello world'.
+
+    li_wasm->instantiate( ).
+
+    DATA(li_linear) = li_wasm->get_memory( )->get_linear( ).
+    li_linear->set(
+      iv_bytes  = cl_abap_codepage=>convert_to( lv_input )
+      iv_offset = lc_input_offset ).
+
+    " update()
+    li_wasm->execute_function_export(
+      iv_name       = 'sha256'
+      it_parameters = VALUE #(
+        ( zcl_wasm_i32=>from_signed( 0 ) )
+        ( zcl_wasm_i32=>from_signed( lv_head ) )
+        ( zcl_wasm_i32=>from_signed( strlen( lv_input ) ) )
+        ( zcl_wasm_i32=>from_signed( 0 ) )
+      ) ).
+
+    " digest()
+    li_wasm->execute_function_export(
+      iv_name       = 'sha256'
+      it_parameters = VALUE #(
+        ( zcl_wasm_i32=>from_signed( 0 ) )
+        ( zcl_wasm_i32=>from_signed( lv_head ) )
+        ( zcl_wasm_i32=>from_signed( 0 ) )
+        ( zcl_wasm_i32=>from_signed( 1 ) )
+      ) ).
+
+    DATA(lv_result) = li_linear->get(
+      iv_length = lc_sha256_bytes
+      iv_offset = 0 ).
+
+    WRITE / to_lower( |{ lv_result }| ).
 
   ENDMETHOD.
 
