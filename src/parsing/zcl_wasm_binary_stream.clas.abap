@@ -285,7 +285,8 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
 
     DATA lv_hex   TYPE x LENGTH 1.
     DATA lv_bit   TYPE c LENGTH 1.
-    DATA lv_shift TYPE i VALUE 1.
+    DATA lv_shift TYPE int8 VALUE 1.
+    DATA lv_int   TYPE int8.
 
     DO.
       IF sy-index > 5.
@@ -297,19 +298,21 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
       GET BIT 1 OF lv_hex INTO lv_bit.
       SET BIT 1 OF lv_hex TO 0.
 
-      rv_int = rv_int + CONV i( lv_hex ) * lv_shift.
+      lv_int = lv_int + CONV i( lv_hex ) * lv_shift.
 
       IF lv_bit = '0'.
         GET BIT 2 OF lv_hex INTO lv_bit.
         IF lv_bit = '1'.
-* hmm, this will overflow?
-          rv_int = rv_int - lv_shift * 128.
+          lv_int = lv_int - lv_shift * 128.
         ENDIF.
+        rv_int = lv_int.
         RETURN.
       ENDIF.
 
       lv_shift = lv_shift * 128.
     ENDDO.
+
+    rv_int = lv_int.
 
   ENDMETHOD.
 
