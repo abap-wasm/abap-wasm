@@ -24,14 +24,14 @@ CLASS cl_sha256 IMPLEMENTATION.
     rv_json = '{"runtime": "' && lv_runtime && '"}'.
 
     " takes 4 x i32 as input
-    " DATA(lt_results) = li_wasm->execute_function_export(
-    "   iv_name       = 'sha256'
-    "   it_parameters = VALUE #(
-    "     ( zcl_wasm_i32=>from_signed( 1 ) )
-    "     ( zcl_wasm_i32=>from_signed( 1 ) )
-    "     ( zcl_wasm_i32=>from_signed( 1 ) )
-    "     ( zcl_wasm_i32=>from_signed( 1 ) )
-    "   ) ).
+    DATA(lt_results) = li_wasm->execute_function_export(
+      iv_name       = 'sha256'
+      it_parameters = VALUE #(
+        ( zcl_wasm_i32=>from_signed( 1 ) )
+        ( zcl_wasm_i32=>from_signed( 1 ) )
+        ( zcl_wasm_i32=>from_signed( 1 ) )
+        ( zcl_wasm_i32=>from_signed( 1 ) )
+      ) ).
 
   ENDMETHOD.
 
