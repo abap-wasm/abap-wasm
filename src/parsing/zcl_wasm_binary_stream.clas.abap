@@ -266,6 +266,7 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
         GET BIT 2 OF lv_hex INTO lv_bit.
         IF lv_bit = '1'.
 * hmm, this will overflow?
+* yea, todo: rewrite this method to use binary/hex operations only
           rv_int = rv_int - lv_shift * 128.
         ENDIF.
         RETURN.
