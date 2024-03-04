@@ -34,12 +34,8 @@ CLASS zcl_wasm_i32_mul IMPLEMENTATION.
     lv_long2 = lo_val2->get_signed( ).
     lv_res = lv_long1 * lv_long2.
 
-* connvert int8 to i
-    lv_res = lv_res MOD 4294967296.
-    IF lv_res > 2147483647.
-      lv_res = lv_res - 4294967296.
-    ENDIF.
-    lv_int4 = lv_res.
+* convert int8 to i
+    lv_int4 = zcl_wasm_i32=>int8_to_int4( lv_res ).
 
     io_memory->stack_push( zcl_wasm_i32=>from_signed( lv_int4 ) ).
 
