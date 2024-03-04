@@ -67,7 +67,9 @@ CLASS cl_sha256 IMPLEMENTATION.
       iv_length = lc_sha256_bytes
       iv_offset = 0 ).
 
-    WRITE / to_lower( |{ lv_result }| ).
+    DATA(lv_str) = to_lower( |{ zcl_wasm_binary_stream=>reverse_hex( lv_result ) }| ).
+    WRITE / lv_str.
+    ASSERT lv_str = |b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9|.
 
   ENDMETHOD.
 

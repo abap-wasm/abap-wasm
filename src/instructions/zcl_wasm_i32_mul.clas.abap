@@ -19,7 +19,20 @@ CLASS zcl_wasm_i32_mul IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    zcl_wasm_i32=>mul( io_memory ).
+
+    DATA lv_long1 TYPE int8.
+    DATA lv_long2 TYPE int8.
+
+    DATA(lo_val1) = io_memory->stack_pop_i32( ).
+    DATA(lo_val2) = io_memory->stack_pop_i32( ).
+
+* dont overflow, so convert to int8s
+    lv_long1 = lo_val1->get_signed( ).
+    lv_long2 = lo_val2->get_signed( ).
+    lv_long1 = lv_long1 * lv_long2.
+
+    io_memory->stack_push( zcl_wasm_i32=>from_int8( lv_long1 ) ).
+
   ENDMETHOD.
 
 ENDCLASS.

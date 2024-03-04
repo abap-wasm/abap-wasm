@@ -19,17 +19,32 @@ CLASS zcl_wasm_i64_shl IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    ASSERT io_memory->stack_length( ) >= 2.
+    DATA lv_hex TYPE x LENGTH 8.
+    DATA lv_int TYPE int8.
 
-    DATA(lv_val1) = CAST zcl_wasm_i64( io_memory->stack_pop( ) )->get_signed( ) MOD 64.
-    DATA(lv_val2) = CAST zcl_wasm_i64( io_memory->stack_pop( ) )->get_signed( ).
+    DATA(lv_bits) = CAST zcl_wasm_i64( io_memory->stack_pop( ) )->get_signed( ) MOD 64.
+    lv_hex = CAST zcl_wasm_i64( io_memory->stack_pop( ) )->get_signed( ).
 
-    DO lv_val1 TIMES.
-* todo, handle overflow? do it in binary intead?
-      lv_val2 = lv_val2 * 2.
+    DATA(lv_bytes) = lv_bits DIV 8.
+    lv_bits = lv_bits MOD 8.
+
+    IF lv_bytes > 0.
+      SHIFT lv_hex LEFT BY lv_bytes PLACES IN BYTE MODE.
+    ENDIF.
+
+    DO lv_bits TIMES.
+* todo: this can be optimized
+      DO 63 TIMES.
+        DATA(lv_offset) = sy-index + 1.
+        GET BIT lv_offset OF lv_hex INTO DATA(lv_set).
+        lv_offset = lv_offset - 1.
+        SET BIT lv_offset OF lv_hex TO lv_set.
+      ENDDO.
+      SET BIT 64 OF lv_hex TO 0.
     ENDDO.
 
-    io_memory->stack_push( zcl_wasm_i64=>from_signed( lv_val2 ) ).
+    lv_int = lv_hex.
+    io_memory->stack_push( zcl_wasm_i64=>from_signed( lv_int ) ).
   ENDMETHOD.
 
 ENDCLASS.

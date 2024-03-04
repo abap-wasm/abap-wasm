@@ -148,6 +148,8 @@ CLASS zcl_wasm_i64 IMPLEMENTATION.
 
     IF lv_val1 = 0.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'i64.div_s, division by zero'.
+    ELSEIF lv_val1 = -1 AND lv_val2 = -9223372036854775808.
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'i64.div_s, signed integer overflow'.
     ENDIF.
 
 * division is truncating, so round towards zero
@@ -347,6 +349,8 @@ CLASS zcl_wasm_i64 IMPLEMENTATION.
           rv_value = '18446744073709551488'.
         WHEN -32768.
           rv_value = '18446744073709518848'.
+        WHEN -9223372036854775808.
+          rv_value = '9223372036854775808'.
         WHEN OTHERS.
           RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |i64, todo get_unsigned, value is negative: { mv_value }|.
       ENDCASE.
