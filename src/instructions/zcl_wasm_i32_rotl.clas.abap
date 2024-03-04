@@ -34,9 +34,15 @@ CLASS zcl_wasm_i32_rotl IMPLEMENTATION.
       SHIFT lv_hex LEFT BY lv_bytes PLACES IN BYTE MODE CIRCULAR.
     ENDIF.
 
-    IF lv_bits > 0.
-      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |todo, execute instruction zcl_wasm_i32_rotl, shift { lv_bits } bits|.
-    ENDIF.
+    DO lv_bits TIMES.
+      GET BIT 1 OF lv_hex INTO DATA(lv_set).
+      DO 32 TIMES.
+        DATA(lv_offset) = 33 - sy-index.
+        GET BIT lv_offset OF lv_hex INTO DATA(lv_get).
+        SET BIT lv_offset OF lv_hex TO lv_set.
+        lv_set = lv_get.
+      ENDDO.
+    ENDDO.
 
     lv_int = lv_hex.
     io_memory->stack_push( zcl_wasm_i32=>from_signed( lv_int ) ).
