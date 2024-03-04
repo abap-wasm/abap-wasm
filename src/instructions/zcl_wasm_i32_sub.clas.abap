@@ -21,12 +21,16 @@ CLASS zcl_wasm_i32_sub IMPLEMENTATION.
   METHOD zif_wasm_instruction~execute.
 * https://webassembly.github.io/spec/core/exec/instructions.html#t-mathsf-xref-syntax-instructions-syntax-binop-mathit-binop
 
-    ASSERT io_memory->stack_length( ) >= 2.
+    DATA lv_val1 TYPE int8.
+    DATA lv_val2 TYPE int8.
 
-    DATA(lo_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
-    DATA(lo_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
+    lv_val1 = io_memory->stack_pop_i32( )->get_signed( ).
+    lv_val2 = io_memory->stack_pop_i32( )->get_signed( ).
 
-    io_memory->stack_push( zcl_wasm_i32=>from_signed( lo_val2->get_signed( ) - lo_val1->get_signed( ) ) ).
+    lv_val1 = lv_val2 - lv_val1.
+
+    io_memory->stack_push( zcl_wasm_i32=>from_int8( lv_val1 ) ).
+
   ENDMETHOD.
 
 ENDCLASS.
