@@ -30,11 +30,6 @@ CLASS zcl_wasm_i32 DEFINITION
       RETURNING
         VALUE(rv_value) TYPE int8 .
 
-    CLASS-METHODS shl
-      IMPORTING
-        !io_memory TYPE REF TO zcl_wasm_memory
-      RAISING
-        zcx_wasm.
     CLASS-METHODS rem_s
       IMPORTING
         !io_memory TYPE REF TO zcl_wasm_memory
@@ -154,22 +149,6 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
       lv_res = lv_res - 4294967296.
     ENDIF.
     rv_value = lv_res.
-  ENDMETHOD.
-
-  METHOD shl.
-* https://webassembly.github.io/spec/core/exec/numerics.html#xref-exec-numerics-op-ishl-mathrm-ishl-n-i-1-i-2
-
-    ASSERT io_memory->stack_length( ) >= 2.
-
-    DATA(lv_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ) MOD 32.
-    DATA(lv_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ).
-
-    DO lv_val1 TIMES.
-      lv_val2 = lv_val2 * 2.
-    ENDDO.
-
-    io_memory->stack_push( from_signed( lv_val2 ) ).
-
   ENDMETHOD.
 
   METHOD from_signed.
