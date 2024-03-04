@@ -40,6 +40,7 @@ CLASS zcl_wasm_i64_shr_u IMPLEMENTATION.
         lv_offset = lv_offset + 1.
         SET BIT lv_offset OF lv_hex8 TO lv_val.
       ENDDO.
+      SET BIT 1 OF lv_hex8 TO 0.
     ENDDO.
 
     lv_int8 = lv_hex8.
