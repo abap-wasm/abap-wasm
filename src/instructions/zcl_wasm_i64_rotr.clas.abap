@@ -25,7 +25,7 @@ CLASS zcl_wasm_i64_rotr IMPLEMENTATION.
     DATA(lv_bits) = io_memory->stack_pop_i64( )->get_signed( ) MOD 64.
     lv_hex = io_memory->stack_pop_i64( )->get_signed( ).
 
-    DATA(lv_bytes) = lv_bits / 8.
+    DATA(lv_bytes) = lv_bits DIV 8.
     lv_bits = lv_bits MOD 8.
 
     IF lv_bytes > 0.

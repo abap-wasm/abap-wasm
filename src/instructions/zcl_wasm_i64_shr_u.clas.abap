@@ -26,7 +26,7 @@ CLASS zcl_wasm_i64_shr_u IMPLEMENTATION.
     DATA(lv_bits) = CAST zcl_wasm_i64( io_memory->stack_pop( ) )->get_signed( ) MOD 64.
     lv_hex8 = CAST zcl_wasm_i64( io_memory->stack_pop( ) )->get_signed( ).
 
-    DATA(lv_bytes) = lv_bits / 8.
+    DATA(lv_bytes) = lv_bits DIV 8.
     lv_bits = lv_bits MOD 8.
 
     IF lv_bytes > 0.
