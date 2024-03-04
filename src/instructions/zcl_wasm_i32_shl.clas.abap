@@ -21,14 +21,32 @@ CLASS zcl_wasm_i32_shl IMPLEMENTATION.
   METHOD zif_wasm_instruction~execute.
 * https://webassembly.github.io/spec/core/exec/numerics.html#xref-exec-numerics-op-ishl-mathrm-ishl-n-i-1-i-2
 
+    DATA lv_hex TYPE x LENGTH 4.
+    DATA lv_int TYPE i.
+
     DATA(lv_bits) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ) MOD 32.
-    DATA(lv_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ).
+    lv_hex = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ).
+
+    DATA(lv_bytes) = lv_bits DIV 8.
+    lv_bits = lv_bits MOD 8.
+
+    IF lv_bytes > 0.
+      SHIFT lv_hex LEFT BY lv_bytes PLACES IN BYTE MODE.
+    ENDIF.
 
     DO lv_bits TIMES.
-      lv_val2 = lv_val2 * 2.
+* todo: this can be optimized
+      DO 31 TIMES.
+        DATA(lv_offset) = sy-index + 1.
+        GET BIT lv_offset OF lv_hex INTO DATA(lv_set).
+        lv_offset = lv_offset - 1.
+        SET BIT lv_offset OF lv_hex TO lv_set.
+      ENDDO.
+      SET BIT 32 OF lv_hex TO 0.
     ENDDO.
 
-    io_memory->stack_push( zcl_wasm_i32=>from_signed( lv_val2 ) ).
+    lv_int = lv_hex.
+    io_memory->stack_push( zcl_wasm_i32=>from_signed( lv_int ) ).
   ENDMETHOD.
 
 ENDCLASS.
