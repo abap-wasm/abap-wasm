@@ -148,6 +148,8 @@ CLASS zcl_wasm_i64 IMPLEMENTATION.
 
     IF lv_val1 = 0.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'i64.div_s, division by zero'.
+    ELSEIF lv_val1 = -1 AND lv_val2 = -9223372036854775808.
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'i64.div_s, signed integer overflow'.
     ENDIF.
 
 * division is truncating, so round towards zero
