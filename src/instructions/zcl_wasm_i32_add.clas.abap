@@ -19,7 +19,19 @@ CLASS zcl_wasm_i32_add IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    zcl_wasm_i32=>add( io_memory ).
+
+* https://webassembly.github.io/spec/core/exec/instructions.html#t-mathsf-xref-syntax-instructions-syntax-binop-mathit-binop
+
+    DATA lv_val1 TYPE int8.
+    DATA lv_val2 TYPE int8.
+
+    lv_val1 = io_memory->stack_pop_i32( )->get_signed( ).
+    lv_val2 = io_memory->stack_pop_i32( )->get_signed( ).
+
+    lv_val1 = lv_val1 + lv_val2.
+
+    io_memory->stack_push( zcl_wasm_i32=>from_int8( lv_val1 ) ).
+
   ENDMETHOD.
 
 ENDCLASS.

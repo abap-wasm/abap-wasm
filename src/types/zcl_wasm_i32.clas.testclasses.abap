@@ -6,8 +6,6 @@ CLASS ltcl_test DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS FINAL.
     METHODS setup.
     METHODS assert_sole_value IMPORTING iv_value TYPE i RAISING zcx_wasm.
 
-    METHODS add FOR TESTING RAISING cx_static_check.
-    METHODS sub FOR TESTING RAISING cx_static_check.
     METHODS lt_s FOR TESTING RAISING cx_static_check.
     METHODS div FOR TESTING RAISING cx_static_check.
     METHODS rem_negative1 FOR TESTING RAISING cx_static_check.
@@ -117,22 +115,6 @@ CLASS ltcl_test IMPLEMENTATION.
     mo_memory->stack_push( zcl_wasm_i32=>from_signed( -3 ) ).
     zcl_wasm_i32=>rem_s( mo_memory ).
     assert_sole_value( 1 ).
-
-  ENDMETHOD.
-
-  METHOD sub.
-* todo, add tests
-    RETURN.
-  ENDMETHOD.
-
-  METHOD add.
-
-    mo_memory->stack_push( zcl_wasm_i32=>from_signed( 2 ) ).
-    mo_memory->stack_push( zcl_wasm_i32=>from_signed( 3 ) ).
-
-    zcl_wasm_i32=>add( mo_memory ).
-
-    assert_sole_value( 5 ).
 
   ENDMETHOD.
 

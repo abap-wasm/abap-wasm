@@ -22,9 +22,6 @@ CLASS zcl_wasm_i32_mul IMPLEMENTATION.
 
     DATA lv_long1 TYPE int8.
     DATA lv_long2 TYPE int8.
-    DATA lv_int4  TYPE i.
-    DATA lv_res   TYPE int8.
-
 
     DATA(lo_val1) = io_memory->stack_pop_i32( ).
     DATA(lo_val2) = io_memory->stack_pop_i32( ).
@@ -32,12 +29,9 @@ CLASS zcl_wasm_i32_mul IMPLEMENTATION.
 * dont overflow, so convert to int8s
     lv_long1 = lo_val1->get_signed( ).
     lv_long2 = lo_val2->get_signed( ).
-    lv_res = lv_long1 * lv_long2.
+    lv_long1 = lv_long1 * lv_long2.
 
-* convert int8 to i
-    lv_int4 = zcl_wasm_i32=>int8_to_int4( lv_res ).
-
-    io_memory->stack_push( zcl_wasm_i32=>from_signed( lv_int4 ) ).
+    io_memory->stack_push( zcl_wasm_i32=>from_int8( lv_long1 ) ).
 
   ENDMETHOD.
 

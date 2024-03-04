@@ -17,6 +17,11 @@ CLASS zcl_wasm_i32 DEFINITION
         !iv_value TYPE int8
       RETURNING
         VALUE(ro_value) TYPE REF TO zcl_wasm_i32.
+    CLASS-METHODS from_int8
+      IMPORTING
+        !iv_value TYPE int8
+      RETURNING
+        VALUE(ro_value) TYPE REF TO zcl_wasm_i32.
 
     METHODS get_signed
       RETURNING
@@ -25,11 +30,6 @@ CLASS zcl_wasm_i32 DEFINITION
       RETURNING
         VALUE(rv_value) TYPE int8 .
 
-    CLASS-METHODS add
-      IMPORTING
-        !io_memory TYPE REF TO zcl_wasm_memory
-      RAISING
-        zcx_wasm.
     CLASS-METHODS shl
       IMPORTING
         !io_memory TYPE REF TO zcl_wasm_memory
@@ -156,8 +156,12 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
     rv_string = |i32: { mv_value }|.
   ENDMETHOD.
 
-  METHOD int8_to_int4.
+  METHOD from_int8.
+    ro_value = NEW #( ).
+    ro_value->mv_value = int8_to_int4( iv_value ).
+  ENDMETHOD.
 
+  METHOD int8_to_int4.
     DATA lv_res TYPE int8.
 
     lv_res = iv_value MOD 4294967296.
@@ -165,24 +169,6 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
       lv_res = lv_res - 4294967296.
     ENDIF.
     rv_value = lv_res.
-
-  ENDMETHOD.
-
-  METHOD add.
-
-* https://webassembly.github.io/spec/core/exec/instructions.html#t-mathsf-xref-syntax-instructions-syntax-binop-mathit-binop
-
-    ASSERT io_memory->stack_length( ) >= 2.
-
-    TRY.
-        DATA(lo_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
-        DATA(lo_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
-      CATCH cx_sy_move_cast_error.
-        RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'i32 add, wrong types on stack'.
-    ENDTRY.
-
-    io_memory->stack_push( from_signed( lo_val1->get_signed( ) + lo_val2->get_signed( ) ) ).
-
   ENDMETHOD.
 
   METHOD shl.
