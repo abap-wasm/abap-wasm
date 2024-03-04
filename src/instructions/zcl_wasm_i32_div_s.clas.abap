@@ -26,6 +26,8 @@ CLASS zcl_wasm_i32_div_s IMPLEMENTATION.
 
     IF lv_val1 = 0.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'i32.div_s, division by zero'.
+    ELSEIF lv_val1 = -1 AND lv_val2 = -2147483648.
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'i32.div_s, signed integer overflow'.
     ENDIF.
 
 * division is truncating, so round towards zero
