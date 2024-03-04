@@ -21,12 +21,10 @@ CLASS zcl_wasm_i32_shl IMPLEMENTATION.
   METHOD zif_wasm_instruction~execute.
 * https://webassembly.github.io/spec/core/exec/numerics.html#xref-exec-numerics-op-ishl-mathrm-ishl-n-i-1-i-2
 
-    ASSERT io_memory->stack_length( ) >= 2.
-
-    DATA(lv_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ) MOD 32.
+    DATA(lv_bits) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ) MOD 32.
     DATA(lv_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ).
 
-    DO lv_val1 TIMES.
+    DO lv_bits TIMES.
       lv_val2 = lv_val2 * 2.
     ENDDO.
 
