@@ -17,8 +17,10 @@ if (fs.existsSync("web") === false) {
   fs.mkdirSync("web");
 }
 
+/*
 const numCPUs = Math.max(Math.min(os.availableParallelism() - 1, folders.length), 1);
 console.log("CPUs: " + numCPUs);
+*/
 
 for (const folder of folders) {
   const lo_result = await abap.Classes["CL_TESTSUITE"].run({iv_folder: new abap.types.String().set(folder)});

@@ -32,7 +32,7 @@ CLASS zcl_wasm_i64_shr_u IMPLEMENTATION.
     IF lv_bytes > 0.
       SHIFT lv_hex8 RIGHT BY lv_bytes PLACES IN BYTE MODE.
     ENDIF.
-
+* todo, there is a bug somewhere? see i64 testsuite
     DO lv_bits TIMES.
       DO 63 TIMES.
         DATA(lv_offset) = 63 - sy-index + 1.

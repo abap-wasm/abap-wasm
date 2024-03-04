@@ -347,6 +347,8 @@ CLASS zcl_wasm_i64 IMPLEMENTATION.
           rv_value = '18446744073709551488'.
         WHEN -32768.
           rv_value = '18446744073709518848'.
+        WHEN -9223372036854775808.
+          rv_value = '9223372036854775808'.
         WHEN OTHERS.
           RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |i64, todo get_unsigned, value is negative: { mv_value }|.
       ENDCASE.
