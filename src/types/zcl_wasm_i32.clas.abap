@@ -35,22 +35,12 @@ CLASS zcl_wasm_i32 DEFINITION
         !io_memory TYPE REF TO zcl_wasm_memory
       RAISING
         zcx_wasm.
-    CLASS-METHODS div_s
-      IMPORTING
-        !io_memory TYPE REF TO zcl_wasm_memory
-      RAISING
-        zcx_wasm.
     CLASS-METHODS rem_s
       IMPORTING
         !io_memory TYPE REF TO zcl_wasm_memory
       RAISING
         zcx_wasm.
     CLASS-METHODS rem_u
-      IMPORTING
-        !io_memory TYPE REF TO zcl_wasm_memory
-      RAISING
-        zcx_wasm.
-    CLASS-METHODS div_u
       IMPORTING
         !io_memory TYPE REF TO zcl_wasm_memory
       RAISING
@@ -359,26 +349,6 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
 
   ENDMETHOD.
 
-  METHOD div_s.
-
-    ASSERT io_memory->stack_length( ) >= 2.
-
-    DATA(lv_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ).
-    DATA(lv_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ).
-
-    IF lv_val1 = 0.
-      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'i32.div_s, division by zero'.
-    ENDIF.
-
-* division is truncating, so round towards zero
-    IF sign( lv_val1 ) <> sign( lv_val2 ).
-      io_memory->stack_push( from_signed( -1 * ( abs( lv_val2 ) DIV abs( lv_val1 ) ) ) ).
-    ELSE.
-      io_memory->stack_push( from_signed( lv_val2 DIV lv_val1 ) ).
-    ENDIF.
-
-  ENDMETHOD.
-
   METHOD eqz.
 
     ASSERT io_memory->stack_length( ) >= 1.
@@ -465,21 +435,6 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
       lv_result = lv_result * -1.
     ENDIF.
     io_memory->stack_push( from_unsigned( lv_result ) ).
-
-  ENDMETHOD.
-
-  METHOD div_u.
-
-    ASSERT io_memory->stack_length( ) >= 2.
-
-    DATA(lv_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_unsigned( ).
-    DATA(lv_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_unsigned( ).
-
-    IF lv_val1 = 0.
-      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'i32.div_u, division by zero'.
-    ENDIF.
-
-    io_memory->stack_push( from_unsigned( lv_val2 DIV lv_val1 ) ).
 
   ENDMETHOD.
 

@@ -7,13 +7,11 @@ CLASS ltcl_test DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS FINAL.
     METHODS assert_sole_value IMPORTING iv_value TYPE i RAISING zcx_wasm.
 
     METHODS lt_s FOR TESTING RAISING cx_static_check.
-    METHODS div FOR TESTING RAISING cx_static_check.
     METHODS rem_negative1 FOR TESTING RAISING cx_static_check.
     METHODS rem_negative2 FOR TESTING RAISING cx_static_check.
     METHODS rem_negative3 FOR TESTING RAISING cx_static_check.
     METHODS rem_negative4 FOR TESTING RAISING cx_static_check.
     METHODS rem_negative5 FOR TESTING RAISING cx_static_check.
-    METHODS div_negative FOR TESTING RAISING cx_static_check.
 
     METHODS test_unsigned_minus_two FOR TESTING RAISING cx_static_check.
     METHODS test_unsigned_minus_seven FOR TESTING RAISING cx_static_check.
@@ -50,26 +48,6 @@ CLASS ltcl_test IMPLEMENTATION.
     zcl_wasm_i32=>lt_s( mo_memory ).
 
     assert_sole_value( 0 ).
-
-  ENDMETHOD.
-
-  METHOD div.
-
-    mo_memory->stack_push( zcl_wasm_i32=>from_signed( 5 ) ).
-    mo_memory->stack_push( zcl_wasm_i32=>from_signed( 2 ) ).
-
-    zcl_wasm_i32=>div_s( mo_memory ).
-
-    assert_sole_value( 2 ).
-
-  ENDMETHOD.
-
-  METHOD div_negative.
-
-    mo_memory->stack_push( zcl_wasm_i32=>from_signed( -7 ) ).
-    mo_memory->stack_push( zcl_wasm_i32=>from_signed( 3 ) ).
-    zcl_wasm_i32=>div_s( mo_memory ).
-    assert_sole_value( -2 ).
 
   ENDMETHOD.
 
