@@ -117,6 +117,7 @@ CLASS cl_scrypt IMPLEMENTATION.
 
 ****************************************
 * my precious
+* https://rustwasm.github.io/docs/book/reference/debugging.html
 
     DATA(lt_results) = li_wasm->execute_function_export(
       iv_name       = '__wbindgen_add_to_stack_pointer'

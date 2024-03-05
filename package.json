@@ -11,6 +11,7 @@
     "lint": "abaplint",
     "flame-graph-testsuite": "0x -o test/testsuite.mjs",
     "flame-graph-quickjs": "0x -o test/quickjs.mjs",
+    "flame-graph-scrypt": "0x -o test/scrypt.mjs",
     "test": "npm run lint && npm run downport && npm run unit && npm run testsuite && npm run quickjs && npm run scrypt && npm run sha256"
   },
   "author": "Lars Hvam Petersen",
@@ -24,7 +25,7 @@
     "@jitl/quickjs-wasmfile-release-sync": "^0.29.0",
     "0x": "^5.7.0",
     "js-scrypt": "^0.2.0",
-    "scrypt-rs-wasm": "^0.1.1",
+    "scrypt-rs-wasm": "^0.1.2",
     "scrypt-wasm": "^0.1.1",
     "sha256-wasm": "^2.2.2"
   }
