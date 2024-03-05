@@ -246,34 +246,51 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
 * https://en.wikipedia.org/wiki/LEB128
 
     DATA lv_hex   TYPE x LENGTH 1.
+    DATA lv_hex8  TYPE x LENGTH 8.
     DATA lv_bit   TYPE c LENGTH 1.
-    DATA lv_shift TYPE i VALUE 1.
+    DATA lv_target TYPE i VALUE 64.
+    DATA lv_read TYPE i VALUE 7.
 
     DO.
-      " leb128 can be at most 10 bytes
+      " leb128 can be at most 10 bytes for 64 bits
       IF sy-index > 10.
         RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'integer representation too long'.
       ENDIF.
 
       lv_hex = shift( 1 ).
 
-      GET BIT 1 OF lv_hex INTO lv_bit.
-      SET BIT 1 OF lv_hex TO 0.
-
-      rv_int = rv_int + CONV i( lv_hex ) * lv_shift.
-
-      IF lv_bit = '0'.
-        GET BIT 2 OF lv_hex INTO lv_bit.
-        IF lv_bit = '1'.
-* hmm, this will overflow?
-* yea, todo: rewrite this method to use binary/hex operations only
-          rv_int = rv_int - lv_shift * 128.
-        ENDIF.
-        RETURN.
+      GET BIT 1 OF lv_hex INTO DATA(lv_continuation).
+      IF lv_continuation = 0.
+        lv_read = 6.
       ENDIF.
 
-      lv_shift = lv_shift * 128.
+      DO lv_read TIMES.
+        DATA(lv_source) = 9 - sy-index.
+        GET BIT lv_source OF lv_hex INTO lv_bit.
+
+        SET BIT lv_target OF lv_hex8 TO lv_bit.
+        lv_target = lv_target - 1.
+        IF lv_target < 1.
+          EXIT.
+        ENDIF.
+      ENDDO.
+
+      IF lv_continuation = 0.
+        GET BIT 2 OF lv_hex INTO DATA(lv_sign).
+        IF lv_sign = 1.
+* perhaps doing a single BIT-XOR runs faster?
+          WHILE lv_target >= 1.
+            SET BIT lv_target OF lv_hex8 TO 1.
+            lv_target = lv_target - 1.
+          ENDWHILE.
+        ENDIF.
+
+        rv_int = lv_hex8.
+        RETURN.
+      ENDIF.
     ENDDO.
+
+    ASSERT 1 = 'not possible'.
 
   ENDMETHOD.
 
