@@ -26,10 +26,10 @@ CLASS cl_scrypt IMPLEMENTATION.
 
 **********************************************************************
 
-    CONSTANTS lc_password TYPE xstring VALUE 'AABBCCAABBCC'.
-    CONSTANTS lc_salt     TYPE xstring VALUE 'AABBCC'.
+    CONSTANTS lc_password TYPE xstring VALUE '68656C6C6F'.
+    CONSTANTS lc_salt     TYPE xstring VALUE '776F726C64'.
     CONSTANTS lc_length   TYPE i VALUE 32.
-* result = 0fccffd6408ff51d1705dbf20d9d5ca448986927ec4114df16b925163a9b5b5d ?
+* expected result = 0fccffd6408ff51d1705dbf20d9d5ca448986927ec4114df16b925163a9b5b5d ?
 
 **********************************************************************
 * @denorg/scrypt
@@ -92,16 +92,26 @@ CLASS cl_scrypt IMPLEMENTATION.
         ( zcl_wasm_i32=>from_signed( xstrlen( lc_password ) ) )
         ( lo_salt_ptr )
         ( zcl_wasm_i32=>from_signed( xstrlen( lc_salt ) ) )
-        ( zcl_wasm_i32=>from_signed( 1024 ) )
-        ( zcl_wasm_i32=>from_signed( 8 ) )
         ( zcl_wasm_i32=>from_signed( 16 ) )
+        ( zcl_wasm_i32=>from_signed( 1 ) )
+        ( zcl_wasm_i32=>from_signed( 1 ) )
         ( zcl_wasm_i32=>from_signed( lc_length ) ) ) ).
 
-    DATA(lv_result) = li_linear->get(
-      iv_length = CONV #( lc_length )
+    DATA(lv_realptr) = li_linear->get(
+      iv_length = 4
       iv_offset = lo_retptr->get_signed( ) ).
+    WRITE / lv_realptr.
 
-    WRITE / lv_result.
+    DATA(lv_reallen) = li_linear->get(
+      iv_length = 4
+      iv_offset = lo_retptr->get_signed( ) + 4 ).
+    WRITE / lv_reallen.
+
+    DATA(lv_realret) = li_linear->get_raw(
+      iv_length = CONV #( lv_reallen )
+      iv_offset = CONV #( lv_realptr ) ).
+    WRITE / lv_realret.
+    WRITE / cl_abap_codepage=>convert_from( lv_realret ).
 
   ENDMETHOD.
 
