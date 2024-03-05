@@ -55,6 +55,7 @@ CLASS cl_scrypt IMPLEMENTATION.
 
 **********************************************************************
 * scrypt-wasm
+* https://rustwasm.github.io/wasm-bindgen/contributing/design/exporting-rust.html
 
     li_wasm->instantiate( ).
     DATA(li_linear) = li_wasm->get_memory( )->get_linear( ).
