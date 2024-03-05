@@ -28,6 +28,8 @@ CLASS cl_scrypt IMPLEMENTATION.
 
     CONSTANTS lc_password TYPE xstring VALUE 'AABBCCAABBCC'.
     CONSTANTS lc_salt     TYPE xstring VALUE 'AABBCC'.
+    CONSTANTS lc_length   TYPE i VALUE 32.
+* result = 0fccffd6408ff51d1705dbf20d9d5ca448986927ec4114df16b925163a9b5b5d ?
 
 **********************************************************************
 * @denorg/scrypt
@@ -46,19 +48,25 @@ CLASS cl_scrypt IMPLEMENTATION.
     "     ( zcl_wasm_i32=>from_signed( xstrlen( lc_password ) ) )
     "     ( lo_salt_ptr )
     "     ( zcl_wasm_i32=>from_signed( xstrlen( lc_salt ) ) )
-    "     ( zcl_wasm_i32=>from_signed( 1024 ) )    " CPU/Memory cost parameter. Must be a power of 2 smaller than 2^(128*r/8)
-    "     ( zcl_wasm_i32=>from_signed( 8 ) )       " block size
-    "     ( zcl_wasm_i32=>from_signed( 16 ) )      " parallelism factor
-    "     ( zcl_wasm_i32=>from_signed( 32 ) ) ) ). " length (in bytes) of the output. Defaults to 32.
+    "     ( zcl_wasm_i32=>from_signed( 1024 ) )           " CPU/Memory cost parameter. Must be a power of 2 smaller than 2^(128*r/8)
+    "     ( zcl_wasm_i32=>from_signed( 8 ) )              " block size
+    "     ( zcl_wasm_i32=>from_signed( 16 ) )             " parallelism factor
+    "     ( zcl_wasm_i32=>from_signed( lc_length ) ) ) ). " length (in bytes) of the output. Defaults to 32.
 
 **********************************************************************
 * scrypt-wasm
+
+    li_wasm->instantiate( ).
+    DATA(li_linear) = li_wasm->get_memory( )->get_linear( ).
 
     DATA(lt_results) = li_wasm->execute_function_export(
       iv_name       = '__wbindgen_malloc'
       it_parameters = VALUE #( ( zcl_wasm_i32=>from_signed( xstrlen( lc_password ) ) ) ) ).
     DATA(lo_password_ptr) = CAST zcl_wasm_i32( lt_results[ 1 ] ).
     WRITE / |\tpassword ptr: { lo_password_ptr->get_signed( ) }|.
+    li_linear->set(
+      iv_bytes  = lc_password
+      iv_offset = CONV #( lo_password_ptr->get_signed( ) ) ).
 
     CLEAR lt_results.
     lt_results = li_wasm->execute_function_export(
@@ -66,6 +74,9 @@ CLASS cl_scrypt IMPLEMENTATION.
       it_parameters = VALUE #( ( zcl_wasm_i32=>from_signed( xstrlen( lc_salt ) ) ) ) ).
     DATA(lo_salt_ptr) = CAST zcl_wasm_i32( lt_results[ 1 ] ).
     WRITE / |\tsalt ptr: { lo_salt_ptr->get_signed( ) }|.
+    li_linear->set(
+      iv_bytes  = lc_salt
+      iv_offset = CONV #( lo_salt_ptr->get_signed( ) ) ).
 
     CLEAR lt_results.
     lt_results = li_wasm->execute_function_export( '__wbindgen_global_argument_ptr' ).
@@ -84,7 +95,13 @@ CLASS cl_scrypt IMPLEMENTATION.
         ( zcl_wasm_i32=>from_signed( 1024 ) )
         ( zcl_wasm_i32=>from_signed( 8 ) )
         ( zcl_wasm_i32=>from_signed( 16 ) )
-        ( zcl_wasm_i32=>from_signed( 32 ) ) ) ).
+        ( zcl_wasm_i32=>from_signed( lc_length ) ) ) ).
+
+    DATA(lv_result) = li_linear->get(
+      iv_length = CONV #( lc_length )
+      iv_offset = lo_retptr->get_signed( ) ).
+
+    WRITE / lv_result.
 
   ENDMETHOD.
 
