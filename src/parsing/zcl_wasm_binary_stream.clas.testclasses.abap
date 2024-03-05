@@ -132,7 +132,7 @@ CLASS ltcl_test IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD shift_i64_max_positive.
-    DATA(lo_stream) = NEW zcl_wasm_binary_stream( CONV xstring( |7FFFFFFFFFFFFFFF| ) ).
+    DATA(lo_stream) = NEW zcl_wasm_binary_stream( CONV xstring( |FFFFFFFFFFFFFFFFFF00| ) ).
     cl_abap_unit_assert=>assert_equals(
       act = lo_stream->shift_i64( )
       exp = 9223372036854775807 ).
