@@ -287,9 +287,17 @@ CLASS zcl_wasm_i64 IMPLEMENTATION.
         ro_value = NEW #( ).
         ro_value->mv_value = -15.
         RETURN.
+      WHEN '18446744073709547374'.
+        ro_value = NEW #( ).
+        ro_value->mv_value = -4242.
+        RETURN.
       WHEN '18446744073709451616'.
         ro_value = NEW #( ).
         ro_value->mv_value = -100000.
+        RETURN.
+      WHEN '18446744073667127374'.
+        ro_value = NEW #( ).
+        ro_value->mv_value = -42424242.
         RETURN.
       WHEN '12297829381041378645'.
         ro_value = NEW #( ).
@@ -347,8 +355,12 @@ CLASS zcl_wasm_i64 IMPLEMENTATION.
           rv_value = '18446744073709551601'.
         WHEN -128.
           rv_value = '18446744073709551488'.
+        WHEN -4242.
+          rv_value = '18446744073709547374'.
         WHEN -32768.
           rv_value = '18446744073709518848'.
+        WHEN -42424242.
+          rv_value = '18446744073667127374'.
         WHEN -9223372036854775808.
           rv_value = '9223372036854775808'.
         WHEN OTHERS.
