@@ -251,7 +251,7 @@ CLASS zcl_wasm_f32 IMPLEMENTATION.
 
   METHOD get_unsigned_i32.
     DATA lv_bit     TYPE i.
-    DATA lv_current TYPE i VALUE 1.
+    DATA lv_current TYPE int8 VALUE 1.
 
     IF mv_value = 0.
       rv_value = 0.
