@@ -3,13 +3,17 @@ CLASS zcl_wasm_i64_eqz DEFINITION PUBLIC.
     INTERFACES zif_wasm_instruction.
 
     CLASS-METHODS parse
-      IMPORTING !io_body TYPE REF TO zcl_wasm_binary_stream
+      IMPORTING !io_body              TYPE REF TO zcl_wasm_binary_stream
       RETURNING VALUE(ri_instruction) TYPE REF TO zif_wasm_instruction.
+  PROTECTED SECTION.
   PRIVATE SECTION.
     CLASS-DATA gi_singleton TYPE REF TO zif_wasm_instruction.
 ENDCLASS.
 
-CLASS zcl_wasm_i64_eqz IMPLEMENTATION.
+
+
+CLASS ZCL_WASM_I64_EQZ IMPLEMENTATION.
+
 
   METHOD parse.
     IF gi_singleton IS INITIAL.
@@ -18,8 +22,20 @@ CLASS zcl_wasm_i64_eqz IMPLEMENTATION.
     ri_instruction = gi_singleton.
   ENDMETHOD.
 
-  METHOD zif_wasm_instruction~execute.
-    zcl_wasm_i64=>eqz( io_memory ).
-  ENDMETHOD.
 
+  METHOD zif_wasm_instruction~execute.
+
+    IF io_memory->stack_length( ) < 1.
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'i64, eqz, expected value on stack'.
+    ENDIF.
+
+    DATA(lv_val1) = CAST zcl_wasm_i64( io_memory->stack_pop( ) )->get_signed( ).
+
+    IF lv_val1 = 0.
+      io_memory->stack_push( zcl_wasm_i32=>from_signed( 1 ) ).
+    ELSE.
+      io_memory->stack_push( zcl_wasm_i32=>from_signed( 0 ) ).
+    ENDIF.
+
+  ENDMETHOD.
 ENDCLASS.

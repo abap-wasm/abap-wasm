@@ -19,7 +19,48 @@ CLASS zcl_wasm_i64_add IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    zcl_wasm_i64=>add( io_memory ).
+* wasm does C style overflows, but ABAP dumps, so split up the addition into multiple safe parts
+* addition of 2 bytes at a time, arithmetics are typically 4 bytes in ABAP
+
+    DATA lv_hex1 TYPE x LENGTH 8.
+    DATA lv_hex2 TYPE x LENGTH 8.
+    DATA lv_result TYPE x LENGTH 8.
+    DATA lv_int8 TYPE int8.
+
+    DATA lv_carry TYPE x LENGTH 4.
+    DATA lv_word1 TYPE x LENGTH 4.
+    DATA lv_word2 TYPE x LENGTH 4.
+
+    lv_hex1 = io_memory->stack_pop_i64( )->get_signed( ).
+    lv_hex2 = io_memory->stack_pop_i64( )->get_signed( ).
+
+* low 2 bytes
+    lv_carry = lv_hex1+6(2) + lv_hex2+6(2) + lv_carry.
+    lv_result+6(2) = lv_carry+2(2).
+    lv_carry+2 = lv_carry(2).
+    lv_carry(2) = '00'.
+
+* first middle 2 bytes
+    lv_carry = lv_hex1+4(2) + lv_hex2+4(2) + lv_carry.
+    lv_result+4(2) = lv_carry+2(2).
+    lv_carry+2 = lv_carry(2).
+    lv_carry(2) = '00'.
+
+* second middle 2 bytes
+    lv_carry = lv_hex1+2(2) + lv_hex2+2(2) + lv_carry.
+    lv_result+2(2) = lv_carry+2(2).
+    lv_carry+2 = lv_carry(2).
+    lv_carry(2) = '00'.
+
+* high 2 bytes
+    lv_carry = lv_hex1(2) + lv_hex2(2) + lv_carry.
+    lv_result(2) = lv_carry+2(2).
+    lv_carry+2 = lv_carry(2).
+    lv_carry(2) = '00'.
+
+    lv_int8 = lv_result.
+    io_memory->stack_push( zcl_wasm_i64=>from_signed( lv_int8 ) ).
+
   ENDMETHOD.
 
 ENDCLASS.

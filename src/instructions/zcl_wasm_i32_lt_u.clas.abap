@@ -19,7 +19,19 @@ CLASS zcl_wasm_i32_lt_u IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    zcl_wasm_i32=>lt_u( io_memory ).
+    IF io_memory->stack_length( ) < 2.
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'lt_u, expected two variables on stack'.
+    ENDIF.
+
+    DATA(lo_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
+    DATA(lo_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
+
+    DATA(lv_result) = 0.
+    IF lo_val1->get_unsigned( ) > lo_val2->get_unsigned( ).
+      lv_result = 1.
+    ENDIF.
+
+    io_memory->stack_push( zcl_wasm_i32=>from_signed( lv_result ) ).
   ENDMETHOD.
 
 ENDCLASS.
