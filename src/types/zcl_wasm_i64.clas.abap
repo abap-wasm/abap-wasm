@@ -24,18 +24,6 @@ CLASS zcl_wasm_i64 DEFINITION
       RAISING
         zcx_wasm.
 
-    CLASS-METHODS le_s
-      IMPORTING
-        !io_memory TYPE REF TO zcl_wasm_memory
-      RAISING
-        zcx_wasm.
-
-    CLASS-METHODS mul
-      IMPORTING
-        !io_memory TYPE REF TO zcl_wasm_memory
-      RAISING
-        zcx_wasm.
-
 * only used in testclasses?
     METHODS get_unsigned
       RETURNING
@@ -80,35 +68,6 @@ CLASS zcl_wasm_i64 DEFINITION
 ENDCLASS.
 
 CLASS zcl_wasm_i64 IMPLEMENTATION.
-
-  METHOD mul.
-
-    ASSERT io_memory->stack_length( ) >= 2.
-
-    DATA(lo_val1) = CAST zcl_wasm_i64( io_memory->stack_pop( ) ).
-    DATA(lo_val2) = CAST zcl_wasm_i64( io_memory->stack_pop( ) ).
-
-    io_memory->stack_push( from_signed( lo_val1->get_signed( ) * lo_val2->get_signed( ) ) ).
-
-  ENDMETHOD.
-
-  METHOD le_s.
-
-    IF io_memory->stack_length( ) < 2.
-      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'le_s, expected two variables on stack'.
-    ENDIF.
-
-    DATA(lo_val1) = CAST zcl_wasm_i64( io_memory->stack_pop( ) ).
-    DATA(lo_val2) = CAST zcl_wasm_i64( io_memory->stack_pop( ) ).
-
-    DATA(lv_result) = 0.
-    IF lo_val1->get_signed( ) >= lo_val2->get_signed( ).
-      lv_result = 1.
-    ENDIF.
-
-    io_memory->stack_push( zcl_wasm_i32=>from_signed( lv_result ) ).
-
-  ENDMETHOD.
 
   METHOD div_s.
 

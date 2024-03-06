@@ -19,7 +19,19 @@ CLASS zcl_wasm_i64_le_s IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    zcl_wasm_i64=>le_s( io_memory ).
+    IF io_memory->stack_length( ) < 2.
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'le_s, expected two variables on stack'.
+    ENDIF.
+
+    DATA(lo_val1) = CAST zcl_wasm_i64( io_memory->stack_pop( ) ).
+    DATA(lo_val2) = CAST zcl_wasm_i64( io_memory->stack_pop( ) ).
+
+    DATA(lv_result) = 0.
+    IF lo_val1->get_signed( ) >= lo_val2->get_signed( ).
+      lv_result = 1.
+    ENDIF.
+
+    io_memory->stack_push( zcl_wasm_i32=>from_signed( lv_result ) ).
   ENDMETHOD.
 
 ENDCLASS.
