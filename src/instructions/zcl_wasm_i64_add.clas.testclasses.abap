@@ -28,6 +28,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
     DATA(lo_value) = CAST zcl_wasm_i64( lt_values[ 1 ] ).
 
+    " in hex = 0x8000000000000000
     cl_abap_unit_assert=>assert_equals(
       act = lo_value->get_signed( )
       exp = -9223372036854775808 ).
