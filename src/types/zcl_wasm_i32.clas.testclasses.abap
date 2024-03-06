@@ -6,13 +6,6 @@ CLASS ltcl_test DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS FINAL.
     METHODS setup.
     METHODS assert_sole_value IMPORTING iv_value TYPE i RAISING zcx_wasm.
 
-    METHODS lt_s FOR TESTING RAISING cx_static_check.
-    METHODS rem_negative1 FOR TESTING RAISING cx_static_check.
-    METHODS rem_negative2 FOR TESTING RAISING cx_static_check.
-    METHODS rem_negative3 FOR TESTING RAISING cx_static_check.
-    METHODS rem_negative4 FOR TESTING RAISING cx_static_check.
-    METHODS rem_negative5 FOR TESTING RAISING cx_static_check.
-
     METHODS test_unsigned_minus_two FOR TESTING RAISING cx_static_check.
     METHODS test_unsigned_minus_seven FOR TESTING RAISING cx_static_check.
     METHODS test_unsigned_zero FOR TESTING RAISING cx_static_check.
@@ -37,62 +30,6 @@ CLASS ltcl_test IMPLEMENTATION.
     cl_abap_unit_assert=>assert_equals(
       act = mo_memory->stack_pop_i32( )->get_signed( )
       exp = iv_value ).
-
-  ENDMETHOD.
-
-  METHOD lt_s.
-
-    mo_memory->stack_push( zcl_wasm_i32=>from_signed( 3 ) ).
-    mo_memory->stack_push( zcl_wasm_i32=>from_signed( 2 ) ).
-
-    zcl_wasm_i32=>lt_s( mo_memory ).
-
-    assert_sole_value( 0 ).
-
-  ENDMETHOD.
-
-  METHOD rem_negative1.
-
-    mo_memory->stack_push( zcl_wasm_i32=>from_signed( -5 ) ).
-    mo_memory->stack_push( zcl_wasm_i32=>from_signed( 2 ) ).
-    zcl_wasm_i32=>rem_s( mo_memory ).
-    assert_sole_value( -1 ).
-
-  ENDMETHOD.
-
-  METHOD rem_negative2.
-
-    mo_memory->stack_push( zcl_wasm_i32=>from_signed( 5 ) ).
-    mo_memory->stack_push( zcl_wasm_i32=>from_signed( -2 ) ).
-    zcl_wasm_i32=>rem_s( mo_memory ).
-    assert_sole_value( 1 ).
-
-  ENDMETHOD.
-
-  METHOD rem_negative3.
-
-    mo_memory->stack_push( zcl_wasm_i32=>from_signed( -5 ) ).
-    mo_memory->stack_push( zcl_wasm_i32=>from_signed( -2 ) ).
-    zcl_wasm_i32=>rem_s( mo_memory ).
-    assert_sole_value( -1 ).
-
-  ENDMETHOD.
-
-  METHOD rem_negative4.
-
-    mo_memory->stack_push( zcl_wasm_i32=>from_signed( -7 ) ).
-    mo_memory->stack_push( zcl_wasm_i32=>from_signed( 3 ) ).
-    zcl_wasm_i32=>rem_s( mo_memory ).
-    assert_sole_value( -1 ).
-
-  ENDMETHOD.
-
-  METHOD rem_negative5.
-
-    mo_memory->stack_push( zcl_wasm_i32=>from_signed( 7 ) ).
-    mo_memory->stack_push( zcl_wasm_i32=>from_signed( -3 ) ).
-    zcl_wasm_i32=>rem_s( mo_memory ).
-    assert_sole_value( 1 ).
 
   ENDMETHOD.
 

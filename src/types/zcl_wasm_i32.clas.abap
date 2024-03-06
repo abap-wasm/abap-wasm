@@ -30,26 +30,6 @@ CLASS zcl_wasm_i32 DEFINITION
       RETURNING
         VALUE(rv_value) TYPE int8 .
 
-    CLASS-METHODS rem_s
-      IMPORTING
-        !io_memory TYPE REF TO zcl_wasm_memory
-      RAISING
-        zcx_wasm.
-    CLASS-METHODS rem_u
-      IMPORTING
-        !io_memory TYPE REF TO zcl_wasm_memory
-      RAISING
-        zcx_wasm.
-    CLASS-METHODS lt_s
-      IMPORTING
-        !io_memory TYPE REF TO zcl_wasm_memory
-      RAISING
-        zcx_wasm.
-    CLASS-METHODS lt_u
-      IMPORTING
-        !io_memory TYPE REF TO zcl_wasm_memory
-      RAISING
-        zcx_wasm.
     CLASS-METHODS le_s
       IMPORTING
         !io_memory TYPE REF TO zcl_wasm_memory
@@ -177,31 +157,6 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
     rv_value = mv_value.
   ENDMETHOD.
 
-
-  METHOD lt_s.
-
-* https://webassembly.github.io/spec/core/exec/instructions.html#t-mathsf-xref-syntax-instructions-syntax-relop-mathit-relop
-
-    IF io_memory->stack_length( ) < 2.
-      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'lt_s, expected two variables on stack'.
-    ENDIF.
-
-    TRY.
-        DATA(lo_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
-        DATA(lo_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
-      CATCH cx_sy_move_cast_error.
-        RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'lt_s, wrong types on stack'.
-    ENDTRY.
-
-    DATA(lv_result) = 0.
-    IF lo_val1->get_signed( ) > lo_val2->get_signed( ).
-      lv_result = 1.
-    ENDIF.
-
-    io_memory->stack_push( from_signed( lv_result ) ).
-
-  ENDMETHOD.
-
   METHOD le_s.
 
     IF io_memory->stack_length( ) < 2.
@@ -310,24 +265,6 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
 
   ENDMETHOD.
 
-  METHOD lt_u.
-
-    IF io_memory->stack_length( ) < 2.
-      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'lt_u, expected two variables on stack'.
-    ENDIF.
-
-    DATA(lo_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
-    DATA(lo_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) ).
-
-    DATA(lv_result) = 0.
-    IF lo_val1->get_unsigned( ) > lo_val2->get_unsigned( ).
-      lv_result = 1.
-    ENDIF.
-
-    io_memory->stack_push( from_signed( lv_result ) ).
-
-  ENDMETHOD.
-
   METHOD eqz.
 
     ASSERT io_memory->stack_length( ) >= 1.
@@ -369,51 +306,6 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
     ELSE.
       io_memory->stack_push( from_signed( 0 ) ).
     ENDIF.
-
-  ENDMETHOD.
-
-  METHOD rem_s.
-
-    ASSERT io_memory->stack_length( ) >= 2.
-
-    DATA(lv_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ).
-    DATA(lv_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ).
-
-    IF lv_val1 = 0.
-      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'i32.rem_s, division by zero'.
-    ENDIF.
-
-    DATA(lv_result) = abs( lv_val2 ) MOD abs( lv_val1 ).
-    IF lv_val2 < 0.
-      lv_result = lv_result * -1.
-    ENDIF.
-    io_memory->stack_push( from_signed( lv_result ) ).
-
-  ENDMETHOD.
-
-  METHOD rem_u.
-
-    ASSERT io_memory->stack_length( ) >= 2.
-
-    DATA(lv_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_unsigned( ).
-    DATA(lv_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_unsigned( ).
-
-    IF lv_val1 = 0.
-      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'i32.rem_u, division by zero'.
-    ENDIF.
-
-    IF lv_val1 < 0.
-      lv_val1 = lv_val1 * -1.
-    ENDIF.
-    IF lv_val2 < 0.
-      lv_val2 = lv_val2 * -1.
-    ENDIF.
-
-    DATA(lv_result) = lv_val2 MOD lv_val1.
-    IF lv_val1 < 0.
-      lv_result = lv_result * -1.
-    ENDIF.
-    io_memory->stack_push( from_unsigned( lv_result ) ).
 
   ENDMETHOD.
 
