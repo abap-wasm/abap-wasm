@@ -37,30 +37,6 @@ CLASS zcl_wasm_i64 DEFINITION
       RAISING
         zcx_wasm.
 
-    CLASS-METHODS eqz
-      IMPORTING
-        !io_memory TYPE REF TO zcl_wasm_memory
-      RAISING
-        zcx_wasm.
-
-    CLASS-METHODS ne
-      IMPORTING
-        !io_memory TYPE REF TO zcl_wasm_memory
-      RAISING
-        zcx_wasm.
-
-    CLASS-METHODS eq
-      IMPORTING
-        !io_memory TYPE REF TO zcl_wasm_memory
-      RAISING
-        zcx_wasm.
-
-    CLASS-METHODS div_s
-      IMPORTING
-        !io_memory TYPE REF TO zcl_wasm_memory
-      RAISING
-        zcx_wasm.
-
   PROTECTED SECTION.
   PRIVATE SECTION.
 * todo, use packed? nah int8 is long enough, but need to handle unsigned
@@ -68,28 +44,6 @@ CLASS zcl_wasm_i64 DEFINITION
 ENDCLASS.
 
 CLASS zcl_wasm_i64 IMPLEMENTATION.
-
-  METHOD div_s.
-
-    ASSERT io_memory->stack_length( ) >= 2.
-
-    DATA(lv_val1) = CAST zcl_wasm_i64( io_memory->stack_pop( ) )->get_signed( ).
-    DATA(lv_val2) = CAST zcl_wasm_i64( io_memory->stack_pop( ) )->get_signed( ).
-
-    IF lv_val1 = 0.
-      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'i64.div_s, division by zero'.
-    ELSEIF lv_val1 = -1 AND lv_val2 = -9223372036854775808.
-      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'i64.div_s, signed integer overflow'.
-    ENDIF.
-
-* division is truncating, so round towards zero
-    IF sign( lv_val1 ) <> sign( lv_val2 ).
-      io_memory->stack_push( from_signed( -1 * ( abs( lv_val2 ) DIV abs( lv_val1 ) ) ) ).
-    ELSE.
-      io_memory->stack_push( from_signed( lv_val2 DIV lv_val1 ) ).
-    ENDIF.
-
-  ENDMETHOD.
 
   METHOD get_signed.
     rv_value = mv_value.
@@ -221,52 +175,6 @@ CLASS zcl_wasm_i64 IMPLEMENTATION.
 
   METHOD zif_wasm_value~get_type.
     rv_type = zcl_wasm_types=>c_value_type-i64.
-  ENDMETHOD.
-
-  METHOD eqz.
-
-    IF io_memory->stack_length( ) < 1.
-      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'i64, eqz, expected value on stack'.
-    ENDIF.
-
-    DATA(lv_val1) = CAST zcl_wasm_i64( io_memory->stack_pop( ) )->mv_value.
-
-    IF lv_val1 = 0.
-      io_memory->stack_push( zcl_wasm_i32=>from_signed( 1 ) ).
-    ELSE.
-      io_memory->stack_push( zcl_wasm_i32=>from_signed( 0 ) ).
-    ENDIF.
-
-  ENDMETHOD.
-
-  METHOD ne.
-
-    ASSERT io_memory->stack_length( ) >= 2.
-
-    DATA(lv_val1) = CAST zcl_wasm_i64( io_memory->stack_pop( ) )->get_signed( ).
-    DATA(lv_val2) = CAST zcl_wasm_i64( io_memory->stack_pop( ) )->get_signed( ).
-
-    IF lv_val1 <> lv_val2.
-      io_memory->stack_push( zcl_wasm_i32=>from_signed( 1 ) ).
-    ELSE.
-      io_memory->stack_push( zcl_wasm_i32=>from_signed( 0 ) ).
-    ENDIF.
-
-  ENDMETHOD.
-
-  METHOD eq.
-
-    ASSERT io_memory->stack_length( ) >= 2.
-
-    DATA(lv_val1) = CAST zcl_wasm_i64( io_memory->stack_pop( ) )->get_signed( ).
-    DATA(lv_val2) = CAST zcl_wasm_i64( io_memory->stack_pop( ) )->get_signed( ).
-
-    IF lv_val1 = lv_val2.
-      io_memory->stack_push( zcl_wasm_i32=>from_signed( 1 ) ).
-    ELSE.
-      io_memory->stack_push( zcl_wasm_i32=>from_signed( 0 ) ).
-    ENDIF.
-
   ENDMETHOD.
 
 ENDCLASS.
