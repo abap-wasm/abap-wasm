@@ -35,18 +35,22 @@ CLASS zcl_wasm_i64_sub IMPLEMENTATION.
     DATA lv_word1 TYPE x LENGTH 4.
     DATA lv_word2 TYPE x LENGTH 4.
 
+    DATA lv_negate TYPE abap_bool.
+
     lv_val1 = io_memory->stack_pop_i64( )->get_signed( ).
     lv_val2 = io_memory->stack_pop_i64( )->get_signed( ).
     IF lv_val1 > lv_val2.
-      " WRITE / 'switch'.
+      WRITE / 'switch'.
       lv_tmp = lv_val1.
       lv_val1 = lv_val2.
       lv_val2 = lv_tmp.
+    ELSE.
+      lv_negate = abap_true.
     ENDIF.
     lv_hex1 = lv_val1.
     lv_hex2 = lv_val2.
-    " WRITE / lv_hex1.
-    " WRITE / lv_hex2.
+    WRITE / lv_hex1.
+    WRITE / lv_hex2.
 
 * low 2 bytes
     lv_carry = lv_hex1+6(2) - lv_hex2+6(2).
@@ -84,6 +88,9 @@ CLASS zcl_wasm_i64_sub IMPLEMENTATION.
 
     " WRITE / lv_result.
     lv_int8 = lv_result.
+    IF lv_negate = abap_true.
+      lv_int8 = lv_int8 * -1.
+    ENDIF.
     io_memory->stack_push( zcl_wasm_i64=>from_signed( lv_int8 ) ).
 
   ENDMETHOD.
