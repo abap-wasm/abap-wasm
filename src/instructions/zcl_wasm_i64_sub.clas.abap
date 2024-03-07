@@ -38,32 +38,57 @@ CLASS zcl_wasm_i64_sub IMPLEMENTATION.
     lv_val1 = io_memory->stack_pop_i64( )->get_signed( ).
     lv_val2 = io_memory->stack_pop_i64( )->get_signed( ).
     IF lv_val1 > lv_val2.
+      " WRITE / 'switch'.
       lv_tmp = lv_val1.
       lv_val1 = lv_val2.
       lv_val2 = lv_tmp.
     ENDIF.
     lv_hex1 = lv_val1.
     lv_hex2 = lv_val2.
-    WRITE / lv_hex1.
-    WRITE / lv_hex2.
+    " WRITE / lv_hex1.
+    " WRITE / lv_hex2.
 
 * low 2 bytes
     lv_carry = lv_hex1+6(2) - lv_hex2+6(2).
     lv_result+6(2) = lv_carry+2(2).
+    " WRITE / lv_carry.
+    IF lv_carry(2) = 'FFFF'.
+      lv_carry = '00000001'.
+    ELSE.
+      lv_carry = '00000000'.
+    ENDIF.
 
 * first middle 2 bytes
-    lv_carry = lv_hex1+4(2) - lv_hex2+4(2).
+    lv_carry = lv_hex1+4(2) - lv_hex2+4(2) - lv_carry.
     lv_result+4(2) = lv_carry+2(2).
+    " WRITE / lv_carry.
+    IF lv_carry(2) = 'FFFF'.
+      lv_carry = '00000001'.
+    ELSE.
+      lv_carry = '00000000'.
+    ENDIF.
 
 * second middle 2 bytes
-    lv_carry = lv_hex1+2(2) - lv_hex2+2(2).
+    lv_carry = lv_hex1+2(2) - lv_hex2+2(2) - lv_carry.
     lv_result+2(2) = lv_carry+2(2).
+    " WRITE / lv_carry.
+    IF lv_carry(2) = 'FFFF'.
+      lv_carry = '00000001'.
+    ELSE.
+      lv_carry = '00000000'.
+    ENDIF.
 
 * high 2 bytes
-    lv_carry = lv_hex1(2) - lv_hex2(2).
+    lv_carry = lv_hex1(2) - lv_hex2(2) - lv_carry.
     lv_result(2) = lv_carry+2(2).
+    " WRITE / lv_carry.
+    IF lv_carry(2) = 'FFFF'.
+      lv_carry = '00000001'.
+    ELSE.
+      lv_carry = '00000000'.
+    ENDIF.
 
-    WRITE / lv_result.
+    " WRITE / lv_result.
     lv_int8 = lv_result.
     io_memory->stack_push( zcl_wasm_i64=>from_signed( lv_int8 ) ).
 
