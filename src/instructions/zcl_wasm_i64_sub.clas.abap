@@ -40,7 +40,7 @@ CLASS zcl_wasm_i64_sub IMPLEMENTATION.
     lv_val1 = io_memory->stack_pop_i64( )->get_signed( ).
     lv_val2 = io_memory->stack_pop_i64( )->get_signed( ).
     IF lv_val1 > lv_val2.
-      WRITE / 'switch'.
+      " WRITE / 'switch'.
       lv_tmp = lv_val1.
       lv_val1 = lv_val2.
       lv_val2 = lv_tmp.
@@ -49,8 +49,8 @@ CLASS zcl_wasm_i64_sub IMPLEMENTATION.
     ENDIF.
     lv_hex1 = lv_val1.
     lv_hex2 = lv_val2.
-    WRITE / lv_hex1.
-    WRITE / lv_hex2.
+    " WRITE / lv_hex1.
+    " WRITE / lv_hex2.
 
 * low 2 bytes
     lv_carry = lv_hex1+6(2) - lv_hex2+6(2).
