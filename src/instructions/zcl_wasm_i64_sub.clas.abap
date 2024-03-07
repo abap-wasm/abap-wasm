@@ -81,12 +81,6 @@ CLASS zcl_wasm_i64_sub IMPLEMENTATION.
 * high 2 bytes
     lv_carry = lv_hex1(2) - lv_hex2(2) - lv_carry.
     lv_result(2) = lv_carry+2(2).
-    " WRITE / lv_carry.
-    IF lv_carry(2) = 'FFFF'.
-      lv_carry = '00000001'.
-    ELSE.
-      lv_carry = '00000000'.
-    ENDIF.
 
     " WRITE / lv_result.
     lv_int8 = lv_result.
