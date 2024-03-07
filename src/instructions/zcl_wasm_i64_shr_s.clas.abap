@@ -19,7 +19,20 @@ CLASS zcl_wasm_i64_shr_s IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'todo, execute instruction zcl_wasm_i64_shr_s'.
+
+    DATA(lv_count) = io_memory->stack_pop_i64( )->get_signed( ) MOD 64.
+
+    DATA(li_val) = io_memory->stack_pop_i64( ).
+    DATA(lv_int) = li_val->get_signed( ).
+
+    IF lv_count = 0.
+      io_memory->stack_push( li_val ).
+    ELSE.
+      DO lv_count TIMES.
+        lv_int = lv_int DIV 2.
+      ENDDO.
+      io_memory->stack_push( zcl_wasm_i64=>from_signed( lv_int ) ).
+    ENDIF.
   ENDMETHOD.
 
 ENDCLASS.
