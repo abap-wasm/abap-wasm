@@ -25,6 +25,7 @@ CLASS zcl_wasm_i64 DEFINITION
         zcx_wasm.
 
 * only used in testclasses?
+* todo: this should really be a unsigned to hex thing? it will also be used for f64 tests
     METHODS get_unsigned
       RETURNING
         VALUE(rv_value) TYPE string
@@ -108,6 +109,10 @@ CLASS zcl_wasm_i64 IMPLEMENTATION.
         ro_value->mv_value = 8070450532247928832.
       WHEN '16140901064495857664'.
         ro_value->mv_value = -2305843009213693952.
+      WHEN '10371807465568210928'.
+        ro_value->mv_value = -8074936608141340688.
+      WHEN '9223372036854775809'.
+        ro_value->mv_value = -9223372036854775807.
     ENDCASE.
 
     IF ro_value->mv_value <> 0.
