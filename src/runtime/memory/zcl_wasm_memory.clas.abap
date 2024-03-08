@@ -77,17 +77,34 @@ CLASS zcl_wasm_memory DEFINITION
       RETURNING
         VALUE(rv_exists) TYPE abap_bool.
 
+************* TABLES
+    METHODS table_add
+      IMPORTING
+        is_table TYPE zcl_wasm_table_section=>ty_table.
+
   PROTECTED SECTION.
     DATA mt_stack  TYPE STANDARD TABLE OF REF TO zif_wasm_value WITH DEFAULT KEY.
     DATA mi_linear TYPE REF TO zif_wasm_memory_linear.
     DATA mt_frames TYPE STANDARD TABLE OF REF TO zif_wasm_memory_frame WITH DEFAULT KEY.
     DATA mt_globals TYPE STANDARD TABLE OF REF TO zif_wasm_value WITH EMPTY KEY.
+
+    TYPES ty_table TYPE STANDARD TABLE OF REF TO zif_wasm_value WITH EMPTY KEY.
+    DATA mt_tables TYPE STANDARD TABLE OF ty_table WITH EMPTY KEY.
   PRIVATE SECTION.
 ENDCLASS.
 
 
 
 CLASS zcl_wasm_memory IMPLEMENTATION.
+
+  METHOD table_add.
+* todo: validate and store types? plus max length
+    DATA lt_table TYPE ty_table.
+    DO is_table-limit-min TIMES.
+      INSERT INITIAL LINE INTO lt_table.
+    ENDDO.
+    INSERT lt_table INTO TABLE mt_tables.
+  ENDMETHOD.
 
   METHOD global_get.
     READ TABLE mt_globals INDEX iv_index + 1 INTO rv_value.

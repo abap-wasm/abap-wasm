@@ -140,6 +140,8 @@ CLASS zcl_wasm IMPLEMENTATION.
 
 
   METHOD zif_wasm~instantiate.
+* https://webassembly.github.io/spec/core/exec/modules.html#instantiation
+
     ASSERT mo_memory IS INITIAL.
     mo_memory = NEW zcl_wasm_memory( ).
 
@@ -149,6 +151,7 @@ CLASS zcl_wasm IMPLEMENTATION.
     mo_module->get_memory_section( )->instantiate( mo_memory ).
     mo_module->get_global_section( )->instantiate( mo_memory ).
     mo_module->get_data_section( )->instantiate( mo_memory ).
+    mo_module->get_table_section( )->instantiate( mo_memory ).
   ENDMETHOD.
 
 

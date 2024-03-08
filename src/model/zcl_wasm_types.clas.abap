@@ -41,6 +41,17 @@ CLASS zcl_wasm_types DEFINITION
         global TYPE ty_type VALUE '03',
       END OF c_export_type .
 
+    CONSTANTS:
+      BEGIN OF c_limit,
+        min TYPE x LENGTH 1 VALUE '00',
+        max TYPE x LENGTH 1 VALUE '01',
+      END OF c_limit.
+
+    TYPES: BEGIN OF ty_limit,
+             min TYPE i,
+             max TYPE i,
+           END OF ty_limit.
+
   PROTECTED SECTION.
   PRIVATE SECTION.
 ENDCLASS.

@@ -1,32 +1,53 @@
 CLASS zcl_wasm_table_section DEFINITION PUBLIC.
   PUBLIC SECTION.
+    TYPES: BEGIN OF ty_table,
+             reftype TYPE zcl_wasm_types=>ty_type,
+             limit   TYPE zcl_wasm_types=>ty_limit,
+           END OF ty_table.
+
     CLASS-METHODS parse
       IMPORTING
         !io_body          TYPE REF TO zcl_wasm_binary_stream
+      RETURNING
+        VALUE(ro_section) TYPE REF TO zcl_wasm_table_section
       RAISING
         zcx_wasm.
+
+    METHODS instantiate IMPORTING io_memory TYPE REF TO zcl_wasm_memory.
+
+  PRIVATE SECTION.
+    DATA mt_tables TYPE STANDARD TABLE OF ty_table WITH DEFAULT KEY.
 ENDCLASS.
 
 CLASS zcl_wasm_table_section IMPLEMENTATION.
+
+  METHOD instantiate.
+    LOOP AT mt_tables INTO DATA(ls_table).
+      io_memory->table_add( ls_table ).
+    ENDLOOP.
+  ENDMETHOD.
 
   METHOD parse.
 
 * https://webassembly.github.io/spec/core/binary/modules.html#binary-tablesec
 
+    DATA ls_table LIKE LINE OF mt_tables.
+
+    ro_section = NEW zcl_wasm_table_section( ).
+
     DO io_body->shift_u32( ) TIMES.
-      DATA(lv_reftype) = io_body->shift( 1 ).
+      CLEAR ls_table.
+      ls_table-reftype = io_body->shift( 1 ).
 
-      CASE lv_reftype.
+      CASE ls_table-reftype.
         WHEN zcl_wasm_types=>c_reftype-funcref OR zcl_wasm_types=>c_reftype-externref.
-          DATA(lv_limit) = io_body->shift( 1 ).
-
-          CASE lv_limit.
-            WHEN '00'.
-              DATA(lv_min) = io_body->shift_u32( ).
-              DATA(lv_max) = 0.
-            WHEN '01'.
-              lv_min = io_body->shift_u32( ).
-              lv_max = io_body->shift_u32( ).
+          CASE io_body->shift( 1 ).
+            WHEN zcl_wasm_types=>c_limit-min.
+              ls_table-limit-min = io_body->shift_u32( ).
+              ls_table-limit-max = 0.
+            WHEN zcl_wasm_types=>c_limit-max.
+              ls_table-limit-min = io_body->shift_u32( ).
+              ls_table-limit-max = io_body->shift_u32( ).
             WHEN OTHERS.
               RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |parse_table: todo|.
           ENDCASE.
