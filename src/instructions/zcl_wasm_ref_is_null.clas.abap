@@ -26,6 +26,10 @@ CLASS zcl_wasm_ref_is_null IMPLEMENTATION.
 
     DATA(li_value) = io_memory->stack_pop( ).
 
+    IF li_value IS INITIAL.
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |zcl_wasm_ref_is_null: initial value popped|.
+    ENDIF.
+
     CASE li_value->get_type( ).
       WHEN zcl_wasm_types=>c_reftype-externref.
         lv_null = CAST zcl_wasm_externref( li_value )->is_null( ).

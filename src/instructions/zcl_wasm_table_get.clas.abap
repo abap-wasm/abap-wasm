@@ -27,7 +27,15 @@ CLASS zcl_wasm_table_get IMPLEMENTATION.
 
   METHOD zif_wasm_instruction~execute.
 * https://webassembly.github.io/spec/core/exec/instructions.html#xref-syntax-instructions-syntax-instr-table-mathsf-table-get-x
-    RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'todo, execute instruction zcl_wasm_table_get'.
+
+    DATA(lv_i) = io_memory->stack_pop_i32( )->get_signed( ).
+
+    DATA(li_val) = io_memory->table_get(
+      iv_tableidx = CONV #( mv_tableidx )
+      iv_offset   = lv_i ).
+
+    io_memory->stack_push( li_val ).
+
   ENDMETHOD.
 
 ENDCLASS.

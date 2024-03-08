@@ -49,7 +49,7 @@
     "modify_only_own_db_tables": true,
     "no_aliases": true,
     "no_chained_assignment": true,
-    "no_yoda_conditions": true,
+    "no_yoda_conditions": false,
     "nrob_consistency": true,
     "omit_preceding_zeros": true,
     "prefer_raise_exception_new": false,
