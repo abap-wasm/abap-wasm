@@ -26,6 +26,9 @@ CLASS zcl_wasm_types DEFINITION
         externref TYPE ty_type VALUE '6F',
       END OF c_reftype.
 
+* https://webassembly.github.io/spec/core/binary/instructions.html#control-instructions
+    CONSTANTS c_empty_block_type TYPE ty_type VALUE '40'.
+
 * https://webassembly.github.io/spec/core/binary/types.html#function-types
     CONSTANTS c_function_type TYPE ty_type VALUE '60'.
 
