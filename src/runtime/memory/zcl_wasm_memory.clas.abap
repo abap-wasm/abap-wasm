@@ -90,6 +90,14 @@ CLASS zcl_wasm_memory DEFINITION
       RAISING
         zcx_wasm.
 
+    METHODS table_size
+      IMPORTING
+        iv_tableidx TYPE i
+      RETURNING
+        VALUE(rv_size) TYPE i
+      RAISING
+        zcx_wasm.
+
     METHODS table_get
       IMPORTING
         iv_tableidx TYPE i
@@ -129,6 +137,17 @@ CLASS zcl_wasm_memory IMPLEMENTATION.
           text = |zcl_wasm_memory: table_get, out of bounds|.
     ENDIF.
     ri_value = <lt_table>[ lv_offset ].
+  ENDMETHOD.
+
+  METHOD table_size.
+    DATA(lv_idx) = iv_tableidx + 1.
+    READ TABLE mt_tables INDEX lv_idx ASSIGNING FIELD-SYMBOL(<lt_table>).
+    IF sy-subrc <> 0.
+      RAISE EXCEPTION TYPE zcx_wasm
+        EXPORTING
+          text = |zcl_wasm_memory: table_size, not found, index { iv_tableidx }|.
+    ENDIF.
+    rv_size = lines( <lt_table> ).
   ENDMETHOD.
 
   METHOD table_set.

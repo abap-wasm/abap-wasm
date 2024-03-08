@@ -26,7 +26,11 @@ CLASS zcl_wasm_table_size IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'todo, execute instruction zcl_wasm_table_size'.
+* https://webassembly.github.io/spec/core/exec/instructions.html#xref-syntax-instructions-syntax-instr-table-mathsf-table-size-x
+
+    DATA(lv_size) = io_memory->table_size( CONV #( mv_tableidx ) ).
+
+    io_memory->stack_push( zcl_wasm_i32=>from_signed( lv_size ) ).
   ENDMETHOD.
 
 ENDCLASS.
