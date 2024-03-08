@@ -16,6 +16,13 @@ CLASS zcl_wasm_block DEFINITION PUBLIC.
     DATA mv_block_type   TYPE xstring.
     DATA mt_instructions TYPE zif_wasm_instruction=>ty_list.
 
+    METHODS fix_stack
+      IMPORTING
+        io_memory TYPE REF TO zcl_wasm_memory
+        iv_length TYPE i
+      RAISING
+        zcx_wasm.
+
 ENDCLASS.
 
 CLASS zcl_wasm_block IMPLEMENTATION.
@@ -50,38 +57,34 @@ CLASS zcl_wasm_block IMPLEMENTATION.
 
   ENDMETHOD.
 
+  METHOD fix_stack.
+    IF mv_block_type <> zcl_wasm_types=>c_empty_block_type.
+* runtime validations?
+      DATA(lo_val) = io_memory->stack_pop( ).
+    ENDIF.
+    WHILE io_memory->stack_length( ) > iv_length.
+      io_memory->stack_pop( ).
+    ENDWHILE.
+    IF lo_val IS NOT INITIAL.
+      io_memory->stack_push( lo_val ).
+    ENDIF.
+  ENDMETHOD.
+
   METHOD zif_wasm_instruction~execute.
 
 * https://webassembly.github.io/spec/core/exec/instructions.html#xref-syntax-instructions-syntax-instr-control-mathsf-block-xref-syntax-instructions-syntax-blocktype-mathit-blocktype-xref-syntax-instructions-syntax-instr-mathit-instr-ast-xref-syntax-instructions-syntax-instr-control-mathsf-end
 
-* todo: block type?
-    " WRITE / mv_block_type.
-    CASE mv_block_type.
-      WHEN zcl_wasm_types=>c_empty_block_type.
-        " todo
-      WHEN zcl_wasm_types=>c_value_type-i32.
-        " i32
-      WHEN zcl_wasm_types=>c_value_type-i64.
-        " i64
-      WHEN zcl_wasm_types=>c_value_type-f32.
-        " f32
-      WHEN zcl_wasm_types=>c_value_type-f64.
-        " f64
-      WHEN zcl_wasm_types=>c_vector_type.
-        " todo
-      WHEN zcl_wasm_types=>c_reftype-funcref.
-        " todo
-      WHEN zcl_wasm_types=>c_reftype-externref.
-        " todo
-      WHEN OTHERS.
-        " todo
-    ENDCASE.
+    DATA(lv_length) = io_memory->stack_length( ).
 
     TRY.
         rv_control = NEW zcl_wasm_vm(
           io_memory = io_memory
           io_module = io_module )->execute( mt_instructions ).
+        " fix_stack( io_memory = io_memory
+        "            iv_length = lv_length ).
       CATCH zcx_wasm_branch INTO DATA(lx_branch).
+        fix_stack( io_memory = io_memory
+                   iv_length = lv_length ).
         IF lx_branch->depth > 0.
           RAISE EXCEPTION TYPE zcx_wasm_branch EXPORTING depth = lx_branch->depth - 1.
         ENDIF.
