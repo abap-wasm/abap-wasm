@@ -36,6 +36,9 @@ CLASS zcl_wasm_table_set IMPLEMENTATION.
     ENDIF.
 
     DATA(lv_i) = io_memory->stack_pop_i32( )->get_signed( ).
+    IF lv_i < 0.
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_table_set: negative index'.
+    ENDIF.
 
     io_memory->table_set(
       iv_tableidx = CONV #( mv_tableidx )
