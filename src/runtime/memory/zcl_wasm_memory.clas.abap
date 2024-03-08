@@ -77,17 +77,104 @@ CLASS zcl_wasm_memory DEFINITION
       RETURNING
         VALUE(rv_exists) TYPE abap_bool.
 
+************* TABLES
+    METHODS table_add
+      IMPORTING
+        is_table TYPE zcl_wasm_table_section=>ty_table.
+
+    METHODS table_set
+      IMPORTING
+        iv_tableidx TYPE i
+        iv_offset   TYPE i
+        ii_value    TYPE REF TO zif_wasm_value
+      RAISING
+        zcx_wasm.
+
+    METHODS table_size
+      IMPORTING
+        iv_tableidx TYPE i
+      RETURNING
+        VALUE(rv_size) TYPE i
+      RAISING
+        zcx_wasm.
+
+    METHODS table_get
+      IMPORTING
+        iv_tableidx TYPE i
+        iv_offset   TYPE i
+      RETURNING
+        VALUE(ri_value)    TYPE REF TO zif_wasm_value
+      RAISING
+        zcx_wasm.
+
   PROTECTED SECTION.
     DATA mt_stack  TYPE STANDARD TABLE OF REF TO zif_wasm_value WITH DEFAULT KEY.
     DATA mi_linear TYPE REF TO zif_wasm_memory_linear.
     DATA mt_frames TYPE STANDARD TABLE OF REF TO zif_wasm_memory_frame WITH DEFAULT KEY.
     DATA mt_globals TYPE STANDARD TABLE OF REF TO zif_wasm_value WITH EMPTY KEY.
+
+    TYPES ty_table TYPE STANDARD TABLE OF REF TO zif_wasm_value WITH EMPTY KEY.
+    DATA mt_tables TYPE STANDARD TABLE OF ty_table WITH EMPTY KEY.
   PRIVATE SECTION.
 ENDCLASS.
 
 
 
 CLASS zcl_wasm_memory IMPLEMENTATION.
+
+  METHOD table_get.
+    DATA(lv_idx) = iv_tableidx + 1.
+    READ TABLE mt_tables INDEX lv_idx ASSIGNING FIELD-SYMBOL(<lt_table>).
+    IF sy-subrc <> 0.
+      RAISE EXCEPTION TYPE zcx_wasm
+        EXPORTING
+          text = |zcl_wasm_memory: table_get, not found, index { iv_tableidx }|.
+    ENDIF.
+    DATA(lv_offset) = iv_offset + 1.
+    IF lv_offset > lines( <lt_table> ).
+      RAISE EXCEPTION TYPE zcx_wasm
+        EXPORTING
+          text = |zcl_wasm_memory: table_get, out of bounds|.
+    ENDIF.
+    ri_value = <lt_table>[ lv_offset ].
+  ENDMETHOD.
+
+  METHOD table_size.
+    DATA(lv_idx) = iv_tableidx + 1.
+    READ TABLE mt_tables INDEX lv_idx ASSIGNING FIELD-SYMBOL(<lt_table>).
+    IF sy-subrc <> 0.
+      RAISE EXCEPTION TYPE zcx_wasm
+        EXPORTING
+          text = |zcl_wasm_memory: table_size, not found, index { iv_tableidx }|.
+    ENDIF.
+    rv_size = lines( <lt_table> ).
+  ENDMETHOD.
+
+  METHOD table_set.
+    DATA(lv_idx) = iv_tableidx + 1.
+    READ TABLE mt_tables INDEX lv_idx ASSIGNING FIELD-SYMBOL(<lt_table>).
+    IF sy-subrc <> 0.
+      RAISE EXCEPTION TYPE zcx_wasm
+        EXPORTING
+          text = |zcl_wasm_memory: table_set, not found, index { iv_tableidx }|.
+    ENDIF.
+    DATA(lv_offset) = iv_offset + 1.
+    IF lv_offset > lines( <lt_table> ).
+      RAISE EXCEPTION TYPE zcx_wasm
+        EXPORTING
+          text = |zcl_wasm_memory: table_get, out of bounds|.
+    ENDIF.
+    <lt_table>[ lv_offset ] = ii_value.
+  ENDMETHOD.
+
+  METHOD table_add.
+* todo: validate and store types? plus max length
+    DATA lt_table TYPE ty_table.
+    DO is_table-limit-min TIMES.
+      INSERT INITIAL LINE INTO lt_table.
+    ENDDO.
+    INSERT lt_table INTO TABLE mt_tables.
+  ENDMETHOD.
 
   METHOD global_get.
     READ TABLE mt_globals INDEX iv_index + 1 INTO rv_value.

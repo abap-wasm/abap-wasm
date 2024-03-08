@@ -170,6 +170,7 @@ CLASS cl_testsuite IMPLEMENTATION.
       ASSERT sy-subrc = 0.
 
       IF li_result IS INITIAL.
+        lv_error = abap_true.
         go_result->add_error(
           iv_start_time = ls_results-start_time
           iv_text       = |error, expected non initial value| ).

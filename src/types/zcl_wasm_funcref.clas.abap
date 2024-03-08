@@ -10,7 +10,7 @@ ENDCLASS.
 CLASS zcl_wasm_funcref IMPLEMENTATION.
 
   METHOD zif_wasm_value~human_readable_value.
-    rv_string = |funcref: todo|.
+    rv_string = |funcref: { mv_address }|.
   ENDMETHOD.
 
   METHOD constructor.
