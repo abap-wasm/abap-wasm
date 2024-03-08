@@ -8,17 +8,21 @@ CLASS zcl_wasm_block DEFINITION PUBLIC.
         it_instructions TYPE zif_wasm_instruction=>ty_list.
 
     CLASS-METHODS parse
-      IMPORTING !io_body TYPE REF TO zcl_wasm_binary_stream
-      RETURNING VALUE(ri_instruction) TYPE REF TO zif_wasm_instruction
-      RAISING zcx_wasm.
+      IMPORTING
+        io_body TYPE REF TO zcl_wasm_binary_stream
+      RETURNING
+        VALUE(ri_instruction) TYPE REF TO zif_wasm_instruction
+      RAISING
+        zcx_wasm.
 
   PRIVATE SECTION.
     DATA mv_block_type   TYPE xstring.
     DATA mt_instructions TYPE zif_wasm_instruction=>ty_list.
 
-    METHODS fix_stack
+    METHODS fix_return
       IMPORTING
         io_memory TYPE REF TO zcl_wasm_memory
+        io_module TYPE REF TO zcl_wasm_module
         iv_length TYPE i
       RAISING
         zcx_wasm.
@@ -57,17 +61,44 @@ CLASS zcl_wasm_block IMPLEMENTATION.
 
   ENDMETHOD.
 
-  METHOD fix_stack.
-    IF mv_block_type <> zcl_wasm_types=>c_empty_block_type.
-* runtime validations?
-      DATA(lo_val) = io_memory->stack_pop( ).
-    ENDIF.
-    WHILE io_memory->stack_length( ) > iv_length.
+  METHOD fix_return.
+
+    DATA lv_return TYPE xstring.
+    DATA lv_int8 TYPE int8.
+    DATA lt_results TYPE STANDARD TABLE OF REF TO zif_wasm_value WITH EMPTY KEY.
+
+    CASE mv_block_type.
+      WHEN zcl_wasm_types=>c_empty_block_type.
+    " do nothing
+      WHEN zcl_wasm_types=>c_value_type-i32
+          OR zcl_wasm_types=>c_value_type-i64
+          OR zcl_wasm_types=>c_value_type-f32
+          OR zcl_wasm_types=>c_value_type-f64
+          OR zcl_wasm_types=>c_reftype-funcref
+          OR zcl_wasm_types=>c_reftype-externref
+          OR zcl_wasm_types=>c_vector_type.
+        lv_return = mv_block_type.
+      WHEN OTHERS.
+        lv_int8 = mv_block_type.
+        IF lv_int8 < 0.
+          RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |block: expected positive function type index|.
+        ENDIF.
+        DATA(ls_type) = io_module->get_type_by_index( lv_int8 ).
+        lv_return = ls_type-result_types.
+    ENDCASE.
+
+    DO xstrlen( lv_return ) TIMES.
+      DATA(li_val) = io_memory->stack_pop( ).
+      INSERT li_val INTO lt_results INDEX 1.
+    ENDDO.
+
+    WHILE io_memory->stack_length( ) > iv_length AND io_memory->stack_length( ) > 0.
       io_memory->stack_pop( ).
     ENDWHILE.
-    IF lo_val IS NOT INITIAL.
-      io_memory->stack_push( lo_val ).
-    ENDIF.
+
+    LOOP AT lt_results INTO li_val.
+      io_memory->stack_push( li_val ).
+    ENDLOOP.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
@@ -83,8 +114,9 @@ CLASS zcl_wasm_block IMPLEMENTATION.
         " fix_stack( io_memory = io_memory
         "            iv_length = lv_length ).
       CATCH zcx_wasm_branch INTO DATA(lx_branch).
-        fix_stack( io_memory = io_memory
-                   iv_length = lv_length ).
+        fix_return( io_memory = io_memory
+                    io_module = io_module
+                    iv_length = lv_length ).
         IF lx_branch->depth > 0.
           RAISE EXCEPTION TYPE zcx_wasm_branch EXPORTING depth = lx_branch->depth - 1.
         ENDIF.
