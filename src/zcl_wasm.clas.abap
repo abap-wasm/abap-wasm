@@ -152,6 +152,7 @@ CLASS zcl_wasm IMPLEMENTATION.
     mo_module->get_global_section( )->instantiate( mo_memory ).
     mo_module->get_data_section( )->instantiate( mo_memory ).
     mo_module->get_table_section( )->instantiate( mo_memory ).
+    mo_module->get_element_section( )->instantiate( mo_memory ).
   ENDMETHOD.
 
 

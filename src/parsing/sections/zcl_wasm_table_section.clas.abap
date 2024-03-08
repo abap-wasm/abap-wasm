@@ -13,7 +13,9 @@ CLASS zcl_wasm_table_section DEFINITION PUBLIC.
       RAISING
         zcx_wasm.
 
-    METHODS instantiate IMPORTING io_memory TYPE REF TO zcl_wasm_memory.
+    METHODS instantiate
+      IMPORTING io_memory TYPE REF TO zcl_wasm_memory
+      RAISING zcx_wasm.
 
   PRIVATE SECTION.
     DATA mt_tables TYPE STANDARD TABLE OF ty_table WITH DEFAULT KEY.

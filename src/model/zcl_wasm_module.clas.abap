@@ -42,15 +42,16 @@ CLASS zcl_wasm_module DEFINITION
 
     METHODS constructor
       IMPORTING
-        !it_types         TYPE ty_types OPTIONAL
-        !it_codes         TYPE ty_codes OPTIONAL
-        !it_exports       TYPE ty_exports OPTIONAL
-        io_data_section   TYPE REF TO zcl_wasm_data_section OPTIONAL
-        io_memory_section TYPE REF TO zcl_wasm_memory_section OPTIONAL
-        io_global_section TYPE REF TO zcl_wasm_global_section OPTIONAL
-        io_import_section TYPE REF TO zcl_wasm_import_section OPTIONAL
-        io_table_section  TYPE REF TO zcl_wasm_table_section OPTIONAL
-        !it_functions     TYPE ty_functions OPTIONAL .
+        !it_types          TYPE ty_types OPTIONAL
+        !it_codes          TYPE ty_codes OPTIONAL
+        !it_exports        TYPE ty_exports OPTIONAL
+        io_data_section    TYPE REF TO zcl_wasm_data_section OPTIONAL
+        io_memory_section  TYPE REF TO zcl_wasm_memory_section OPTIONAL
+        io_global_section  TYPE REF TO zcl_wasm_global_section OPTIONAL
+        io_import_section  TYPE REF TO zcl_wasm_import_section OPTIONAL
+        io_table_section   TYPE REF TO zcl_wasm_table_section OPTIONAL
+        io_element_section TYPE REF TO zcl_wasm_element_section OPTIONAL
+        !it_functions      TYPE ty_functions OPTIONAL .
     METHODS get_types
       RETURNING
         VALUE(rt_result) TYPE ty_types .
@@ -78,6 +79,9 @@ CLASS zcl_wasm_module DEFINITION
     METHODS get_table_section
       RETURNING
         VALUE(ro_table_section) TYPE REF TO zcl_wasm_table_section.
+    METHODS get_element_section
+      RETURNING
+        VALUE(ro_element_section) TYPE REF TO zcl_wasm_element_section.
     METHODS get_code_by_index
       IMPORTING
         !iv_index      TYPE int8
@@ -119,6 +123,7 @@ CLASS zcl_wasm_module DEFINITION
     DATA mo_global_section TYPE REF TO zcl_wasm_global_section.
     DATA mo_import_section TYPE REF TO zcl_wasm_import_section.
     DATA mo_table_section TYPE REF TO zcl_wasm_table_section.
+    DATA mo_element_section TYPE REF TO zcl_wasm_element_section.
 ENDCLASS.
 
 
@@ -166,6 +171,17 @@ CLASS zcl_wasm_module IMPLEMENTATION.
       mo_table_section = io_table_section.
     ENDIF.
 
+    IF io_element_section IS INITIAL.
+* none specified, create the empty data section,
+      mo_element_section = NEW #( ).
+    ELSE.
+      mo_element_section = io_element_section.
+    ENDIF.
+
+  ENDMETHOD.
+
+  METHOD get_element_section.
+    ro_element_section = mo_element_section.
   ENDMETHOD.
 
   METHOD get_table_section.

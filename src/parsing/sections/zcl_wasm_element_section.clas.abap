@@ -8,6 +8,12 @@ CLASS zcl_wasm_element_section DEFINITION PUBLIC.
       RAISING
         zcx_wasm.
 
+    METHODS instantiate
+      IMPORTING
+        io_memory TYPE REF TO zcl_wasm_memory
+      RAISING
+        zcx_wasm.
+
   PRIVATE SECTION.
     TYPES: BEGIN OF ty_element,
              type     TYPE i,
@@ -21,6 +27,24 @@ CLASS zcl_wasm_element_section DEFINITION PUBLIC.
 ENDCLASS.
 
 CLASS zcl_wasm_element_section IMPLEMENTATION.
+
+  METHOD instantiate.
+
+    LOOP AT mt_elements INTO DATA(ls_element).
+* 0 + 2 + 4 + 6 is active
+      CASE ls_element-type.
+        WHEN 0.
+          RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |instantiate 0: todo|.
+        WHEN 2.
+          RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |instantiate 2: todo|.
+        WHEN 4.
+          RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |instantiate 4: todo|.
+        WHEN 6.
+          RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |instantiate 6: todo|.
+      ENDCASE.
+    ENDLOOP.
+
+  ENDMETHOD.
 
   METHOD parse.
 
