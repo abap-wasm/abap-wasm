@@ -30,19 +30,37 @@ CLASS zcl_wasm_element_section IMPLEMENTATION.
 
   METHOD instantiate.
 
-    LOOP AT mt_elements INTO DATA(ls_element).
-* 0 + 2 + 4 + 6 is active
-      CASE ls_element-type.
-        WHEN 0.
-          RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |instantiate 0: todo|.
-        WHEN 2.
-          RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |instantiate 2: todo|.
-        WHEN 4.
-          RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |instantiate 4: todo|.
-        WHEN 6.
-          RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |instantiate 6: todo|.
-      ENDCASE.
-    ENDLOOP.
+* type = 0 + 2 + 4 + 6 is active
+
+    TRY.
+        LOOP AT mt_elements INTO DATA(ls_element).
+          CASE ls_element-type.
+            WHEN 0.
+              LOOP AT ls_element-expr INTO DATA(lo_instruction).
+                lo_instruction->execute(
+                  io_memory = io_memory
+                  io_module = NEW zcl_wasm_module( ) ).
+              ENDLOOP.
+              DATA(lv_offset) = io_memory->stack_pop_i32( )->get_signed( ).
+
+              LOOP AT ls_element-funcidx INTO DATA(lv_funcidx).
+                DATA(lo_ref) = NEW zcl_wasm_funcref( lv_funcidx ).
+                io_memory->table_set(
+                  iv_tableidx = ls_element-tableidx
+                  iv_offset   = lv_offset
+                  ii_value    = lo_ref ).
+              ENDLOOP.
+            WHEN 2.
+              RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |instantiate 2: todo|.
+            WHEN 4.
+              RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |instantiate 4: todo|.
+            WHEN 6.
+              RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |instantiate 6: todo|.
+          ENDCASE.
+        ENDLOOP.
+      CATCH cx_static_check INTO DATA(lx_error).
+        RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |instantiate element section, failed to execute instructions: { lx_error->get_text( ) }|.
+    ENDTRY.
 
   ENDMETHOD.
 

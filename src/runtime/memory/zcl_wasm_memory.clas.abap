@@ -82,6 +82,14 @@ CLASS zcl_wasm_memory DEFINITION
       IMPORTING
         is_table TYPE zcl_wasm_table_section=>ty_table.
 
+    METHODS table_set
+      IMPORTING
+        iv_tableidx TYPE i
+        iv_offset   TYPE i
+        ii_value    TYPE REF TO zif_wasm_value
+      RAISING
+        zcx_wasm.
+
   PROTECTED SECTION.
     DATA mt_stack  TYPE STANDARD TABLE OF REF TO zif_wasm_value WITH DEFAULT KEY.
     DATA mi_linear TYPE REF TO zif_wasm_memory_linear.
@@ -96,6 +104,18 @@ ENDCLASS.
 
 
 CLASS zcl_wasm_memory IMPLEMENTATION.
+
+  METHOD table_set.
+    DATA(lv_idx) = iv_tableidx + 1.
+    READ TABLE mt_tables INDEX lv_idx ASSIGNING FIELD-SYMBOL(<lt_table>).
+    IF sy-subrc <> 0.
+      RAISE EXCEPTION TYPE zcx_wasm
+        EXPORTING
+          text = |zcl_wasm_memory: table_set, not found, index { iv_tableidx }|.
+    ENDIF.
+    DATA(lv_offset) = iv_offset + 1.
+    <lt_table>[ iv_offset + 1 ] = ii_value.
+  ENDMETHOD.
 
   METHOD table_add.
 * todo: validate and store types? plus max length

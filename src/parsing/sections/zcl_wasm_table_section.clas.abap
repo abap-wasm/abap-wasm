@@ -56,7 +56,7 @@ CLASS zcl_wasm_table_section IMPLEMENTATION.
         WHEN OTHERS.
           RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |parse_table: todo|.
       ENDCASE.
-
+      INSERT ls_table INTO TABLE ro_section->mt_tables.
     ENDDO.
 
   ENDMETHOD.
