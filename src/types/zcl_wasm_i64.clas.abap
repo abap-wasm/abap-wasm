@@ -25,6 +25,7 @@ CLASS zcl_wasm_i64 DEFINITION
         zcx_wasm.
 
 * only used in testclasses?
+* todo: this should really be a unsigned to hex thing? it will also be used for f64 tests
     METHODS get_unsigned
       RETURNING
         VALUE(rv_value) TYPE string
@@ -59,72 +60,66 @@ CLASS zcl_wasm_i64 IMPLEMENTATION.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'i64, from_unsigned, unexpected value'.
     ENDIF.
 
+    ro_value = NEW #( ).
+
     CASE iv_value.
       WHEN '18446744073709551615'.
-        ro_value = NEW #( ).
         ro_value->mv_value = -1.
-        RETURN.
       WHEN '18446744073709551614'.
-        ro_value = NEW #( ).
         ro_value->mv_value = -2.
-        RETURN.
       WHEN '18446744073709551613'.
-        ro_value = NEW #( ).
         ro_value->mv_value = -3.
-        RETURN.
       WHEN '18446744073709551612'.
-        ro_value = NEW #( ).
         ro_value->mv_value = -4.
-        RETURN.
       WHEN '18446744073709551611'.
-        ro_value = NEW #( ).
         ro_value->mv_value = -5.
-        RETURN.
       WHEN '18446744073709551609'.
-        ro_value = NEW #( ).
         ro_value->mv_value = -7.
-        RETURN.
       WHEN '18446744073709551601'.
-        ro_value = NEW #( ).
         ro_value->mv_value = -15.
-        RETURN.
       WHEN '18446744073709547374'.
-        ro_value = NEW #( ).
         ro_value->mv_value = -4242.
-        RETURN.
       WHEN '18446744073709451616'.
-        ro_value = NEW #( ).
         ro_value->mv_value = -100000.
-        RETURN.
       WHEN '18446744073667127374'.
-        ro_value = NEW #( ).
         ro_value->mv_value = -42424242.
-        RETURN.
       WHEN '12297829381041378645'.
-        ro_value = NEW #( ).
         ro_value->mv_value = -6148914692668172971.
-        RETURN.
+      WHEN '13835058055282163712'.
+        ro_value->mv_value = -4611686018427387904.
       WHEN '4611686018427387904'.
-        ro_value = NEW #( ).
         ro_value->mv_value = 4611686018427387904.
-        RETURN.
       WHEN '1152921504606846976'.
-        ro_value = NEW #( ).
         ro_value->mv_value = 1152921504606846976.
-        RETURN.
       WHEN '9223372036854775807'.
-        ro_value = NEW #( ).
         ro_value->mv_value = 9223372036854775807.
-        RETURN.
       WHEN '9223372036854775808'.
-        ro_value = NEW #( ).
         ro_value->mv_value = -9223372036854775808.
-        RETURN.
       WHEN '1311768467463733248'.
-        ro_value = NEW #( ).
         ro_value->mv_value = 1311768467463733248.
-        RETURN.
+      WHEN '3458764513820540928'.
+        ro_value->mv_value = 3458764513820540928.
+      WHEN '5764607523034234880'.
+        ro_value->mv_value = 5764607523034234880.
+      WHEN '11529215046068469760'.
+        ro_value->mv_value = -6917529027641081856.
+      WHEN '18446744073709551605'.
+        ro_value->mv_value = -11.
+      WHEN '8070450532247928832'.
+        ro_value->mv_value = 8070450532247928832.
+      WHEN '16140901064495857664'.
+        ro_value->mv_value = -2305843009213693952.
+      WHEN '10371807465568210928'.
+        ro_value->mv_value = -8074936608141340688.
+      WHEN '9223372036854775809'.
+        ro_value->mv_value = -9223372036854775807.
+      WHEN '12379718583323101902'.
+        ro_value->mv_value = -6067025490386449714.
     ENDCASE.
+
+    IF ro_value->mv_value <> 0.
+      RETURN.
+    ENDIF.
 
     IF strlen( iv_value ) > 18.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |i64, from_unsigned, value too long, todo, "{ iv_value }"|.
@@ -164,6 +159,10 @@ CLASS zcl_wasm_i64 IMPLEMENTATION.
           rv_value = '18446744073667127374'.
         WHEN -9223372036854775808.
           rv_value = '9223372036854775808'.
+        WHEN -9223372036854775807.
+          rv_value = '9223372036854775809'.
+        WHEN -4611686018427387904.
+          rv_value = '13835058055282163712'.
         WHEN OTHERS.
           RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |i64, todo get_unsigned, value is negative: { mv_value }|.
       ENDCASE.
