@@ -69,7 +69,7 @@ CLASS zcl_wasm_block IMPLEMENTATION.
 
     CASE mv_block_type.
       WHEN zcl_wasm_types=>c_empty_block_type.
-    " do nothing
+        RETURN.
       WHEN zcl_wasm_types=>c_value_type-i32
           OR zcl_wasm_types=>c_value_type-i64
           OR zcl_wasm_types=>c_value_type-f32
