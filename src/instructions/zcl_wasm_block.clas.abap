@@ -52,7 +52,30 @@ CLASS zcl_wasm_block IMPLEMENTATION.
 
   METHOD zif_wasm_instruction~execute.
 
+* https://webassembly.github.io/spec/core/exec/instructions.html#xref-syntax-instructions-syntax-instr-control-mathsf-block-xref-syntax-instructions-syntax-blocktype-mathit-blocktype-xref-syntax-instructions-syntax-instr-mathit-instr-ast-xref-syntax-instructions-syntax-instr-control-mathsf-end
+
 * todo: block type?
+    " WRITE / mv_block_type.
+    CASE mv_block_type.
+      WHEN zcl_wasm_types=>c_empty_block_type.
+        " todo
+      WHEN zcl_wasm_types=>c_value_type-i32.
+        " i32
+      WHEN zcl_wasm_types=>c_value_type-i64.
+        " i64
+      WHEN zcl_wasm_types=>c_value_type-f32.
+        " f32
+      WHEN zcl_wasm_types=>c_value_type-f64.
+        " f64
+      WHEN zcl_wasm_types=>c_vector_type.
+        " todo
+      WHEN zcl_wasm_types=>c_reftype-funcref.
+        " todo
+      WHEN zcl_wasm_types=>c_reftype-externref.
+        " todo
+      WHEN OTHERS.
+        " todo
+    ENDCASE.
 
     TRY.
         rv_control = NEW zcl_wasm_vm(

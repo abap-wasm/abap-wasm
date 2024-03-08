@@ -64,28 +64,54 @@ CLASS zcl_wasm_if IMPLEMENTATION.
 * https://webassembly.github.io/spec/core/binary/instructions.html#binary-blocktype
 
 * todo, more regarding block type?
+    CASE mv_block_type.
+      WHEN zcl_wasm_types=>c_empty_block_type.
+        " todo
+      WHEN zcl_wasm_types=>c_value_type-i32.
+        " i32
+      WHEN zcl_wasm_types=>c_value_type-i64.
+        " i64
+      WHEN zcl_wasm_types=>c_value_type-f32.
+        " f32
+      WHEN zcl_wasm_types=>c_value_type-f64.
+        " f64
+      WHEN zcl_wasm_types=>c_vector_type.
+        " todo
+      WHEN zcl_wasm_types=>c_reftype-funcref.
+        " todo
+      WHEN zcl_wasm_types=>c_reftype-externref.
+        " todo
+      WHEN OTHERS.
+        " todo
+    ENDCASE.
 
+    TRY.
 * If c is non-zero, then enter
-    DATA(lv_value) = io_memory->stack_pop_i32( )->get_signed( ).
-    IF lv_value <> 0.
-      LOOP AT mt_in1 INTO DATA(lo_instruction).
-        rv_control = lo_instruction->execute(
-          io_memory = io_memory
-          io_module = io_module ).
-        IF rv_control = zif_wasm_instruction=>c_control-return_.
-          RETURN.
+        DATA(lv_value) = io_memory->stack_pop_i32( )->get_signed( ).
+        IF lv_value <> 0.
+          LOOP AT mt_in1 INTO DATA(lo_instruction).
+            rv_control = lo_instruction->execute(
+              io_memory = io_memory
+              io_module = io_module ).
+            IF rv_control = zif_wasm_instruction=>c_control-return_.
+              RETURN.
+            ENDIF.
+          ENDLOOP.
+        ELSE.
+          LOOP AT mt_in2 INTO lo_instruction.
+            rv_control = lo_instruction->execute(
+              io_memory = io_memory
+              io_module = io_module ).
+            IF rv_control = zif_wasm_instruction=>c_control-return_.
+              RETURN.
+            ENDIF.
+          ENDLOOP.
         ENDIF.
-      ENDLOOP.
-    ELSE.
-      LOOP AT mt_in2 INTO lo_instruction.
-        rv_control = lo_instruction->execute(
-          io_memory = io_memory
-          io_module = io_module ).
-        IF rv_control = zif_wasm_instruction=>c_control-return_.
-          RETURN.
+      CATCH zcx_wasm_branch INTO DATA(lx_branch).
+        IF lx_branch->depth > 0.
+          RAISE EXCEPTION TYPE zcx_wasm_branch EXPORTING depth = lx_branch->depth - 1.
         ENDIF.
-      ENDLOOP.
-    ENDIF.
+    ENDTRY.
 
   ENDMETHOD.
 
