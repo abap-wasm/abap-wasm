@@ -63,27 +63,9 @@ CLASS zcl_wasm_if IMPLEMENTATION.
 * https://webassembly.github.io/spec/core/binary/instructions.html#control-instructions
 * https://webassembly.github.io/spec/core/binary/instructions.html#binary-blocktype
 
-* todo, more regarding block type?
-    CASE mv_block_type.
-      WHEN zcl_wasm_types=>c_empty_block_type.
-        " todo
-      WHEN zcl_wasm_types=>c_value_type-i32.
-        " i32
-      WHEN zcl_wasm_types=>c_value_type-i64.
-        " i64
-      WHEN zcl_wasm_types=>c_value_type-f32.
-        " f32
-      WHEN zcl_wasm_types=>c_value_type-f64.
-        " f64
-      WHEN zcl_wasm_types=>c_vector_type.
-        " todo
-      WHEN zcl_wasm_types=>c_reftype-funcref.
-        " todo
-      WHEN zcl_wasm_types=>c_reftype-externref.
-        " todo
-      WHEN OTHERS.
-        " todo
-    ENDCASE.
+    IF mv_block_type <> zcl_wasm_types=>c_empty_block_type.
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'if: todo handle non-empty block type'.
+    ENDIF.
 
     TRY.
 * If c is non-zero, then enter
