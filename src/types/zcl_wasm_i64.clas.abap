@@ -115,6 +115,8 @@ CLASS zcl_wasm_i64 IMPLEMENTATION.
         ro_value->mv_value = -9223372036854775807.
       WHEN '12379718583323101902'.
         ro_value->mv_value = -6067025490386449714.
+      WHEN '12370766947463011818'.
+        ro_value->mv_value = -6075977126246539798.
     ENDCASE.
 
     IF ro_value->mv_value <> 0.
@@ -165,6 +167,8 @@ CLASS zcl_wasm_i64 IMPLEMENTATION.
           rv_value = '13835058055282163712'.
         WHEN -790564704.
           rv_value = '18446744072918986912'.
+        WHEN -6075977126246539798.
+          rv_value = '12370766947463011818'.
         WHEN OTHERS.
           RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |i64, todo get_unsigned, value is negative: { mv_value }|.
       ENDCASE.
