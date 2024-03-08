@@ -67,6 +67,11 @@ CLASS zcl_wasm_memory_linear IMPLEMENTATION.
     IF iv_offset = 0.
       CONCATENATE iv_bytes mv_linear+lv_length INTO mv_linear IN BYTE MODE.
     ELSE.
+      IF mv_linear+iv_offset(lv_length) = iv_bytes.
+* optimization for scrypt?
+        RETURN.
+      ENDIF.
+
       lv_length = lv_length + iv_offset.
       CONCATENATE mv_linear(iv_offset) iv_bytes mv_linear+lv_length INTO mv_linear IN BYTE MODE.
     ENDIF.

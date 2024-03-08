@@ -25,7 +25,6 @@ CLASS zcl_wasm_memory_grow IMPLEMENTATION.
 
     DATA(lv_pages) = io_memory->stack_pop_i32( )->get_unsigned( ).
 
-* todo, handle error
     io_memory->get_linear( )->grow( lv_pages ).
 
     io_memory->stack_push( zcl_wasm_i32=>from_unsigned( lv_sz ) ).
