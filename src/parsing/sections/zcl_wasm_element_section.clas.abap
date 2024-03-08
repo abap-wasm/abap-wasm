@@ -32,6 +32,8 @@ CLASS zcl_wasm_element_section IMPLEMENTATION.
 
 * type = 0 + 2 + 4 + 6 is active
 
+    DATA li_value TYPE REF TO zif_wasm_value.
+
     TRY.
         LOOP AT mt_elements INTO DATA(ls_element).
           CASE ls_element-type.
@@ -49,9 +51,30 @@ CLASS zcl_wasm_element_section IMPLEMENTATION.
                   iv_tableidx = ls_element-tableidx
                   iv_offset   = lv_offset
                   ii_value    = lo_ref ).
+                lv_offset = lv_offset + 1.
               ENDLOOP.
             WHEN 2.
-              RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |instantiate 2: todo|.
+              LOOP AT ls_element-expr INTO lo_instruction.
+                lo_instruction->execute(
+                  io_memory = io_memory
+                  io_module = NEW zcl_wasm_module( ) ).
+              ENDLOOP.
+              lv_offset = io_memory->stack_pop_i32( )->get_signed( ).
+
+              LOOP AT ls_element-funcidx INTO lv_funcidx.
+* todo, is the type derived from the table? elemkind seems wrong?
+                " CASE ls_element-elemkind.
+                "   WHEN zcl_wasm_types=>c_reftype-funcref.
+                li_value ?= NEW zcl_wasm_funcref( lv_funcidx ).
+                "   WHEN OTHERS.
+                "     RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |instantiate 2: todo type { ls_element-elemkind }|.
+                " ENDCASE.
+                io_memory->table_set(
+                  iv_tableidx = ls_element-tableidx
+                  iv_offset   = lv_offset
+                  ii_value    = li_value ).
+                lv_offset = lv_offset + 1.
+              ENDLOOP.
             WHEN 4.
               RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |instantiate 4: todo|.
             WHEN 6.
