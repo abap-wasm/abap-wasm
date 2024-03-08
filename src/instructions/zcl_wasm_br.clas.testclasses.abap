@@ -2,6 +2,7 @@ CLASS ltcl_test DEFINITION FOR TESTING DURATION MEDIUM RISK LEVEL HARMLESS.
 
   PRIVATE SECTION.
     METHODS asreturnvalues FOR TESTING RAISING cx_static_check.
+    METHODS unwind_func FOR TESTING RAISING cx_static_check.
 
 ENDCLASS.
 
@@ -46,6 +47,32 @@ CLASS ltcl_test IMPLEMENTATION.
     cl_abap_unit_assert=>assert_equals(
       act = CAST zcl_wasm_i64( lt_values[ 2 ] )->get_signed( )
       exp = 7 ).
+
+  ENDMETHOD.
+
+  METHOD unwind_func.
+
+" (module
+"   (func (export "unwind") (result i32)
+"     i32.const 3
+"     i64.const 1
+"     i32.const 9
+"     br 0 (;@0;)
+" ))
+
+    DATA(lv_wasm) = `AGFzbQEAAAABBQFgAAF/AwIBAAcKAQZ1bndpbmQAAAoMAQoAQQNCAUEJDAALAAoEbmFtZQIDAQAA`.
+
+    DATA(li_wasm) = zcl_wasm=>create_with_base64( lv_wasm ).
+
+    DATA(lt_values) = li_wasm->execute_function_export( 'unwind' ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lines( lt_values )
+      exp = 1 ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = CAST zcl_wasm_i32( lt_values[ 1 ] )->get_signed( )
+      exp = 9 ).
 
   ENDMETHOD.
 

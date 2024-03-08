@@ -63,27 +63,7 @@ CLASS zcl_wasm_if IMPLEMENTATION.
 * https://webassembly.github.io/spec/core/binary/instructions.html#control-instructions
 * https://webassembly.github.io/spec/core/binary/instructions.html#binary-blocktype
 
-* todo, more regarding block type?
-    CASE mv_block_type.
-      WHEN zcl_wasm_types=>c_empty_block_type.
-        " todo
-      WHEN zcl_wasm_types=>c_value_type-i32.
-        " i32
-      WHEN zcl_wasm_types=>c_value_type-i64.
-        " i64
-      WHEN zcl_wasm_types=>c_value_type-f32.
-        " f32
-      WHEN zcl_wasm_types=>c_value_type-f64.
-        " f64
-      WHEN zcl_wasm_types=>c_vector_type.
-        " todo
-      WHEN zcl_wasm_types=>c_reftype-funcref.
-        " todo
-      WHEN zcl_wasm_types=>c_reftype-externref.
-        " todo
-      WHEN OTHERS.
-        " todo
-    ENDCASE.
+    DATA(lv_length) = io_memory->stack_length( ).
 
     TRY.
 * If c is non-zero, then enter
@@ -112,6 +92,12 @@ CLASS zcl_wasm_if IMPLEMENTATION.
           RAISE EXCEPTION TYPE zcx_wasm_branch EXPORTING depth = lx_branch->depth - 1.
         ENDIF.
     ENDTRY.
+
+    zcl_wasm_block=>fix_return(
+      io_memory     = io_memory
+      io_module     = io_module
+      iv_block_type = mv_block_type
+      iv_length     = lv_length ).
 
   ENDMETHOD.
 

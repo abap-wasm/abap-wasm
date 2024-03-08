@@ -49,7 +49,7 @@ CLASS zcl_wasm_loop IMPLEMENTATION.
   METHOD zif_wasm_instruction~execute.
 * loops doesnt loop, but branches to the start instead of block branches which branches to the end
 
-* todo: block type?
+    DATA(lv_length) = io_memory->stack_length( ).
 
     DO.
       TRY.
@@ -70,6 +70,12 @@ CLASS zcl_wasm_loop IMPLEMENTATION.
 
       EXIT.
     ENDDO.
+
+    zcl_wasm_block=>fix_return(
+      io_memory     = io_memory
+      io_module     = io_module
+      iv_block_type = mv_block_type
+      iv_length     = lv_length ).
 
   ENDMETHOD.
 

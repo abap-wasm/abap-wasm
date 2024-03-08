@@ -36,7 +36,13 @@ CLASS zcl_wasm_call_indirect IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
+
 * https://webassembly.github.io/spec/core/exec/instructions.html#xref-syntax-instructions-syntax-instr-control-mathsf-call-indirect-x-y
+* https://coinexsmartchain.medium.com/wasm-introduction-part-6-table-indirect-call-65ad0404b003
+
+    " WRITE / mv_typeidx.
+    " WRITE / mv_tableidx.
+
     RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'todo, execute instruction zcl_wasm_call_indirect'.
   ENDMETHOD.
 

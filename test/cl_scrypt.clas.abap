@@ -124,9 +124,14 @@ CLASS cl_scrypt IMPLEMENTATION.
       it_parameters = VALUE #( ( zcl_wasm_i32=>from_signed( -16 ) ) ) ).
     DATA(lo_retptr) = CAST zcl_wasm_i32( lt_results[ 1 ] ).
 
-    " lt_results = li_wasm->execute_function_export(
-    "   iv_name       = 'run'
-    "   it_parameters = VALUE #( ( lo_retptr ) ) ).
+    TRY.
+        lt_results = li_wasm->execute_function_export(
+          iv_name       = 'run'
+          it_parameters = VALUE #( ( lo_retptr ) ) ).
+        WRITE / 'success, todo check result'.
+      CATCH zcx_wasm INTO DATA(lo_exception).
+        WRITE / lo_exception->get_text( ).
+    ENDTRY.
 
   ENDMETHOD.
 
