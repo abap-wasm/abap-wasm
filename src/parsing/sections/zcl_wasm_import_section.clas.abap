@@ -145,7 +145,7 @@ CLASS zcl_wasm_import_section IMPLEMENTATION.
             WHEN OTHERS.
               RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |import: unknown global import type|.
           ENDCASE.
-          io_memory->get_globals( )->global_append( li_value ).
+          io_memory->get_globals( )->append( li_value ).
         WHEN OTHERS.
           RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |import: unknown import type|.
       ENDCASE.

@@ -30,7 +30,7 @@ CLASS zcl_wasm_global_get IMPLEMENTATION.
   METHOD zif_wasm_instruction~execute.
 * https://webassembly.github.io/spec/core/exec/instructions.html#xref-syntax-instructions-syntax-instr-variable-mathsf-global-get-x
 
-    DATA(li_value) = io_memory->get_globals( )->global_get( mv_globalidx ).
+    DATA(li_value) = io_memory->get_globals( )->get( mv_globalidx ).
     io_memory->stack_push( li_value ).
 
   ENDMETHOD.

@@ -69,7 +69,7 @@ CLASS zcl_wasm_global_section IMPLEMENTATION.
           IF li_value->get_type( ) <> ls_global-type.
             RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |instantiate_global, type mismatch: { ls_global-type } vs { li_value->get_type( ) }|.
           ENDIF.
-          io_memory->get_globals( )->global_append( li_value ).
+          io_memory->get_globals( )->append( li_value ).
         WHEN zcl_wasm_types=>c_vector_type.
           RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |instantiate_global, todo vector type|.
         WHEN OTHERS.
