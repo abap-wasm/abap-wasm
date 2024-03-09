@@ -82,7 +82,9 @@ CLASS zcl_wasm_block_helper IMPLEMENTATION.
 
     IF xstrlen( ms_type-result_types ) > io_memory->get_stack( )->get_length( ).
 *      WRITE '@KERNEL throw new Error("block");'.
-      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |block: expected { xstrlen( ms_type-result_types ) } values on stack, { ms_type-result_types }|.
+      RAISE EXCEPTION TYPE zcx_wasm
+        EXPORTING
+          text = |block: expected { xstrlen( ms_type-result_types ) } values on stack, { ms_type-result_types }|.
     ENDIF.
 
     DO xstrlen( ms_type-result_types ) TIMES.
