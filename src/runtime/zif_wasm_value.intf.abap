@@ -8,7 +8,7 @@ INTERFACE zif_wasm_value PUBLIC.
     RETURNING
       VALUE(rv_type) TYPE ty_hex.
 
-* used mostly for debugging
+* for debugging
   METHODS human_readable_value
     RETURNING
       VALUE(rv_string) TYPE string.
