@@ -64,8 +64,8 @@ CLASS zcl_wasm_block IMPLEMENTATION.
 
   METHOD fix_return.
 
-    DATA lv_return TYPE xstring.
-    DATA lv_int8 TYPE int8.
+    DATA lv_return  TYPE xstring.
+    DATA lv_int8    TYPE int8.
     DATA lt_results TYPE STANDARD TABLE OF REF TO zif_wasm_value WITH EMPTY KEY.
 
     CASE iv_block_type.
@@ -88,6 +88,9 @@ CLASS zcl_wasm_block IMPLEMENTATION.
         lv_return = ls_type-result_types.
     ENDCASE.
 
+    IF xstrlen( lv_return ) > io_memory->stack_length( ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |block: expected { xstrlen( lv_return ) } values on stack, { lv_return }|.
+    ENDIF.
     DO xstrlen( lv_return ) TIMES.
       DATA(li_val) = io_memory->stack_pop( ).
       INSERT li_val INTO lt_results INDEX 1.

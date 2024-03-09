@@ -291,9 +291,10 @@ CLASS zcl_wasm_memory IMPLEMENTATION.
 
     DATA(lv_length) = lines( mt_stack ).
     IF lv_length = 0.
+*      WRITE '@KERNEL throw new Error("sdf");'.
       RAISE EXCEPTION TYPE zcx_wasm
         EXPORTING
-          text = 'zcl_wasm_memory: nothing to pop'.
+          text = |zcl_wasm_memory: nothing to pop|.
     ENDIF.
 
     READ TABLE mt_stack INDEX lv_length INTO ri_value.
