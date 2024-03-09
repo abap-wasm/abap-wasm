@@ -291,15 +291,13 @@ CLASS zcl_wasm_memory IMPLEMENTATION.
 
     DATA(lv_length) = lines( mt_stack ).
     IF lv_length = 0.
-      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_memory: nothing to pop'.
+      RAISE EXCEPTION TYPE zcx_wasm
+        EXPORTING
+          text = 'zcl_wasm_memory: nothing to pop'.
     ENDIF.
 
     READ TABLE mt_stack INDEX lv_length INTO ri_value.
     DELETE mt_stack INDEX lv_length.
-
-    " IF ri_value IS INITIAL.
-    "   RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_memory: stack popped initial value'.
-    " ENDIF.
 
   ENDMETHOD.
 
