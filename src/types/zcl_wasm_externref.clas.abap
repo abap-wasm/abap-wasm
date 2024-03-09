@@ -10,7 +10,7 @@ ENDCLASS.
 CLASS zcl_wasm_externref IMPLEMENTATION.
 
   METHOD zif_wasm_value~human_readable_value.
-    rv_string = |externref: todo|.
+    rv_string = |externref: { mv_address }|.
   ENDMETHOD.
 
   METHOD constructor.

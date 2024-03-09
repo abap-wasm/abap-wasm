@@ -80,7 +80,9 @@ CLASS zcl_wasm_memory DEFINITION
 ************* TABLES
     METHODS table_add
       IMPORTING
-        is_table TYPE zcl_wasm_table_section=>ty_table.
+        is_table TYPE zcl_wasm_table_section=>ty_table
+      RAISING
+        zcx_wasm.
 
     METHODS table_set
       IMPORTING
@@ -120,7 +122,10 @@ CLASS zcl_wasm_memory DEFINITION
     DATA mt_frames TYPE STANDARD TABLE OF REF TO zif_wasm_memory_frame WITH DEFAULT KEY.
     DATA mt_globals TYPE STANDARD TABLE OF REF TO zif_wasm_value WITH EMPTY KEY.
 
-    TYPES ty_table TYPE STANDARD TABLE OF REF TO zif_wasm_value WITH EMPTY KEY.
+    TYPES: BEGIN OF ty_table,
+             type     TYPE zcl_wasm_table_section=>ty_table,
+             contents TYPE STANDARD TABLE OF REF TO zif_wasm_value WITH EMPTY KEY,
+           END OF ty_table.
     DATA mt_tables TYPE STANDARD TABLE OF ty_table WITH EMPTY KEY.
   PRIVATE SECTION.
 ENDCLASS.
@@ -138,12 +143,12 @@ CLASS zcl_wasm_memory IMPLEMENTATION.
           text = |zcl_wasm_memory: table_get, not found, index { iv_tableidx }|.
     ENDIF.
     DATA(lv_offset) = iv_offset + 1.
-    IF lv_offset > lines( <lt_table> ).
+    IF lv_offset > lines( <lt_table>-contents ).
       RAISE EXCEPTION TYPE zcx_wasm
         EXPORTING
           text = |zcl_wasm_memory: table_get, out of bounds|.
     ENDIF.
-    ri_value = <lt_table>[ lv_offset ].
+    ri_value = <lt_table>-contents[ lv_offset ].
   ENDMETHOD.
 
   METHOD table_size.
@@ -154,7 +159,7 @@ CLASS zcl_wasm_memory IMPLEMENTATION.
         EXPORTING
           text = |zcl_wasm_memory: table_size, not found, index { iv_tableidx }|.
     ENDIF.
-    rv_size = lines( <lt_table> ).
+    rv_size = lines( <lt_table>-contents ).
   ENDMETHOD.
 
   METHOD table_set.
@@ -166,24 +171,28 @@ CLASS zcl_wasm_memory IMPLEMENTATION.
           text = |zcl_wasm_memory: table_set, not found, index { iv_tableidx }|.
     ENDIF.
     DATA(lv_offset) = iv_offset + 1.
-    IF lv_offset > lines( <lt_table> ).
+    IF lv_offset > lines( <lt_table>-contents ).
       RAISE EXCEPTION TYPE zcx_wasm
         EXPORTING
           text = |zcl_wasm_memory: table_get, out of bounds|.
     ENDIF.
-    <lt_table>[ lv_offset ] = ii_value.
+    <lt_table>-contents[ lv_offset ] = ii_value.
   ENDMETHOD.
 
   METHOD table_add.
-* todo: validate and store types? plus max length
-    DATA lt_table TYPE ty_table.
-    DO is_table-limit-min TIMES.
-      INSERT INITIAL LINE INTO lt_table.
-    ENDDO.
-    INSERT lt_table INTO TABLE mt_tables.
+    DATA ls_table TYPE ty_table.
+    ls_table-type = is_table.
+
+    INSERT ls_table INTO TABLE mt_tables.
+
+    table_grow(
+      iv_tableidx = lines( mt_tables ) - 1
+      iv_count    = is_table-limit-min ).
   ENDMETHOD.
 
   METHOD table_grow.
+
+    DATA li_val TYPE REF TO zif_wasm_value.
 
     DATA(lv_idx) = iv_tableidx + 1.
     READ TABLE mt_tables INDEX lv_idx ASSIGNING FIELD-SYMBOL(<lt_table>).
@@ -194,7 +203,17 @@ CLASS zcl_wasm_memory IMPLEMENTATION.
     ENDIF.
 
     DO iv_count TIMES.
-      INSERT INITIAL LINE INTO <lt_table>.
+      CASE <lt_table>-type-reftype.
+        WHEN zcl_wasm_types=>c_reftype-funcref.
+          li_val = NEW zcl_wasm_funcref( -1 ).
+        WHEN zcl_wasm_types=>c_reftype-externref.
+          li_val = NEW zcl_wasm_externref( -1 ).
+        WHEN OTHERS.
+          RAISE EXCEPTION TYPE zcx_wasm
+            EXPORTING
+              text = |zcl_wasm_memory: table_grow, unknown reftype { <lt_table>-type-reftype }|.
+      ENDCASE.
+      INSERT li_val INTO TABLE <lt_table>-contents.
     ENDDO.
 
   ENDMETHOD.

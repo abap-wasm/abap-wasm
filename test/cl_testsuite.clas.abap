@@ -221,7 +221,7 @@ CLASS cl_testsuite IMPLEMENTATION.
                 lv_error = abap_true.
                 go_result->add_error(
                   iv_start_time = ls_results-start_time
-                  iv_text       = |todo, externref check non null| ).
+                  iv_text       = |todo, externref check non null, { li_result->human_readable_value( ) }| ).
                 EXIT. " current loop
               ENDIF.
             WHEN 'funcref'.
@@ -237,7 +237,7 @@ CLASS cl_testsuite IMPLEMENTATION.
                 lv_error = abap_true.
                 go_result->add_error(
                   iv_start_time = ls_results-start_time
-                  iv_text       = |todo, funcref check non null| ).
+                  iv_text       = |todo, funcref check non null, { li_result->human_readable_value( ) }| ).
                 EXIT. " current loop
               ENDIF.
             WHEN OTHERS.
