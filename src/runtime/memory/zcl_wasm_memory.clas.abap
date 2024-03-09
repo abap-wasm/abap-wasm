@@ -113,6 +113,7 @@ CLASS zcl_wasm_memory DEFINITION
       IMPORTING
         iv_tableidx TYPE i
         iv_count    TYPE i
+        ii_value    TYPE REF TO zif_wasm_value
       RAISING
         zcx_wasm.
 
@@ -181,18 +182,29 @@ CLASS zcl_wasm_memory IMPLEMENTATION.
 
   METHOD table_add.
     DATA ls_table TYPE ty_table.
-    ls_table-type = is_table.
+    DATA li_val TYPE REF TO zif_wasm_value.
 
+    ls_table-type = is_table.
     INSERT ls_table INTO TABLE mt_tables.
+
+    CASE ls_table-type-reftype.
+      WHEN zcl_wasm_types=>c_reftype-funcref.
+        li_val = NEW zcl_wasm_funcref( -1 ).
+      WHEN zcl_wasm_types=>c_reftype-externref.
+        li_val = NEW zcl_wasm_externref( -1 ).
+      WHEN OTHERS.
+        RAISE EXCEPTION TYPE zcx_wasm
+          EXPORTING
+            text = |zcl_wasm_memory: table_grow, unknown reftype { ls_table-type-reftype }|.
+    ENDCASE.
 
     table_grow(
       iv_tableidx = lines( mt_tables ) - 1
-      iv_count    = is_table-limit-min ).
+      iv_count    = is_table-limit-min
+      ii_value    = li_val ).
   ENDMETHOD.
 
   METHOD table_grow.
-
-    DATA li_val TYPE REF TO zif_wasm_value.
 
     DATA(lv_idx) = iv_tableidx + 1.
     READ TABLE mt_tables INDEX lv_idx ASSIGNING FIELD-SYMBOL(<lt_table>).
@@ -202,18 +214,9 @@ CLASS zcl_wasm_memory IMPLEMENTATION.
           text = |zcl_wasm_memory: table_set, not found, index { iv_tableidx }|.
     ENDIF.
 
+* todo, validate ii_value is of the expected type?
     DO iv_count TIMES.
-      CASE <lt_table>-type-reftype.
-        WHEN zcl_wasm_types=>c_reftype-funcref.
-          li_val = NEW zcl_wasm_funcref( -1 ).
-        WHEN zcl_wasm_types=>c_reftype-externref.
-          li_val = NEW zcl_wasm_externref( -1 ).
-        WHEN OTHERS.
-          RAISE EXCEPTION TYPE zcx_wasm
-            EXPORTING
-              text = |zcl_wasm_memory: table_grow, unknown reftype { <lt_table>-type-reftype }|.
-      ENDCASE.
-      INSERT li_val INTO TABLE <lt_table>-contents.
+      INSERT ii_value INTO TABLE <lt_table>-contents.
     ENDDO.
 
   ENDMETHOD.
