@@ -85,13 +85,17 @@ CLASS zcl_wasm_block IMPLEMENTATION.
           RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |block: expected positive function type index|.
         ENDIF.
         DATA(ls_type) = io_module->get_type_by_index( lv_int8 ).
+        IF xstrlen( ls_type-parameter_types ) > 0.
+          RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |block: todo consume parameters|.
+        ENDIF.
         lv_return = ls_type-result_types.
     ENDCASE.
 
     IF xstrlen( lv_return ) > io_memory->stack_length( ).
-*      WRITE '@KERNEL throw new Error("sdf");'.
+*      WRITE '@KERNEL throw new Error("block");'.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |block: expected { xstrlen( lv_return ) } values on stack, { lv_return }|.
     ENDIF.
+
     DO xstrlen( lv_return ) TIMES.
       DATA(li_val) = io_memory->stack_pop( ).
       INSERT li_val INTO lt_results INDEX 1.

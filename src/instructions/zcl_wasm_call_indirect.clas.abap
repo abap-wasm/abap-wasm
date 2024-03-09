@@ -62,7 +62,7 @@ CLASS zcl_wasm_call_indirect IMPLEMENTATION.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |zcl_wasm_call_indirect type mismatch|.
     ENDIF.
 
-    zcl_wasm_call=>call(
+    zcl_wasm_call=>invoke(
       iv_funcidx = lo_ref->get_address( )
       io_memory  = io_memory
       io_module  = io_module ).
