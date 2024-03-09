@@ -9,9 +9,12 @@ CLASS zcl_wasm_if DEFINITION PUBLIC.
         it_in2        TYPE zif_wasm_instruction=>ty_list.
 
     CLASS-METHODS parse
-      IMPORTING !io_body TYPE REF TO zcl_wasm_binary_stream
-      RETURNING VALUE(ri_instruction) TYPE REF TO zif_wasm_instruction
-      RAISING zcx_wasm.
+      IMPORTING
+        !io_body TYPE REF TO zcl_wasm_binary_stream
+      RETURNING
+        VALUE(ri_instruction) TYPE REF TO zif_wasm_instruction
+      RAISING
+        zcx_wasm.
   PRIVATE SECTION.
     DATA mv_block_type TYPE xstring.
     DATA mt_in1        TYPE zif_wasm_instruction=>ty_list.
@@ -63,11 +66,15 @@ CLASS zcl_wasm_if IMPLEMENTATION.
 * https://webassembly.github.io/spec/core/binary/instructions.html#control-instructions
 * https://webassembly.github.io/spec/core/binary/instructions.html#binary-blocktype
 
-    DATA(lv_length) = io_memory->get_stack( )->get_length( ).
+    DATA(lv_value) = io_memory->get_stack( )->pop_i32( )->get_signed( ).
+
+    DATA(lo_block) = NEW zcl_wasm_block_helper(
+      iv_block_type = mv_block_type
+      io_module     = io_module ).
+    lo_block->start( io_memory ).
 
     TRY.
 * If c is non-zero, then enter
-        DATA(lv_value) = io_memory->get_stack( )->pop_i32( )->get_signed( ).
         IF lv_value <> 0.
           LOOP AT mt_in1 INTO DATA(lo_instruction).
             rv_control = lo_instruction->execute(
@@ -93,11 +100,7 @@ CLASS zcl_wasm_if IMPLEMENTATION.
         ENDIF.
     ENDTRY.
 
-    zcl_wasm_block=>fix_return(
-      io_memory     = io_memory
-      io_module     = io_module
-      iv_block_type = mv_block_type
-      iv_length     = lv_length ).
+    lo_block->end( io_memory ).
 
   ENDMETHOD.
 

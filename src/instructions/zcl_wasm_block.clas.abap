@@ -15,15 +15,6 @@ CLASS zcl_wasm_block DEFINITION PUBLIC.
       RAISING
         zcx_wasm.
 
-    CLASS-METHODS fix_return
-      IMPORTING
-        io_memory TYPE REF TO zcl_wasm_memory
-        io_module TYPE REF TO zcl_wasm_module
-        iv_block_type TYPE xstring
-        iv_length TYPE i
-      RAISING
-        zcx_wasm.
-
   PRIVATE SECTION.
     DATA mv_block_type   TYPE xstring.
     DATA mt_instructions TYPE zif_wasm_instruction=>ty_list.
@@ -60,54 +51,6 @@ CLASS zcl_wasm_block IMPLEMENTATION.
       iv_block_type   = lv_block_type
       it_instructions = lt_instructions ).
 
-  ENDMETHOD.
-
-  METHOD fix_return.
-
-    DATA lv_return  TYPE xstring.
-    DATA lv_int8    TYPE int8.
-    DATA lt_results TYPE STANDARD TABLE OF REF TO zif_wasm_value WITH EMPTY KEY.
-
-    CASE iv_block_type.
-      WHEN zcl_wasm_types=>c_empty_block_type.
-        RETURN.
-      WHEN zcl_wasm_types=>c_value_type-i32
-          OR zcl_wasm_types=>c_value_type-i64
-          OR zcl_wasm_types=>c_value_type-f32
-          OR zcl_wasm_types=>c_value_type-f64
-          OR zcl_wasm_types=>c_reftype-funcref
-          OR zcl_wasm_types=>c_reftype-externref
-          OR zcl_wasm_types=>c_vector_type.
-        lv_return = iv_block_type.
-      WHEN OTHERS.
-        lv_int8 = iv_block_type.
-        IF lv_int8 < 0.
-          RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |block: expected positive function type index|.
-        ENDIF.
-        DATA(ls_type) = io_module->get_type_by_index( lv_int8 ).
-        IF xstrlen( ls_type-parameter_types ) > 0.
-          RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |block: todo consume parameters|.
-        ENDIF.
-        lv_return = ls_type-result_types.
-    ENDCASE.
-
-    IF xstrlen( lv_return ) > io_memory->get_stack( )->get_length( ).
-*      WRITE '@KERNEL throw new Error("block");'.
-      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |block: expected { xstrlen( lv_return ) } values on stack, { lv_return }|.
-    ENDIF.
-
-    DO xstrlen( lv_return ) TIMES.
-      DATA(li_val) = io_memory->get_stack( )->pop( ).
-      INSERT li_val INTO lt_results INDEX 1.
-    ENDDO.
-
-    WHILE io_memory->get_stack( )->get_length( ) > iv_length AND io_memory->get_stack( )->get_length( ) > 0.
-      io_memory->get_stack( )->pop( ).
-    ENDWHILE.
-
-    LOOP AT lt_results INTO li_val.
-      io_memory->get_stack( )->push( li_val ).
-    ENDLOOP.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
