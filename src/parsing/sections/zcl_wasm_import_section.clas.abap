@@ -121,6 +121,8 @@ CLASS zcl_wasm_import_section IMPLEMENTATION.
 
   METHOD import.
 
+    DATA li_value TYPE REF TO zif_wasm_value.
+
     LOOP AT mt_imports INTO DATA(ls_import).
       CASE ls_import-type.
         WHEN c_importdesc-func.
@@ -133,16 +135,17 @@ CLASS zcl_wasm_import_section IMPLEMENTATION.
 * todo, handle ls_import-global-mut
           CASE ls_import-global-valtype.
             WHEN zcl_wasm_types=>c_value_type-i32.
-              io_memory->global_append( NEW zcl_wasm_i32( ) ).
+              li_value = NEW zcl_wasm_i32( ).
             WHEN zcl_wasm_types=>c_value_type-i64.
-              io_memory->global_append( NEW zcl_wasm_i64( ) ).
+              li_value = NEW zcl_wasm_i64( ).
             WHEN zcl_wasm_types=>c_value_type-f32.
-              io_memory->global_append( NEW zcl_wasm_f32( ) ).
+              li_value = NEW zcl_wasm_f32( ).
             WHEN zcl_wasm_types=>c_value_type-f64.
-              io_memory->global_append( NEW zcl_wasm_f64( ) ).
+              li_value = NEW zcl_wasm_f64( ).
             WHEN OTHERS.
               RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |import: unknown global import type|.
           ENDCASE.
+          io_memory->get_globals( )->global_append( li_value ).
         WHEN OTHERS.
           RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |import: unknown import type|.
       ENDCASE.

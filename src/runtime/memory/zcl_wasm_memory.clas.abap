@@ -9,6 +9,8 @@ CLASS zcl_wasm_memory DEFINITION
     CONSTANTS c_alignment_32bit TYPE int8 VALUE 2.
     CONSTANTS c_alignment_64bit TYPE int8 VALUE 3.
 
+    METHODS constructor.
+
 *********** STACK
     METHODS stack_push
       IMPORTING
@@ -43,24 +45,11 @@ CLASS zcl_wasm_memory DEFINITION
       RAISING zcx_wasm.
 
 *********** GLOBAL
-    METHODS global_get
-      IMPORTING
-        iv_index TYPE int8
+    METHODS get_globals
       RETURNING
-        VALUE(rv_value) TYPE REF TO zif_wasm_value
+        VALUE(ri_globals) TYPE REF TO zif_wasm_memory_globals
       RAISING
         zcx_wasm.
-    METHODS global_set
-      IMPORTING
-        iv_index TYPE int8
-        ii_value TYPE REF TO zif_wasm_value
-      RAISING
-        zcx_wasm.
-    METHODS global_append
-      IMPORTING
-        ii_value TYPE REF TO zif_wasm_value
-      RETURNING
-        VALUE(rv_index) TYPE i.
 
 *********** DEFAULT LINEAR
     METHODS get_linear
@@ -118,22 +107,32 @@ CLASS zcl_wasm_memory DEFINITION
         zcx_wasm.
 
   PROTECTED SECTION.
-    DATA mt_stack  TYPE STANDARD TABLE OF REF TO zif_wasm_value WITH DEFAULT KEY.
     DATA mi_linear TYPE REF TO zif_wasm_memory_linear.
+    DATA mi_globals TYPE REF TO zif_wasm_memory_globals.
+
+    DATA mt_stack  TYPE STANDARD TABLE OF REF TO zif_wasm_value WITH DEFAULT KEY.
     DATA mt_frames TYPE STANDARD TABLE OF REF TO zif_wasm_memory_frame WITH DEFAULT KEY.
-    DATA mt_globals TYPE STANDARD TABLE OF REF TO zif_wasm_value WITH EMPTY KEY.
 
     TYPES: BEGIN OF ty_table,
              type     TYPE zcl_wasm_table_section=>ty_table,
              contents TYPE STANDARD TABLE OF REF TO zif_wasm_value WITH EMPTY KEY,
            END OF ty_table.
     DATA mt_tables TYPE STANDARD TABLE OF ty_table WITH EMPTY KEY.
+
   PRIVATE SECTION.
 ENDCLASS.
 
 
 
 CLASS zcl_wasm_memory IMPLEMENTATION.
+
+  METHOD constructor.
+    mi_globals = NEW zcl_wasm_memory_globals( ).
+  ENDMETHOD.
+
+  METHOD get_globals.
+    ri_globals = mi_globals.
+  ENDMETHOD.
 
   METHOD table_get.
     DATA(lv_idx) = iv_tableidx + 1.
@@ -219,26 +218,6 @@ CLASS zcl_wasm_memory IMPLEMENTATION.
       INSERT ii_value INTO TABLE <lt_table>-contents.
     ENDDO.
 
-  ENDMETHOD.
-
-  METHOD global_get.
-    READ TABLE mt_globals INDEX iv_index + 1 INTO rv_value.
-    IF sy-subrc <> 0.
-      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |zcl_wasm_memory: global_get, not found, index { iv_index }|.
-    ENDIF.
-  ENDMETHOD.
-
-  METHOD global_set.
-* todo: raise error if the set changes the type of the global?
-    IF lines( mt_globals ) < iv_index + 1.
-      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_memory: global_set, not found'.
-    ENDIF.
-    mt_globals[ iv_index + 1 ] = ii_value.
-  ENDMETHOD.
-
-  METHOD global_append.
-    APPEND ii_value TO mt_globals.
-    rv_index = lines( mt_globals ) - 1.
   ENDMETHOD.
 
   METHOD push_frame.

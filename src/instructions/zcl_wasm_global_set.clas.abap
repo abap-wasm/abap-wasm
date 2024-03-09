@@ -29,7 +29,7 @@ CLASS zcl_wasm_global_set IMPLEMENTATION.
   METHOD zif_wasm_instruction~execute.
 * https://webassembly.github.io/spec/core/exec/instructions.html#xref-syntax-instructions-syntax-instr-variable-mathsf-global-set-x
 
-    io_memory->global_set(
+    io_memory->get_globals( )->global_set(
       iv_index = mv_globalidx
       ii_value = io_memory->stack_pop( ) ).
 
