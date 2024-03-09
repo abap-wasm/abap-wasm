@@ -49,7 +49,10 @@ CLASS zcl_wasm_loop IMPLEMENTATION.
   METHOD zif_wasm_instruction~execute.
 * loops doesnt loop, but branches to the start instead of block branches which branches to the end
 
-    DATA(lv_length) = io_memory->get_stack( )->get_length( ).
+    DATA(lo_block) = NEW zcl_wasm_block_helper(
+      iv_block_type = mv_block_type
+      io_module     = io_module ).
+    lo_block->start( io_memory ).
 
     DO.
       TRY.
@@ -58,6 +61,7 @@ CLASS zcl_wasm_loop IMPLEMENTATION.
             io_module = io_module )->execute( mt_instructions ).
 
           IF rv_control = zif_wasm_instruction=>c_control-return_.
+            lo_block->end( io_memory ).
             RETURN.
           ENDIF.
         CATCH zcx_wasm_branch INTO DATA(lx_branch).
@@ -65,17 +69,14 @@ CLASS zcl_wasm_loop IMPLEMENTATION.
             CONTINUE.
           ENDIF.
 
+          lo_block->end( io_memory ).
           RAISE EXCEPTION TYPE zcx_wasm_branch EXPORTING depth = lx_branch->depth - 1.
       ENDTRY.
 
       EXIT.
     ENDDO.
 
-    zcl_wasm_block=>fix_return(
-      io_memory     = io_memory
-      io_module     = io_module
-      iv_block_type = mv_block_type
-      iv_length     = lv_length ).
+    lo_block->end( io_memory ).
 
   ENDMETHOD.
 
