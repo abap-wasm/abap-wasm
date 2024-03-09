@@ -24,12 +24,12 @@ CLASS zcl_wasm_i32_sub IMPLEMENTATION.
     DATA lv_val1 TYPE int8.
     DATA lv_val2 TYPE int8.
 
-    lv_val1 = io_memory->get_stack( )->stack_pop_i32( )->get_signed( ).
-    lv_val2 = io_memory->get_stack( )->stack_pop_i32( )->get_signed( ).
+    lv_val1 = io_memory->get_stack( )->pop_i32( )->get_signed( ).
+    lv_val2 = io_memory->get_stack( )->pop_i32( )->get_signed( ).
 
     lv_val1 = lv_val2 - lv_val1.
 
-    io_memory->get_stack( )->stack_push( zcl_wasm_i32=>from_int8( lv_val1 ) ).
+    io_memory->get_stack( )->push( zcl_wasm_i32=>from_int8( lv_val1 ) ).
 
   ENDMETHOD.
 

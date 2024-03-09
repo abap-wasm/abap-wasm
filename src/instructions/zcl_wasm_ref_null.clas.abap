@@ -30,9 +30,9 @@ CLASS zcl_wasm_ref_null IMPLEMENTATION.
 
     CASE mv_ref_type.
       WHEN zcl_wasm_types=>c_reftype-funcref.
-        io_memory->get_stack( )->stack_push( NEW zcl_wasm_funcref( -1 ) ).
+        io_memory->get_stack( )->push( NEW zcl_wasm_funcref( -1 ) ).
       WHEN zcl_wasm_types=>c_reftype-externref.
-        io_memory->get_stack( )->stack_push( NEW zcl_wasm_externref( -1 ) ).
+        io_memory->get_stack( )->push( NEW zcl_wasm_externref( -1 ) ).
       WHEN OTHERS.
         RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |zcl_wasm_ref_null: Unknown ref type { mv_ref_type }|.
     ENDCASE.

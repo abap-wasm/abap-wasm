@@ -43,7 +43,7 @@ CLASS zcl_wasm_call IMPLEMENTATION.
 * consume values from stack into locals
     io_memory->push_frame( ).
     DO xstrlen( ls_type-parameter_types ) TIMES.
-      io_memory->get_frame( )->local_push_first( io_memory->get_stack( )->stack_pop( ) ).
+      io_memory->get_frame( )->local_push_first( io_memory->get_stack( )->pop( ) ).
     ENDDO.
 
 * add the locals for the function

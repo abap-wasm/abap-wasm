@@ -22,13 +22,13 @@ CLASS zcl_wasm_i64_lt_s IMPLEMENTATION.
 
 * https://webassembly.github.io/spec/core/exec/instructions.html#t-mathsf-xref-syntax-instructions-syntax-relop-mathit-relop
 
-    IF io_memory->get_stack( )->stack_length( ) < 2.
+    IF io_memory->get_stack( )->get_length( ) < 2.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'lt_s, expected two variables on stack'.
     ENDIF.
 
     TRY.
-        DATA(lo_val1) = CAST zcl_wasm_i64( io_memory->get_stack( )->stack_pop( ) ).
-        DATA(lo_val2) = CAST zcl_wasm_i64( io_memory->get_stack( )->stack_pop( ) ).
+        DATA(lo_val1) = CAST zcl_wasm_i64( io_memory->get_stack( )->pop( ) ).
+        DATA(lo_val2) = CAST zcl_wasm_i64( io_memory->get_stack( )->pop( ) ).
       CATCH cx_sy_move_cast_error.
         RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'lt_s, wrong types on stack'.
     ENDTRY.
@@ -38,7 +38,7 @@ CLASS zcl_wasm_i64_lt_s IMPLEMENTATION.
       lv_result = 1.
     ENDIF.
 
-    io_memory->get_stack( )->stack_push( zcl_wasm_i32=>from_signed( lv_result ) ).
+    io_memory->get_stack( )->push( zcl_wasm_i32=>from_signed( lv_result ) ).
 
   ENDMETHOD.
 

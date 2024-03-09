@@ -19,19 +19,19 @@ CLASS zcl_wasm_select IMPLEMENTATION.
     DATA lo_c TYPE REF TO zcl_wasm_i32.
 
     TRY.
-        lo_c ?= io_memory->get_stack( )->stack_pop( ).
+        lo_c ?= io_memory->get_stack( )->pop( ).
       CATCH cx_sy_move_cast_error.
         RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'select: expected i32'.
     ENDTRY.
 
-    DATA(lo_val1) = io_memory->get_stack( )->stack_pop( ).
-    DATA(lo_val2) = io_memory->get_stack( )->stack_pop( ).
+    DATA(lo_val1) = io_memory->get_stack( )->pop( ).
+    DATA(lo_val2) = io_memory->get_stack( )->pop( ).
 * todo: validate val1 and val2 are of same type
 
     IF lo_c->get_signed( ) = 0.
-      io_memory->get_stack( )->stack_push( lo_val1 ).
+      io_memory->get_stack( )->push( lo_val1 ).
     ELSE.
-      io_memory->get_stack( )->stack_push( lo_val2 ).
+      io_memory->get_stack( )->push( lo_val2 ).
     ENDIF.
 
   ENDMETHOD.

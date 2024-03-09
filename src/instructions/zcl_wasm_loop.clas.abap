@@ -49,7 +49,7 @@ CLASS zcl_wasm_loop IMPLEMENTATION.
   METHOD zif_wasm_instruction~execute.
 * loops doesnt loop, but branches to the start instead of block branches which branches to the end
 
-    DATA(lv_length) = io_memory->get_stack( )->stack_length( ).
+    DATA(lv_length) = io_memory->get_stack( )->get_length( ).
 
     DO.
       TRY.

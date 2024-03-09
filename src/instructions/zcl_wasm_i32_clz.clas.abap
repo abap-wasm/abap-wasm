@@ -25,7 +25,7 @@ CLASS zcl_wasm_i32_clz IMPLEMENTATION.
     DATA lv_hex TYPE x LENGTH 4.
     DATA lv_bit TYPE i.
 
-    DATA(lv_int) = io_memory->get_stack( )->stack_pop_i32( )->get_signed( ).
+    DATA(lv_int) = io_memory->get_stack( )->pop_i32( )->get_signed( ).
     lv_hex = lv_int.
 
     DATA(lv_zeros) = 0.
@@ -38,7 +38,7 @@ CLASS zcl_wasm_i32_clz IMPLEMENTATION.
       ENDIF.
     ENDDO.
 
-    io_memory->get_stack( )->stack_push( zcl_wasm_i32=>from_signed( lv_zeros ) ).
+    io_memory->get_stack( )->push( zcl_wasm_i32=>from_signed( lv_zeros ) ).
 
   ENDMETHOD.
 

@@ -7,11 +7,11 @@ ENDCLASS.
 
 CLASS zcl_wasm_memory_stack IMPLEMENTATION.
 
-  METHOD zif_wasm_memory_stack~stack_length.
+  METHOD zif_wasm_memory_stack~get_length.
     rv_length = lines( mt_stack ).
   ENDMETHOD.
 
-  METHOD zif_wasm_memory_stack~stack_pop.
+  METHOD zif_wasm_memory_stack~pop.
 
     DATA(lv_length) = lines( mt_stack ).
     IF lv_length = 0.
@@ -27,9 +27,9 @@ CLASS zcl_wasm_memory_stack IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD zif_wasm_memory_stack~stack_pop_i64.
+  METHOD zif_wasm_memory_stack~pop_i64.
 
-    DATA(li_pop) = zif_wasm_memory_stack~stack_pop( ).
+    DATA(li_pop) = zif_wasm_memory_stack~pop( ).
 
     IF li_pop->get_type( ) <> zcl_wasm_types=>c_value_type-i64.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_memory: pop, expected i64'.
@@ -39,9 +39,9 @@ CLASS zcl_wasm_memory_stack IMPLEMENTATION.
 
   ENDMETHOD.
 
-  METHOD zif_wasm_memory_stack~stack_pop_i32.
+  METHOD zif_wasm_memory_stack~pop_i32.
 
-    DATA(li_pop) = zif_wasm_memory_stack~stack_pop( ).
+    DATA(li_pop) = zif_wasm_memory_stack~pop( ).
 
     IF li_pop->get_type( ) <> zcl_wasm_types=>c_value_type-i32.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_memory: pop, expected i32'.
@@ -52,7 +52,7 @@ CLASS zcl_wasm_memory_stack IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD zif_wasm_memory_stack~stack_push.
+  METHOD zif_wasm_memory_stack~push.
 
     APPEND ii_value TO mt_stack.
 

@@ -19,10 +19,10 @@ CLASS zcl_wasm_i32_rem_u IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    ASSERT io_memory->get_stack( )->stack_length( ) >= 2.
+    ASSERT io_memory->get_stack( )->get_length( ) >= 2.
 
-    DATA(lv_val1) = CAST zcl_wasm_i32( io_memory->get_stack( )->stack_pop( ) )->get_unsigned( ).
-    DATA(lv_val2) = CAST zcl_wasm_i32( io_memory->get_stack( )->stack_pop( ) )->get_unsigned( ).
+    DATA(lv_val1) = CAST zcl_wasm_i32( io_memory->get_stack( )->pop( ) )->get_unsigned( ).
+    DATA(lv_val2) = CAST zcl_wasm_i32( io_memory->get_stack( )->pop( ) )->get_unsigned( ).
 
     IF lv_val1 = 0.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'i32.rem_u, division by zero'.
@@ -39,7 +39,7 @@ CLASS zcl_wasm_i32_rem_u IMPLEMENTATION.
     IF lv_val1 < 0.
       lv_result = lv_result * -1.
     ENDIF.
-    io_memory->get_stack( )->stack_push( zcl_wasm_i32=>from_unsigned( lv_result ) ).
+    io_memory->get_stack( )->push( zcl_wasm_i32=>from_unsigned( lv_result ) ).
   ENDMETHOD.
 
 ENDCLASS.
