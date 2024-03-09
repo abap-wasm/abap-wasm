@@ -27,7 +27,18 @@ CLASS zcl_wasm_table_grow IMPLEMENTATION.
 
   METHOD zif_wasm_instruction~execute.
 * https://webassembly.github.io/spec/core/exec/instructions.html#xref-syntax-instructions-syntax-instr-table-mathsf-table-grow-x
-    RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'todo, execute instruction zcl_wasm_table_grow'.
+
+    DATA(lv_sz) = io_memory->table_size( CONV #( mv_tableidx ) ).
+
+    DATA(lv_n) = io_memory->stack_pop_i32( )->get_signed( ).
+    DATA(lv_val) = io_memory->stack_pop( ).
+
+    io_memory->table_grow(
+      iv_tableidx = CONV #( mv_tableidx )
+      iv_count    = lv_n
+      ii_value    = lv_val ).
+
+    io_memory->stack_push( zcl_wasm_i32=>from_signed( lv_sz ) ).
   ENDMETHOD.
 
 ENDCLASS.
