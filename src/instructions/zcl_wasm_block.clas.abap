@@ -89,6 +89,7 @@ CLASS zcl_wasm_block IMPLEMENTATION.
     ENDCASE.
 
     IF xstrlen( lv_return ) > io_memory->stack_length( ).
+*      WRITE '@KERNEL throw new Error("sdf");'.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |block: expected { xstrlen( lv_return ) } values on stack, { lv_return }|.
     ENDIF.
     DO xstrlen( lv_return ) TIMES.

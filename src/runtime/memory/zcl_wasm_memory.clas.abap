@@ -291,7 +291,7 @@ CLASS zcl_wasm_memory IMPLEMENTATION.
 
     DATA(lv_length) = lines( mt_stack ).
     IF lv_length = 0.
-*      WRITE '@KERNEL throw new Error("sdf");'.
+*      WRITE '@KERNEL throw new Error("pop");'.
       RAISE EXCEPTION TYPE zcx_wasm
         EXPORTING
           text = |zcl_wasm_memory: nothing to pop|.
