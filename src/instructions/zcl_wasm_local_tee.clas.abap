@@ -30,10 +30,10 @@ CLASS zcl_wasm_local_tee IMPLEMENTATION.
 
 * https://webassembly.github.io/spec/core/exec/instructions.html#xref-syntax-instructions-syntax-instr-variable-mathsf-local-tee-x
 
-    DATA(lo_val) = io_memory->stack_pop( ).
+    DATA(lo_val) = io_memory->get_stack( )->pop( ).
 
-    io_memory->stack_push( lo_val ).
-    io_memory->stack_push( lo_val ).
+    io_memory->get_stack( )->push( lo_val ).
+    io_memory->get_stack( )->push( lo_val ).
 
     NEW zcl_wasm_local_set( mv_localidx )->zif_wasm_instruction~execute(
       io_memory = io_memory

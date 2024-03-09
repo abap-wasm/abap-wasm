@@ -44,7 +44,7 @@ CLASS zcl_wasm_f32_load IMPLEMENTATION.
     DATA lv_hex TYPE x LENGTH lc_length.
     DATA lv_int TYPE i.
 
-    DATA(li_value) = io_memory->stack_pop( ).
+    DATA(li_value) = io_memory->get_stack( )->pop( ).
     IF li_value->get_type( ) <> zcl_wasm_types=>c_value_type-i32.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_f32_load: expected i32'.
     ENDIF.
@@ -60,7 +60,7 @@ CLASS zcl_wasm_f32_load IMPLEMENTATION.
       iv_offset = mv_offset + lv_i ).
 
     IF lv_hex = '00000000'.
-      io_memory->stack_push( zcl_wasm_f32=>from_float( 0 ) ).
+      io_memory->get_stack( )->push( zcl_wasm_f32=>from_float( 0 ) ).
     ELSE.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'todo, execute instruction zcl_wasm_f32_load'.
     ENDIF.

@@ -17,7 +17,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_WASM_MEMORY_INIT IMPLEMENTATION.
+CLASS zcl_wasm_memory_init IMPLEMENTATION.
 
 
   METHOD constructor.
@@ -36,9 +36,9 @@ CLASS ZCL_WASM_MEMORY_INIT IMPLEMENTATION.
 
 * https://webassembly.github.io/spec/core/exec/instructions.html#xref-syntax-instructions-syntax-instr-memory-mathsf-memory-init-x
 
-    DATA(lv_number) = io_memory->stack_pop_i32( )->get_unsigned( ).
-    DATA(lv_source) = io_memory->stack_pop_i32( )->get_unsigned( ).
-    DATA(lv_destination) = io_memory->stack_pop_i32( )->get_unsigned( ).
+    DATA(lv_number) = io_memory->get_stack( )->pop_i32( )->get_unsigned( ).
+    DATA(lv_source) = io_memory->get_stack( )->pop_i32( )->get_unsigned( ).
+    DATA(lv_destination) = io_memory->get_stack( )->pop_i32( )->get_unsigned( ).
 
     DATA(li_linear) = io_memory->get_linear( ).
     IF lv_source + lv_number > li_linear->size_in_bytes( )

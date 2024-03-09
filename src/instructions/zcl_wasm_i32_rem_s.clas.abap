@@ -19,10 +19,10 @@ CLASS zcl_wasm_i32_rem_s IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    ASSERT io_memory->stack_length( ) >= 2.
+    ASSERT io_memory->get_stack( )->get_length( ) >= 2.
 
-    DATA(lv_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ).
-    DATA(lv_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ).
+    DATA(lv_val1) = CAST zcl_wasm_i32( io_memory->get_stack( )->pop( ) )->get_signed( ).
+    DATA(lv_val2) = CAST zcl_wasm_i32( io_memory->get_stack( )->pop( ) )->get_signed( ).
 
     IF lv_val1 = 0.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'i32.rem_s, division by zero'.
@@ -32,7 +32,7 @@ CLASS zcl_wasm_i32_rem_s IMPLEMENTATION.
     IF lv_val2 < 0.
       lv_result = lv_result * -1.
     ENDIF.
-    io_memory->stack_push( zcl_wasm_i32=>from_signed( lv_result ) ).
+    io_memory->get_stack( )->push( zcl_wasm_i32=>from_signed( lv_result ) ).
   ENDMETHOD.
 
 ENDCLASS.

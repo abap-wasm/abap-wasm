@@ -9,29 +9,12 @@ CLASS zcl_wasm_memory DEFINITION
     CONSTANTS c_alignment_32bit TYPE int8 VALUE 2.
     CONSTANTS c_alignment_64bit TYPE int8 VALUE 3.
 
+    METHODS constructor.
+
 *********** STACK
-    METHODS stack_push
-      IMPORTING
-        !ii_value TYPE REF TO zif_wasm_value .
-    METHODS stack_pop
+    METHODS get_stack
       RETURNING
-        VALUE(ri_value) TYPE REF TO zif_wasm_value
-      RAISING
-        zcx_wasm.
-    METHODS stack_pop_i32
-      RETURNING
-        VALUE(ro_value) TYPE REF TO zcl_wasm_i32
-      RAISING zcx_wasm.
-    METHODS stack_pop_i64
-      RETURNING
-        VALUE(ro_value) TYPE REF TO zcl_wasm_i64
-      RAISING zcx_wasm.
-    METHODS stack_peek
-      RETURNING
-        VALUE(ri_value) TYPE REF TO zif_wasm_value .
-    METHODS stack_length
-      RETURNING
-        VALUE(rv_length) TYPE i .
+        VALUE(ri_stack) TYPE REF TO zif_wasm_memory_stack.
 
 *********** Frames with locals
     METHODS push_frame.
@@ -43,24 +26,11 @@ CLASS zcl_wasm_memory DEFINITION
       RAISING zcx_wasm.
 
 *********** GLOBAL
-    METHODS global_get
-      IMPORTING
-        iv_index TYPE int8
+    METHODS get_globals
       RETURNING
-        VALUE(rv_value) TYPE REF TO zif_wasm_value
+        VALUE(ri_globals) TYPE REF TO zif_wasm_memory_globals
       RAISING
         zcx_wasm.
-    METHODS global_set
-      IMPORTING
-        iv_index TYPE int8
-        ii_value TYPE REF TO zif_wasm_value
-      RAISING
-        zcx_wasm.
-    METHODS global_append
-      IMPORTING
-        ii_value TYPE REF TO zif_wasm_value
-      RETURNING
-        VALUE(rv_index) TYPE i.
 
 *********** DEFAULT LINEAR
     METHODS get_linear
@@ -118,22 +88,38 @@ CLASS zcl_wasm_memory DEFINITION
         zcx_wasm.
 
   PROTECTED SECTION.
-    DATA mt_stack  TYPE STANDARD TABLE OF REF TO zif_wasm_value WITH DEFAULT KEY.
     DATA mi_linear TYPE REF TO zif_wasm_memory_linear.
+    DATA mi_globals TYPE REF TO zif_wasm_memory_globals.
+    DATA mi_stack TYPE REF TO zif_wasm_memory_stack.
+
+    DATA mt_stack  TYPE STANDARD TABLE OF REF TO zif_wasm_value WITH DEFAULT KEY.
     DATA mt_frames TYPE STANDARD TABLE OF REF TO zif_wasm_memory_frame WITH DEFAULT KEY.
-    DATA mt_globals TYPE STANDARD TABLE OF REF TO zif_wasm_value WITH EMPTY KEY.
 
     TYPES: BEGIN OF ty_table,
              type     TYPE zcl_wasm_table_section=>ty_table,
              contents TYPE STANDARD TABLE OF REF TO zif_wasm_value WITH EMPTY KEY,
            END OF ty_table.
     DATA mt_tables TYPE STANDARD TABLE OF ty_table WITH EMPTY KEY.
+
   PRIVATE SECTION.
 ENDCLASS.
 
 
 
 CLASS zcl_wasm_memory IMPLEMENTATION.
+
+  METHOD constructor.
+    mi_globals = NEW zcl_wasm_memory_globals( ).
+    mi_stack = NEW zcl_wasm_memory_stack( ).
+  ENDMETHOD.
+
+  METHOD get_globals.
+    ri_globals = mi_globals.
+  ENDMETHOD.
+
+  METHOD get_stack.
+    ri_stack = mi_stack.
+  ENDMETHOD.
 
   METHOD table_get.
     DATA(lv_idx) = iv_tableidx + 1.
@@ -221,26 +207,6 @@ CLASS zcl_wasm_memory IMPLEMENTATION.
 
   ENDMETHOD.
 
-  METHOD global_get.
-    READ TABLE mt_globals INDEX iv_index + 1 INTO rv_value.
-    IF sy-subrc <> 0.
-      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |zcl_wasm_memory: global_get, not found, index { iv_index }|.
-    ENDIF.
-  ENDMETHOD.
-
-  METHOD global_set.
-* todo: raise error if the set changes the type of the global?
-    IF lines( mt_globals ) < iv_index + 1.
-      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_memory: global_set, not found'.
-    ENDIF.
-    mt_globals[ iv_index + 1 ] = ii_value.
-  ENDMETHOD.
-
-  METHOD global_append.
-    APPEND ii_value TO mt_globals.
-    rv_index = lines( mt_globals ) - 1.
-  ENDMETHOD.
-
   METHOD push_frame.
     DATA(lo_frame) = NEW zcl_wasm_memory_frame( ).
     APPEND lo_frame TO mt_frames.
@@ -277,61 +243,4 @@ CLASS zcl_wasm_memory IMPLEMENTATION.
     mi_linear = ii_linear.
   ENDMETHOD.
 
-  METHOD stack_length.
-    rv_length = lines( mt_stack ).
-  ENDMETHOD.
-
-  METHOD stack_peek.
-    DATA(lv_last) = lines( mt_stack ).
-    READ TABLE mt_stack INDEX lv_last INTO ri_value.
-  ENDMETHOD.
-
-
-  METHOD stack_pop.
-
-    DATA(lv_length) = lines( mt_stack ).
-    IF lv_length = 0.
-      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_memory: nothing to pop'.
-    ENDIF.
-
-    READ TABLE mt_stack INDEX lv_length INTO ri_value.
-    DELETE mt_stack INDEX lv_length.
-
-    " IF ri_value IS INITIAL.
-    "   RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_memory: stack popped initial value'.
-    " ENDIF.
-
-  ENDMETHOD.
-
-
-  METHOD stack_pop_i64.
-
-    DATA(li_pop) = stack_pop( ).
-
-    IF li_pop->get_type( ) <> zcl_wasm_types=>c_value_type-i64.
-      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_memory: pop, expected i64'.
-    ENDIF.
-
-    ro_value ?= li_pop.
-
-  ENDMETHOD.
-
-  METHOD stack_pop_i32.
-
-    DATA(li_pop) = stack_pop( ).
-
-    IF li_pop->get_type( ) <> zcl_wasm_types=>c_value_type-i32.
-      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_memory: pop, expected i32'.
-    ENDIF.
-
-    ro_value ?= li_pop.
-
-  ENDMETHOD.
-
-
-  METHOD stack_push.
-
-    APPEND ii_value TO mt_stack.
-
-  ENDMETHOD.
 ENDCLASS.

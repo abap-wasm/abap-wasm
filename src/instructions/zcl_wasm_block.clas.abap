@@ -64,8 +64,8 @@ CLASS zcl_wasm_block IMPLEMENTATION.
 
   METHOD fix_return.
 
-    DATA lv_return TYPE xstring.
-    DATA lv_int8 TYPE int8.
+    DATA lv_return  TYPE xstring.
+    DATA lv_int8    TYPE int8.
     DATA lt_results TYPE STANDARD TABLE OF REF TO zif_wasm_value WITH EMPTY KEY.
 
     CASE iv_block_type.
@@ -85,28 +85,36 @@ CLASS zcl_wasm_block IMPLEMENTATION.
           RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |block: expected positive function type index|.
         ENDIF.
         DATA(ls_type) = io_module->get_type_by_index( lv_int8 ).
+        IF xstrlen( ls_type-parameter_types ) > 0.
+          RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |block: todo consume parameters|.
+        ENDIF.
         lv_return = ls_type-result_types.
     ENDCASE.
 
+    IF xstrlen( lv_return ) > io_memory->get_stack( )->get_length( ).
+*      WRITE '@KERNEL throw new Error("block");'.
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |block: expected { xstrlen( lv_return ) } values on stack, { lv_return }|.
+    ENDIF.
+
     DO xstrlen( lv_return ) TIMES.
-      DATA(li_val) = io_memory->stack_pop( ).
+      DATA(li_val) = io_memory->get_stack( )->pop( ).
       INSERT li_val INTO lt_results INDEX 1.
     ENDDO.
 
-    WHILE io_memory->stack_length( ) > iv_length AND io_memory->stack_length( ) > 0.
-      io_memory->stack_pop( ).
+    WHILE io_memory->get_stack( )->get_length( ) > iv_length AND io_memory->get_stack( )->get_length( ) > 0.
+      io_memory->get_stack( )->pop( ).
     ENDWHILE.
 
     LOOP AT lt_results INTO li_val.
-      io_memory->stack_push( li_val ).
+      io_memory->get_stack( )->push( li_val ).
     ENDLOOP.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
 
-* https://webassembly.github.io/spec/core/exec/instructions.html#xref-syntax-instructions-syntax-instr-control-mathsf-block-xref-syntax-instructions-syntax-blocktype-mathit-blocktype-xref-syntax-instructions-syntax-instr-mathit-instr-ast-xref-syntax-instructions-syntax-instr-control-mathsf-end
+* https://webassembly.github.io/spec/core/exec/instructions.html#xref-syntax-instructions-syntax-instr-control-mathsf-block-xref-syntax-instructions-syntax-blocktype-mathit-blocktype-xref-syntax-instructions-syntax-instr-mathit-instr-ast-xref-syntax-instr
 
-    DATA(lv_length) = io_memory->stack_length( ).
+    DATA(lv_length) = io_memory->get_stack( )->get_length( ).
 
     TRY.
         rv_control = NEW zcl_wasm_vm(

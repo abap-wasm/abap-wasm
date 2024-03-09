@@ -43,7 +43,7 @@ CLASS zcl_wasm_element_section IMPLEMENTATION.
                   io_memory = io_memory
                   io_module = NEW zcl_wasm_module( ) ).
               ENDLOOP.
-              DATA(lv_offset) = io_memory->stack_pop_i32( )->get_signed( ).
+              DATA(lv_offset) = io_memory->get_stack( )->pop_i32( )->get_signed( ).
 
               LOOP AT ls_element-funcidx INTO DATA(lv_funcidx).
                 DATA(lo_ref) = NEW zcl_wasm_funcref( lv_funcidx ).
@@ -59,7 +59,7 @@ CLASS zcl_wasm_element_section IMPLEMENTATION.
                   io_memory = io_memory
                   io_module = NEW zcl_wasm_module( ) ).
               ENDLOOP.
-              lv_offset = io_memory->stack_pop_i32( )->get_signed( ).
+              lv_offset = io_memory->get_stack( )->pop_i32( )->get_signed( ).
 
               LOOP AT ls_element-funcidx INTO lv_funcidx.
 * todo, is the type derived from the table? elemkind seems wrong?

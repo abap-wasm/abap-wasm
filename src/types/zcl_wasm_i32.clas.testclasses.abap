@@ -24,11 +24,11 @@ CLASS ltcl_test IMPLEMENTATION.
   METHOD assert_sole_value.
 
     cl_abap_unit_assert=>assert_equals(
-      act = mo_memory->stack_length( )
+      act = mo_memory->get_stack( )->get_length( )
       exp = 1 ).
 
     cl_abap_unit_assert=>assert_equals(
-      act = mo_memory->stack_pop_i32( )->get_signed( )
+      act = mo_memory->get_stack( )->pop_i32( )->get_signed( )
       exp = iv_value ).
 
   ENDMETHOD.

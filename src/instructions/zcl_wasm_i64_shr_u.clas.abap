@@ -23,8 +23,8 @@ CLASS zcl_wasm_i64_shr_u IMPLEMENTATION.
     DATA lv_hex8 TYPE x LENGTH 8.
     DATA lv_int8 TYPE int8.
 
-    DATA(lv_bits) = CAST zcl_wasm_i64( io_memory->stack_pop( ) )->get_signed( ) MOD 64.
-    lv_hex8 = CAST zcl_wasm_i64( io_memory->stack_pop( ) )->get_signed( ).
+    DATA(lv_bits) = CAST zcl_wasm_i64( io_memory->get_stack( )->pop( ) )->get_signed( ) MOD 64.
+    lv_hex8 = CAST zcl_wasm_i64( io_memory->get_stack( )->pop( ) )->get_signed( ).
 
     DATA(lv_bytes) = lv_bits DIV 8.
     lv_bits = lv_bits MOD 8.
@@ -44,7 +44,7 @@ CLASS zcl_wasm_i64_shr_u IMPLEMENTATION.
     ENDDO.
 
     lv_int8 = lv_hex8.
-    io_memory->stack_push( zcl_wasm_i64=>from_signed( lv_int8 ) ).
+    io_memory->get_stack( )->push( zcl_wasm_i64=>from_signed( lv_int8 ) ).
   ENDMETHOD.
 
 ENDCLASS.

@@ -25,7 +25,7 @@ CLASS zcl_wasm_i64_popcnt IMPLEMENTATION.
     DATA lv_bit TYPE i.
     DATA lv_count TYPE int8.
 
-    lv_hex = io_memory->stack_pop_i64( )->get_signed( ).
+    lv_hex = io_memory->get_stack( )->pop_i64( )->get_signed( ).
 
     lv_count = 0.
     DO 64 TIMES.
@@ -35,7 +35,7 @@ CLASS zcl_wasm_i64_popcnt IMPLEMENTATION.
       ENDIF.
     ENDDO.
 
-    io_memory->stack_push( zcl_wasm_i64=>from_signed( lv_count ) ).
+    io_memory->get_stack( )->push( zcl_wasm_i64=>from_signed( lv_count ) ).
   ENDMETHOD.
 
 ENDCLASS.

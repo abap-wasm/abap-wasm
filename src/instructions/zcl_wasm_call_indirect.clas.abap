@@ -40,10 +40,32 @@ CLASS zcl_wasm_call_indirect IMPLEMENTATION.
 * https://webassembly.github.io/spec/core/exec/instructions.html#xref-syntax-instructions-syntax-instr-control-mathsf-call-indirect-x-y
 * https://coinexsmartchain.medium.com/wasm-introduction-part-6-table-indirect-call-65ad0404b003
 
-    " WRITE / mv_typeidx.
-    " WRITE / mv_tableidx.
+    DATA(lv_i) = io_memory->get_stack( )->pop_i32( ).
 
-    RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'todo, execute instruction zcl_wasm_call_indirect'.
+    DATA(li_value) = io_memory->table_get(
+      iv_tableidx = CONV #( mv_tableidx )
+      iv_offset   = lv_i->get_signed( ) ).
+    IF li_value->get_type( ) <> zcl_wasm_types=>c_reftype-funcref.
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |zcl_wasm_call_indirect: not a funcref { li_value->get_type( ) }|.
+    ENDIF.
+    DATA(lo_ref) = CAST zcl_wasm_funcref( li_value ).
+
+    IF lo_ref->is_null( ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |zcl_wasm_call_indirect null reference|.
+    ENDIF.
+
+    DATA(ls_type) = io_module->get_type_by_index( mv_typeidx ).
+    DATA(ls_function) = io_module->get_function_by_index( lo_ref->get_address( ) ).
+    DATA(ls_ftype) = io_module->get_type_by_index( CONV #( ls_function-typeidx ) ).
+
+    IF ls_type <> ls_ftype.
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |zcl_wasm_call_indirect type mismatch|.
+    ENDIF.
+
+    zcl_wasm_call=>invoke(
+      iv_funcidx = lo_ref->get_address( )
+      io_memory  = io_memory
+      io_module  = io_module ).
   ENDMETHOD.
 
 ENDCLASS.

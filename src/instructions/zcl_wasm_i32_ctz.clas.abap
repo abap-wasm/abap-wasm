@@ -22,7 +22,7 @@ CLASS zcl_wasm_i32_ctz IMPLEMENTATION.
 
 * https://webassembly.github.io/spec/core/exec/numerics.html#xref-exec-numerics-op-ictz-mathrm-ictz-n-i
 
-    DATA(lv_int) = io_memory->stack_pop_i32( )->get_unsigned( ).
+    DATA(lv_int) = io_memory->get_stack( )->pop_i32( )->get_unsigned( ).
 
     DATA(lv_zeros) = 0.
     DO 32 TIMES.
@@ -34,7 +34,7 @@ CLASS zcl_wasm_i32_ctz IMPLEMENTATION.
       ENDIF.
     ENDDO.
 
-    io_memory->stack_push( zcl_wasm_i32=>from_signed( lv_zeros ) ).
+    io_memory->get_stack( )->push( zcl_wasm_i32=>from_signed( lv_zeros ) ).
 
   ENDMETHOD.
 

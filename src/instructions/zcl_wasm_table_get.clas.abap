@@ -28,7 +28,7 @@ CLASS zcl_wasm_table_get IMPLEMENTATION.
   METHOD zif_wasm_instruction~execute.
 * https://webassembly.github.io/spec/core/exec/instructions.html#xref-syntax-instructions-syntax-instr-table-mathsf-table-get-x
 
-    DATA(lv_i) = io_memory->stack_pop_i32( )->get_signed( ).
+    DATA(lv_i) = io_memory->get_stack( )->pop_i32( )->get_signed( ).
     IF lv_i < 0.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_table_get: negative index'.
     ENDIF.
@@ -37,7 +37,7 @@ CLASS zcl_wasm_table_get IMPLEMENTATION.
       iv_tableidx = CONV #( mv_tableidx )
       iv_offset   = lv_i ).
 
-    io_memory->stack_push( li_val ).
+    io_memory->get_stack( )->push( li_val ).
 
   ENDMETHOD.
 

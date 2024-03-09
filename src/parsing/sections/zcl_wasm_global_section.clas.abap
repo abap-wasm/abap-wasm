@@ -54,7 +54,7 @@ CLASS zcl_wasm_global_section IMPLEMENTATION.
           RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |instantiate_global, failed to execute instructions: { lx_error->get_text( ) }|.
       ENDTRY.
 
-      DATA(li_value) = io_memory->stack_pop( ).
+      DATA(li_value) = io_memory->get_stack( )->pop( ).
       IF li_value IS INITIAL.
         RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |instantiate_global, initial value on stack|.
       ENDIF.
@@ -69,7 +69,7 @@ CLASS zcl_wasm_global_section IMPLEMENTATION.
           IF li_value->get_type( ) <> ls_global-type.
             RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |instantiate_global, type mismatch: { ls_global-type } vs { li_value->get_type( ) }|.
           ENDIF.
-          io_memory->global_append( li_value ).
+          io_memory->get_globals( )->append( li_value ).
         WHEN zcl_wasm_types=>c_vector_type.
           RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |instantiate_global, todo vector type|.
         WHEN OTHERS.

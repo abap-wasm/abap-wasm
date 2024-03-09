@@ -19,16 +19,16 @@ CLASS zcl_wasm_i32_div_u IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    ASSERT io_memory->stack_length( ) >= 2.
+    ASSERT io_memory->get_stack( )->get_length( ) >= 2.
 
-    DATA(lv_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_unsigned( ).
-    DATA(lv_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_unsigned( ).
+    DATA(lv_val1) = CAST zcl_wasm_i32( io_memory->get_stack( )->pop( ) )->get_unsigned( ).
+    DATA(lv_val2) = CAST zcl_wasm_i32( io_memory->get_stack( )->pop( ) )->get_unsigned( ).
 
     IF lv_val1 = 0.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'i32.div_u, division by zero'.
     ENDIF.
 
-    io_memory->stack_push( zcl_wasm_i32=>from_unsigned( lv_val2 DIV lv_val1 ) ).
+    io_memory->get_stack( )->push( zcl_wasm_i32=>from_unsigned( lv_val2 DIV lv_val1 ) ).
   ENDMETHOD.
 
 ENDCLASS.

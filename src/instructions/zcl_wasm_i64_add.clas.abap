@@ -31,8 +31,8 @@ CLASS zcl_wasm_i64_add IMPLEMENTATION.
     DATA lv_word1 TYPE x LENGTH 4.
     DATA lv_word2 TYPE x LENGTH 4.
 
-    lv_hex1 = io_memory->stack_pop_i64( )->get_signed( ).
-    lv_hex2 = io_memory->stack_pop_i64( )->get_signed( ).
+    lv_hex1 = io_memory->get_stack( )->pop_i64( )->get_signed( ).
+    lv_hex2 = io_memory->get_stack( )->pop_i64( )->get_signed( ).
 
 * low 2 bytes
     lv_carry = lv_hex1+6(2) + lv_hex2+6(2) + lv_carry.
@@ -57,7 +57,7 @@ CLASS zcl_wasm_i64_add IMPLEMENTATION.
     lv_result(2) = lv_carry+2(2).
 
     lv_int8 = lv_result.
-    io_memory->stack_push( zcl_wasm_i64=>from_signed( lv_int8 ) ).
+    io_memory->get_stack( )->push( zcl_wasm_i64=>from_signed( lv_int8 ) ).
 
   ENDMETHOD.
 

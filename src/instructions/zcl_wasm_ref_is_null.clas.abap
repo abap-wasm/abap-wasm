@@ -24,7 +24,7 @@ CLASS zcl_wasm_ref_is_null IMPLEMENTATION.
 
     DATA lv_null TYPE abap_bool.
 
-    DATA(li_value) = io_memory->stack_pop( ).
+    DATA(li_value) = io_memory->get_stack( )->pop( ).
 
     IF li_value IS INITIAL.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |zcl_wasm_ref_is_null: initial value popped|.
@@ -40,9 +40,9 @@ CLASS zcl_wasm_ref_is_null IMPLEMENTATION.
     ENDCASE.
 
     IF lv_null = abap_true.
-      io_memory->stack_push( zcl_wasm_i32=>from_signed( 1 ) ).
+      io_memory->get_stack( )->push( zcl_wasm_i32=>from_signed( 1 ) ).
     ELSE.
-      io_memory->stack_push( zcl_wasm_i32=>from_signed( 0 ) ).
+      io_memory->get_stack( )->push( zcl_wasm_i32=>from_signed( 0 ) ).
     ENDIF.
 
   ENDMETHOD.

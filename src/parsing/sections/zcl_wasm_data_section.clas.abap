@@ -129,7 +129,7 @@ CLASS zcl_wasm_data_section IMPLEMENTATION.
           RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |instantiate data, failed to execute instructions: { lx_error->get_text( ) }|.
       ENDTRY.
 
-      DATA(lv_offset) = io_memory->stack_pop_i32( )->get_unsigned( ).
+      DATA(lv_offset) = io_memory->get_stack( )->pop_i32( )->get_unsigned( ).
 
       IF io_memory->has_linear( ) = abap_false.
         RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |instantiate data, no linear memory|.
