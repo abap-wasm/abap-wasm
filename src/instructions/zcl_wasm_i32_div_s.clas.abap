@@ -19,10 +19,10 @@ CLASS zcl_wasm_i32_div_s IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    ASSERT io_memory->stack_length( ) >= 2.
+    ASSERT io_memory->get_stack( )->stack_length( ) >= 2.
 
-    DATA(lv_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ).
-    DATA(lv_val2) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ).
+    DATA(lv_val1) = CAST zcl_wasm_i32( io_memory->get_stack( )->stack_pop( ) )->get_signed( ).
+    DATA(lv_val2) = CAST zcl_wasm_i32( io_memory->get_stack( )->stack_pop( ) )->get_signed( ).
 
     IF lv_val1 = 0.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'i32.div_s, division by zero'.
@@ -32,9 +32,9 @@ CLASS zcl_wasm_i32_div_s IMPLEMENTATION.
 
 * division is truncating, so round towards zero
     IF sign( lv_val1 ) <> sign( lv_val2 ).
-      io_memory->stack_push( zcl_wasm_i32=>from_signed( -1 * ( abs( lv_val2 ) DIV abs( lv_val1 ) ) ) ).
+      io_memory->get_stack( )->stack_push( zcl_wasm_i32=>from_signed( -1 * ( abs( lv_val2 ) DIV abs( lv_val1 ) ) ) ).
     ELSE.
-      io_memory->stack_push( zcl_wasm_i32=>from_signed( lv_val2 DIV lv_val1 ) ).
+      io_memory->get_stack( )->stack_push( zcl_wasm_i32=>from_signed( lv_val2 DIV lv_val1 ) ).
     ENDIF.
   ENDMETHOD.
 

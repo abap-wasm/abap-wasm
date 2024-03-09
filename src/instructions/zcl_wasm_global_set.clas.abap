@@ -31,7 +31,7 @@ CLASS zcl_wasm_global_set IMPLEMENTATION.
 
     io_memory->get_globals( )->set(
       iv_index = mv_globalidx
-      ii_value = io_memory->stack_pop( ) ).
+      ii_value = io_memory->get_stack( )->stack_pop( ) ).
 
   ENDMETHOD.
 

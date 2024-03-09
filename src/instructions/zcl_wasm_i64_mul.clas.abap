@@ -20,12 +20,12 @@ CLASS zcl_wasm_i64_mul IMPLEMENTATION.
 
   METHOD zif_wasm_instruction~execute.
 
-    ASSERT io_memory->stack_length( ) >= 2.
+    ASSERT io_memory->get_stack( )->stack_length( ) >= 2.
 
-    DATA(lo_val1) = CAST zcl_wasm_i64( io_memory->stack_pop( ) ).
-    DATA(lo_val2) = CAST zcl_wasm_i64( io_memory->stack_pop( ) ).
+    DATA(lo_val1) = CAST zcl_wasm_i64( io_memory->get_stack( )->stack_pop( ) ).
+    DATA(lo_val2) = CAST zcl_wasm_i64( io_memory->get_stack( )->stack_pop( ) ).
 
-    io_memory->stack_push( zcl_wasm_i64=>from_signed( lo_val1->get_signed( ) * lo_val2->get_signed( ) ) ).
+    io_memory->get_stack( )->stack_push( zcl_wasm_i64=>from_signed( lo_val1->get_signed( ) * lo_val2->get_signed( ) ) ).
 
   ENDMETHOD.
 

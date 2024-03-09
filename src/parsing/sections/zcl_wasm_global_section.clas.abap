@@ -54,7 +54,7 @@ CLASS zcl_wasm_global_section IMPLEMENTATION.
           RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |instantiate_global, failed to execute instructions: { lx_error->get_text( ) }|.
       ENDTRY.
 
-      DATA(li_value) = io_memory->stack_pop( ).
+      DATA(li_value) = io_memory->get_stack( )->stack_pop( ).
       IF li_value IS INITIAL.
         RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |instantiate_global, initial value on stack|.
       ENDIF.

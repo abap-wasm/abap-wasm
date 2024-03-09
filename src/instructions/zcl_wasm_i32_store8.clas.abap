@@ -45,9 +45,9 @@ CLASS zcl_wasm_i32_store8 IMPLEMENTATION.
 
     DATA(li_linear) = io_memory->get_linear( ).
 
-    DATA(lv_c) = io_memory->stack_pop_i32( )->get_signed( ).
+    DATA(lv_c) = io_memory->get_stack( )->stack_pop_i32( )->get_signed( ).
     lv_hex = lv_c.
-    DATA(lv_i) = io_memory->stack_pop_i32( )->get_signed( ).
+    DATA(lv_i) = io_memory->get_stack( )->stack_pop_i32( )->get_signed( ).
 
     io_memory->get_linear( )->set(
       iv_offset = mv_offset + lv_i

@@ -42,7 +42,7 @@ CLASS zcl_wasm_f64_load IMPLEMENTATION.
     DATA lv_hex TYPE x LENGTH lc_length.
     DATA lv_int TYPE i.
 
-    DATA(lv_i) = io_memory->stack_pop_i32( )->get_signed( ).
+    DATA(lv_i) = io_memory->get_stack( )->stack_pop_i32( )->get_signed( ).
     IF lv_i < 0.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'load: out of bounds'.
     ENDIF.
@@ -52,7 +52,7 @@ CLASS zcl_wasm_f64_load IMPLEMENTATION.
       iv_offset = mv_offset + lv_i ).
 
     IF lv_hex = '0000000000000000'.
-      io_memory->stack_push( zcl_wasm_f64=>from_float( 0 ) ).
+      io_memory->get_stack( )->stack_push( zcl_wasm_f64=>from_float( 0 ) ).
     ELSE.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'todo, execute instruction zcl_wasm_f64_load'.
     ENDIF.

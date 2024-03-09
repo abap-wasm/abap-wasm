@@ -29,13 +29,13 @@ CLASS zcl_wasm_table_set IMPLEMENTATION.
 
 * https://webassembly.github.io/spec/core/exec/instructions.html#xref-syntax-instructions-syntax-instr-table-mathsf-table-set-x
 
-    DATA(li_val) = io_memory->stack_pop( ).
+    DATA(li_val) = io_memory->get_stack( )->stack_pop( ).
     IF li_val->get_type( ) <> zcl_wasm_types=>c_reftype-funcref
         AND li_val->get_type( ) <> zcl_wasm_types=>c_reftype-externref.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_table_set: expected reference type'.
     ENDIF.
 
-    DATA(lv_i) = io_memory->stack_pop_i32( )->get_signed( ).
+    DATA(lv_i) = io_memory->get_stack( )->stack_pop_i32( )->get_signed( ).
     IF lv_i < 0.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_table_set: negative index'.
     ENDIF.

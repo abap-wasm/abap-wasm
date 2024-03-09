@@ -27,12 +27,12 @@ CLASS zcl_wasm_i32_wrap_i64 IMPLEMENTATION.
     DATA lv_hex8 TYPE x LENGTH 8.
     DATA lv_hex4 TYPE x LENGTH 4.
 
-    lv_int8 = io_memory->stack_pop_i64( )->get_signed( ).
+    lv_int8 = io_memory->get_stack( )->stack_pop_i64( )->get_signed( ).
     lv_hex8 = lv_int8.
     lv_hex4 = lv_hex8+4(4).
     lv_int4 = lv_hex4.
 
-    io_memory->stack_push( zcl_wasm_i32=>from_signed( lv_int4 ) ).
+    io_memory->get_stack( )->stack_push( zcl_wasm_i32=>from_signed( lv_int4 ) ).
   ENDMETHOD.
 
 ENDCLASS.

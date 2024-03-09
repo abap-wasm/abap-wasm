@@ -26,7 +26,7 @@ CLASS zcl_wasm_i32_extend16_s IMPLEMENTATION.
     DATA lv_hex     TYPE x LENGTH 4.
     DATA lv_overlay TYPE x LENGTH 4 VALUE 'FFFF0000'.
 
-    lv_hex = io_memory->stack_pop_i32( )->get_signed( ).
+    lv_hex = io_memory->get_stack( )->stack_pop_i32( )->get_signed( ).
 
     GET BIT 17 OF lv_hex INTO DATA(lv_sign).
     IF lv_sign = 1.
@@ -36,7 +36,7 @@ CLASS zcl_wasm_i32_extend16_s IMPLEMENTATION.
     ENDIF.
 
     lv_int = lv_hex.
-    io_memory->stack_push( zcl_wasm_i32=>from_signed( lv_int ) ).
+    io_memory->get_stack( )->stack_push( zcl_wasm_i32=>from_signed( lv_int ) ).
 
   ENDMETHOD.
 

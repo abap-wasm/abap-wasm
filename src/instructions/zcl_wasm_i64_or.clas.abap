@@ -23,13 +23,13 @@ CLASS zcl_wasm_i64_or IMPLEMENTATION.
     DATA lv_hex2 TYPE x LENGTH 8.
     DATA lv_int8 TYPE int8.
 
-    lv_hex1 = CAST zcl_wasm_i64( io_memory->stack_pop( ) )->get_signed( ).
-    lv_hex2 = CAST zcl_wasm_i64( io_memory->stack_pop( ) )->get_signed( ).
+    lv_hex1 = CAST zcl_wasm_i64( io_memory->get_stack( )->stack_pop( ) )->get_signed( ).
+    lv_hex2 = CAST zcl_wasm_i64( io_memory->get_stack( )->stack_pop( ) )->get_signed( ).
 
     lv_hex1 = lv_hex1 BIT-OR lv_hex2.
     lv_int8 = lv_hex1.
 
-    io_memory->stack_push( zcl_wasm_i64=>from_signed( lv_int8 ) ).
+    io_memory->get_stack( )->stack_push( zcl_wasm_i64=>from_signed( lv_int8 ) ).
   ENDMETHOD.
 
 ENDCLASS.

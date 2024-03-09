@@ -37,8 +37,8 @@ CLASS zcl_wasm_i64_sub IMPLEMENTATION.
 
     DATA lv_negate TYPE abap_bool.
 
-    lv_val1 = io_memory->stack_pop_i64( )->get_signed( ).
-    lv_val2 = io_memory->stack_pop_i64( )->get_signed( ).
+    lv_val1 = io_memory->get_stack( )->stack_pop_i64( )->get_signed( ).
+    lv_val2 = io_memory->get_stack( )->stack_pop_i64( )->get_signed( ).
     IF lv_val1 > lv_val2.
       " WRITE / 'switch'.
       lv_tmp = lv_val1.
@@ -91,7 +91,7 @@ CLASS zcl_wasm_i64_sub IMPLEMENTATION.
     IF lv_negate = abap_true.
       lv_int8 = lv_int8 * -1.
     ENDIF.
-    io_memory->stack_push( zcl_wasm_i64=>from_signed( lv_int8 ) ).
+    io_memory->get_stack( )->stack_push( zcl_wasm_i64=>from_signed( lv_int8 ) ).
 
   ENDMETHOD.
 

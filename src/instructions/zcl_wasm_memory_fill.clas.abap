@@ -20,9 +20,9 @@ CLASS zcl_wasm_memory_fill IMPLEMENTATION.
 
     DATA(li_linear) = io_memory->get_linear( ).
 
-    DATA(lo_n) = io_memory->stack_pop_i32( ).
-    DATA(lo_val) = io_memory->stack_pop_i32( ).
-    DATA(lo_d) = io_memory->stack_pop_i32( ).
+    DATA(lo_n) = io_memory->get_stack( )->stack_pop_i32( ).
+    DATA(lo_val) = io_memory->get_stack( )->stack_pop_i32( ).
+    DATA(lo_d) = io_memory->get_stack( )->stack_pop_i32( ).
 
     IF lo_n->get_signed( ) + lo_d->get_signed( ) > li_linear->size_in_bytes( ).
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'memory_fill: trap'.
@@ -34,8 +34,8 @@ CLASS zcl_wasm_memory_fill IMPLEMENTATION.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_memory_fill, refactor to iteration instead of recursion'.
     ENDIF.
 
-    io_memory->stack_push( lo_d ).
-    io_memory->stack_push( lo_val ).
+    io_memory->get_stack( )->stack_push( lo_d ).
+    io_memory->get_stack( )->stack_push( lo_val ).
 
     NEW zcl_wasm_i32_store8(
       iv_align  = 0
@@ -45,9 +45,9 @@ CLASS zcl_wasm_memory_fill IMPLEMENTATION.
 
 * todo, Assert: due to the earlier check against the memory size,
 
-    io_memory->stack_push( zcl_wasm_i32=>from_signed( lo_d->get_signed( ) + 1 ) ).
-    io_memory->stack_push( lo_val ).
-    io_memory->stack_push( zcl_wasm_i32=>from_signed( lo_n->get_signed( ) - 1 ) ).
+    io_memory->get_stack( )->stack_push( zcl_wasm_i32=>from_signed( lo_d->get_signed( ) + 1 ) ).
+    io_memory->get_stack( )->stack_push( lo_val ).
+    io_memory->get_stack( )->stack_push( zcl_wasm_i32=>from_signed( lo_n->get_signed( ) - 1 ) ).
 
     zif_wasm_instruction~execute(
       io_memory = io_memory

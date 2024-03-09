@@ -63,11 +63,11 @@ CLASS zcl_wasm_if IMPLEMENTATION.
 * https://webassembly.github.io/spec/core/binary/instructions.html#control-instructions
 * https://webassembly.github.io/spec/core/binary/instructions.html#binary-blocktype
 
-    DATA(lv_length) = io_memory->stack_length( ).
+    DATA(lv_length) = io_memory->get_stack( )->stack_length( ).
 
     TRY.
 * If c is non-zero, then enter
-        DATA(lv_value) = io_memory->stack_pop_i32( )->get_signed( ).
+        DATA(lv_value) = io_memory->get_stack( )->stack_pop_i32( )->get_signed( ).
         IF lv_value <> 0.
           LOOP AT mt_in1 INTO DATA(lo_instruction).
             rv_control = lo_instruction->execute(

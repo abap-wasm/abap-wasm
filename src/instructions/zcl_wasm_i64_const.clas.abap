@@ -27,7 +27,7 @@ CLASS zcl_wasm_i64_const IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    io_memory->stack_push( zcl_wasm_i64=>from_signed( mv_value ) ).
+    io_memory->get_stack( )->stack_push( zcl_wasm_i64=>from_signed( mv_value ) ).
   ENDMETHOD.
 
 ENDCLASS.

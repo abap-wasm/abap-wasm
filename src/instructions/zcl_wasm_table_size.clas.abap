@@ -30,7 +30,7 @@ CLASS zcl_wasm_table_size IMPLEMENTATION.
 
     DATA(lv_size) = io_memory->table_size( CONV #( mv_tableidx ) ).
 
-    io_memory->stack_push( zcl_wasm_i32=>from_signed( lv_size ) ).
+    io_memory->get_stack( )->stack_push( zcl_wasm_i32=>from_signed( lv_size ) ).
   ENDMETHOD.
 
 ENDCLASS.

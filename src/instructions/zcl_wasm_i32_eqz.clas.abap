@@ -19,14 +19,14 @@ CLASS zcl_wasm_i32_eqz IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    ASSERT io_memory->stack_length( ) >= 1.
+    ASSERT io_memory->get_stack( )->stack_length( ) >= 1.
 
-    DATA(lv_val1) = CAST zcl_wasm_i32( io_memory->stack_pop( ) )->get_signed( ).
+    DATA(lv_val1) = CAST zcl_wasm_i32( io_memory->get_stack( )->stack_pop( ) )->get_signed( ).
 
     IF lv_val1 = 0.
-      io_memory->stack_push( zcl_wasm_i32=>from_signed( 1 ) ).
+      io_memory->get_stack( )->stack_push( zcl_wasm_i32=>from_signed( 1 ) ).
     ELSE.
-      io_memory->stack_push( zcl_wasm_i32=>from_signed( 0 ) ).
+      io_memory->get_stack( )->stack_push( zcl_wasm_i32=>from_signed( 0 ) ).
     ENDIF.
   ENDMETHOD.
 

@@ -101,135 +101,135 @@ CLASS zcl_wasm_f64 IMPLEMENTATION.
 
   METHOD gt.
 
-    IF io_memory->stack_length( ) < 2.
+    IF io_memory->get_stack( )->stack_length( ) < 2.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'f64 gt, expected at least two variables on stack'.
     ENDIF.
 
-    DATA(lo_val1) = CAST zcl_wasm_f64( io_memory->stack_pop( ) ).
-    DATA(lo_val2) = CAST zcl_wasm_f64( io_memory->stack_pop( ) ).
+    DATA(lo_val1) = CAST zcl_wasm_f64( io_memory->get_stack( )->stack_pop( ) ).
+    DATA(lo_val2) = CAST zcl_wasm_f64( io_memory->get_stack( )->stack_pop( ) ).
 
     DATA(lv_result) = 0.
     IF lo_val1->get_value( ) > lo_val2->get_value( ).
       lv_result = 1.
     ENDIF.
 
-    io_memory->stack_push( zcl_wasm_i32=>from_signed( lv_result ) ).
+    io_memory->get_stack( )->stack_push( zcl_wasm_i32=>from_signed( lv_result ) ).
 
   ENDMETHOD.
 
   METHOD lt.
 
-    IF io_memory->stack_length( ) < 2.
+    IF io_memory->get_stack( )->stack_length( ) < 2.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'lt, expected two variables on stack'.
     ENDIF.
 
-    DATA(lo_val1) = CAST zcl_wasm_f64( io_memory->stack_pop( ) ).
-    DATA(lo_val2) = CAST zcl_wasm_f64( io_memory->stack_pop( ) ).
+    DATA(lo_val1) = CAST zcl_wasm_f64( io_memory->get_stack( )->stack_pop( ) ).
+    DATA(lo_val2) = CAST zcl_wasm_f64( io_memory->get_stack( )->stack_pop( ) ).
 
     DATA(lv_result) = 0.
     IF lo_val1->mv_value > lo_val2->mv_value.
       lv_result = 1.
     ENDIF.
 
-    io_memory->stack_push( zcl_wasm_i32=>from_signed( lv_result ) ).
+    io_memory->get_stack( )->stack_push( zcl_wasm_i32=>from_signed( lv_result ) ).
 
   ENDMETHOD.
 
   METHOD ge.
 
-    IF io_memory->stack_length( ) < 2.
+    IF io_memory->get_stack( )->stack_length( ) < 2.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'f64 gt, expected at least two variables on stack'.
     ENDIF.
 
-    DATA(lo_val1) = CAST zcl_wasm_f64( io_memory->stack_pop( ) ).
-    DATA(lo_val2) = CAST zcl_wasm_f64( io_memory->stack_pop( ) ).
+    DATA(lo_val1) = CAST zcl_wasm_f64( io_memory->get_stack( )->stack_pop( ) ).
+    DATA(lo_val2) = CAST zcl_wasm_f64( io_memory->get_stack( )->stack_pop( ) ).
 
     DATA(lv_result) = 0.
     IF lo_val1->get_value( ) >= lo_val2->get_value( ).
       lv_result = 1.
     ENDIF.
 
-    io_memory->stack_push( zcl_wasm_i32=>from_signed( lv_result ) ).
+    io_memory->get_stack( )->stack_push( zcl_wasm_i32=>from_signed( lv_result ) ).
 
   ENDMETHOD.
 
   METHOD le.
 
-    IF io_memory->stack_length( ) < 2.
+    IF io_memory->get_stack( )->stack_length( ) < 2.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'le, expected two variables on stack'.
     ENDIF.
 
-    DATA(lo_val1) = CAST zcl_wasm_f64( io_memory->stack_pop( ) ).
-    DATA(lo_val2) = CAST zcl_wasm_f64( io_memory->stack_pop( ) ).
+    DATA(lo_val1) = CAST zcl_wasm_f64( io_memory->get_stack( )->stack_pop( ) ).
+    DATA(lo_val2) = CAST zcl_wasm_f64( io_memory->get_stack( )->stack_pop( ) ).
 
     DATA(lv_result) = 0.
     IF lo_val1->mv_value >= lo_val2->mv_value.
       lv_result = 1.
     ENDIF.
 
-    io_memory->stack_push( zcl_wasm_i32=>from_signed( lv_result ) ).
+    io_memory->get_stack( )->stack_push( zcl_wasm_i32=>from_signed( lv_result ) ).
 
   ENDMETHOD.
 
   METHOD add.
 
-    ASSERT io_memory->stack_length( ) >= 2.
+    ASSERT io_memory->get_stack( )->stack_length( ) >= 2.
 
-    DATA(lo_val1) = CAST zcl_wasm_f64( io_memory->stack_pop( ) ).
-    DATA(lo_val2) = CAST zcl_wasm_f64( io_memory->stack_pop( ) ).
+    DATA(lo_val1) = CAST zcl_wasm_f64( io_memory->get_stack( )->stack_pop( ) ).
+    DATA(lo_val2) = CAST zcl_wasm_f64( io_memory->get_stack( )->stack_pop( ) ).
 
-    io_memory->stack_push( from_float( lo_val1->get_value( ) + lo_val2->get_value( ) ) ).
+    io_memory->get_stack( )->stack_push( from_float( lo_val1->get_value( ) + lo_val2->get_value( ) ) ).
 
   ENDMETHOD.
 
   METHOD sub.
 
-    ASSERT io_memory->stack_length( ) >= 2.
+    ASSERT io_memory->get_stack( )->stack_length( ) >= 2.
 
-    DATA(lo_val1) = CAST zcl_wasm_f64( io_memory->stack_pop( ) ).
-    DATA(lo_val2) = CAST zcl_wasm_f64( io_memory->stack_pop( ) ).
+    DATA(lo_val1) = CAST zcl_wasm_f64( io_memory->get_stack( )->stack_pop( ) ).
+    DATA(lo_val2) = CAST zcl_wasm_f64( io_memory->get_stack( )->stack_pop( ) ).
 
-    io_memory->stack_push( from_float( lo_val2->get_value( ) - lo_val1->get_value( ) ) ).
+    io_memory->get_stack( )->stack_push( from_float( lo_val2->get_value( ) - lo_val1->get_value( ) ) ).
 
   ENDMETHOD.
 
   METHOD mul.
 
-    ASSERT io_memory->stack_length( ) >= 2.
+    ASSERT io_memory->get_stack( )->stack_length( ) >= 2.
 
-    DATA(lo_val1) = CAST zcl_wasm_f64( io_memory->stack_pop( ) ).
-    DATA(lo_val2) = CAST zcl_wasm_f64( io_memory->stack_pop( ) ).
+    DATA(lo_val1) = CAST zcl_wasm_f64( io_memory->get_stack( )->stack_pop( ) ).
+    DATA(lo_val2) = CAST zcl_wasm_f64( io_memory->get_stack( )->stack_pop( ) ).
 
-    io_memory->stack_push( from_float( lo_val2->get_value( ) * lo_val1->get_value( ) ) ).
+    io_memory->get_stack( )->stack_push( from_float( lo_val2->get_value( ) * lo_val1->get_value( ) ) ).
 
   ENDMETHOD.
 
   METHOD div.
 
-    ASSERT io_memory->stack_length( ) >= 2.
+    ASSERT io_memory->get_stack( )->stack_length( ) >= 2.
 
-    DATA(lo_val1) = CAST zcl_wasm_f64( io_memory->stack_pop( ) ).
-    DATA(lo_val2) = CAST zcl_wasm_f64( io_memory->stack_pop( ) ).
+    DATA(lo_val1) = CAST zcl_wasm_f64( io_memory->get_stack( )->stack_pop( ) ).
+    DATA(lo_val2) = CAST zcl_wasm_f64( io_memory->get_stack( )->stack_pop( ) ).
 
-    io_memory->stack_push( from_float( lo_val2->get_value( ) / lo_val1->get_value( ) ) ).
+    io_memory->get_stack( )->stack_push( from_float( lo_val2->get_value( ) / lo_val1->get_value( ) ) ).
 
   ENDMETHOD.
 
   METHOD ne.
 
-    IF io_memory->stack_length( ) < 2.
+    IF io_memory->get_stack( )->stack_length( ) < 2.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'ne, expected two variables on stack'.
     ENDIF.
 
-    DATA(lo_val1) = CAST zcl_wasm_f64( io_memory->stack_pop( ) ).
-    DATA(lo_val2) = CAST zcl_wasm_f64( io_memory->stack_pop( ) ).
+    DATA(lo_val1) = CAST zcl_wasm_f64( io_memory->get_stack( )->stack_pop( ) ).
+    DATA(lo_val2) = CAST zcl_wasm_f64( io_memory->get_stack( )->stack_pop( ) ).
 
     DATA(lv_result) = 0.
     IF lo_val1->mv_value <> lo_val2->mv_value.
       lv_result = 1.
     ENDIF.
 
-    io_memory->stack_push( zcl_wasm_i32=>from_signed( lv_result ) ).
+    io_memory->get_stack( )->stack_push( zcl_wasm_i32=>from_signed( lv_result ) ).
 
   ENDMETHOD.
 
@@ -254,27 +254,27 @@ CLASS zcl_wasm_f64 IMPLEMENTATION.
 
   METHOD floor_value.
 
-    IF io_memory->stack_length( ) < 1.
+    IF io_memory->get_stack( )->stack_length( ) < 1.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'f64 floor, expected at least one variables on stack'.
     ENDIF.
 
-    DATA(lo_val) = CAST zcl_wasm_f64( io_memory->stack_pop( ) ).
+    DATA(lo_val) = CAST zcl_wasm_f64( io_memory->get_stack( )->stack_pop( ) ).
 
-    io_memory->stack_push( from_float( floor( lo_val->mv_value ) ) ).
+    io_memory->get_stack( )->stack_push( from_float( floor( lo_val->mv_value ) ) ).
 
   ENDMETHOD.
 
   METHOD eq.
 
-    ASSERT io_memory->stack_length( ) >= 2.
+    ASSERT io_memory->get_stack( )->stack_length( ) >= 2.
 
-    DATA(lv_val1) = CAST zcl_wasm_f64( io_memory->stack_pop( ) )->mv_value.
-    DATA(lv_val2) = CAST zcl_wasm_f64( io_memory->stack_pop( ) )->mv_value.
+    DATA(lv_val1) = CAST zcl_wasm_f64( io_memory->get_stack( )->stack_pop( ) )->mv_value.
+    DATA(lv_val2) = CAST zcl_wasm_f64( io_memory->get_stack( )->stack_pop( ) )->mv_value.
 
     IF lv_val1 = lv_val2.
-      io_memory->stack_push( zcl_wasm_i32=>from_signed( 1 ) ).
+      io_memory->get_stack( )->stack_push( zcl_wasm_i32=>from_signed( 1 ) ).
     ELSE.
-      io_memory->stack_push( zcl_wasm_i32=>from_signed( 0 ) ).
+      io_memory->get_stack( )->stack_push( zcl_wasm_i32=>from_signed( 0 ) ).
     ENDIF.
 
   ENDMETHOD.

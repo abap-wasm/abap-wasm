@@ -25,7 +25,7 @@ CLASS zcl_wasm_f32_const IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    io_memory->stack_push( zcl_wasm_f32=>from_float( mv_value ) ).
+    io_memory->get_stack( )->stack_push( zcl_wasm_f32=>from_float( mv_value ) ).
   ENDMETHOD.
 
 ENDCLASS.

@@ -84,11 +84,11 @@ CLASS zcl_wasm IMPLEMENTATION.
 
 
   METHOD zif_wasm~dump_stack.
-    DATA(lv_length) = mo_memory->stack_length( ).
+    DATA(lv_length) = mo_memory->get_stack( )->stack_length( ).
     rv_dump = |Stack length: { lv_length } values\n|.
     DO lv_length TIMES.
       DATA(lv_index) = sy-index.
-      DATA(li_value) = mo_memory->stack_pop( ).
+      DATA(li_value) = mo_memory->get_stack( )->stack_pop( ).
       rv_dump = rv_dump && |{ lv_index } - { li_value->get_type( ) } - { li_value->human_readable_value( ) }\n|.
     ENDDO.
   ENDMETHOD.
@@ -120,7 +120,7 @@ CLASS zcl_wasm IMPLEMENTATION.
     ENDIF.
 
     LOOP AT it_parameters INTO DATA(li_value).
-      mo_memory->stack_push( li_value ).
+      mo_memory->get_stack( )->stack_push( li_value ).
     ENDLOOP.
 
     NEW zcl_wasm_vm(
@@ -128,7 +128,7 @@ CLASS zcl_wasm IMPLEMENTATION.
       io_module = mo_module )->call( ls_export-index ).
 
     DO xstrlen( ls_type-result_types ) TIMES.
-      INSERT mo_memory->stack_pop( ) INTO rt_results INDEX 1.
+      INSERT mo_memory->get_stack( )->stack_pop( ) INTO rt_results INDEX 1.
     ENDDO.
 
   ENDMETHOD.

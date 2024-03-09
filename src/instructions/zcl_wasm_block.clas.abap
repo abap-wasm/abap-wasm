@@ -91,22 +91,22 @@ CLASS zcl_wasm_block IMPLEMENTATION.
         lv_return = ls_type-result_types.
     ENDCASE.
 
-    IF xstrlen( lv_return ) > io_memory->stack_length( ).
+    IF xstrlen( lv_return ) > io_memory->get_stack( )->stack_length( ).
 *      WRITE '@KERNEL throw new Error("block");'.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |block: expected { xstrlen( lv_return ) } values on stack, { lv_return }|.
     ENDIF.
 
     DO xstrlen( lv_return ) TIMES.
-      DATA(li_val) = io_memory->stack_pop( ).
+      DATA(li_val) = io_memory->get_stack( )->stack_pop( ).
       INSERT li_val INTO lt_results INDEX 1.
     ENDDO.
 
-    WHILE io_memory->stack_length( ) > iv_length AND io_memory->stack_length( ) > 0.
-      io_memory->stack_pop( ).
+    WHILE io_memory->get_stack( )->stack_length( ) > iv_length AND io_memory->get_stack( )->stack_length( ) > 0.
+      io_memory->get_stack( )->stack_pop( ).
     ENDWHILE.
 
     LOOP AT lt_results INTO li_val.
-      io_memory->stack_push( li_val ).
+      io_memory->get_stack( )->stack_push( li_val ).
     ENDLOOP.
   ENDMETHOD.
 
@@ -114,7 +114,7 @@ CLASS zcl_wasm_block IMPLEMENTATION.
 
 * https://webassembly.github.io/spec/core/exec/instructions.html#xref-syntax-instructions-syntax-instr-control-mathsf-block-xref-syntax-instructions-syntax-blocktype-mathit-blocktype-xref-syntax-instructions-syntax-instr-mathit-instr-ast-xref-syntax-instr
 
-    DATA(lv_length) = io_memory->stack_length( ).
+    DATA(lv_length) = io_memory->get_stack( )->stack_length( ).
 
     TRY.
         rv_control = NEW zcl_wasm_vm(
