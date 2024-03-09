@@ -114,17 +114,17 @@ CLASS zcl_wasm_block IMPLEMENTATION.
 
 * https://webassembly.github.io/spec/core/exec/instructions.html#xref-syntax-instructions-syntax-instr-control-mathsf-block-xref-syntax-instructions-syntax-blocktype-mathit-blocktype-xref-syntax-instructions-syntax-instr-mathit-instr-ast-xref-syntax-instr
 
-    DATA(lv_length) = io_memory->get_stack( )->get_length( ).
+    DATA(lo_block) = NEW zcl_wasm_block_helper(
+      iv_block_type = mv_block_type
+      io_module     = io_module ).
+    lo_block->start( io_memory ).
 
     TRY.
         rv_control = NEW zcl_wasm_vm(
           io_memory = io_memory
           io_module = io_module )->execute( mt_instructions ).
       CATCH zcx_wasm_branch INTO DATA(lx_branch).
-        fix_return( io_memory     = io_memory
-                    io_module     = io_module
-                    iv_block_type = mv_block_type
-                    iv_length     = lv_length ).
+        lo_block->end( io_memory ).
         IF lx_branch->depth > 0.
           RAISE EXCEPTION TYPE zcx_wasm_branch EXPORTING depth = lx_branch->depth - 1.
         ENDIF.

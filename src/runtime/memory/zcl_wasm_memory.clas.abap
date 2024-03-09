@@ -15,6 +15,9 @@ CLASS zcl_wasm_memory DEFINITION
     METHODS get_stack
       RETURNING
         VALUE(ri_stack) TYPE REF TO zif_wasm_memory_stack.
+    METHODS set_stack
+      IMPORTING
+        ii_stack TYPE REF TO zif_wasm_memory_stack.
 
 *********** Frames with locals
     METHODS push_frame.
@@ -119,6 +122,10 @@ CLASS zcl_wasm_memory IMPLEMENTATION.
 
   METHOD get_stack.
     ri_stack = mi_stack.
+  ENDMETHOD.
+
+  METHOD set_stack.
+    mi_stack = ii_stack.
   ENDMETHOD.
 
   METHOD table_get.
