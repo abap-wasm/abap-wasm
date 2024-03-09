@@ -26,7 +26,9 @@ CLASS zcl_wasm_select IMPLEMENTATION.
 
     DATA(lo_val1) = io_memory->get_stack( )->pop( ).
     DATA(lo_val2) = io_memory->get_stack( )->pop( ).
-* todo: validate val1 and val2 are of same type
+    IF lo_val1->get_type( ) <> lo_val2->get_type( ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'select: expected same type'.
+    ENDIF.
 
     IF lo_c->get_signed( ) = 0.
       io_memory->get_stack( )->push( lo_val1 ).

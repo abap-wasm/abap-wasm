@@ -15,6 +15,9 @@ CLASS zcl_wasm_memory DEFINITION
     METHODS get_stack
       RETURNING
         VALUE(ri_stack) TYPE REF TO zif_wasm_memory_stack.
+    METHODS set_stack
+      IMPORTING
+        ii_stack TYPE REF TO zif_wasm_memory_stack.
 
 *********** Frames with locals
     METHODS push_frame.
@@ -87,6 +90,14 @@ CLASS zcl_wasm_memory DEFINITION
       RAISING
         zcx_wasm.
 
+    METHODS table_get_max
+      IMPORTING
+        iv_tableidx TYPE i
+      RETURNING
+        VALUE(rv_max) TYPE i
+      RAISING
+        zcx_wasm.
+
   PROTECTED SECTION.
     DATA mi_linear TYPE REF TO zif_wasm_memory_linear.
     DATA mi_globals TYPE REF TO zif_wasm_memory_globals.
@@ -119,6 +130,10 @@ CLASS zcl_wasm_memory IMPLEMENTATION.
 
   METHOD get_stack.
     ri_stack = mi_stack.
+  ENDMETHOD.
+
+  METHOD set_stack.
+    mi_stack = ii_stack.
   ENDMETHOD.
 
   METHOD table_get.
@@ -188,6 +203,20 @@ CLASS zcl_wasm_memory IMPLEMENTATION.
       iv_tableidx = lines( mt_tables ) - 1
       iv_count    = is_table-limit-min
       ii_value    = li_val ).
+  ENDMETHOD.
+
+  METHOD table_get_max.
+
+    DATA(lv_idx) = iv_tableidx + 1.
+    READ TABLE mt_tables INDEX lv_idx ASSIGNING FIELD-SYMBOL(<lt_table>).
+    IF sy-subrc <> 0.
+      RAISE EXCEPTION TYPE zcx_wasm
+        EXPORTING
+          text = |zcl_wasm_memory: table_set, not found, index { iv_tableidx }|.
+    ENDIF.
+
+    rv_max = <lt_table>-type-limit-max.
+
   ENDMETHOD.
 
   METHOD table_grow.

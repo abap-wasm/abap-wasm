@@ -1,4 +1,4 @@
-CLASS ltcl_test DEFINITION FOR TESTING DURATION MEDIUM RISK LEVEL HARMLESS.
+CLASS ltcl_test DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS.
 
   PRIVATE SECTION.
     METHODS basic FOR TESTING RAISING cx_static_check.
@@ -28,10 +28,8 @@ CLASS ltcl_test IMPLEMENTATION.
       act = lines( lt_values )
       exp = 1 ).
 
-    DATA(lo_value) = CAST zcl_wasm_i32( lt_values[ 1 ] ).
-
     cl_abap_unit_assert=>assert_equals(
-      act = lo_value->get_signed( )
+      act = CAST zcl_wasm_i32( lt_values[ 1 ] )->get_signed( )
       exp = 1 ).
 
   ENDMETHOD.

@@ -1,9 +1,10 @@
-CLASS ltcl_test DEFINITION FOR TESTING DURATION MEDIUM RISK LEVEL HARMLESS.
+CLASS ltcl_test DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS.
 
   PRIVATE SECTION.
     METHODS empty FOR TESTING RAISING cx_static_check.
     METHODS multi FOR TESTING RAISING cx_static_check.
     METHODS nested_unwind FOR TESTING RAISING cx_static_check.
+    METHODS select_mid FOR TESTING RAISING cx_static_check.
 
 ENDCLASS.
 
@@ -80,6 +81,33 @@ CLASS ltcl_test IMPLEMENTATION.
     cl_abap_unit_assert=>assert_equals(
       act = CAST zcl_wasm_i32( lt_values[ 1 ] )->get_signed( )
       exp = 9 ).
+
+  ENDMETHOD.
+
+  METHOD select_mid.
+
+" (module
+"   (func (export "selectmid") (result i32)
+"     i32.const 2
+"     block (result i32)  ;; label = @1
+"       i32.const 1
+"     end
+"     i32.const 3
+"     select))
+
+    DATA(lv_wasm) = `AGFzbQEAAAABBQFgAAF/AwIBAAcNAQlzZWxlY3RtaWQAAAoOAQwAQQICf0EBC0EDGwsACgRuYW1lAgMBAAA=`.
+
+    DATA(li_wasm) = zcl_wasm=>create_with_base64( lv_wasm ).
+
+    DATA(lt_values) = li_wasm->execute_function_export( 'selectmid' ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lines( lt_values )
+      exp = 1 ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = CAST zcl_wasm_i32( lt_values[ 1 ] )->get_signed( )
+      exp = 2 ).
 
   ENDMETHOD.
 
