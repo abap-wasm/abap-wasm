@@ -82,12 +82,6 @@ CLASS zcl_wasm_memory_linear IMPLEMENTATION.
 
     DATA lv_byte TYPE x LENGTH 1.
 
-    IF iv_length = 0 AND iv_offset = 0.
-* todo, does this respect endians?
-      rv_bytes = mv_linear.
-      RETURN.
-    ENDIF.
-
     DATA(lv_length) = xstrlen( mv_linear ).
 
     IF iv_offset + iv_length > lv_length.
