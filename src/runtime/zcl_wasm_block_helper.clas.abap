@@ -74,7 +74,7 @@ CLASS zcl_wasm_block_helper IMPLEMENTATION.
       IF li_val->get_type( ) <> ms_type-parameter_types+lv_offset(1).
         RAISE EXCEPTION TYPE zcx_wasm
           EXPORTING
-            text = |block: wrong parameter on stack, got { li_val->get_type( ) } expected { ms_type-parameter_types+lv_offset(1) }|.
+            text = |block parameter: wrong parameter on stack, got { li_val->get_type( ) } expected { ms_type-parameter_types+lv_offset(1) }|.
       ENDIF.
 
       li_new->push( li_val ).
@@ -97,8 +97,15 @@ CLASS zcl_wasm_block_helper IMPLEMENTATION.
     ENDIF.
 
     DO xstrlen( ms_type-result_types ) TIMES.
-* todo, check types?
+      DATA(lv_offset) = xstrlen( ms_type-result_types ) - sy-index.
       DATA(li_val) = io_memory->get_stack( )->pop( ).
+
+      IF li_val->get_type( ) <> ms_type-result_types+lv_offset(1).
+        RAISE EXCEPTION TYPE zcx_wasm
+          EXPORTING
+            text = |block result: wrong parameter on stack, got { li_val->get_type( ) } expected { ms_type-result_types+lv_offset(1) }|.
+      ENDIF.
+
       INSERT li_val INTO lt_results INDEX 1.
     ENDDO.
 
