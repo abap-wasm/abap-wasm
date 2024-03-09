@@ -50,7 +50,14 @@ CLASS zcl_wasm_call_indirect IMPLEMENTATION.
     ENDIF.
     DATA(lo_ref) = CAST zcl_wasm_funcref( li_value ).
 
-    " io_module->get_type_by_index( mv_typeidx ).
+    DATA(ls_type) = io_module->get_type_by_index( mv_typeidx ).
+    DATA(ls_function) = io_module->get_function_by_index( lo_ref->get_address( ) ).
+    DATA(ls_ftype) = io_module->get_type_by_index( CONV #( ls_function-typeidx ) ).
+    DATA(ls_code) = io_module->get_code_by_index( CONV #( ls_function-codeidx ) ).
+
+    IF ls_type <> ls_ftype.
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |zcl_wasm_call_indirect type mismatch|.
+    ENDIF.
 
     RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |todo, execute instruction zcl_wasm_call_indirect { lo_ref->get_address( ) }|.
   ENDMETHOD.
