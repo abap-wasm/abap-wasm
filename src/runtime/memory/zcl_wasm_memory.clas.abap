@@ -28,9 +28,6 @@ CLASS zcl_wasm_memory DEFINITION
       RETURNING
         VALUE(ro_value) TYPE REF TO zcl_wasm_i64
       RAISING zcx_wasm.
-    METHODS stack_peek
-      RETURNING
-        VALUE(ri_value) TYPE REF TO zif_wasm_value .
     METHODS stack_length
       RETURNING
         VALUE(rv_length) TYPE i .
@@ -259,12 +256,6 @@ CLASS zcl_wasm_memory IMPLEMENTATION.
   METHOD stack_length.
     rv_length = lines( mt_stack ).
   ENDMETHOD.
-
-  METHOD stack_peek.
-    DATA(lv_last) = lines( mt_stack ).
-    READ TABLE mt_stack INDEX lv_last INTO ri_value.
-  ENDMETHOD.
-
 
   METHOD stack_pop.
 
