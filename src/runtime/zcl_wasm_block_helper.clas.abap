@@ -54,10 +54,18 @@ CLASS zcl_wasm_block_helper IMPLEMENTATION.
     ENDIF.
 
     mi_old = io_memory->get_stack( ).
-    io_memory->set_stack( NEW zcl_wasm_memory_stack( ) ).
-    IF xstrlen( ms_type-parameter_types ) > 0.
-      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |block: todo consume parameters|.
+    DATA(li_new) = CAST zif_wasm_memory_stack( NEW zcl_wasm_memory_stack( ) ).
+    io_memory->set_stack( li_new ).
+
+    IF xstrlen( ms_type-parameter_types ) > mi_old->get_length( ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |block: consume parameters expected at least { xstrlen( ms_type-parameter_types ) }|.
     ENDIF.
+
+    DO xstrlen( ms_type-parameter_types ) TIMES.
+* todo, check types?
+      DATA(li_val) = mi_old->pop( ).
+      li_new->push( li_val ).
+    ENDDO.
   ENDMETHOD.
 
   METHOD end.
