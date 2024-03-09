@@ -72,17 +72,6 @@ CLASS zcl_wasm IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD zif_wasm~dump_linear_memory.
-    IF mo_memory->has_linear( ) = abap_false.
-      rv_dump = 'no linear memory'.
-      RETURN.
-    ENDIF.
-
-    DATA(li_linear) = mo_memory->get_linear( ).
-    rv_dump = rv_dump && |Linear memory: { li_linear->size_in_bytes( ) } bytes\n|.
-  ENDMETHOD.
-
-
   METHOD zif_wasm~dump_stack.
     DATA(lv_length) = mo_memory->get_stack( )->get_length( ).
     rv_dump = |Stack length: { lv_length } values\n|.

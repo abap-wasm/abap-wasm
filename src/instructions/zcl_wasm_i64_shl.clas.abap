@@ -33,7 +33,6 @@ CLASS zcl_wasm_i64_shl IMPLEMENTATION.
     ENDIF.
 
     DO lv_bits TIMES.
-* todo: this can be optimized
       DO 63 TIMES.
         DATA(lv_offset) = sy-index + 1.
         GET BIT lv_offset OF lv_hex INTO DATA(lv_set).
