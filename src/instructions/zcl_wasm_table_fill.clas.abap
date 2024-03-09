@@ -26,7 +26,24 @@ CLASS zcl_wasm_table_fill IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'todo, execute instruction zcl_wasm_table_fill'.
+
+* https://webassembly.github.io/spec/core/exec/instructions.html#xref-syntax-instructions-syntax-instr-table-mathsf-table-fill-x
+
+    DATA(lv_n) = io_memory->stack_pop_i32( )->get_signed( ).
+    DATA(lv_val) = io_memory->stack_pop( ).
+    DATA(lv_i) = io_memory->stack_pop_i32( )->get_signed( ).
+
+    IF lv_i + lv_n > io_memory->table_size( CONV #( mv_tableidx ) ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_table_fill: out of bounds'.
+    ENDIF.
+
+    DO lv_n TIMES.
+      io_memory->table_set(
+        iv_tableidx = CONV #( mv_tableidx )
+        iv_offset   = lv_i + sy-index - 1
+        ii_value    = lv_val ).
+    ENDDO.
+
   ENDMETHOD.
 
 ENDCLASS.
