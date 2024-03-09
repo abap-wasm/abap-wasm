@@ -69,7 +69,6 @@ CLASS zcl_wasm_loop IMPLEMENTATION.
             CONTINUE.
           ENDIF.
 
-          lo_block->end( io_memory ).
           RAISE EXCEPTION TYPE zcx_wasm_branch EXPORTING depth = lx_branch->depth - 1.
       ENDTRY.
 
