@@ -15,6 +15,10 @@ CLASS zcl_wasm_block_helper DEFINITION PUBLIC.
     METHODS end
       IMPORTING io_memory TYPE REF TO zcl_wasm_memory
       RAISING zcx_wasm.
+
+    METHODS revert
+      IMPORTING io_memory TYPE REF TO zcl_wasm_memory
+      RAISING zcx_wasm.
   PRIVATE SECTION.
     DATA ms_type TYPE zcl_wasm_module=>ty_type.
     DATA mi_old  TYPE REF TO zif_wasm_memory_stack.
@@ -90,6 +94,10 @@ CLASS zcl_wasm_block_helper IMPLEMENTATION.
       mi_old->push( li_val ).
     ENDLOOP.
 
+    revert( io_memory ).
+  ENDMETHOD.
+
+  METHOD revert.
     io_memory->set_stack( mi_old ).
   ENDMETHOD.
 
