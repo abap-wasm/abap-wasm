@@ -43,13 +43,13 @@ CLASS zcl_wasm_block_helper IMPLEMENTATION.
           RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |block: expected positive function type index|.
         ENDIF.
         ms_type = io_module->get_type_by_index( lv_int8 ).
-
     ENDCASE.
 
   ENDMETHOD.
 
   METHOD start.
     IF ms_type IS INITIAL.
+* empty block type
       RETURN.
     ENDIF.
 
@@ -64,6 +64,7 @@ CLASS zcl_wasm_block_helper IMPLEMENTATION.
     DATA lt_results TYPE STANDARD TABLE OF REF TO zif_wasm_value WITH EMPTY KEY.
 
     IF ms_type IS INITIAL.
+* empty block type
       RETURN.
     ENDIF.
 
