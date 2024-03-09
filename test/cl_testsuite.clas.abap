@@ -209,8 +209,9 @@ CLASS cl_testsuite IMPLEMENTATION.
                 EXIT. " current loop
               ENDIF.
             WHEN 'externref'.
+              DATA(lo_externref) = CAST zcl_wasm_externref( li_result ).
               IF ls_expected-value = 'null'.
-                IF CAST zcl_wasm_externref( li_result )->is_null( ) = abap_false.
+                IF lo_externref->is_null( ) = abap_false.
                   lv_error = abap_true.
                   go_result->add_error(
                     iv_start_time = ls_results-start_time
@@ -218,15 +219,19 @@ CLASS cl_testsuite IMPLEMENTATION.
                   EXIT. " current loop
                 ENDIF.
               ELSE.
-                lv_error = abap_true.
-                go_result->add_error(
-                  iv_start_time = ls_results-start_time
-                  iv_text       = |todo, externref check non null, { li_result->human_readable_value( ) }| ).
-                EXIT. " current loop
+                lv_expected = CONV int8( ls_expected-value ).
+                IF lv_expected <> lo_externref->get_address( ).
+                  lv_error = abap_true.
+                  go_result->add_error(
+                    iv_start_time = ls_results-start_time
+                    iv_text       = |externref unexpected value, { li_result->human_readable_value( ) }| ).
+                  EXIT. " current loop
+                ENDIF.
               ENDIF.
             WHEN 'funcref'.
+              DATA(lo_funcref) = CAST zcl_wasm_funcref( li_result ).
               IF ls_expected-value = 'null'.
-                IF CAST zcl_wasm_funcref( li_result )->is_null( ) = abap_false.
+                IF lo_funcref->is_null( ) = abap_false.
                   lv_error = abap_true.
                   go_result->add_error(
                     iv_start_time = ls_results-start_time
@@ -234,11 +239,14 @@ CLASS cl_testsuite IMPLEMENTATION.
                   EXIT. " current loop
                 ENDIF.
               ELSE.
-                lv_error = abap_true.
-                go_result->add_error(
-                  iv_start_time = ls_results-start_time
-                  iv_text       = |todo, funcref check non null, { li_result->human_readable_value( ) }| ).
-                EXIT. " current loop
+                lv_expected = CONV int8( ls_expected-value ).
+                IF lv_expected <> lo_funcref->get_address( ).
+                  lv_error = abap_true.
+                  go_result->add_error(
+                    iv_start_time = ls_results-start_time
+                    iv_text       = |funcref unexpected value, { li_result->human_readable_value( ) }| ).
+                  EXIT. " current loop
+                ENDIF.
               ENDIF.
             WHEN OTHERS.
               lv_error = abap_true.
