@@ -40,10 +40,19 @@ CLASS zcl_wasm_call_indirect IMPLEMENTATION.
 * https://webassembly.github.io/spec/core/exec/instructions.html#xref-syntax-instructions-syntax-instr-control-mathsf-call-indirect-x-y
 * https://coinexsmartchain.medium.com/wasm-introduction-part-6-table-indirect-call-65ad0404b003
 
-    " WRITE / mv_typeidx.
-    " WRITE / mv_tableidx.
+    DATA(lv_i) = io_memory->stack_pop_i32( ).
 
-    RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'todo, execute instruction zcl_wasm_call_indirect'.
+    DATA(li_value) = io_memory->table_get(
+      iv_tableidx = CONV #( mv_tableidx )
+      iv_offset   = lv_i->get_signed( ) ).
+    IF li_value->get_type( ) <> zcl_wasm_types=>c_reftype-funcref.
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |zcl_wasm_call_indirect: not a funcref { li_value->get_type( ) }|.
+    ENDIF.
+    DATA(lo_ref) = CAST zcl_wasm_funcref( li_value ).
+
+    " io_module->get_type_by_index( mv_typeidx ).
+
+    RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |todo, execute instruction zcl_wasm_call_indirect { lo_ref->get_address( ) }|.
   ENDMETHOD.
 
 ENDCLASS.
