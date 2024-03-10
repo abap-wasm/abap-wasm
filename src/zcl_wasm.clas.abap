@@ -6,9 +6,16 @@ CLASS zcl_wasm DEFINITION
 
     INTERFACES zif_wasm.
 
+    TYPES: BEGIN OF ty_import,
+             name   TYPE string,
+             module TYPE REF TO object, " todo
+           END OF ty_import.
+    TYPES ty_imports_tt TYPE STANDARD TABLE OF ty_import WITH DEFAULT KEY.
+
     CLASS-METHODS create_with_wasm
       IMPORTING
         !iv_wasm       TYPE xstring
+        it_imports     TYPE ty_imports_tt OPTIONAL
       RETURNING
         VALUE(ri_wasm) TYPE REF TO zif_wasm
       RAISING
@@ -17,6 +24,7 @@ CLASS zcl_wasm DEFINITION
     CLASS-METHODS create_with_base64
       IMPORTING
         !iv_base64     TYPE string
+        it_imports     TYPE ty_imports_tt OPTIONAL
       RETURNING
         VALUE(ri_wasm) TYPE REF TO zif_wasm
       RAISING
