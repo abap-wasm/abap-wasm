@@ -9,12 +9,6 @@ CLASS zcl_wasm_vm DEFINITION
         !io_memory TYPE REF TO zcl_wasm_memory
         !io_module TYPE REF TO zcl_wasm_module .
 
-    METHODS call
-      IMPORTING
-        iv_funcidx TYPE int8
-      RAISING
-        zcx_wasm.
-
     METHODS execute
       IMPORTING
         !it_instructions TYPE zif_wasm_instruction=>ty_list
@@ -37,16 +31,6 @@ CLASS zcl_wasm_vm IMPLEMENTATION.
   METHOD constructor.
     mo_memory = io_memory.
     mo_module = io_module.
-  ENDMETHOD.
-
-  METHOD call.
-    TRY.
-        CAST zif_wasm_instruction( NEW zcl_wasm_call( iv_funcidx ) )->execute(
-          io_memory = mo_memory
-          io_module = mo_module ).
-      CATCH zcx_wasm_branch.
-        RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'call(), branching exception, should not happen'.
-    ENDTRY.
   ENDMETHOD.
 
   METHOD execute.

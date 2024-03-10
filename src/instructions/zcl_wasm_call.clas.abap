@@ -8,17 +8,20 @@ CLASS zcl_wasm_call DEFINITION PUBLIC.
         !iv_funcidx TYPE int8.
 
     CLASS-METHODS parse
-      IMPORTING !io_body TYPE REF TO zcl_wasm_binary_stream
-      RETURNING VALUE(ri_instruction) TYPE REF TO zif_wasm_instruction
-      RAISING zcx_wasm.
+      IMPORTING
+        !io_body TYPE REF TO zcl_wasm_binary_stream
+      RETURNING
+        VALUE(ri_instruction) TYPE REF TO zif_wasm_instruction
+      RAISING
+        zcx_wasm.
 
     CLASS-METHODS invoke
       IMPORTING
         iv_funcidx TYPE int8
-        io_memory TYPE REF TO zcl_wasm_memory
-        io_module TYPE REF TO zcl_wasm_module
+        io_memory  TYPE REF TO zcl_wasm_memory
+        io_module  TYPE REF TO zcl_wasm_module
       RAISING
-      zcx_wasm.
+        zcx_wasm.
 
   PRIVATE SECTION.
     DATA mv_funcidx TYPE int8.
@@ -43,6 +46,7 @@ CLASS zcl_wasm_call IMPLEMENTATION.
 * consume values from stack into locals
     io_memory->push_frame( ).
     DO xstrlen( ls_type-parameter_types ) TIMES.
+* todo: check parameters are the correct types
       io_memory->get_frame( )->local_push_first( io_memory->get_stack( )->pop( ) ).
     ENDDO.
 
@@ -73,6 +77,8 @@ CLASS zcl_wasm_call IMPLEMENTATION.
           RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'call(), branching exception, should not happen'.
         ENDIF.
     ENDTRY.
+
+* todo: check the result on the stack are as expected and correct types
 
     io_memory->pop_frame( ).
 

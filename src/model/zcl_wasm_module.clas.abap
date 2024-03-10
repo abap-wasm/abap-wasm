@@ -301,8 +301,10 @@ CLASS zcl_wasm_module IMPLEMENTATION.
         DATA(lv_type) = li_param->get_type( ).
         CONCATENATE lv_got lv_type INTO lv_got IN BYTE MODE.
       ENDLOOP.
-      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |execute_function_export: number of parameters doesnt match, expected {
-        ls_type-parameter_types }, got { lv_got }|.
+      RAISE EXCEPTION TYPE zcx_wasm
+        EXPORTING
+          text = |execute_function_export: number of parameters doesnt match, expected {
+            ls_type-parameter_types }, got { lv_got }|.
     ENDIF.
 
     IF mo_memory IS INITIAL.
@@ -313,9 +315,16 @@ CLASS zcl_wasm_module IMPLEMENTATION.
       mo_memory->get_stack( )->push( li_value ).
     ENDLOOP.
 
-    NEW zcl_wasm_vm(
-      io_memory = mo_memory
-      io_module = me )->call( ls_export-index ).
+    TRY.
+        zcl_wasm_call=>invoke(
+          iv_funcidx = ls_export-index
+          io_memory  = mo_memory
+          io_module  = me ).
+      CATCH zcx_wasm_branch.
+        RAISE EXCEPTION TYPE zcx_wasm
+          EXPORTING
+            text = 'call(), branching exception, should not happen'.
+    ENDTRY.
 
     DO xstrlen( ls_type-result_types ) TIMES.
       INSERT mo_memory->get_stack( )->pop( ) INTO rt_results INDEX 1.
