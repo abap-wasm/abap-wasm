@@ -357,6 +357,7 @@ CLASS cl_testsuite IMPLEMENTATION.
             WHEN 'assert_exhaustion'.
               go_result->add_warning( |todo, assert_exhaustion| ).
             WHEN 'register'.
+              lo_wasm->instantiate( ).
               INSERT VALUE #(
                 name   = <ls_command>-as
                 module = lo_wasm ) INTO TABLE lt_imports.

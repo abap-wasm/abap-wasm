@@ -124,21 +124,30 @@ CLASS zcl_wasm_import_section IMPLEMENTATION.
 
     DATA li_value TYPE REF TO zif_wasm_value.
 
+    IF lines( mt_data ) > 0 AND lines( it_imports ) = 0.
+      RAISE EXCEPTION TYPE zcx_wasm
+        EXPORTING
+          text = |import section: no imports provided|.
+    ENDIF.
+
     LOOP AT mt_data INTO DATA(ls_data).
+      READ TABLE it_imports WITH KEY name = ls_data-module INTO DATA(ls_import).
+      IF sy-subrc <> 0.
+        RAISE EXCEPTION TYPE zcx_wasm
+          EXPORTING
+            text = |import section: module with name { ls_data-module } not found|.
+      ENDIF.
+
       CASE ls_data-type.
         WHEN c_importdesc-func.
 * todo
         WHEN c_importdesc-table.
 * todo
         WHEN c_importdesc-mem.
-          READ TABLE it_imports WITH KEY module = ls_data-module INTO DATA(ls_import).
-          IF sy-subrc <> 0.
+          IF io_memory->has_linear( ) = abap_true.
             RAISE EXCEPTION TYPE zcx_wasm
               EXPORTING
-                text = |import section: module with name { ls_data-module } not found|.
-          ENDIF.
-          IF io_memory->has_linear( ) = abap_true.
-            RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |import section: memory already instantiated|.
+                text = |import section: memory already instantiated|.
           ENDIF.
           io_memory->set_linear( ls_import-module->get_memory( )->get_linear( ) ).
         WHEN c_importdesc-global.

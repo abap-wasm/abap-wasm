@@ -17,7 +17,11 @@ CLASS cl_scrypt IMPLEMENTATION.
     WRITE '@KERNEL lv_hex.set(fs.readFileSync("./node_modules/scrypt-rs-wasm/scrypt_rs_wasm_bg.wasm").toString("hex").toUpperCase());'.
 
     GET RUN TIME FIELD DATA(lv_start).
-    DATA(li_wasm) = zcl_wasm=>create_with_wasm( lv_hex ).
+    DATA(li_wasm) = zcl_wasm=>create_with_wasm(
+      iv_wasm    = lv_hex
+      it_imports = VALUE #( (
+        name   = '__wbindgen_placeholder__'
+        module = NEW cl_wbindgen_placeholder( ) ) ) ).
     GET RUN TIME FIELD DATA(lv_end).
 
     DATA(lv_runtime) = lv_end - lv_start.
