@@ -140,7 +140,9 @@ CLASS zcl_wasm_import_section IMPLEMENTATION.
 
       CASE ls_data-type.
         WHEN c_importdesc-func.
+          ls_import-module->get_export_by_name( ls_data-name ).
 * todo
+
         WHEN c_importdesc-table.
 * todo
         WHEN c_importdesc-mem.

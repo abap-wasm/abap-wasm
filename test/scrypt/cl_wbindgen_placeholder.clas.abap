@@ -1,38 +1,44 @@
 CLASS cl_wbindgen_placeholder DEFINITION PUBLIC.
   PUBLIC SECTION.
     INTERFACES zif_wasm_module.
+    METHODS constructor.
+  PRIVATE SECTION.
+    DATA mt_names TYPE STANDARD TABLE OF string WITH EMPTY KEY.
 ENDCLASS.
 
 CLASS cl_wbindgen_placeholder IMPLEMENTATION.
 
+  METHOD constructor.
+    INSERT '__wbg_error_f851667af71bcfc6' INTO TABLE mt_names.
+    INSERT '__wbg_new_abda76e883ba8a5f' INTO TABLE mt_names.
+    INSERT '__wbg_stack_658279fe44541cf6' INTO TABLE mt_names.
+    INSERT '__wbindgen_object_drop_ref' INTO TABLE mt_names.
+    INSERT '__wbindgen_throw' INTO TABLE mt_names.
+  ENDMETHOD.
+
   METHOD zif_wasm_module~execute_function_export.
     RAISE EXCEPTION TYPE zcx_wasm
       EXPORTING
-        textid = 'cl_quickjs_wasi_preview: execute_function_export'.
+        textid = 'cl_wbindgen_placeholder: execute_function_export'.
   ENDMETHOD.
 
   METHOD zif_wasm_module~get_export_by_name.
-    " __wbg_error_f851667af71bcfc6
-    " __wbg_new_abda76e883ba8a5f
-    " __wbg_stack_658279fe44541cf6
-    " __wbindgen_object_drop_ref
-    " __wbindgen_throw
-
-    RAISE EXCEPTION TYPE zcx_wasm
-      EXPORTING
-        textid = 'cl_quickjs_wasi_preview: get_export_by_name'.
+    READ TABLE mt_names WITH KEY table_line = iv_name INTO DATA(lv_name).
+    IF sy-subrc <> 0.
+      RAISE EXCEPTION TYPE zcx_wasm
+        EXPORTING
+          textid = 'cl_wbindgen_placeholder: get_export_by_name'.
+    ENDIF.
   ENDMETHOD.
 
   METHOD zif_wasm_module~instantiate.
-    RAISE EXCEPTION TYPE zcx_wasm
-      EXPORTING
-        textid = 'cl_quickjs_wasi_preview: instantiate'.
+    RETURN.
   ENDMETHOD.
 
   METHOD zif_wasm_module~get_memory.
     RAISE EXCEPTION TYPE zcx_wasm
       EXPORTING
-        textid = 'cl_quickjs_wasi_preview: get_memory'.
+        textid = 'cl_wbindgen_placeholder: get_memory'.
   ENDMETHOD.
 
 ENDCLASS.
