@@ -4,6 +4,8 @@ CLASS zcl_wasm_module DEFINITION
 
   PUBLIC SECTION.
 
+    INTERFACES zif_wasm_module.
+
     TYPES:
       BEGIN OF ty_type,
         parameter_types TYPE xstring,
@@ -113,6 +115,7 @@ CLASS zcl_wasm_module DEFINITION
         zcx_wasm.
   PROTECTED SECTION.
   PRIVATE SECTION.
+    DATA mo_memory TYPE REF TO zcl_wasm_memory.
 
     DATA mt_types TYPE ty_types .
     DATA mt_codes TYPE ty_codes .
@@ -272,6 +275,66 @@ CLASS zcl_wasm_module IMPLEMENTATION.
     IF sy-subrc <> 0.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'get_type_by_index: not found'.
     ENDIF.
+
+  ENDMETHOD.
+
+  METHOD zif_wasm_module~get_memory.
+    ro_memory = mo_memory.
+  ENDMETHOD.
+
+
+  METHOD zif_wasm_module~instantiate.
+* https://webassembly.github.io/spec/core/exec/modules.html#instantiation
+
+    ASSERT mo_memory IS INITIAL.
+    mo_memory = NEW zcl_wasm_memory( ).
+
+* The improts component of a module defines a set of imports that are required for instantiation.
+    get_import_section( )->import( mo_memory ).
+* do instantiation
+    get_memory_section( )->instantiate( mo_memory ).
+    get_global_section( )->instantiate( mo_memory ).
+    get_data_section( )->instantiate( mo_memory ).
+    get_table_section( )->instantiate( mo_memory ).
+    get_element_section( )->instantiate( mo_memory ).
+  ENDMETHOD.
+
+  METHOD zif_wasm_module~execute_function_export.
+
+    DATA lv_got TYPE xstring.
+
+    DATA(ls_export) = get_export_by_name( iv_name ).
+    IF ls_export-type <> zif_wasm_types=>c_export_type-func.
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'execute_function_export: expected type func'.
+    ENDIF.
+
+    DATA(ls_function) = get_function_by_index( ls_export-index ).
+    DATA(ls_type) = get_type_by_index( CONV #( ls_function-typeidx ) ).
+
+    IF lines( it_parameters ) <> xstrlen( ls_type-parameter_types ).
+      LOOP AT it_parameters INTO DATA(li_param).
+        DATA(lv_type) = li_param->get_type( ).
+        CONCATENATE lv_got lv_type INTO lv_got IN BYTE MODE.
+      ENDLOOP.
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |execute_function_export: number of parameters doesnt match, expected {
+        ls_type-parameter_types }, got { lv_got }|.
+    ENDIF.
+
+    IF mo_memory IS INITIAL.
+      zif_wasm_module~instantiate( ).
+    ENDIF.
+
+    LOOP AT it_parameters INTO DATA(li_value).
+      mo_memory->get_stack( )->push( li_value ).
+    ENDLOOP.
+
+    NEW zcl_wasm_vm(
+      io_memory = mo_memory
+      io_module = me )->call( ls_export-index ).
+
+    DO xstrlen( ls_type-result_types ) TIMES.
+      INSERT mo_memory->get_stack( )->pop( ) INTO rt_results INDEX 1.
+    ENDDO.
 
   ENDMETHOD.
 ENDCLASS.
