@@ -364,7 +364,6 @@ CLASS cl_testsuite IMPLEMENTATION.
             WHEN 'assert_unlinkable'.
               go_result->add_warning( |todo, assert_unlinkable| ).
             WHEN OTHERS.
-              WRITE / <ls_command>-type.
               ASSERT 1 = 'todo'.
           ENDCASE.
         CATCH cx_root INTO lx_error.
