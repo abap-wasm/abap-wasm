@@ -293,7 +293,10 @@ CLASS zcl_wasm_module IMPLEMENTATION.
     mo_memory = NEW zcl_wasm_memory( ).
 
 * The imports component of a module defines a set of imports that are required for instantiation.
-    get_import_section( )->import( mo_memory ).
+    get_import_section( )->import(
+      io_memory  = mo_memory
+      it_imports = mt_imports ).
+
 * do instantiation
     get_memory_section( )->instantiate( mo_memory ).
     get_global_section( )->instantiate( mo_memory ).

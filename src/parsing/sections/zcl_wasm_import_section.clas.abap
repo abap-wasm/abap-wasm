@@ -13,6 +13,7 @@ CLASS zcl_wasm_import_section DEFINITION PUBLIC.
     METHODS import
       IMPORTING
         io_memory  TYPE REF TO zcl_wasm_memory
+        it_imports TYPE zif_wasm_types=>ty_imports_tt
       RAISING
         zcx_wasm.
 
@@ -52,13 +53,13 @@ CLASS zcl_wasm_import_section DEFINITION PUBLIC.
                  global TYPE x VALUE '03',
                END OF c_importdesc.
 
-    DATA mt_imports TYPE ty_imports_tt.
+    DATA mt_data TYPE ty_imports_tt.
 ENDCLASS.
 
 CLASS zcl_wasm_import_section IMPLEMENTATION.
 
   METHOD constructor.
-    mt_imports = it_imports.
+    mt_data = it_imports.
   ENDMETHOD.
 
   METHOD parse.
@@ -123,17 +124,27 @@ CLASS zcl_wasm_import_section IMPLEMENTATION.
 
     DATA li_value TYPE REF TO zif_wasm_value.
 
-    LOOP AT mt_imports INTO DATA(ls_import).
-      CASE ls_import-type.
+    LOOP AT mt_data INTO DATA(ls_data).
+      CASE ls_data-type.
         WHEN c_importdesc-func.
-          CONTINUE. " nothing here
+* todo
         WHEN c_importdesc-table.
 * todo
         WHEN c_importdesc-mem.
-* todo
+          READ TABLE it_imports WITH KEY module = ls_data-module INTO DATA(ls_import).
+          IF sy-subrc <> 0.
+            RAISE EXCEPTION TYPE zcx_wasm
+              EXPORTING
+                text = |import section: module with name { ls_data-module } not found|.
+          ENDIF.
+          IF io_memory->has_linear( ) = abap_true.
+            RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |import section: memory already instantiated|.
+          ENDIF.
+          io_memory->set_linear( ls_import-module->get_memory( )->get_linear( ) ).
         WHEN c_importdesc-global.
 * todo, handle ls_import-global-mut
-          CASE ls_import-global-valtype.
+* todo: verify it exists in the registered imports
+          CASE ls_data-global-valtype.
             WHEN zif_wasm_types=>c_value_type-i32.
               li_value = NEW zcl_wasm_i32( ).
             WHEN zif_wasm_types=>c_value_type-i64.
@@ -143,11 +154,15 @@ CLASS zcl_wasm_import_section IMPLEMENTATION.
             WHEN zif_wasm_types=>c_value_type-f64.
               li_value = NEW zcl_wasm_f64( ).
             WHEN OTHERS.
-              RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |import: unknown global import type|.
+              RAISE EXCEPTION TYPE zcx_wasm
+                EXPORTING
+                  text = |import: unknown global import type|.
           ENDCASE.
           io_memory->get_globals( )->append( li_value ).
         WHEN OTHERS.
-          RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |import: unknown import type|.
+          RAISE EXCEPTION TYPE zcx_wasm
+            EXPORTING
+              text = |import: unknown import type|.
       ENDCASE.
     ENDLOOP.
 
