@@ -4,6 +4,8 @@ CLASS zcl_wasm DEFINITION
 
   PUBLIC SECTION.
 
+    INTERFACES zif_wasm.
+
     CLASS-METHODS create_with_wasm
       IMPORTING
         !iv_wasm       TYPE xstring
@@ -23,8 +25,6 @@ CLASS zcl_wasm DEFINITION
     METHODS constructor
       IMPORTING
         !io_module TYPE REF TO zcl_wasm_module .
-
-    INTERFACES zif_wasm.
 
   PROTECTED SECTION.
   PRIVATE SECTION.
