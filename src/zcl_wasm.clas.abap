@@ -54,10 +54,16 @@ CLASS zcl_wasm IMPLEMENTATION.
             decoded = lv_xstr.
     ENDTRY.
 
-    ri_wasm = NEW zcl_wasm_parser( )->parse( lv_xstr ).
+    ri_wasm = create_with_wasm( lv_xstr ).
   ENDMETHOD.
 
   METHOD create_with_wasm.
+    IF iv_wasm IS INITIAL.
+      RAISE EXCEPTION TYPE zcx_wasm
+        EXPORTING
+          text = 'create_with_wasm: empty input'.
+    ENDIF.
+
     ri_wasm = NEW zcl_wasm_parser( )->parse( iv_wasm ).
   ENDMETHOD.
 

@@ -12,6 +12,12 @@ CLASS cl_quickjs_wasi_preview IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_module~get_export_by_name.
+    " fd_close
+    " fd_read
+    " fd_write
+    " proc_exit
+    " fd_seek
+
     RAISE EXCEPTION TYPE zcx_wasm
       EXPORTING
         textid = 'cl_quickjs_wasi_preview: get_export_by_name'.

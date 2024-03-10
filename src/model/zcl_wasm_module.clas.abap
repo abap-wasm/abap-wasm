@@ -280,11 +280,10 @@ CLASS zcl_wasm_module IMPLEMENTATION.
   METHOD zif_wasm_module~instantiate.
 * https://webassembly.github.io/spec/core/exec/modules.html#instantiation
 
-* todo: only instantiate memory if its not part of an import
     ASSERT mo_memory IS INITIAL.
     mo_memory = NEW zcl_wasm_memory( ).
 
-* The improts component of a module defines a set of imports that are required for instantiation.
+* The imports component of a module defines a set of imports that are required for instantiation.
     get_import_section( )->import( mo_memory ).
 * do instantiation
     get_memory_section( )->instantiate( mo_memory ).

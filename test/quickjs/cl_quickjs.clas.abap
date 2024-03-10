@@ -1,8 +1,12 @@
 CLASS cl_quickjs DEFINITION PUBLIC.
   PUBLIC SECTION.
     CLASS-METHODS run
-      RETURNING VALUE(rv_json) TYPE string
-      RAISING zcx_wasm.
+      IMPORTING
+        iv_hex         TYPE xstring
+      RETURNING
+        VALUE(rv_json) TYPE string
+      RAISING
+        zcx_wasm.
 ENDCLASS.
 
 CLASS cl_quickjs IMPLEMENTATION.
@@ -13,13 +17,15 @@ CLASS cl_quickjs IMPLEMENTATION.
 * https://www.npmjs.com/package/@jitl/quickjs-wasmfile-release-sync
 * https://www.npmjs.com/package/@jitl/quickjs-wasmfile-debug-sync
 
-    DATA lv_hex TYPE xstring.
-
-    WRITE '@KERNEL const fs = await import("fs");'.
-    WRITE '@KERNEL lv_hex.set(fs.readFileSync("./node_modules/@jitl/quickjs-wasmfile-debug-sync/dist/emscripten-module.wasm").toString("hex").toUpperCase());'.
+    DATA(lo_env) = NEW cl_quickjs_env( ).
+    DATA(lo_wasi) = NEW cl_quickjs_wasi_preview( ).
 
     GET RUN TIME FIELD DATA(lv_start).
-    DATA(li_wasm) = zcl_wasm=>create_with_wasm( lv_hex ).
+    DATA(li_wasm) = zcl_wasm=>create_with_wasm(
+      iv_wasm    = iv_hex
+      it_imports = VALUE #(
+        ( name = 'env'                    module = lo_env )
+        ( name = 'wasi_snapshot_preview1' module = lo_wasi ) ) ).
     GET RUN TIME FIELD DATA(lv_end).
 
     DATA(lv_runtime) = lv_end - lv_start.
