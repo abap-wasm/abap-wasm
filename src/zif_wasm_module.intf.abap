@@ -1,4 +1,4 @@
-INTERFACE zif_wasm PUBLIC.
+INTERFACE zif_wasm_module PUBLIC.
 
   TYPES: BEGIN OF ty_name_and_parameter,
            name       TYPE string,

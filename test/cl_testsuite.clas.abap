@@ -48,7 +48,7 @@ CLASS cl_testsuite DEFINITION PUBLIC CREATE PUBLIC.
     CLASS-METHODS assert_return
       IMPORTING
         is_command TYPE ty_json_commands
-        io_wasm    TYPE REF TO zif_wasm
+        io_wasm    TYPE REF TO zif_wasm_module
       RAISING
         zcx_wasm.
 
@@ -60,7 +60,7 @@ CLASS cl_testsuite DEFINITION PUBLIC CREATE PUBLIC.
     CLASS-METHODS invoke
       IMPORTING
         is_command TYPE ty_json_commands
-        io_wasm    TYPE REF TO zif_wasm
+        io_wasm    TYPE REF TO zif_wasm_module
       RETURNING
         VALUE(rs_results) TYPE ty_results
       RAISING
@@ -276,7 +276,7 @@ CLASS cl_testsuite IMPLEMENTATION.
 
     DATA ls_json     TYPE ty_json.
     DATA lv_filename TYPE string.
-    DATA lo_wasm     TYPE REF TO zif_wasm.
+    DATA lo_wasm     TYPE REF TO zif_wasm_module.
     DATA lv_wast     TYPE string.
     DATA lv_hex      TYPE xstring.
 

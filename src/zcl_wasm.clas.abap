@@ -4,7 +4,7 @@ CLASS zcl_wasm DEFINITION
 
   PUBLIC SECTION.
 
-    INTERFACES zif_wasm.
+    INTERFACES zif_wasm_module.
 
     TYPES: BEGIN OF ty_import,
              name   TYPE string,
@@ -17,7 +17,7 @@ CLASS zcl_wasm DEFINITION
         !iv_wasm       TYPE xstring
         it_imports     TYPE ty_imports_tt OPTIONAL
       RETURNING
-        VALUE(ri_wasm) TYPE REF TO zif_wasm
+        VALUE(ri_wasm) TYPE REF TO zif_wasm_module
       RAISING
         zcx_wasm.
 
@@ -26,7 +26,7 @@ CLASS zcl_wasm DEFINITION
         !iv_base64     TYPE string
         it_imports     TYPE ty_imports_tt OPTIONAL
       RETURNING
-        VALUE(ri_wasm) TYPE REF TO zif_wasm
+        VALUE(ri_wasm) TYPE REF TO zif_wasm_module
       RAISING
         zcx_wasm.
 
@@ -80,7 +80,7 @@ CLASS zcl_wasm IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD zif_wasm~execute_function_export.
+  METHOD zif_wasm_module~execute_function_export.
 
     DATA lv_got TYPE xstring.
 
@@ -102,7 +102,7 @@ CLASS zcl_wasm IMPLEMENTATION.
     ENDIF.
 
     IF mo_memory IS INITIAL.
-      zif_wasm~instantiate( ).
+      zif_wasm_module~instantiate( ).
     ENDIF.
 
     LOOP AT it_parameters INTO DATA(li_value).
@@ -120,12 +120,12 @@ CLASS zcl_wasm IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD zif_wasm~get_memory.
+  METHOD zif_wasm_module~get_memory.
     ro_memory = mo_memory.
   ENDMETHOD.
 
 
-  METHOD zif_wasm~instantiate.
+  METHOD zif_wasm_module~instantiate.
 * https://webassembly.github.io/spec/core/exec/modules.html#instantiation
 
     ASSERT mo_memory IS INITIAL.
@@ -142,9 +142,9 @@ CLASS zcl_wasm IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD zif_wasm~list_function_exports.
+  METHOD zif_wasm_module~list_function_exports.
 
-    DATA ls_function TYPE zif_wasm=>ty_name_and_parameter.
+    DATA ls_function TYPE zif_wasm_module=>ty_name_and_parameter.
 
     LOOP AT mo_module->get_exports( ) INTO DATA(ls_export).
       IF ls_export-type = zif_wasm_types=>c_export_type-func.
