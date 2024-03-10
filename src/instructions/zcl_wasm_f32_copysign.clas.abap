@@ -25,13 +25,13 @@ CLASS zcl_wasm_f32_copysign IMPLEMENTATION.
 * If z1 and z2 have the same sign, then return z1. Else return z1 with negated sign
 
     DATA(li_val1) = io_memory->get_stack( )->pop( ).
-    IF li_val1->get_type( ) <> zcl_wasm_types=>c_value_type-f32.
+    IF li_val1->get_type( ) <> zif_wasm_types=>c_value_type-f32.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |zcl_wasm_f32_copysign: expected f32, got { li_val1->get_type( ) }|.
     ENDIF.
     DATA(li_z1) = CAST zcl_wasm_f32( li_val1 ).
 
     DATA(li_val2) = io_memory->get_stack( )->pop( ).
-    IF li_val2->get_type( ) <> zcl_wasm_types=>c_value_type-f32.
+    IF li_val2->get_type( ) <> zif_wasm_types=>c_value_type-f32.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |zcl_wasm_f32_copysign: expected f32, got { li_val2->get_type( ) }|.
     ENDIF.
     DATA(li_z2) = CAST zcl_wasm_f32( li_val2 ).

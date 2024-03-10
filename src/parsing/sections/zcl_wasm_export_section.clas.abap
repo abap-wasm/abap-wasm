@@ -23,10 +23,10 @@ CLASS zcl_wasm_export_section IMPLEMENTATION.
       ls_result-name = io_body->shift_utf8( ).
       ls_result-type = io_body->shift( 1 ).
 
-      ASSERT ls_result-type = zcl_wasm_types=>c_export_type-func
-        OR ls_result-type = zcl_wasm_types=>c_export_type-table
-        OR ls_result-type = zcl_wasm_types=>c_export_type-mem
-        OR ls_result-type = zcl_wasm_types=>c_export_type-global.
+      ASSERT ls_result-type = zif_wasm_types=>c_export_type-func
+        OR ls_result-type = zif_wasm_types=>c_export_type-table
+        OR ls_result-type = zif_wasm_types=>c_export_type-mem
+        OR ls_result-type = zif_wasm_types=>c_export_type-global.
 
       ls_result-index = io_body->shift_u32( ).
 

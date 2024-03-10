@@ -23,7 +23,7 @@ CLASS zcl_wasm_externref IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_value~get_type.
-    rv_type = zcl_wasm_types=>c_reftype-externref.
+    rv_type = zif_wasm_types=>c_reftype-externref.
   ENDMETHOD.
 
   METHOD is_null.

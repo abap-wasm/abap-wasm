@@ -18,7 +18,7 @@ CLASS zcl_wasm_element_section DEFINITION PUBLIC.
     TYPES: BEGIN OF ty_element,
              type     TYPE i,
              expr     TYPE STANDARD TABLE OF REF TO zif_wasm_instruction WITH DEFAULT KEY,
-             elemkind TYPE zcl_wasm_types=>ty_type,
+             elemkind TYPE zif_wasm_types=>ty_type,
              funcidx  TYPE STANDARD TABLE OF int8 WITH DEFAULT KEY,
              tableidx TYPE i,
              init     TYPE STANDARD TABLE OF zif_wasm_instruction=>ty_list WITH DEFAULT KEY,
@@ -64,7 +64,7 @@ CLASS zcl_wasm_element_section IMPLEMENTATION.
               LOOP AT ls_element-funcidx INTO lv_funcidx.
 * todo, is the type derived from the table? elemkind seems wrong?
                 " CASE ls_element-elemkind.
-                "   WHEN zcl_wasm_types=>c_reftype-funcref.
+                "   WHEN zif_wasm_types=>c_reftype-funcref.
                 li_value ?= NEW zcl_wasm_funcref( lv_funcidx ).
                 "   WHEN OTHERS.
                 "     RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |instantiate 2: todo type { ls_element-elemkind }|.
@@ -102,7 +102,7 @@ CLASS zcl_wasm_element_section IMPLEMENTATION.
 
       CASE ls_element-type.
         WHEN 0.
-          ls_element-elemkind = zcl_wasm_types=>c_reftype-funcref.
+          ls_element-elemkind = zif_wasm_types=>c_reftype-funcref.
           ls_element-tableidx = 0.
 
           zcl_wasm_instructions=>parse(
@@ -149,7 +149,7 @@ CLASS zcl_wasm_element_section IMPLEMENTATION.
             INSERT io_body->shift_u32( ) INTO TABLE ls_element-funcidx.
           ENDDO.
         WHEN 4.
-          ls_element-elemkind = zcl_wasm_types=>c_reftype-funcref.
+          ls_element-elemkind = zif_wasm_types=>c_reftype-funcref.
           ls_element-tableidx = 0.
 
           zcl_wasm_instructions=>parse(

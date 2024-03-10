@@ -50,13 +50,13 @@ CLASS zcl_wasm_call IMPLEMENTATION.
     LOOP AT ls_code-locals INTO DATA(ls_local).
       DO ls_local-count TIMES.
         CASE ls_local-type.
-          WHEN zcl_wasm_types=>c_value_type-i32.
+          WHEN zif_wasm_types=>c_value_type-i32.
             io_memory->get_frame( )->local_push_last( NEW zcl_wasm_i32( ) ).
-          WHEN zcl_wasm_types=>c_value_type-i64.
+          WHEN zif_wasm_types=>c_value_type-i64.
             io_memory->get_frame( )->local_push_last( NEW zcl_wasm_i64( ) ).
-          WHEN zcl_wasm_types=>c_value_type-f32.
+          WHEN zif_wasm_types=>c_value_type-f32.
             io_memory->get_frame( )->local_push_last( NEW zcl_wasm_f32( ) ).
-          WHEN zcl_wasm_types=>c_value_type-f64.
+          WHEN zif_wasm_types=>c_value_type-f64.
             io_memory->get_frame( )->local_push_last( NEW zcl_wasm_f64( ) ).
           WHEN OTHERS.
             RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |call: unknown type|.

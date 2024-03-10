@@ -23,7 +23,7 @@ CLASS zcl_wasm_funcref IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_value~get_type.
-    rv_type = zcl_wasm_types=>c_reftype-funcref.
+    rv_type = zif_wasm_types=>c_reftype-funcref.
   ENDMETHOD.
 
   METHOD is_null.

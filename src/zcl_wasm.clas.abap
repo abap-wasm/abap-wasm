@@ -96,7 +96,7 @@ CLASS zcl_wasm IMPLEMENTATION.
     DATA lv_got TYPE xstring.
 
     DATA(ls_export) = mo_module->get_export_by_name( iv_name ).
-    IF ls_export-type <> zcl_wasm_types=>c_export_type-func.
+    IF ls_export-type <> zif_wasm_types=>c_export_type-func.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'execute_function_export: expected type func'.
     ENDIF.
 
@@ -158,7 +158,7 @@ CLASS zcl_wasm IMPLEMENTATION.
     DATA ls_function TYPE zif_wasm=>ty_name_and_parameter.
 
     LOOP AT mo_module->get_exports( ) INTO DATA(ls_export).
-      IF ls_export-type = zcl_wasm_types=>c_export_type-func.
+      IF ls_export-type = zif_wasm_types=>c_export_type-func.
         CLEAR ls_function.
         ls_function-name = ls_export-name.
         DATA(lv_type_index) = mo_module->get_function_by_index( ls_export-index ).

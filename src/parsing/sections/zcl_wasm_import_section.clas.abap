@@ -134,13 +134,13 @@ CLASS zcl_wasm_import_section IMPLEMENTATION.
         WHEN c_importdesc-global.
 * todo, handle ls_import-global-mut
           CASE ls_import-global-valtype.
-            WHEN zcl_wasm_types=>c_value_type-i32.
+            WHEN zif_wasm_types=>c_value_type-i32.
               li_value = NEW zcl_wasm_i32( ).
-            WHEN zcl_wasm_types=>c_value_type-i64.
+            WHEN zif_wasm_types=>c_value_type-i64.
               li_value = NEW zcl_wasm_i64( ).
-            WHEN zcl_wasm_types=>c_value_type-f32.
+            WHEN zif_wasm_types=>c_value_type-f32.
               li_value = NEW zcl_wasm_f32( ).
-            WHEN zcl_wasm_types=>c_value_type-f64.
+            WHEN zif_wasm_types=>c_value_type-f64.
               li_value = NEW zcl_wasm_f64( ).
             WHEN OTHERS.
               RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |import: unknown global import type|.
