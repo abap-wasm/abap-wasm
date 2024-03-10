@@ -150,6 +150,10 @@ CLASS zcl_wasm_import_section IMPLEMENTATION.
             RAISE EXCEPTION TYPE zcx_wasm
               EXPORTING
                 text = |import section: memory already instantiated|.
+          ELSEIF ls_import-module->get_memory( )->has_linear( ) = abap_false.
+            RAISE EXCEPTION TYPE zcx_wasm
+              EXPORTING
+                text = |import section: imported module doesnt have linear memory|.
           ENDIF.
           io_memory->set_linear( ls_import-module->get_memory( )->get_linear( ) ).
         WHEN c_importdesc-global.
