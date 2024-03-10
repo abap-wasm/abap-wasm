@@ -1,8 +1,8 @@
 CLASS zcl_wasm_table_section DEFINITION PUBLIC.
   PUBLIC SECTION.
     TYPES: BEGIN OF ty_table,
-             reftype TYPE zcl_wasm_types=>ty_type,
-             limit   TYPE zcl_wasm_types=>ty_limit,
+             reftype TYPE zif_wasm_types=>ty_type,
+             limit   TYPE zif_wasm_types=>ty_limit,
            END OF ty_table.
 
     CLASS-METHODS parse
@@ -42,12 +42,12 @@ CLASS zcl_wasm_table_section IMPLEMENTATION.
       ls_table-reftype = io_body->shift( 1 ).
 
       CASE ls_table-reftype.
-        WHEN zcl_wasm_types=>c_reftype-funcref OR zcl_wasm_types=>c_reftype-externref.
+        WHEN zif_wasm_types=>c_reftype-funcref OR zif_wasm_types=>c_reftype-externref.
           CASE io_body->shift( 1 ).
-            WHEN zcl_wasm_types=>c_limit-min.
+            WHEN zif_wasm_types=>c_limit-min.
               ls_table-limit-min = io_body->shift_u32( ).
               ls_table-limit-max = 0.
-            WHEN zcl_wasm_types=>c_limit-max.
+            WHEN zif_wasm_types=>c_limit-max.
               ls_table-limit-min = io_body->shift_u32( ).
               ls_table-limit-max = io_body->shift_u32( ).
             WHEN OTHERS.

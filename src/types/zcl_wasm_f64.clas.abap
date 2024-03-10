@@ -248,7 +248,7 @@ CLASS zcl_wasm_f64 IMPLEMENTATION.
 
   METHOD zif_wasm_value~get_type.
 
-    rv_type = zcl_wasm_types=>c_value_type-f64.
+    rv_type = zif_wasm_types=>c_value_type-f64.
 
   ENDMETHOD.
 

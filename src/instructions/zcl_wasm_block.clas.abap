@@ -63,9 +63,7 @@ CLASS zcl_wasm_block IMPLEMENTATION.
     lo_block->start( io_memory ).
 
     TRY.
-        rv_control = NEW zcl_wasm_vm(
-          io_memory = io_memory
-          io_module = io_module )->execute( mt_instructions ).
+        rv_control = io_module->execute_instructions( mt_instructions ).
         lo_block->end( io_memory ).
       CATCH zcx_wasm_branch INTO DATA(lx_branch).
         lo_block->end( io_memory ).

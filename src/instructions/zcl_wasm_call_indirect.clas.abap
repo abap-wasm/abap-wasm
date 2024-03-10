@@ -45,7 +45,7 @@ CLASS zcl_wasm_call_indirect IMPLEMENTATION.
     DATA(li_value) = io_memory->table_get(
       iv_tableidx = CONV #( mv_tableidx )
       iv_offset   = lv_i->get_signed( ) ).
-    IF li_value->get_type( ) <> zcl_wasm_types=>c_reftype-funcref.
+    IF li_value->get_type( ) <> zif_wasm_types=>c_reftype-funcref.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |zcl_wasm_call_indirect: not a funcref { li_value->get_type( ) }|.
     ENDIF.
     DATA(lo_ref) = CAST zcl_wasm_funcref( li_value ).

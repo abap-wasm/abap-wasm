@@ -56,9 +56,7 @@ CLASS zcl_wasm_loop IMPLEMENTATION.
 
     DO.
       TRY.
-          rv_control = NEW zcl_wasm_vm(
-            io_memory = io_memory
-            io_module = io_module )->execute( mt_instructions ).
+          rv_control = io_module->execute_instructions( mt_instructions ).
 
           IF rv_control = zif_wasm_instruction=>c_control-return_.
             RETURN.

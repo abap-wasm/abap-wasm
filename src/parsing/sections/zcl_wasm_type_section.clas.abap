@@ -16,7 +16,7 @@ CLASS zcl_wasm_type_section IMPLEMENTATION.
 * https://webassembly.github.io/spec/core/binary/modules.html#type-section
 
     DO io_body->shift_u32( ) TIMES.
-      IF io_body->shift( 1 ) <> zcl_wasm_types=>c_function_type.
+      IF io_body->shift( 1 ) <> zif_wasm_types=>c_function_type.
         RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |parse type section, expected function type|.
       ENDIF.
 

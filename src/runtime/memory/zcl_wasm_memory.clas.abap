@@ -189,9 +189,9 @@ CLASS zcl_wasm_memory IMPLEMENTATION.
     INSERT ls_table INTO TABLE mt_tables.
 
     CASE ls_table-type-reftype.
-      WHEN zcl_wasm_types=>c_reftype-funcref.
+      WHEN zif_wasm_types=>c_reftype-funcref.
         li_val = NEW zcl_wasm_funcref( -1 ).
-      WHEN zcl_wasm_types=>c_reftype-externref.
+      WHEN zif_wasm_types=>c_reftype-externref.
         li_val = NEW zcl_wasm_externref( -1 ).
       WHEN OTHERS.
         RAISE EXCEPTION TYPE zcx_wasm

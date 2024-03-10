@@ -24,7 +24,7 @@ CLASS zcl_wasm_i64_extend8_s IMPLEMENTATION.
     DATA lv_hex TYPE x LENGTH 8.
 
     DATA(li_value) = io_memory->get_stack( )->pop( ).
-    IF li_value->get_type( ) <> zcl_wasm_types=>c_value_type-i64.
+    IF li_value->get_type( ) <> zif_wasm_types=>c_value_type-i64.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |zcl_wasm_i64_extend8_s: expected i64, got { li_value->get_type( ) }|.
     ENDIF.
     lv_hex = CAST zcl_wasm_i64( li_value )->get_signed( ).

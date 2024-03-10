@@ -270,7 +270,7 @@ CLASS zcl_wasm_f32 IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_value~get_type.
-    rv_type = zcl_wasm_types=>c_value_type-f32.
+    rv_type = zif_wasm_types=>c_value_type-f32.
   ENDMETHOD.
 
   METHOD add.

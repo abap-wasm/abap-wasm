@@ -31,9 +31,9 @@ CLASS zcl_wasm_ref_is_null IMPLEMENTATION.
     ENDIF.
 
     CASE li_value->get_type( ).
-      WHEN zcl_wasm_types=>c_reftype-externref.
+      WHEN zif_wasm_types=>c_reftype-externref.
         lv_null = CAST zcl_wasm_externref( li_value )->is_null( ).
-      WHEN zcl_wasm_types=>c_reftype-funcref.
+      WHEN zif_wasm_types=>c_reftype-funcref.
         lv_null = CAST zcl_wasm_funcref( li_value )->is_null( ).
       WHEN OTHERS.
         RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |zcl_wasm_ref_is_null: Expected ref, got { li_value->get_type( ) }|.

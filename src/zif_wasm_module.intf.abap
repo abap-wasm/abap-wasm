@@ -1,10 +1,12 @@
-INTERFACE zif_wasm PUBLIC.
+INTERFACE zif_wasm_module PUBLIC.
 
-  TYPES: BEGIN OF ty_name_and_parameter,
-           name       TYPE string,
-           parameters TYPE xstring,
-         END OF ty_name_and_parameter.
-  TYPES ty_name_and_parameters TYPE STANDARD TABLE OF ty_name_and_parameter WITH DEFAULT KEY.
+  TYPES:
+      BEGIN OF ty_export,
+        name  TYPE string,
+        type  TYPE x LENGTH 1,
+        index TYPE int8,
+      END OF ty_export .
+  TYPES ty_exports TYPE HASHED TABLE OF ty_export WITH UNIQUE KEY name .
 
   METHODS execute_function_export
     IMPORTING
@@ -15,21 +17,16 @@ INTERFACE zif_wasm PUBLIC.
     RAISING
       zcx_wasm.
 
-  METHODS list_function_exports
+  METHODS get_export_by_name
+    IMPORTING
+      !iv_name         TYPE string
     RETURNING
-      VALUE(rt_functions) TYPE ty_name_and_parameters
+      VALUE(rs_export) TYPE ty_export
     RAISING
       zcx_wasm.
 
 * not mandatory to call, must be called max once before execute_function_export
   METHODS instantiate
-    RAISING
-      zcx_wasm.
-
-* note: this destorys the stack
-  METHODS dump_stack
-    RETURNING
-      VALUE(rv_dump) TYPE string
     RAISING
       zcx_wasm.
 

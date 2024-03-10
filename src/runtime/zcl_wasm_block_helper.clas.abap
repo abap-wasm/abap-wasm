@@ -31,15 +31,15 @@ CLASS zcl_wasm_block_helper IMPLEMENTATION.
     DATA lv_int8 TYPE int8.
 
     CASE iv_block_type.
-      WHEN zcl_wasm_types=>c_empty_block_type.
+      WHEN zif_wasm_types=>c_empty_block_type.
         RETURN.
-      WHEN zcl_wasm_types=>c_value_type-i32
-          OR zcl_wasm_types=>c_value_type-i64
-          OR zcl_wasm_types=>c_value_type-f32
-          OR zcl_wasm_types=>c_value_type-f64
-          OR zcl_wasm_types=>c_reftype-funcref
-          OR zcl_wasm_types=>c_reftype-externref
-          OR zcl_wasm_types=>c_vector_type.
+      WHEN zif_wasm_types=>c_value_type-i32
+          OR zif_wasm_types=>c_value_type-i64
+          OR zif_wasm_types=>c_value_type-f32
+          OR zif_wasm_types=>c_value_type-f64
+          OR zif_wasm_types=>c_reftype-funcref
+          OR zif_wasm_types=>c_reftype-externref
+          OR zif_wasm_types=>c_vector_type.
         ms_type-result_types = iv_block_type.
       WHEN OTHERS.
         lv_int8 = iv_block_type.

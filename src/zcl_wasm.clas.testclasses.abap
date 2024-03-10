@@ -6,8 +6,6 @@ CLASS ltcl_test DEFINITION FOR TESTING DURATION MEDIUM RISK LEVEL HARMLESS.
         it_result TYPE zif_wasm_value=>ty_values
         iv_value  TYPE i.
 
-    METHODS list_function_exports FOR TESTING RAISING cx_static_check.
-
     METHODS add_two FOR TESTING RAISING cx_static_check.
     METHODS fibonacci FOR TESTING RAISING cx_static_check.
     METHODS factorial FOR TESTING RAISING cx_static_check.
@@ -24,19 +22,6 @@ ENDCLASS.
 
 
 CLASS ltcl_test IMPLEMENTATION.
-
-  METHOD list_function_exports.
-
-    DATA(lo_wasm) = zcl_wasm=>create_with_wasm( zcl_wasm_test_data=>wasm_add_two( ) ).
-    cl_abap_unit_assert=>assert_not_initial( lo_wasm ).
-
-    DATA(lt_exports) = lo_wasm->list_function_exports( ).
-
-    cl_abap_unit_assert=>assert_equals(
-      act = lines( lt_exports )
-      exp = 1 ).
-
-  ENDMETHOD.
 
   METHOD assert_result.
 

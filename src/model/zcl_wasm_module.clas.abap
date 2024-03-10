@@ -4,6 +4,8 @@ CLASS zcl_wasm_module DEFINITION
 
   PUBLIC SECTION.
 
+    INTERFACES zif_wasm_module.
+
     TYPES:
       BEGIN OF ty_type,
         parameter_types TYPE xstring,
@@ -13,7 +15,7 @@ CLASS zcl_wasm_module DEFINITION
       ty_types TYPE STANDARD TABLE OF ty_type WITH DEFAULT KEY .
     TYPES: BEGIN OF ty_local,
               count TYPE i,
-              type TYPE zcl_wasm_types=>ty_valtype ,
+              type TYPE zif_wasm_types=>ty_valtype ,
            END OF ty_local.
     TYPES: ty_locals TYPE STANDARD TABLE OF ty_local WITH DEFAULT KEY.
 
@@ -25,15 +27,6 @@ CLASS zcl_wasm_module DEFINITION
     TYPES:
       ty_codes TYPE STANDARD TABLE OF ty_code WITH DEFAULT KEY .
 
-    TYPES:
-      BEGIN OF ty_export,
-        name  TYPE string,
-        type  TYPE x LENGTH 1,
-        index TYPE int8,
-      END OF ty_export .
-    TYPES:
-      ty_exports TYPE HASHED TABLE OF ty_export WITH UNIQUE KEY name .
-
     TYPES: BEGIN OF ty_function,
              typeidx TYPE i,
              codeidx TYPE i,
@@ -44,7 +37,7 @@ CLASS zcl_wasm_module DEFINITION
       IMPORTING
         !it_types          TYPE ty_types OPTIONAL
         !it_codes          TYPE ty_codes OPTIONAL
-        !it_exports        TYPE ty_exports OPTIONAL
+        !it_exports        TYPE zif_wasm_module=>ty_exports OPTIONAL
         io_data_section    TYPE REF TO zcl_wasm_data_section OPTIONAL
         io_memory_section  TYPE REF TO zcl_wasm_memory_section OPTIONAL
         io_global_section  TYPE REF TO zcl_wasm_global_section OPTIONAL
@@ -52,6 +45,7 @@ CLASS zcl_wasm_module DEFINITION
         io_table_section   TYPE REF TO zcl_wasm_table_section OPTIONAL
         io_element_section TYPE REF TO zcl_wasm_element_section OPTIONAL
         !it_functions      TYPE ty_functions OPTIONAL .
+
     METHODS get_types
       RETURNING
         VALUE(rt_result) TYPE ty_types .
@@ -60,7 +54,7 @@ CLASS zcl_wasm_module DEFINITION
         VALUE(rt_result) TYPE ty_codes .
     METHODS get_exports
       RETURNING
-        VALUE(rt_result) TYPE ty_exports .
+        VALUE(rt_result) TYPE zif_wasm_module=>ty_exports .
     METHODS get_functions
       RETURNING
         VALUE(rt_result) TYPE ty_functions .
@@ -96,13 +90,6 @@ CLASS zcl_wasm_module DEFINITION
         VALUE(rs_function) TYPE ty_function
       RAISING
         zcx_wasm.
-    METHODS get_export_by_name
-      IMPORTING
-        !iv_name         TYPE string
-      RETURNING
-        VALUE(rs_export) TYPE ty_export
-      RAISING
-        zcx_wasm.
     METHODS get_type_by_index
       IMPORTING
         !iv_index      TYPE int8
@@ -110,12 +97,23 @@ CLASS zcl_wasm_module DEFINITION
         VALUE(rs_type) TYPE ty_type
       RAISING
         zcx_wasm.
+
+    METHODS execute_instructions
+      IMPORTING
+        !it_instructions TYPE zif_wasm_instruction=>ty_list
+      RETURNING
+        VALUE(rv_control) TYPE zif_wasm_instruction=>ty_control
+      RAISING
+        zcx_wasm
+        zcx_wasm_branch.
+
   PROTECTED SECTION.
   PRIVATE SECTION.
+    DATA mo_memory TYPE REF TO zcl_wasm_memory.
 
     DATA mt_types TYPE ty_types .
     DATA mt_codes TYPE ty_codes .
-    DATA mt_exports TYPE ty_exports .
+    DATA mt_exports TYPE zif_wasm_module=>ty_exports .
     DATA mt_functions TYPE ty_functions .
 
     DATA mo_data_section TYPE REF TO zcl_wasm_data_section.
@@ -229,7 +227,7 @@ CLASS zcl_wasm_module IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD get_export_by_name.
+  METHOD zif_wasm_module~get_export_by_name.
 
     READ TABLE mt_exports WITH TABLE KEY name = iv_name INTO rs_export.
     IF sy-subrc <> 0.
@@ -272,5 +270,87 @@ CLASS zcl_wasm_module IMPLEMENTATION.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'get_type_by_index: not found'.
     ENDIF.
 
+  ENDMETHOD.
+
+  METHOD zif_wasm_module~get_memory.
+    ro_memory = mo_memory.
+  ENDMETHOD.
+
+
+  METHOD zif_wasm_module~instantiate.
+* https://webassembly.github.io/spec/core/exec/modules.html#instantiation
+
+    ASSERT mo_memory IS INITIAL.
+    mo_memory = NEW zcl_wasm_memory( ).
+
+* The imports component of a module defines a set of imports that are required for instantiation.
+    get_import_section( )->import( mo_memory ).
+* do instantiation
+    get_memory_section( )->instantiate( mo_memory ).
+    get_global_section( )->instantiate( mo_memory ).
+    get_data_section( )->instantiate( mo_memory ).
+    get_table_section( )->instantiate( mo_memory ).
+    get_element_section( )->instantiate( mo_memory ).
+  ENDMETHOD.
+
+  METHOD zif_wasm_module~execute_function_export.
+
+    DATA lv_got TYPE xstring.
+
+    DATA(ls_export) = zif_wasm_module~get_export_by_name( iv_name ).
+    IF ls_export-type <> zif_wasm_types=>c_export_type-func.
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'execute_function_export: expected type func'.
+    ENDIF.
+
+    DATA(ls_function) = get_function_by_index( ls_export-index ).
+    DATA(ls_type) = get_type_by_index( CONV #( ls_function-typeidx ) ).
+
+    IF lines( it_parameters ) <> xstrlen( ls_type-parameter_types ).
+      LOOP AT it_parameters INTO DATA(li_param).
+        DATA(lv_type) = li_param->get_type( ).
+        CONCATENATE lv_got lv_type INTO lv_got IN BYTE MODE.
+      ENDLOOP.
+      RAISE EXCEPTION TYPE zcx_wasm
+        EXPORTING
+          text = |execute_function_export: number of parameters doesnt match, expected {
+            ls_type-parameter_types }, got { lv_got }|.
+    ENDIF.
+
+    IF mo_memory IS INITIAL.
+      zif_wasm_module~instantiate( ).
+    ENDIF.
+
+    LOOP AT it_parameters INTO DATA(li_value).
+      mo_memory->get_stack( )->push( li_value ).
+    ENDLOOP.
+
+    TRY.
+        zcl_wasm_call=>invoke(
+          iv_funcidx = ls_export-index
+          io_memory  = mo_memory
+          io_module  = me ).
+      CATCH zcx_wasm_branch.
+        RAISE EXCEPTION TYPE zcx_wasm
+          EXPORTING
+            text = 'call(), branching exception, should not happen'.
+    ENDTRY.
+
+    DO xstrlen( ls_type-result_types ) TIMES.
+      INSERT mo_memory->get_stack( )->pop( ) INTO rt_results INDEX 1.
+    ENDDO.
+
+  ENDMETHOD.
+
+  METHOD execute_instructions.
+    LOOP AT it_instructions INTO DATA(lo_instruction).
+*      WRITE / '@KERNEL console.dir(lo_instruction.get().constructor.name);'.
+      rv_control = lo_instruction->execute(
+        io_memory = mo_memory
+        io_module = me ).
+
+      IF rv_control = zif_wasm_instruction=>c_control-return_.
+        RETURN.
+      ENDIF.
+    ENDLOOP.
   ENDMETHOD.
 ENDCLASS.
