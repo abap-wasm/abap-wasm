@@ -141,20 +141,4 @@ CLASS zcl_wasm IMPLEMENTATION.
     mo_module->get_element_section( )->instantiate( mo_memory ).
   ENDMETHOD.
 
-
-  METHOD zif_wasm_module~list_function_exports.
-
-    DATA ls_function TYPE zif_wasm_module=>ty_name_and_parameter.
-
-    LOOP AT mo_module->get_exports( ) INTO DATA(ls_export).
-      IF ls_export-type = zif_wasm_types=>c_export_type-func.
-        CLEAR ls_function.
-        ls_function-name = ls_export-name.
-        DATA(lv_type_index) = mo_module->get_function_by_index( ls_export-index ).
-* todo,       ls_function-parameters =
-        APPEND ls_function TO rt_functions.
-      ENDIF.
-    ENDLOOP.
-
-  ENDMETHOD.
 ENDCLASS.
