@@ -69,9 +69,7 @@ CLASS zcl_wasm_call IMPLEMENTATION.
     ENDLOOP.
 
     TRY.
-        NEW zcl_wasm_vm(
-          io_memory = io_memory
-          io_module = io_module )->execute( ls_code-instructions ).
+        io_module->execute_instructions( ls_code-instructions ).
       CATCH zcx_wasm_branch INTO DATA(lx_branch).
         IF lx_branch->depth > 0.
           RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'call(), branching exception, should not happen'.

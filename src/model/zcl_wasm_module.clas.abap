@@ -97,6 +97,16 @@ CLASS zcl_wasm_module DEFINITION
         VALUE(rs_type) TYPE ty_type
       RAISING
         zcx_wasm.
+
+    METHODS execute_instructions
+      IMPORTING
+        !it_instructions TYPE zif_wasm_instruction=>ty_list
+      RETURNING
+        VALUE(rv_control) TYPE zif_wasm_instruction=>ty_control
+      RAISING
+        zcx_wasm
+        zcx_wasm_branch.
+
   PROTECTED SECTION.
   PRIVATE SECTION.
     DATA mo_memory TYPE REF TO zcl_wasm_memory.
@@ -330,5 +340,18 @@ CLASS zcl_wasm_module IMPLEMENTATION.
       INSERT mo_memory->get_stack( )->pop( ) INTO rt_results INDEX 1.
     ENDDO.
 
+  ENDMETHOD.
+
+  METHOD execute_instructions.
+    LOOP AT it_instructions INTO DATA(lo_instruction).
+*      WRITE / '@KERNEL console.dir(lo_instruction.get().constructor.name);'.
+      rv_control = lo_instruction->execute(
+        io_memory = mo_memory
+        io_module = me ).
+
+      IF rv_control = zif_wasm_instruction=>c_control-return_.
+        RETURN.
+      ENDIF.
+    ENDLOOP.
   ENDMETHOD.
 ENDCLASS.
