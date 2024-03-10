@@ -279,7 +279,7 @@ CLASS cl_testsuite IMPLEMENTATION.
     DATA lo_wasm     TYPE REF TO zif_wasm_module.
     DATA lv_wast     TYPE string.
     DATA lv_hex      TYPE xstring.
-    DATA lt_imports TYPE zcl_wasm=>ty_imports_tt.
+    DATA lt_imports  TYPE zif_wasm_types=>ty_imports_tt.
 
 
     READ TABLE it_files WITH KEY filename = |{ iv_folder }.json| ASSIGNING FIELD-SYMBOL(<ls_file>).

@@ -46,4 +46,10 @@ INTERFACE zif_wasm_types PUBLIC.
              max TYPE i,
            END OF ty_limit.
 
+  TYPES: BEGIN OF ty_import,
+             name   TYPE string,
+             module TYPE REF TO zif_wasm_module,
+           END OF ty_import.
+  TYPES ty_imports_tt TYPE STANDARD TABLE OF ty_import WITH DEFAULT KEY.
+
 ENDINTERFACE.

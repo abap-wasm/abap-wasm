@@ -107,6 +107,10 @@ CLASS zcl_wasm_module DEFINITION
         zcx_wasm
         zcx_wasm_branch.
 
+    METHODS register_imports
+      IMPORTING
+        !it_imports TYPE zif_wasm_types=>ty_imports_tt .
+
   PROTECTED SECTION.
   PRIVATE SECTION.
     DATA mo_memory TYPE REF TO zcl_wasm_memory.
@@ -115,6 +119,7 @@ CLASS zcl_wasm_module DEFINITION
     DATA mt_codes TYPE ty_codes .
     DATA mt_exports TYPE zif_wasm_module=>ty_exports .
     DATA mt_functions TYPE ty_functions .
+    DATA mt_imports TYPE zif_wasm_types=>ty_imports_tt.
 
     DATA mo_data_section TYPE REF TO zcl_wasm_data_section.
     DATA mo_memory_section TYPE REF TO zcl_wasm_memory_section.
@@ -176,6 +181,10 @@ CLASS zcl_wasm_module IMPLEMENTATION.
       mo_element_section = io_element_section.
     ENDIF.
 
+  ENDMETHOD.
+
+  METHOD register_imports.
+    mt_imports = it_imports.
   ENDMETHOD.
 
   METHOD get_element_section.
