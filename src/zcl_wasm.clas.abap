@@ -80,17 +80,6 @@ CLASS zcl_wasm IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD zif_wasm~dump_stack.
-    DATA(lv_length) = mo_memory->get_stack( )->get_length( ).
-    rv_dump = |Stack length: { lv_length } values\n|.
-    DO lv_length TIMES.
-      DATA(lv_index) = sy-index.
-      DATA(li_value) = mo_memory->get_stack( )->pop( ).
-      rv_dump = rv_dump && |{ lv_index } - { li_value->get_type( ) } - { li_value->human_readable_value( ) }\n|.
-    ENDDO.
-  ENDMETHOD.
-
-
   METHOD zif_wasm~execute_function_export.
 
     DATA lv_got TYPE xstring.

@@ -52,6 +52,7 @@ CLASS zcl_wasm_module DEFINITION
         io_table_section   TYPE REF TO zcl_wasm_table_section OPTIONAL
         io_element_section TYPE REF TO zcl_wasm_element_section OPTIONAL
         !it_functions      TYPE ty_functions OPTIONAL .
+
     METHODS get_types
       RETURNING
         VALUE(rt_result) TYPE ty_types .
