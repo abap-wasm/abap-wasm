@@ -8,7 +8,7 @@ CLASS cl_quickjs_wasi_preview IMPLEMENTATION.
   METHOD zif_wasm_module~execute_function_export.
     RAISE EXCEPTION TYPE zcx_wasm
       EXPORTING
-        textid = 'cl_quickjs_wasi_preview: execute_function_export'.
+        text = 'cl_quickjs_wasi_preview: execute_function_export'.
   ENDMETHOD.
 
   METHOD zif_wasm_module~get_export_by_name.
@@ -20,19 +20,19 @@ CLASS cl_quickjs_wasi_preview IMPLEMENTATION.
 
     RAISE EXCEPTION TYPE zcx_wasm
       EXPORTING
-        textid = 'cl_quickjs_wasi_preview: get_export_by_name'.
+        text = 'cl_quickjs_wasi_preview: get_export_by_name'.
   ENDMETHOD.
 
   METHOD zif_wasm_module~instantiate.
     RAISE EXCEPTION TYPE zcx_wasm
       EXPORTING
-        textid = 'cl_quickjs_wasi_preview: instantiate'.
+        text = 'cl_quickjs_wasi_preview: instantiate'.
   ENDMETHOD.
 
   METHOD zif_wasm_module~get_memory.
     RAISE EXCEPTION TYPE zcx_wasm
       EXPORTING
-        textid = 'cl_quickjs_wasi_preview: get_memory'.
+        text = 'cl_quickjs_wasi_preview: get_memory'.
   ENDMETHOD.
 
 ENDCLASS.

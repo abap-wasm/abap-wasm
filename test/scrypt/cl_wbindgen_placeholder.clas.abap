@@ -19,7 +19,7 @@ CLASS cl_wbindgen_placeholder IMPLEMENTATION.
   METHOD zif_wasm_module~execute_function_export.
     RAISE EXCEPTION TYPE zcx_wasm
       EXPORTING
-        textid = 'cl_wbindgen_placeholder: execute_function_export'.
+        text = 'cl_wbindgen_placeholder: execute_function_export'.
   ENDMETHOD.
 
   METHOD zif_wasm_module~get_export_by_name.
@@ -27,7 +27,7 @@ CLASS cl_wbindgen_placeholder IMPLEMENTATION.
     IF sy-subrc <> 0.
       RAISE EXCEPTION TYPE zcx_wasm
         EXPORTING
-          textid = 'cl_wbindgen_placeholder: get_export_by_name'.
+          text = 'cl_wbindgen_placeholder: get_export_by_name'.
     ENDIF.
   ENDMETHOD.
 
@@ -38,7 +38,7 @@ CLASS cl_wbindgen_placeholder IMPLEMENTATION.
   METHOD zif_wasm_module~get_memory.
     RAISE EXCEPTION TYPE zcx_wasm
       EXPORTING
-        textid = 'cl_wbindgen_placeholder: get_memory'.
+        text = 'cl_wbindgen_placeholder: get_memory'.
   ENDMETHOD.
 
 ENDCLASS.

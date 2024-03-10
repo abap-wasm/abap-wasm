@@ -14,19 +14,19 @@ CLASS cl_spectest IMPLEMENTATION.
   METHOD zif_wasm_module~get_export_by_name.
     RAISE EXCEPTION TYPE zcx_wasm
       EXPORTING
-        textid = 'cl_spectest: get_export_by_name'.
+        text = 'cl_spectest: get_export_by_name'.
   ENDMETHOD.
 
   METHOD zif_wasm_module~instantiate.
     RAISE EXCEPTION TYPE zcx_wasm
       EXPORTING
-        textid = 'cl_spectest: instantiate'.
+        text = 'cl_spectest: instantiate'.
   ENDMETHOD.
 
   METHOD zif_wasm_module~get_memory.
     RAISE EXCEPTION TYPE zcx_wasm
       EXPORTING
-        textid = 'cl_spectest: get_memory'.
+        text = 'cl_spectest: get_memory'.
   ENDMETHOD.
 
 ENDCLASS.
