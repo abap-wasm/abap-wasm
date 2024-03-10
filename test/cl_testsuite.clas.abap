@@ -360,6 +360,7 @@ CLASS cl_testsuite IMPLEMENTATION.
               INSERT VALUE #(
                 name   = <ls_command>-as
                 module = lo_wasm ) INTO TABLE lt_imports.
+              go_result->add_success( |registered| ).
             WHEN 'assert_unlinkable'.
               go_result->add_warning( |todo, assert_unlinkable| ).
             WHEN OTHERS.
