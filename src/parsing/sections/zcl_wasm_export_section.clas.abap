@@ -4,7 +4,7 @@ CLASS zcl_wasm_export_section DEFINITION PUBLIC.
       IMPORTING
         !io_body          TYPE REF TO zcl_wasm_binary_stream
       RETURNING
-        VALUE(rt_results) TYPE zcl_wasm_module=>ty_exports
+        VALUE(rt_results) TYPE zif_wasm_module=>ty_exports
       RAISING
         zcx_wasm.
 ENDCLASS.
@@ -15,7 +15,7 @@ CLASS zcl_wasm_export_section IMPLEMENTATION.
 
 * https://webassembly.github.io/spec/core/binary/modules.html#binary-exportsec
 
-    DATA ls_result TYPE zcl_wasm_module=>ty_export.
+    DATA ls_result TYPE zif_wasm_module=>ty_export.
 
     DATA(lv_count) = io_body->shift_u32( ).
 

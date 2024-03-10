@@ -27,15 +27,6 @@ CLASS zcl_wasm_module DEFINITION
     TYPES:
       ty_codes TYPE STANDARD TABLE OF ty_code WITH DEFAULT KEY .
 
-    TYPES:
-      BEGIN OF ty_export,
-        name  TYPE string,
-        type  TYPE x LENGTH 1,
-        index TYPE int8,
-      END OF ty_export .
-    TYPES:
-      ty_exports TYPE HASHED TABLE OF ty_export WITH UNIQUE KEY name .
-
     TYPES: BEGIN OF ty_function,
              typeidx TYPE i,
              codeidx TYPE i,
@@ -46,7 +37,7 @@ CLASS zcl_wasm_module DEFINITION
       IMPORTING
         !it_types          TYPE ty_types OPTIONAL
         !it_codes          TYPE ty_codes OPTIONAL
-        !it_exports        TYPE ty_exports OPTIONAL
+        !it_exports        TYPE zif_wasm_module=>ty_exports OPTIONAL
         io_data_section    TYPE REF TO zcl_wasm_data_section OPTIONAL
         io_memory_section  TYPE REF TO zcl_wasm_memory_section OPTIONAL
         io_global_section  TYPE REF TO zcl_wasm_global_section OPTIONAL
@@ -63,7 +54,7 @@ CLASS zcl_wasm_module DEFINITION
         VALUE(rt_result) TYPE ty_codes .
     METHODS get_exports
       RETURNING
-        VALUE(rt_result) TYPE ty_exports .
+        VALUE(rt_result) TYPE zif_wasm_module=>ty_exports .
     METHODS get_functions
       RETURNING
         VALUE(rt_result) TYPE ty_functions .
@@ -99,13 +90,6 @@ CLASS zcl_wasm_module DEFINITION
         VALUE(rs_function) TYPE ty_function
       RAISING
         zcx_wasm.
-    METHODS get_export_by_name
-      IMPORTING
-        !iv_name         TYPE string
-      RETURNING
-        VALUE(rs_export) TYPE ty_export
-      RAISING
-        zcx_wasm.
     METHODS get_type_by_index
       IMPORTING
         !iv_index      TYPE int8
@@ -119,7 +103,7 @@ CLASS zcl_wasm_module DEFINITION
 
     DATA mt_types TYPE ty_types .
     DATA mt_codes TYPE ty_codes .
-    DATA mt_exports TYPE ty_exports .
+    DATA mt_exports TYPE zif_wasm_module=>ty_exports .
     DATA mt_functions TYPE ty_functions .
 
     DATA mo_data_section TYPE REF TO zcl_wasm_data_section.
@@ -233,7 +217,7 @@ CLASS zcl_wasm_module IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD get_export_by_name.
+  METHOD zif_wasm_module~get_export_by_name.
 
     READ TABLE mt_exports WITH TABLE KEY name = iv_name INTO rs_export.
     IF sy-subrc <> 0.
@@ -286,6 +270,7 @@ CLASS zcl_wasm_module IMPLEMENTATION.
   METHOD zif_wasm_module~instantiate.
 * https://webassembly.github.io/spec/core/exec/modules.html#instantiation
 
+* todo: only instantiate memory if its not part of an import
     ASSERT mo_memory IS INITIAL.
     mo_memory = NEW zcl_wasm_memory( ).
 
@@ -303,7 +288,7 @@ CLASS zcl_wasm_module IMPLEMENTATION.
 
     DATA lv_got TYPE xstring.
 
-    DATA(ls_export) = get_export_by_name( iv_name ).
+    DATA(ls_export) = zif_wasm_module~get_export_by_name( iv_name ).
     IF ls_export-type <> zif_wasm_types=>c_export_type-func.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'execute_function_export: expected type func'.
     ENDIF.
