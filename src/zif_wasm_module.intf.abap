@@ -27,6 +27,8 @@ INTERFACE zif_wasm_module PUBLIC.
 
 * not mandatory to call, must be called max once before execute_function_export
   METHODS instantiate
+    RETURNING
+      VALUE(ri_module) TYPE REF TO zif_wasm_module
     RAISING
       zcx_wasm.
 

@@ -303,6 +303,8 @@ CLASS zcl_wasm_module IMPLEMENTATION.
     get_data_section( )->instantiate( mo_memory ).
     get_table_section( )->instantiate( mo_memory ).
     get_element_section( )->instantiate( mo_memory ).
+
+    ri_module = me.
   ENDMETHOD.
 
   METHOD zif_wasm_module~execute_function_export.

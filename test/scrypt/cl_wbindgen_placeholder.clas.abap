@@ -32,7 +32,7 @@ CLASS cl_wbindgen_placeholder IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_module~instantiate.
-    RETURN.
+    ri_module ?= me.
   ENDMETHOD.
 
   METHOD zif_wasm_module~get_memory.
