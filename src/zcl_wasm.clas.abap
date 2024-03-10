@@ -54,7 +54,9 @@ CLASS zcl_wasm IMPLEMENTATION.
             decoded = lv_xstr.
     ENDTRY.
 
-    ri_wasm = create_with_wasm( lv_xstr ).
+    ri_wasm = create_with_wasm(
+      iv_wasm    = lv_xstr
+      it_imports = it_imports ).
   ENDMETHOD.
 
   METHOD create_with_wasm.
