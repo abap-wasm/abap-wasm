@@ -4,16 +4,10 @@ CLASS zcl_wasm DEFINITION
 
   PUBLIC SECTION.
 
-    TYPES: BEGIN OF ty_import,
-             name   TYPE string,
-             module TYPE REF TO zif_wasm_module,
-           END OF ty_import.
-    TYPES ty_imports_tt TYPE STANDARD TABLE OF ty_import WITH DEFAULT KEY.
-
     CLASS-METHODS create_with_wasm
       IMPORTING
         !iv_wasm       TYPE xstring
-        it_imports     TYPE ty_imports_tt OPTIONAL
+        it_imports     TYPE zif_wasm_types=>ty_imports_tt OPTIONAL
       RETURNING
         VALUE(ri_wasm) TYPE REF TO zif_wasm_module
       RAISING
@@ -22,7 +16,7 @@ CLASS zcl_wasm DEFINITION
     CLASS-METHODS create_with_base64
       IMPORTING
         !iv_base64     TYPE string
-        it_imports     TYPE ty_imports_tt OPTIONAL
+        it_imports     TYPE zif_wasm_types=>ty_imports_tt OPTIONAL
       RETURNING
         VALUE(ri_wasm) TYPE REF TO zif_wasm_module
       RAISING
@@ -54,7 +48,9 @@ CLASS zcl_wasm IMPLEMENTATION.
             decoded = lv_xstr.
     ENDTRY.
 
-    ri_wasm = create_with_wasm( lv_xstr ).
+    ri_wasm = create_with_wasm(
+      iv_wasm    = lv_xstr
+      it_imports = it_imports ).
   ENDMETHOD.
 
   METHOD create_with_wasm.
@@ -64,7 +60,11 @@ CLASS zcl_wasm IMPLEMENTATION.
           text = 'create_with_wasm: empty input'.
     ENDIF.
 
-    ri_wasm = NEW zcl_wasm_parser( )->parse( iv_wasm ).
+    DATA(lo_module) = NEW zcl_wasm_parser( )->parse( iv_wasm ).
+
+    lo_module->register_imports( it_imports ).
+
+    ri_wasm = lo_module.
   ENDMETHOD.
 
 ENDCLASS.

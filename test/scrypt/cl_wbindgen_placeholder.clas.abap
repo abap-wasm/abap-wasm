@@ -1,4 +1,4 @@
-CLASS cl_quickjs_wasi_preview DEFINITION PUBLIC.
+CLASS cl_wbindgen_placeholder DEFINITION PUBLIC.
   PUBLIC SECTION.
     INTERFACES zif_wasm_module.
     METHODS constructor.
@@ -6,20 +6,20 @@ CLASS cl_quickjs_wasi_preview DEFINITION PUBLIC.
     DATA mt_functions TYPE STANDARD TABLE OF string WITH EMPTY KEY.
 ENDCLASS.
 
-CLASS cl_quickjs_wasi_preview IMPLEMENTATION.
+CLASS cl_wbindgen_placeholder IMPLEMENTATION.
 
   METHOD constructor.
-    INSERT 'fd_close' INTO TABLE mt_functions.
-    INSERT 'fd_read' INTO TABLE mt_functions.
-    INSERT 'fd_write' INTO TABLE mt_functions.
-    INSERT 'proc_exit' INTO TABLE mt_functions.
-    INSERT 'fd_seek' INTO TABLE mt_functions.
+    INSERT '__wbg_error_f851667af71bcfc6' INTO TABLE mt_functions.
+    INSERT '__wbg_new_abda76e883ba8a5f' INTO TABLE mt_functions.
+    INSERT '__wbg_stack_658279fe44541cf6' INTO TABLE mt_functions.
+    INSERT '__wbindgen_object_drop_ref' INTO TABLE mt_functions.
+    INSERT '__wbindgen_throw' INTO TABLE mt_functions.
   ENDMETHOD.
 
   METHOD zif_wasm_module~execute_function_export.
     RAISE EXCEPTION TYPE zcx_wasm
       EXPORTING
-        text = 'cl_quickjs_wasi_preview: execute_function_export'.
+        text = 'cl_wbindgen_placeholder: execute_function_export'.
   ENDMETHOD.
 
   METHOD zif_wasm_module~get_export_by_name.
@@ -27,7 +27,7 @@ CLASS cl_quickjs_wasi_preview IMPLEMENTATION.
     IF sy-subrc <> 0.
       RAISE EXCEPTION TYPE zcx_wasm
         EXPORTING
-          text = 'cl_quickjs_wasi_preview: get_export_by_name'.
+          text = 'cl_wbindgen_placeholder: get_export_by_name'.
     ENDIF.
   ENDMETHOD.
 
@@ -38,7 +38,7 @@ CLASS cl_quickjs_wasi_preview IMPLEMENTATION.
   METHOD zif_wasm_module~get_memory.
     RAISE EXCEPTION TYPE zcx_wasm
       EXPORTING
-        text = 'cl_quickjs_wasi_preview: get_memory'.
+        text = 'cl_wbindgen_placeholder: get_memory'.
   ENDMETHOD.
 
 ENDCLASS.

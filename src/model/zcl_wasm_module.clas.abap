@@ -107,6 +107,10 @@ CLASS zcl_wasm_module DEFINITION
         zcx_wasm
         zcx_wasm_branch.
 
+    METHODS register_imports
+      IMPORTING
+        !it_imports TYPE zif_wasm_types=>ty_imports_tt .
+
   PROTECTED SECTION.
   PRIVATE SECTION.
     DATA mo_memory TYPE REF TO zcl_wasm_memory.
@@ -115,6 +119,7 @@ CLASS zcl_wasm_module DEFINITION
     DATA mt_codes TYPE ty_codes .
     DATA mt_exports TYPE zif_wasm_module=>ty_exports .
     DATA mt_functions TYPE ty_functions .
+    DATA mt_imports TYPE zif_wasm_types=>ty_imports_tt.
 
     DATA mo_data_section TYPE REF TO zcl_wasm_data_section.
     DATA mo_memory_section TYPE REF TO zcl_wasm_memory_section.
@@ -176,6 +181,10 @@ CLASS zcl_wasm_module IMPLEMENTATION.
       mo_element_section = io_element_section.
     ENDIF.
 
+  ENDMETHOD.
+
+  METHOD register_imports.
+    mt_imports = it_imports.
   ENDMETHOD.
 
   METHOD get_element_section.
@@ -284,13 +293,18 @@ CLASS zcl_wasm_module IMPLEMENTATION.
     mo_memory = NEW zcl_wasm_memory( ).
 
 * The imports component of a module defines a set of imports that are required for instantiation.
-    get_import_section( )->import( mo_memory ).
+    get_import_section( )->import(
+      io_memory  = mo_memory
+      it_imports = mt_imports ).
+
 * do instantiation
     get_memory_section( )->instantiate( mo_memory ).
     get_global_section( )->instantiate( mo_memory ).
     get_data_section( )->instantiate( mo_memory ).
     get_table_section( )->instantiate( mo_memory ).
     get_element_section( )->instantiate( mo_memory ).
+
+    ri_module = me.
   ENDMETHOD.
 
   METHOD zif_wasm_module~execute_function_export.

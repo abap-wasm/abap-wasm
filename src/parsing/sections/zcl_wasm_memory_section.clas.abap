@@ -82,6 +82,11 @@ CLASS zcl_wasm_memory_section IMPLEMENTATION.
         iv_min = mv_min
         iv_max = mv_max ).
 
+      IF io_memory->has_linear( ) = abap_true.
+* it can be imported
+        RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |memory section: memory already instantiated|.
+      ENDIF.
+
       io_memory->set_linear( lo_linear ).
     ENDIF.
 

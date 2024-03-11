@@ -279,6 +279,7 @@ CLASS cl_testsuite IMPLEMENTATION.
     DATA lo_wasm     TYPE REF TO zif_wasm_module.
     DATA lv_wast     TYPE string.
     DATA lv_hex      TYPE xstring.
+    DATA lt_imports  TYPE zif_wasm_types=>ty_imports_tt.
 
 
     READ TABLE it_files WITH KEY filename = |{ iv_folder }.json| ASSIGNING FIELD-SYMBOL(<ls_file>).
@@ -297,6 +298,10 @@ CLASS cl_testsuite IMPLEMENTATION.
 
     SPLIT iv_wast AT cl_abap_char_utilities=>newline INTO TABLE DATA(lt_wast).
 
+    lt_imports = VALUE #( (
+      name   = 'spectest'
+      module = NEW cl_spectest( ) ) ).
+
     go_result->add_suite( ls_json-source_filename ).
 
     LOOP AT ls_json-commands ASSIGNING FIELD-SYMBOL(<ls_command>).
@@ -311,7 +316,9 @@ CLASS cl_testsuite IMPLEMENTATION.
           CASE <ls_command>-type.
             WHEN 'module'.
               WRITE / '@KERNEL lv_hex.set(fs.readFileSync(lv_filename.get()).toString("hex").toUpperCase());'.
-              lo_wasm = zcl_wasm=>create_with_wasm( lv_hex ).
+              lo_wasm = zcl_wasm=>create_with_wasm(
+                it_imports = lt_imports
+                iv_wasm    = lv_hex ).
               go_result->add_success( |loaded| ).
             WHEN 'assert_return'.
               assert_return(
@@ -350,11 +357,14 @@ CLASS cl_testsuite IMPLEMENTATION.
             WHEN 'assert_exhaustion'.
               go_result->add_warning( |todo, assert_exhaustion| ).
             WHEN 'register'.
-              go_result->add_warning( |todo, register| ).
+              lo_wasm->instantiate( ).
+              INSERT VALUE #(
+                name   = <ls_command>-as
+                module = lo_wasm ) INTO TABLE lt_imports.
+              go_result->add_success( |registered| ).
             WHEN 'assert_unlinkable'.
               go_result->add_warning( |todo, assert_unlinkable| ).
             WHEN OTHERS.
-              WRITE / <ls_command>-type.
               ASSERT 1 = 'todo'.
           ENDCASE.
         CATCH cx_root INTO lx_error.

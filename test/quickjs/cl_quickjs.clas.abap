@@ -17,8 +17,8 @@ CLASS cl_quickjs IMPLEMENTATION.
 * https://www.npmjs.com/package/@jitl/quickjs-wasmfile-release-sync
 * https://www.npmjs.com/package/@jitl/quickjs-wasmfile-debug-sync
 
-    DATA(lo_env) = NEW cl_quickjs_env( ).
-    DATA(lo_wasi) = NEW cl_quickjs_wasi_preview( ).
+    DATA(lo_env) = CAST zif_wasm_module( NEW cl_quickjs_env( ) )->instantiate( ).
+    DATA(lo_wasi) = CAST zif_wasm_module( NEW cl_quickjs_wasi_preview( ) )->instantiate( ).
 
     GET RUN TIME FIELD DATA(lv_start).
     DATA(li_wasm) = zcl_wasm=>create_with_wasm(
@@ -37,7 +37,7 @@ CLASS cl_quickjs IMPLEMENTATION.
 
 * JSRuntime *QTS_NewRuntime() {
 *    DATA(lt_result) = li_wasm->execute_function_export( 'QTS_NewRuntime' ).
-* todo: instantiate data, no linear memory
+* TODO: get_code_by_index: negative index, -1
 
 * JSContext *QTS_NewContext(JSRuntime *rt, IntrinsicsFlags intrinsics) {
 * todo
