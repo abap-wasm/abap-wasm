@@ -7,7 +7,7 @@ CLASS zcl_wasm_perf_memory_read IMPLEMENTATION.
 
   METHOD run.
 
-    CONSTANTS lc_iterations TYPE i VALUE 1000.
+    CONSTANTS lc_iterations TYPE i VALUE 100000.
 
 * this is around 6mb of memory
     DATA(li_linear) = CAST zif_wasm_memory_linear( NEW zcl_wasm_memory_linear(

@@ -17,7 +17,7 @@ CLASS zcl_wasm_perf_memory_write IMPLEMENTATION.
       iv_max = 100 ) ).
 
     lv_bytes1 = '11111111'.
-    lv_bytes1 = '22222222'.
+    lv_bytes2 = '22222222'.
 
     DO lc_iterations TIMES.
       IF sy-index MOD 2 = 0.
