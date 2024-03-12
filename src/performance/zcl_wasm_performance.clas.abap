@@ -1,6 +1,8 @@
 CLASS zcl_wasm_performance DEFINITION PUBLIC.
   PUBLIC SECTION.
-    CLASS-METHODS run.
+    CLASS-METHODS run
+      RETURNING
+        VALUE(rv_json) TYPE string.
 ENDCLASS.
 
 CLASS zcl_wasm_performance IMPLEMENTATION.
@@ -11,8 +13,12 @@ CLASS zcl_wasm_performance IMPLEMENTATION.
               description TYPE string,
               class       TYPE string,
             END OF ty_tests.
-
+    TYPES: BEGIN OF ty_result,
+             description TYPE string,
+             time        TYPE i,
+           END OF ty_result.
     DATA lt_tests TYPE STANDARD TABLE OF ty_tests WITH DEFAULT KEY.
+    DATA lt_results TYPE STANDARD TABLE OF ty_result WITH DEFAULT KEY.
 
     lt_tests = VALUE #(
       ( description = 'Memory read'  class = 'ZCL_WASM_PERF_MEMORY_READ' )
@@ -24,7 +30,10 @@ CLASS zcl_wasm_performance IMPLEMENTATION.
       GET RUN TIME FIELD DATA(lv_end).
 
       WRITE / |{ ls_test-description }: { lv_end - lv_start }ms|.
+      APPEND VALUE ty_result( description = ls_test-description time = lv_end - lv_start ) TO lt_results.
     ENDLOOP.
+
+    rv_json = /ui2/cl_json=>serialize( lt_results ).
 
   ENDMETHOD.
 
