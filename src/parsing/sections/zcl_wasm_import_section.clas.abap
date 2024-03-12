@@ -81,8 +81,10 @@ CLASS zcl_wasm_import_section IMPLEMENTATION.
         WHEN c_importdesc-func.
           ls_import-func-typeidx = io_body->shift_u32( ).
           INSERT VALUE #(
-            typeidx = ls_import-func-typeidx
-            codeidx = -1 ) INTO TABLE ct_functions.
+            typeidx       = ls_import-func-typeidx
+            codeidx       = -1
+            extern_module = ls_import-module
+            extern_name   = ls_import-name ) INTO TABLE ct_functions.
         WHEN c_importdesc-table.
           ls_import-table-reftype = io_body->shift( 1 ).
           ls_import-table-limit = io_body->shift( 1 ).

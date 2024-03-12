@@ -38,7 +38,7 @@ for (const folder of folders) {
   let errors = after.errors;
   let runtime = after.runtime;
   totalRuntime += runtime;
-  comment += `| ${folder} ([old](https://larshp.github.io/abap-wasm-web/${folder}.html)) | ${successes} | ${warnings}  | ${errors} | ${runtime}s |\n`;
+  comment += `| ${folder} ([old](https://abap-wasm.github.io/abap-wasm-web/${folder}.html)) | ${successes} | ${warnings}  | ${errors} | ${runtime}s |\n`;
 }
 
 comment += `| | **${totalSuccessesAfter}**`;

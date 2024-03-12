@@ -28,8 +28,10 @@ CLASS zcl_wasm_module DEFINITION
       ty_codes TYPE STANDARD TABLE OF ty_code WITH DEFAULT KEY .
 
     TYPES: BEGIN OF ty_function,
-             typeidx TYPE i,
-             codeidx TYPE i,
+             typeidx       TYPE i,
+             codeidx       TYPE i,
+             extern_module TYPE string,
+             extern_name   TYPE string,
            END OF ty_function.
     TYPES ty_functions TYPE STANDARD TABLE OF ty_function WITH DEFAULT KEY .
 
@@ -110,6 +112,15 @@ CLASS zcl_wasm_module DEFINITION
     METHODS register_imports
       IMPORTING
         !it_imports TYPE zif_wasm_types=>ty_imports_tt .
+* throws if not found
+    METHODS get_import_by_module_name
+      IMPORTING
+        !iv_module_name TYPE string
+      RETURNING
+        VALUE(ri_module) TYPE REF TO zif_wasm_module
+      RAISING
+        zcx_wasm.
+
 
   PROTECTED SECTION.
   PRIVATE SECTION.
@@ -185,6 +196,16 @@ CLASS zcl_wasm_module IMPLEMENTATION.
 
   METHOD register_imports.
     mt_imports = it_imports.
+  ENDMETHOD.
+
+  METHOD get_import_by_module_name.
+    READ TABLE mt_imports WITH TABLE KEY name = iv_module_name INTO DATA(ls_import).
+    IF sy-subrc <> 0.
+      RAISE EXCEPTION TYPE zcx_wasm
+        EXPORTING
+          text = |get_import_by_module_name: not found, { iv_module_name }|.
+    ENDIF.
+    ri_module = ls_import-module.
   ENDMETHOD.
 
   METHOD get_element_section.

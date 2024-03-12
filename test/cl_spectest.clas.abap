@@ -26,7 +26,7 @@ CLASS cl_spectest IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_module~execute_function_export.
-* for now, do nothing,
+* for now, do nothing, no values returned for these functions
     RETURN.
   ENDMETHOD.
 

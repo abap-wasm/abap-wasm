@@ -37,7 +37,6 @@ CLASS cl_quickjs IMPLEMENTATION.
 
 * JSRuntime *QTS_NewRuntime() {
 *    DATA(lt_result) = li_wasm->execute_function_export( 'QTS_NewRuntime' ).
-* TODO: get_code_by_index: negative index, -1
 
 * JSContext *QTS_NewContext(JSRuntime *rt, IntrinsicsFlags intrinsics) {
 * todo

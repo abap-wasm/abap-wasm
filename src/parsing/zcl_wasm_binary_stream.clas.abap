@@ -352,6 +352,7 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
       lv_hex = shift( 1 ).
 
       GET BIT 1 OF lv_hex INTO lv_bit.
+* performance? dont set bit if not needed?
       SET BIT 1 OF lv_hex TO 0.
 
       rv_int = rv_int + CONV i( lv_hex ) * lv_shift.
@@ -360,6 +361,7 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
         RETURN.
       ENDIF.
 
+* performance? keep the shifts in a static internal table?
       lv_shift = lv_shift * 128.
     ENDDO.
 

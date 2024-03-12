@@ -27,7 +27,7 @@ CLASS cl_quickjs_wasi_preview IMPLEMENTATION.
     IF sy-subrc <> 0.
       RAISE EXCEPTION TYPE zcx_wasm
         EXPORTING
-          text = 'cl_quickjs_wasi_preview: get_export_by_name'.
+          text = |cl_quickjs_wasi_preview: get_export_by_name "{ iv_name }"|.
     ENDIF.
   ENDMETHOD.
 
