@@ -60,6 +60,21 @@ comment += `| :partying_face: QuickJS | ${quickjsBefore.runtime}ms | ${quickjsAf
 comment += `| :money_mouth_face: Scrypt | ${scryptBefore.runtime}ms | ${scryptAfter.runtime}ms | ${scryptAfter.runtime - scryptBefore.runtime}ms |\n`;
 comment += `| :sunglasses: SHA256 | ${sha256Before.runtime}ms | ${sha256After.runtime}ms | ${sha256After.runtime - sha256Before.runtime}ms |\n`;
 
+const performanceAfter = JSON.parse(fs.readFileSync(`../after/performance.json`, "utf-8"));
+const performanceBefore = JSON.parse(fs.readFileSync(`../before/performance.json`, "utf-8"));
+comment += "|           | Before | After | Delta |\n";
+comment += "| :---      | ---:   | ---:  | ---:  |\n";
+for (const row of performanceAfter) {
+  const before = 0;
+  for (const bar of performanceBefore) {
+    if (bar.DESCRIPTION === row.DESCRIPTION) {
+      before = bar.TIME;
+      break;
+    }
+  }
+  comment += `| ${row.DESCRIPTION} | ${before}ms | ${row.TIME}ms | ${row.TIME - before}ms |\n`;
+}
+
 comment += "\nUpdated: " + new Date().toISOString() + "\n";
 comment += "\nSHA: " + process.env.GITHUB_SHA + "\n";
 
