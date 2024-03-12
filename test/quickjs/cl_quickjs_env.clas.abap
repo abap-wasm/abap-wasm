@@ -4,6 +4,7 @@ CLASS cl_quickjs_env DEFINITION PUBLIC.
     INTERFACES zif_wasm_module.
     METHODS constructor.
   PRIVATE SECTION.
+    CONSTANTS gc_null TYPE x LENGTH 1 VALUE '00'.
     DATA mo_memory    TYPE REF TO zcl_wasm_memory.
     DATA mt_functions TYPE STANDARD TABLE OF string WITH EMPTY KEY.
 
@@ -57,7 +58,7 @@ CLASS cl_quickjs_env IMPLEMENTATION.
     DATA(li_linear) = mo_memory->get_linear( ).
     DATA(lv_pointer) = iv_pointer.
 
-    WHILE lv_hex <> '00'.
+    WHILE lv_hex <> gc_null.
       lv_hex = li_linear->get(
         iv_length = 1
         iv_offset = lv_pointer ).
@@ -84,6 +85,7 @@ CLASS cl_quickjs_env IMPLEMENTATION.
         WRITE / lv_pointer.
 
         lv_xstr = cl_abap_codepage=>convert_to( 'hello.wasm' ).
+        CONCATENATE lv_xstr gc_null INTO lv_xstr IN BYTE MODE.
         li_linear->set(
           iv_bytes  = lv_xstr
           iv_offset = CONV #( lv_pointer ) ).
@@ -95,7 +97,7 @@ CLASS cl_quickjs_env IMPLEMENTATION.
         lv_pointer = CAST zcl_wasm_i32( it_parameters[ 1 ] )->get_signed( ).
         DATA(lv_str) = read_string( CONV #( lv_pointer ) ).
         WRITE / lv_str.
-* todo, return malloc'ed string pointer?
+* todo, return malloc'ed string pointer? by calling the malloc inside the wasm?
         INSERT zcl_wasm_i32=>from_signed( 0 ) INTO rt_results.
       WHEN OTHERS.
         RAISE EXCEPTION TYPE zcx_wasm
