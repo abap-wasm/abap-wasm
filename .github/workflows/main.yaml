@@ -19,10 +19,10 @@ jobs:
     - run: npm test
     - name: deploy-web
       uses: peaceiris/actions-gh-pages@v3
-      if: github.ref == 'refs/heads/main' && github.repository == 'larshp/abap-wasm'
+      if: github.ref == 'refs/heads/main' && github.repository == 'abap-wasm/abap-wasm'
       with:
         deploy_key: ${{ secrets.DEPLOY_WEB }}
-        external_repository: larshp/abap-wasm-web
+        external_repository: abap-wasm/abap-wasm-web
         user_name: 'github-actions[bot]'
         user_email: 'github-actions[bot]@users.noreply.github.com'
         publish_branch: main
