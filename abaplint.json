@@ -24,6 +24,7 @@
     "prefer_pragmas": true,
     "reduce_procedural_code": true,
     "smim_consistency": true,
+    "invalid_table_index": true,
     "sql_value_conversion": true,
     "cds_legacy_view": true,
     "cds_comment_style": true,
