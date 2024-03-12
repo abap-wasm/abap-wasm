@@ -7,6 +7,7 @@
     "quickjs": "echo RUNNING QuickJS && node test/quickjs.mjs",
     "scrypt": "echo RUNNING Scrypt-WASM && node test/scrypt.mjs",
     "sha256": "echo RUNNING SHA256 && node test/sha256.mjs",
+    "performance": "echo RUNNING Performance && node test/performance.mjs",
     "unit": "rm -rf output && abap_transpile && echo RUNNING UNIT TEST && node output/index.mjs",
     "lint": "abaplint",
     "flame-graph-testsuite": "0x -o test/testsuite.mjs",
