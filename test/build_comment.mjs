@@ -65,7 +65,7 @@ const performanceBefore = JSON.parse(fs.readFileSync(`../before/performance.json
 comment += "|           | Before | After | Delta |\n";
 comment += "| :---      | ---:   | ---:  | ---:  |\n";
 for (const row of performanceAfter) {
-  const before = 0;
+  let before = 0;
   for (const bar of performanceBefore) {
     if (bar.DESCRIPTION === row.DESCRIPTION) {
       before = bar.TIME;
