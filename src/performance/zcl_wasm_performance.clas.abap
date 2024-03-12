@@ -1,0 +1,12 @@
+CLASS zcl_wasm_performance DEFINITION PUBLIC.
+  PUBLIC SECTION.
+    CLASS-METHODS run.
+ENDCLASS.
+
+CLASS zcl_wasm_performance IMPLEMENTATION.
+
+  METHOD run.
+
+  ENDMETHOD.
+
+ENDCLASS.
