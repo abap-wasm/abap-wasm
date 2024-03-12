@@ -28,8 +28,10 @@ CLASS zcl_wasm_module DEFINITION
       ty_codes TYPE STANDARD TABLE OF ty_code WITH DEFAULT KEY .
 
     TYPES: BEGIN OF ty_function,
-             typeidx TYPE i,
-             codeidx TYPE i,
+             typeidx       TYPE i,
+             codeidx       TYPE i,
+             extern_module TYPE string,
+             extern_name   TYPE string,
            END OF ty_function.
     TYPES ty_functions TYPE STANDARD TABLE OF ty_function WITH DEFAULT KEY .
 
