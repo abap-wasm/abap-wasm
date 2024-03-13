@@ -9,7 +9,9 @@ CLASS zcl_wasm_memory_linear DEFINITION PUBLIC.
       RAISING
         zcx_wasm.
   PRIVATE SECTION.
-    CLASS-DATA gv_empty_page TYPE xstring.
+    TYPES ty_page TYPE x LENGTH zif_wasm_memory_linear=>c_page_size.
+
+    CLASS-DATA gv_empty_page TYPE ty_page.
 
     DATA mv_linear TYPE xstring.
     DATA mv_max TYPE int8.
@@ -19,18 +21,8 @@ ENDCLASS.
 CLASS zcl_wasm_memory_linear IMPLEMENTATION.
 
   METHOD constructor.
-    DATA lv_hex32 TYPE x LENGTH 32.
-
     mv_min = iv_min.
     mv_max = iv_max.
-
-    IF gv_empty_page IS INITIAL.
-      lv_hex32 = '0000000000000000000000000000000000000000000000000000000000000000'.
-      DO 2048 TIMES.
-        CONCATENATE gv_empty_page lv_hex32 INTO gv_empty_page IN BYTE MODE.
-      ENDDO.
-      ASSERT xstrlen( gv_empty_page ) = zif_wasm_memory_linear=>c_page_size.
-    ENDIF.
 
     zif_wasm_memory_linear~grow( mv_min ).
   ENDMETHOD.
