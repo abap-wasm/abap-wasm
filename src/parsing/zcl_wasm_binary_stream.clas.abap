@@ -167,9 +167,9 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
 
   METHOD reverse_hex.
 
-    DATA lv_hex TYPE x LENGTH 1.
-    DATA lv_char TYPE c LENGTH 1.
-    DATA lv_len  TYPE i.
+    DATA lv_hex    TYPE x LENGTH 1.
+    DATA lv_char   TYPE c LENGTH 1.
+    DATA lv_len    TYPE i.
     DATA lv_offset TYPE i.
 
     lv_len = xstrlen( iv_hex ).
