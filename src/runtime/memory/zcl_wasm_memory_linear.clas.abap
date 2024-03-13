@@ -48,23 +48,17 @@ CLASS zcl_wasm_memory_linear IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_memory_linear~set.
-    WRITE: / 'set original offset:', iv_offset.
-
     DATA(lv_page) = iv_offset DIV zif_wasm_memory_linear=>c_page_size.
     lv_page = lv_page + 1.
-    WRITE: / 'set page:', lv_page.
     READ TABLE mt_pages INDEX lv_page ASSIGNING FIELD-SYMBOL(<lv_page>).
     IF sy-subrc <> 0.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'linear_set: out of bounds'.
     ENDIF.
 
     DATA(lv_offset) = iv_offset MOD zif_wasm_memory_linear=>c_page_size.
-    WRITE: / 'set offset:', lv_offset.
     DATA(lv_length) = xstrlen( iv_bytes ).
-    WRITE: / 'set length:', lv_length.
 * todo: some extra checking here? plus setting values across multiple tables?
     <lv_page>+lv_offset(lv_length) = iv_bytes.
-    WRITE / <lv_page>(50).
 
 "     DATA(lv_length) = xstrlen( iv_bytes ).
 "     IF iv_offset = 0.
@@ -93,19 +87,14 @@ CLASS zcl_wasm_memory_linear IMPLEMENTATION.
     "   RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'linear_get: negative offset'.
     " ENDIF.
 
-    WRITE: / 'get original offset:', iv_offset.
     DATA(lv_page) = iv_offset DIV zif_wasm_memory_linear=>c_page_size.
     lv_page = lv_page + 1.
-    WRITE: / 'get page:', lv_page.
     READ TABLE mt_pages INDEX lv_page ASSIGNING FIELD-SYMBOL(<lv_page>).
     IF sy-subrc <> 0.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'linear_get: out of bounds'.
     ENDIF.
 
     DATA(lv_offset) = iv_offset MOD zif_wasm_memory_linear=>c_page_size.
-    WRITE: / 'get offset:', lv_offset.
-    WRITE: / 'get length:', iv_length.
-    WRITE / <lv_page>(50).
 
 * return multiple bytes in endian order
     DO iv_length TIMES.
