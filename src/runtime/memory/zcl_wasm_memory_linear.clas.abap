@@ -57,8 +57,28 @@ CLASS zcl_wasm_memory_linear IMPLEMENTATION.
 
     DATA(lv_offset) = iv_offset MOD zif_wasm_memory_linear=>c_page_size.
     DATA(lv_length) = xstrlen( iv_bytes ).
-* todo: some extra checking here? plus setting values across multiple tables?
-    <lv_page>+lv_offset(lv_length) = iv_bytes.
+
+    IF lv_offset + lv_length <= zif_wasm_memory_linear=>c_page_size.
+      <lv_page>+lv_offset(lv_length) = iv_bytes.
+    ELSE.
+      DATA(lv_written) = zif_wasm_memory_linear=>c_page_size - lv_offset.
+      <lv_page>+lv_offset(lv_written) = iv_bytes(lv_written).
+
+      WHILE lv_written < lv_length.
+        lv_page = lv_page + 1.
+        READ TABLE mt_pages INDEX lv_page ASSIGNING <lv_page>.
+        IF sy-subrc <> 0.
+          RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'linear_set: out of bounds'.
+        ENDIF.
+
+        lv_length = lv_length - lv_written.
+        lv_length = nmin(
+          val1 = lv_length
+          val2 = zif_wasm_memory_linear=>c_page_size ).
+        <lv_page>(lv_length) = iv_bytes+lv_written(lv_length).
+        lv_written = lv_written + lv_length.
+      ENDWHILE.
+    ENDIF.
 
 "     DATA(lv_length) = xstrlen( iv_bytes ).
 "     IF iv_offset = 0.
