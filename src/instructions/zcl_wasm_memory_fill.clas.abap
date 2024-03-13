@@ -21,24 +21,26 @@ CLASS zcl_wasm_memory_fill IMPLEMENTATION.
     DATA lv_offset TYPE int8.
     DATA lv_hex TYPE x LENGTH 1.
     DATA(li_linear) = io_memory->get_linear( ).
-    DATA(lo_n) = io_memory->get_stack( )->pop_i32( ).
+    DATA(lv_n) = io_memory->get_stack( )->pop_i32( )->get_signed( ).
     DATA(lo_val) = io_memory->get_stack( )->pop_i32( ).
     DATA(lo_d) = io_memory->get_stack( )->pop_i32( ).
 
-    IF lo_n->get_signed( ) + lo_d->get_signed( ) > li_linear->size_in_bytes( ).
+    IF lv_n + lo_d->get_signed( ) > li_linear->size_in_bytes( ).
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'memory_fill: trap'.
-    ELSEIF lo_n->get_signed( ) = 0.
+    ELSEIF lv_n < 0.
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'memory_fill: trap'.
+    ELSEIF lv_n = 0.
       RETURN.
     ENDIF.
 
-    IF lo_n->get_signed( ) > 1000.
+    IF lv_n > 1000.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_memory_fill, refactor to iteration instead of recursion'.
     ENDIF.
 
     lv_offset = lo_d->get_signed( ).
     lv_hex = lo_val->get_signed( ).
 
-    DO lo_n->get_signed( ) TIMES.
+    DO lv_n TIMES.
       io_memory->get_linear( )->set(
         iv_offset = lv_offset
         iv_bytes  = lv_hex ).
