@@ -37,6 +37,7 @@ CLASS zcl_wasm_memory_fill IMPLEMENTATION.
     io_memory->get_stack( )->push( lo_d ).
     io_memory->get_stack( )->push( lo_val ).
 
+* todo: refactor to iteration instead of recursion
     NEW zcl_wasm_i32_store8(
       iv_align  = 0
       iv_offset = 0 )->zif_wasm_instruction~execute(

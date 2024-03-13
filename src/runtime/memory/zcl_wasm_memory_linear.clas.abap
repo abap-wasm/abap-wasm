@@ -48,15 +48,21 @@ CLASS zcl_wasm_memory_linear IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_memory_linear~set.
+
+    DATA(lv_length) = xstrlen( iv_bytes ).
+    IF iv_offset + lv_length > lines( mt_pages ) * zif_wasm_memory_linear=>c_page_size.
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'linear_set: out of bounds'.
+    ELSEIF iv_offset < 0.
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'linear_set: offset is negative'.
+    ELSEIF lv_length = 0.
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'linear_set: length is zero'.
+    ENDIF.
+
     DATA(lv_page) = iv_offset DIV zif_wasm_memory_linear=>c_page_size.
     lv_page = lv_page + 1.
     READ TABLE mt_pages INDEX lv_page ASSIGNING FIELD-SYMBOL(<lv_page>).
-    IF sy-subrc <> 0.
-      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'linear_set: out of bounds'.
-    ENDIF.
 
     DATA(lv_offset) = iv_offset MOD zif_wasm_memory_linear=>c_page_size.
-    DATA(lv_length) = xstrlen( iv_bytes ).
 
     IF lv_offset + lv_length <= zif_wasm_memory_linear=>c_page_size.
       <lv_page>+lv_offset(lv_length) = iv_bytes.
@@ -66,11 +72,7 @@ CLASS zcl_wasm_memory_linear IMPLEMENTATION.
 
       WHILE lv_written < lv_length.
         lv_page = lv_page + 1.
-        READ TABLE mt_pages INDEX lv_page ASSIGNING <lv_page>.
-        IF sy-subrc <> 0.
-          RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'linear_set: out of bounds'.
-        ENDIF.
-
+        READ TABLE mt_pages INDEX lv_page ASSIGNING <lv_page> ##SUBRC_OK.
         lv_length = lv_length - lv_written.
         lv_length = nmin(
           val1 = lv_length
@@ -79,29 +81,12 @@ CLASS zcl_wasm_memory_linear IMPLEMENTATION.
         lv_written = lv_written + lv_length.
       ENDWHILE.
     ENDIF.
-
-"     DATA(lv_length) = xstrlen( iv_bytes ).
-"     IF iv_offset = 0.
-"       CONCATENATE iv_bytes mv_linear+lv_length INTO mv_linear IN BYTE MODE.
-"     ELSE.
-"       IF mv_linear+iv_offset(lv_length) = iv_bytes.
-" * optimization for scrypt?
-"         RETURN.
-"       ENDIF.
-"       lv_length = lv_length + iv_offset.
-"       CONCATENATE mv_linear(iv_offset) iv_bytes mv_linear+lv_length INTO mv_linear IN BYTE MODE.
-"     ENDIF.
   ENDMETHOD.
 
   METHOD zif_wasm_memory_linear~get.
 * https://rsms.me/wasm-intro#addressing-memory
 
     DATA lv_byte TYPE x LENGTH 1.
-
-    " DATA(lv_length) = xstrlen( mv_linear ).
-    " IF iv_offset + iv_length > lv_length.
-    "   RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'linear_get: out of bounds'.
-    " ELSE
 
     IF iv_length <= 0.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'linear_get: negative or zero length'.
