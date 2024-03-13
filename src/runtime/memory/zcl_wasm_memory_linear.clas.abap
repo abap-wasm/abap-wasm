@@ -55,7 +55,7 @@ CLASS zcl_wasm_memory_linear IMPLEMENTATION.
     ELSEIF iv_offset < 0.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'linear_set: offset is negative'.
     ELSEIF lv_length = 0.
-      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'linear_set: length is zero'.
+      RETURN.
     ENDIF.
 
     DATA(lv_page) = iv_offset DIV zif_wasm_memory_linear=>c_page_size.
