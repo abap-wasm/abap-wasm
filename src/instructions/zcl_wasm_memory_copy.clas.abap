@@ -29,13 +29,19 @@ CLASS zcl_wasm_memory_copy IMPLEMENTATION.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_memory_copy: out of bounds memory access'.
     ENDIF.
 
-    DATA(lv_bytes) = li_linear->get_raw(
-      iv_length = lv_number
-      iv_offset = lv_source ).
+* todo: optimize
+    DO lv_number TIMES.
+      DATA(lv_bytes) = li_linear->get(
+        iv_length = 1
+        iv_offset = lv_source ).
 
-    li_linear->set(
-      iv_offset = lv_destination
-      iv_bytes  = lv_bytes ).
+      li_linear->set(
+        iv_offset = lv_destination
+        iv_bytes  = lv_bytes ).
+
+      lv_source = lv_source + 1.
+      lv_destination = lv_destination + 1.
+    ENDDO.
 
   ENDMETHOD.
 
