@@ -81,11 +81,13 @@ CLASS zcl_wasm_memory_linear IMPLEMENTATION.
     " DATA(lv_length) = xstrlen( mv_linear ).
     " IF iv_offset + iv_length > lv_length.
     "   RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'linear_get: out of bounds'.
-    " ELSEIF iv_length <= 0.
-    "   RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'linear_get: negative or zero length'.
-    " ELSEIF iv_offset < 0.
-    "   RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'linear_get: negative offset'.
-    " ENDIF.
+    " ELSE
+
+    IF iv_length <= 0.
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'linear_get: negative or zero length'.
+    ELSEIF iv_offset < 0.
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'linear_get: negative offset'.
+    ENDIF.
 
     DATA(lv_page) = iv_offset DIV zif_wasm_memory_linear=>c_page_size.
     lv_page = lv_page + 1.
