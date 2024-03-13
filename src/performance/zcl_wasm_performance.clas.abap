@@ -26,7 +26,7 @@ CLASS zcl_wasm_performance IMPLEMENTATION.
 
     LOOP AT lt_tests INTO DATA(ls_test).
       GET RUN TIME FIELD DATA(lv_start).
-      CALL METHOD (ls_test-class)=>run( ).
+      CALL METHOD (ls_test-class)=>run.
       GET RUN TIME FIELD DATA(lv_end).
 
       WRITE / |{ ls_test-description }: { lv_end - lv_start }ms|.
