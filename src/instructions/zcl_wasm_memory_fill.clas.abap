@@ -18,8 +18,9 @@ CLASS zcl_wasm_memory_fill IMPLEMENTATION.
 
 * https://webassembly.github.io/spec/core/exec/instructions.html#xref-syntax-instructions-syntax-instr-memory-mathsf-memory-fill
 
+    DATA lv_offset TYPE int8.
+    DATA lv_hex TYPE x LENGTH 1.
     DATA(li_linear) = io_memory->get_linear( ).
-
     DATA(lo_n) = io_memory->get_stack( )->pop_i32( ).
     DATA(lo_val) = io_memory->get_stack( )->pop_i32( ).
     DATA(lo_d) = io_memory->get_stack( )->pop_i32( ).
@@ -34,25 +35,35 @@ CLASS zcl_wasm_memory_fill IMPLEMENTATION.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_memory_fill, refactor to iteration instead of recursion'.
     ENDIF.
 
-    io_memory->get_stack( )->push( lo_d ).
-    io_memory->get_stack( )->push( lo_val ).
+    lv_offset = lo_d->get_signed( ).
+    lv_hex = lo_val->get_signed( ).
 
-* todo: refactor to iteration instead of recursion
-    NEW zcl_wasm_i32_store8(
-      iv_align  = 0
-      iv_offset = 0 )->zif_wasm_instruction~execute(
-      io_memory = io_memory
-      io_module = io_module ).
+    DO lo_n->get_signed( ) TIMES.
+      io_memory->get_linear( )->set(
+        iv_offset = lv_offset
+        iv_bytes  = lv_hex ).
+      lv_offset = lv_offset + 1.
+    ENDDO.
 
-* todo, Assert: due to the earlier check against the memory size,
+"     io_memory->get_stack( )->push( lo_d ).
+"     io_memory->get_stack( )->push( lo_val ).
 
-    io_memory->get_stack( )->push( zcl_wasm_i32=>from_signed( lo_d->get_signed( ) + 1 ) ).
-    io_memory->get_stack( )->push( lo_val ).
-    io_memory->get_stack( )->push( zcl_wasm_i32=>from_signed( lo_n->get_signed( ) - 1 ) ).
+" * todo: refactor to iteration instead of recursion
+"     NEW zcl_wasm_i32_store8(
+"       iv_align  = 0
+"       iv_offset = 0 )->zif_wasm_instruction~execute(
+"       io_memory = io_memory
+"       io_module = io_module ).
 
-    zif_wasm_instruction~execute(
-      io_memory = io_memory
-      io_module = io_module ).
+" * todo, Assert: due to the earlier check against the memory size,
+
+"     io_memory->get_stack( )->push( zcl_wasm_i32=>from_signed( lo_d->get_signed( ) + 1 ) ).
+"     io_memory->get_stack( )->push( lo_val ).
+"     io_memory->get_stack( )->push( zcl_wasm_i32=>from_signed( lo_n->get_signed( ) - 1 ) ).
+
+"     zif_wasm_instruction~execute(
+"       io_memory = io_memory
+"       io_module = io_module ).
   ENDMETHOD.
 
 ENDCLASS.
