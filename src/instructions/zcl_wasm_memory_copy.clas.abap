@@ -19,6 +19,8 @@ CLASS zcl_wasm_memory_copy IMPLEMENTATION.
 
 * https://webassembly.github.io/spec/core/exec/instructions.html#xref-syntax-instructions-syntax-instr-memory-mathsf-memory-copy
 
+    DATA lv_byte TYPE x LENGTH 1.
+
     DATA(lv_number) = io_memory->get_stack( )->pop_i32( )->get_unsigned( ).
     DATA(lv_source) = io_memory->get_stack( )->pop_i32( )->get_unsigned( ).
     DATA(lv_destination) = io_memory->get_stack( )->pop_i32( )->get_unsigned( ).
@@ -33,7 +35,7 @@ CLASS zcl_wasm_memory_copy IMPLEMENTATION.
 
 * todo: optimize
     DO lv_number TIMES.
-      DATA(lv_byte) = li_linear->get(
+      lv_byte = li_linear->get(
         iv_length = 1
         iv_offset = lv_source ).
 
