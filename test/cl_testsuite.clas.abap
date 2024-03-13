@@ -354,6 +354,7 @@ CLASS cl_testsuite IMPLEMENTATION.
               invoke(
                 is_command = <ls_command>
                 io_wasm    = lo_wasm ).
+              go_result->add_success( |action done| ).
             WHEN 'assert_exhaustion'.
               go_result->add_warning( |todo, assert_exhaustion| ).
             WHEN 'register'.

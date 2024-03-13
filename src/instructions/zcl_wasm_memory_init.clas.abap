@@ -49,9 +49,11 @@ CLASS zcl_wasm_memory_init IMPLEMENTATION.
     DATA(lv_bytes) = io_module->get_data_section( )->get_passive( mv_dataidx ).
     lv_bytes = lv_bytes(lv_number).
 
-    li_linear->set(
-      iv_offset = lv_destination
-      iv_bytes  = lv_bytes ).
+    IF xstrlen( lv_bytes ) > 0. " todo: investigate
+      li_linear->set(
+        iv_offset = lv_destination
+        iv_bytes  = lv_bytes ).
+    ENDIF.
 
   ENDMETHOD.
 ENDCLASS.
