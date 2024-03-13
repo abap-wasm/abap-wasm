@@ -34,7 +34,7 @@ CLASS zcl_wasm_memory_fill IMPLEMENTATION.
     ENDIF.
 
     IF lv_n > 1000.
-      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_memory_fill, refactor to iteration instead of recursion'.
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_memory_fill, too many bytes'.
     ENDIF.
 
     lv_offset = lv_d.
