@@ -27,17 +27,19 @@ CLASS zcl_wasm_memory_copy IMPLEMENTATION.
     IF lv_source + lv_number > li_linear->size_in_bytes( )
         OR lv_destination + lv_number > li_linear->size_in_bytes( ).
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_memory_copy: out of bounds memory access'.
+    ELSEIF lv_source < 0 OR lv_destination < 0.
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_memory_copy: negative memory access'.
     ENDIF.
 
 * todo: optimize
     DO lv_number TIMES.
-      DATA(lv_bytes) = li_linear->get(
+      DATA(lv_byte) = li_linear->get(
         iv_length = 1
         iv_offset = lv_source ).
 
       li_linear->set(
         iv_offset = lv_destination
-        iv_bytes  = lv_bytes ).
+        iv_bytes  = lv_byte ).
 
       lv_source = lv_source + 1.
       lv_destination = lv_destination + 1.
