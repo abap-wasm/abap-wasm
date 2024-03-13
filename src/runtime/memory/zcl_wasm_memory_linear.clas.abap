@@ -60,7 +60,7 @@ CLASS zcl_wasm_memory_linear IMPLEMENTATION.
 
     DATA(lv_page) = iv_offset DIV zif_wasm_memory_linear=>c_page_size.
     lv_page = lv_page + 1.
-    READ TABLE mt_pages INDEX lv_page ASSIGNING FIELD-SYMBOL(<lv_page>).
+    READ TABLE mt_pages INDEX lv_page ASSIGNING FIELD-SYMBOL(<lv_page>) ##SUBRC_OK.
 
     DATA(lv_offset) = iv_offset MOD zif_wasm_memory_linear=>c_page_size.
 
