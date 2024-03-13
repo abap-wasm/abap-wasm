@@ -120,6 +120,15 @@ CLASS zcl_wasm_memory_linear IMPLEMENTATION.
 
 * return multiple bytes in endian order
     DO iv_length TIMES.
+      IF lv_offset = zif_wasm_memory_linear=>c_page_size.
+        lv_page = lv_page + 1.
+        READ TABLE mt_pages INDEX lv_page ASSIGNING <lv_page>.
+        IF sy-subrc <> 0.
+          RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'linear_get: out of bounds'.
+        ENDIF.
+        lv_offset = 0.
+      ENDIF.
+
       lv_byte = <lv_page>+lv_offset(1).
       CONCATENATE lv_byte rv_bytes INTO rv_bytes IN BYTE MODE.
       lv_offset = lv_offset + 1.
