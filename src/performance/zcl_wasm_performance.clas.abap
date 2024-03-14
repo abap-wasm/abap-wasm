@@ -22,7 +22,9 @@ CLASS zcl_wasm_performance IMPLEMENTATION.
 
     lt_tests = VALUE #(
       ( description = 'Memory read'  class = 'ZCL_WASM_PERF_MEMORY_READ' )
-      ( description = 'Memory write' class = 'ZCL_WASM_PERF_MEMORY_WRITE' ) ).
+      ( description = 'Memory write' class = 'ZCL_WASM_PERF_MEMORY_WRITE' )
+      ( description = 'i32.load'     class = 'ZCL_WASM_PERF_I32_LOAD' )
+      ( description = 'i32.store'    class = 'ZCL_WASM_PERF_I32_STORE' ) ).
 
     LOOP AT lt_tests INTO DATA(ls_test).
       GET RUN TIME FIELD DATA(lv_start).
