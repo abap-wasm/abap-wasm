@@ -15,6 +15,7 @@ CLASS zcl_wasm_i32_store DEFINITION PUBLIC.
       RAISING zcx_wasm.
 
   PRIVATE SECTION.
+    CONSTANTS gc_length TYPE int8 VALUE 4.
     DATA mv_align TYPE int8.
     DATA mv_offset TYPE int8.
 ENDCLASS.
@@ -38,13 +39,9 @@ CLASS zcl_wasm_i32_store IMPLEMENTATION.
 
   METHOD zif_wasm_instruction~execute.
 
-    CONSTANTS lc_length TYPE int8 VALUE 4.
-    DATA lv_hex TYPE x LENGTH lc_length.
+    DATA lv_hex TYPE x LENGTH gc_length.
 
-    DATA(li_linear) = io_memory->get_linear( ).
-
-    DATA(lv_c) = io_memory->get_stack( )->pop_i32( )->get_signed( ).
-    lv_hex = lv_c.
+    lv_hex = io_memory->get_stack( )->pop_i32( )->get_signed( ).
     DATA(lv_i) = io_memory->get_stack( )->pop_i32( )->get_signed( ).
     IF lv_i < 0.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'i32 store: out of bounds'.
@@ -53,7 +50,7 @@ CLASS zcl_wasm_i32_store IMPLEMENTATION.
 * convert to little endian
     CONCATENATE lv_hex+3 lv_hex+2(1) lv_hex+1(1) lv_hex(1) INTO lv_hex IN BYTE MODE.
 
-    li_linear->set(
+    io_memory->get_linear( )->set(
       iv_offset = mv_offset + lv_i
       iv_bytes  = lv_hex ).
 
