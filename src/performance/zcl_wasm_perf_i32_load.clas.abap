@@ -1,0 +1,11 @@
+CLASS zcl_wasm_perf_i32_load DEFINITION PUBLIC.
+  PUBLIC SECTION.
+    CLASS-METHODS run RAISING zcx_wasm.
+ENDCLASS.
+
+CLASS zcl_wasm_perf_i32_load IMPLEMENTATION.
+
+  METHOD run.
+  ENDMETHOD.
+
+ENDCLASS.
