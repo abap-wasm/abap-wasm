@@ -7,7 +7,7 @@ CLASS zcl_wasm_perf_i32_store IMPLEMENTATION.
 
   METHOD run.
 
-    CONSTANTS lc_iterations TYPE i VALUE 3000.
+    CONSTANTS lc_iterations TYPE i VALUE 6000.
 
     DATA lo_module TYPE REF TO zcl_wasm_module.
 
