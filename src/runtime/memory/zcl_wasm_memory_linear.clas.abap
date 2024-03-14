@@ -86,6 +86,8 @@ CLASS zcl_wasm_memory_linear IMPLEMENTATION.
   METHOD zif_wasm_memory_linear~get.
 * https://rsms.me/wasm-intro#addressing-memory
 
+* todo: refactor this to CHANGING as the caller always knows the length, then allocating an extra
+* value is not required, plus the CONCATENATE can be replaced with direct writing into the CHANGING
     DATA lv_byte TYPE x LENGTH 1.
 
     IF iv_length <= 0.
