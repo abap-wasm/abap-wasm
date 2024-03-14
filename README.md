@@ -11,5 +11,4 @@ Usage: see [unit tests in ZCL_WASM](https://github.com/abap-wasm/abap-wasm/blob/
 ## WebAssembly(WASM)
 A lot of [awesome](https://github.com/mbasso/awesome-wasm) projects and programming languages can be compiled to WASM. Being able to execute WASM in ABAP would open a large new ecosystem of possibilities on the ABAP stack.
 
-
 It will probably be slow to execute WASM on the ABAP application server, time will tell.
