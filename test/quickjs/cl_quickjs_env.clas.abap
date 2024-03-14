@@ -98,6 +98,7 @@ CLASS cl_quickjs_env IMPLEMENTATION.
         DATA(lv_str) = read_string( CONV #( lv_pointer ) ).
         WRITE / lv_str.
 * todo, return malloc'ed string pointer? by calling the malloc inside the wasm?
+* ya, https://github.com/emscripten-core/emscripten/blob/d0c4878b899c6b597c2291ce6ff2734bb9136a8d/src/library_strings.js#L479
         INSERT zcl_wasm_i32=>from_signed( 0 ) INTO rt_results.
       WHEN OTHERS.
         RAISE EXCEPTION TYPE zcx_wasm
@@ -117,6 +118,7 @@ CLASS cl_quickjs_env IMPLEMENTATION.
 
   METHOD zif_wasm_module~instantiate.
     mo_memory = NEW zcl_wasm_memory( ).
+* initial memory in JS is 16mb = 256 pages
     mo_memory->set_linear( NEW zcl_wasm_memory_linear(
       iv_min = 256 " todo, can this be reduced?
       iv_max = 1000 ) ).
