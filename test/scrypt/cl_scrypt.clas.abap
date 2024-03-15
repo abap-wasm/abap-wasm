@@ -24,10 +24,8 @@ CLASS cl_scrypt IMPLEMENTATION.
         module = NEW cl_wbindgen_placeholder( ) ) ) ).
     GET RUN TIME FIELD DATA(lv_end).
 
-    DATA(lv_runtime) = lv_end - lv_start.
-    WRITE / |{ lv_runtime }ms parsing Scrypt-WASM|.
-
-    rv_json = '{"runtime": "' && lv_runtime && '"}'.
+    DATA(lv_parsing) = lv_end - lv_start.
+    WRITE / |{ lv_parsing }ms parsing Scrypt-WASM|.
 
 ****************************************
 * https://rustwasm.github.io/docs/book/reference/debugging.html
@@ -70,8 +68,10 @@ CLASS cl_scrypt IMPLEMENTATION.
 
     GET RUN TIME FIELD lv_end.
 
-    lv_runtime = ( lv_end - lv_start ) / 1000.
+    DATA(lv_runtime) = ( lv_end - lv_start ) / 1000.
     WRITE / |{ lv_runtime }s running Scrypt-WASM|.
+
+    rv_json = '{"parsing": "' && lv_parsing && '", "runtime": "' && lv_runtime && '"}'.
 
 * running optimized version:
 " Error: block

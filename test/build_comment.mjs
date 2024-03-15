@@ -58,7 +58,8 @@ comment += "Performance test results:\n";
 comment += "|           | Before | After | Delta |\n";
 comment += "| :---      | ---:   | ---:  | ---:  |\n";
 comment += `| :partying_face: QuickJS | ${quickjsBefore.runtime}ms | ${quickjsAfter.runtime}ms | ${quickjsAfter.runtime - quickjsBefore.runtime}ms |\n`;
-comment += `| :money_mouth_face: Scrypt | ${scryptBefore.runtime}ms | ${scryptAfter.runtime}ms | ${scryptAfter.runtime - scryptBefore.runtime}ms |\n`;
+comment += `| :money_mouth_face: Scrypt Parsing | ${scryptBefore.parsing}ms | ${scryptAfter.parsing}ms | ${scryptAfter.parsing - scryptBefore.parsing}ms |\n`;
+comment += `| :money_mouth_face: Scrypt Runtime | ${scryptBefore.runtime}s | ${scryptAfter.runtime}s | ${scryptAfter.runtime - scryptBefore.runtime}s |\n`;
 comment += `| :sunglasses: SHA256 | ${sha256Before.runtime}ms | ${sha256After.runtime}ms | ${sha256After.runtime - sha256Before.runtime}ms |\n`;
 
 const performanceAfter = JSON.parse(fs.readFileSync(`../after/performance.json`, "utf-8"));
