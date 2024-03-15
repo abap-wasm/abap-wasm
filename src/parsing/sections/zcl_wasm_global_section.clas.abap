@@ -73,7 +73,7 @@ CLASS zcl_wasm_global_section IMPLEMENTATION.
         WHEN zif_wasm_types=>c_vector_type.
           RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |instantiate_global, todo vector type|.
         WHEN OTHERS.
-          RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |instantiate_global, unknown type|.
+          RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |instantiate_global, unknown type { ls_global-type }|.
       ENDCASE.
 
       CASE ls_global-mut.
