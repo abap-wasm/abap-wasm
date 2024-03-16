@@ -166,7 +166,7 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD reverse_hex.
-
+* todo, will CHANGING make this method faster?
     DATA lv_hex    TYPE x LENGTH 1.
     DATA lv_char   TYPE c LENGTH 1.
     DATA lv_len    TYPE i.
