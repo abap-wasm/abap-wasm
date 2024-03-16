@@ -24,8 +24,9 @@ CLASS zcl_wasm_i32_rotl IMPLEMENTATION.
     DATA lv_hex TYPE x LENGTH 4.
     DATA lv_int TYPE i.
 
-    DATA(lv_bits) = io_memory->get_stack( )->pop_i32( )->get_signed( ) MOD 32.
-    lv_hex = io_memory->get_stack( )->pop_i32( )->get_signed( ).
+    DATA(li_stack) = io_memory->get_stack( ).
+    DATA(lv_bits) = li_stack->pop_i32( )->get_signed( ) MOD 32.
+    lv_hex = li_stack->pop_i32( )->get_signed( ).
 
     DATA(lv_bytes) = lv_bits DIV 8.
     lv_bits = lv_bits MOD 8.
@@ -45,7 +46,7 @@ CLASS zcl_wasm_i32_rotl IMPLEMENTATION.
     ENDDO.
 
     lv_int = lv_hex.
-    io_memory->get_stack( )->push( zcl_wasm_i32=>from_signed( lv_int ) ).
+    li_stack->push( zcl_wasm_i32=>from_signed( lv_int ) ).
 
   ENDMETHOD.
 
