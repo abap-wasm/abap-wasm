@@ -64,14 +64,13 @@ CLASS zcl_wasm_block IMPLEMENTATION.
 
     TRY.
         rv_control = io_module->execute_instructions( mt_instructions ).
-        lo_block->end( io_memory ).
       CATCH zcx_wasm_branch INTO DATA(lx_branch).
         IF lx_branch->depth > 0.
           RAISE EXCEPTION TYPE zcx_wasm_branch EXPORTING depth = lx_branch->depth - 1.
-        ELSE.
-          lo_block->end( io_memory ).
         ENDIF.
     ENDTRY.
+
+    lo_block->end( io_memory ).
 
   ENDMETHOD.
 
