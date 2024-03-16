@@ -60,7 +60,7 @@ CLASS cl_scrypt IMPLEMENTATION.
         DATA(lv_str) = cl_abap_codepage=>convert_from( zcl_wasm_binary_stream=>reverse_hex( lv_return ) ).
         ASSERT lv_str = lv_expected.
       CATCH zcx_wasm INTO DATA(lo_exception).
-        WRITE / |Exception: { lo_exception->get_text( ) } |.
+        WRITE / |EXCEPTION: { lo_exception->get_text( ) } |.
     ENDTRY.
 
     GET RUN TIME FIELD lv_end.
