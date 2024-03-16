@@ -90,6 +90,17 @@ CLASS cl_quickjs_env IMPLEMENTATION.
           iv_bytes  = lv_xstr
           iv_offset = CONV #( lv_pointer ) ).
         INSERT zcl_wasm_i32=>from_signed( xstrlen( lv_xstr ) ) INTO rt_results.
+      WHEN 'emscripten_resize_heap'.
+* https://github.com/emscripten-core/emscripten/blob/918e131fae0b5c7b1d05a5c75d7e8e676c377713/system/include/emscripten/heap.h#L27-L32
+* https://github.com/emscripten-core/emscripten/blob/918e131fae0b5c7b1d05a5c75d7e8e676c377713/system/lib/standalone/standalone.c#L152
+* (param i32) (result i32)
+* return: 1 = success, 0 = failure?
+        DATA(lv_input) = CAST zcl_wasm_i32( it_parameters[ 1 ] )->get_signed( ).
+        DATA(lv_diff) = lv_input - mo_memory->get_linear( )->size_in_bytes( ).
+        DATA(lv_pages) = ceil( lv_diff / 65536 ) + 1.
+        WRITE / |grow { lv_pages } pages, requested diff { lv_diff }, requested size { lv_input }|.
+        mo_memory->get_linear( )->grow( CONV #( lv_pages ) ).
+        INSERT zcl_wasm_i32=>from_signed( 1 ) INTO rt_results.
       WHEN '_emscripten_sanitizer_get_option'.
 * (param i32) (result i32)
 * input: pointer to string?
