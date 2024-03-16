@@ -26,6 +26,15 @@ CLASS zcl_wasm_memory_stack IMPLEMENTATION.
 
   ENDMETHOD.
 
+  METHOD zif_wasm_memory_stack~peek.
+
+    DATA(lv_length) = lines( mt_stack ).
+    ASSERT lv_length > 0.
+
+    READ TABLE mt_stack INDEX lv_length INTO ri_value.
+
+  ENDMETHOD.
+
 
   METHOD zif_wasm_memory_stack~pop_i64.
 
