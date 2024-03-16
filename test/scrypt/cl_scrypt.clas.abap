@@ -38,12 +38,9 @@ CLASS cl_scrypt IMPLEMENTATION.
     DATA(lo_retptr) = CAST zcl_wasm_i32( lt_results[ 1 ] ).
 
     TRY.
-        lt_results = li_wasm->execute_function_export(
+        li_wasm->execute_function_export(
           iv_name       = 'run'
           it_parameters = VALUE #( ( lo_retptr ) ) ).
-        LOOP AT lt_results INTO DATA(li_result).
-          WRITE / |{ li_result->get_type( ) }: { li_result->human_readable_value( ) }|.
-        ENDLOOP.
 
         DATA(li_linear) = li_wasm->get_memory( )->get_linear( ).
         DATA(lv_realptr) = li_linear->get(
@@ -60,8 +57,8 @@ CLASS cl_scrypt IMPLEMENTATION.
           iv_length = CONV #( lv_reallen )
           iv_offset = CONV #( lv_realptr ) ).
         DATA(lv_expected) = |Hello 636d8985f1148f8a10f9f925f4e3e895b867bdf43a8f796fc8c49926406519fae4a29b2e492f76ce3b0bd96143264b04ee86decf16f9c1396d4de96ea453b8a2|.
-        lv_return = cl_abap_codepage=>convert_from( zcl_wasm_binary_stream=>reverse_hex( lv_return ) ).
-        ASSERT lv_return = lv_expected.
+        DATA(lv_str) = cl_abap_codepage=>convert_from( zcl_wasm_binary_stream=>reverse_hex( lv_return ) ).
+        ASSERT lv_str = lv_expected.
       CATCH zcx_wasm INTO DATA(lo_exception).
         WRITE / |Exception: { lo_exception->get_text( ) } |.
     ENDTRY.

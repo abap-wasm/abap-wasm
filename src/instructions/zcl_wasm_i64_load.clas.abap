@@ -16,7 +16,10 @@ CLASS zcl_wasm_i64_load DEFINITION PUBLIC.
 
   PROTECTED SECTION.
   PRIVATE SECTION.
-    DATA mv_align TYPE int8.
+    CONSTANTS gc_length TYPE int8 VALUE 8.
+    CONSTANTS gc_ff     TYPE x LENGTH 16 VALUE 'FFFFFFFFFFFFFFFF'.
+
+    DATA mv_align  TYPE int8.
     DATA mv_offset TYPE int8.
 ENDCLASS.
 
@@ -43,12 +46,10 @@ CLASS zcl_wasm_i64_load IMPLEMENTATION.
 
 
   METHOD zif_wasm_instruction~execute.
-    CONSTANTS lc_length TYPE int8 VALUE 8.
-    DATA lv_hex    TYPE x LENGTH lc_length.
+    DATA lv_hex    TYPE x LENGTH gc_length.
     DATA lv_int    TYPE i.
     DATA lv_int8   TYPE int8.
     DATA lv_factor TYPE int8.
-    DATA lv_ff     TYPE x LENGTH 16.
 
     DATA(lv_i) = io_memory->get_stack( )->pop_i32( )->get_signed( ).
     IF lv_i < 0.
@@ -56,7 +57,7 @@ CLASS zcl_wasm_i64_load IMPLEMENTATION.
     ENDIF.
 
     lv_hex = io_memory->get_linear( )->get(
-      iv_length = lc_length
+      iv_length = gc_length
       iv_align  = mv_align
       iv_offset = mv_offset + lv_i ).
 
@@ -70,8 +71,7 @@ CLASS zcl_wasm_i64_load IMPLEMENTATION.
       " WRITE: / 'sign', lv_sign.
 
       IF lv_sign = 1.
-        lv_ff = 'FFFFFFFFFFFFFFFF'.
-        lv_hex = lv_hex BIT-XOR lv_ff.
+        lv_hex = lv_hex BIT-XOR gc_ff.
       ENDIF.
       " WRITE / lv_hex.
 
@@ -88,8 +88,8 @@ CLASS zcl_wasm_i64_load IMPLEMENTATION.
       ENDDO.
 
       IF lv_sign = 1.
-        lv_int8 = lv_int8 + 1.
         lv_int8 = lv_int8 * -1.
+        lv_int8 = lv_int8 - 1.
       ENDIF.
     ENDIF.
 
