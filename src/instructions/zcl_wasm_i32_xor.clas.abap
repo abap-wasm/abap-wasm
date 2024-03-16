@@ -21,18 +21,16 @@ CLASS zcl_wasm_i32_xor IMPLEMENTATION.
   METHOD zif_wasm_instruction~execute.
     DATA lv_hex1 TYPE x LENGTH 4.
     DATA lv_hex2 TYPE x LENGTH 4.
+    DATA lv_int  TYPE i.
 
-    ASSERT io_memory->get_stack( )->get_length( ) >= 2.
-
-    DATA(lv_val1) = CAST zcl_wasm_i32( io_memory->get_stack( )->pop( ) )->get_signed( ).
-    DATA(lv_val2) = CAST zcl_wasm_i32( io_memory->get_stack( )->pop( ) )->get_signed( ).
-    lv_hex1 = lv_val1.
-    lv_hex2 = lv_val2.
+    DATA(li_stack) = io_memory->get_stack( ).
+    lv_hex1 = CAST zcl_wasm_i32( li_stack->pop( ) )->get_signed( ).
+    lv_hex2 = CAST zcl_wasm_i32( li_stack->pop( ) )->get_signed( ).
 
     lv_hex1 = lv_hex1 BIT-XOR lv_hex2.
-    lv_val1 = lv_hex1.
+    lv_int = lv_hex1.
 
-    io_memory->get_stack( )->push( zcl_wasm_i32=>from_signed( lv_val1 ) ).
+    li_stack->push( zcl_wasm_i32=>from_signed( lv_int ) ).
   ENDMETHOD.
 
 ENDCLASS.
