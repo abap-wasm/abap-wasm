@@ -76,23 +76,12 @@ CLASS zcl_wasm_if IMPLEMENTATION.
     TRY.
 * If c is non-zero, then enter
         IF lv_value <> 0.
-          LOOP AT mt_in1 INTO DATA(lo_instruction).
-            rv_control = lo_instruction->execute(
-              io_memory = io_memory
-              io_module = io_module ).
-            IF rv_control = zif_wasm_instruction=>c_control-return_.
-              RETURN.
-            ENDIF.
-          ENDLOOP.
+          rv_control = io_module->execute_instructions( mt_in1 ).
         ELSE.
-          LOOP AT mt_in2 INTO lo_instruction.
-            rv_control = lo_instruction->execute(
-              io_memory = io_memory
-              io_module = io_module ).
-            IF rv_control = zif_wasm_instruction=>c_control-return_.
-              RETURN.
-            ENDIF.
-          ENDLOOP.
+          rv_control = io_module->execute_instructions( mt_in2 ).
+        ENDIF.
+        IF rv_control = zif_wasm_instruction=>c_control-return_.
+          RETURN.
         ENDIF.
       CATCH zcx_wasm_branch INTO DATA(lx_branch).
         IF lx_branch->depth > 0.

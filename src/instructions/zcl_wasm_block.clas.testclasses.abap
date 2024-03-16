@@ -5,6 +5,10 @@ CLASS ltcl_test DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS.
     METHODS multi FOR TESTING RAISING cx_static_check.
     METHODS nested_unwind FOR TESTING RAISING cx_static_check.
     METHODS select_mid FOR TESTING RAISING cx_static_check.
+    METHODS blocks FOR TESTING RAISING cx_static_check.
+    METHODS blocks_with_br FOR TESTING RAISING cx_static_check.
+    METHODS blocks_with_br_after FOR TESTING RAISING cx_static_check.
+    METHODS blocks_longer_br FOR TESTING RAISING cx_static_check.
 
 ENDCLASS.
 
@@ -100,6 +104,136 @@ CLASS ltcl_test IMPLEMENTATION.
     DATA(li_wasm) = zcl_wasm=>create_with_base64( lv_wasm ).
 
     DATA(lt_values) = li_wasm->execute_function_export( 'selectmid' ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lines( lt_values )
+      exp = 1 ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = CAST zcl_wasm_i32( lt_values[ 1 ] )->get_signed( )
+      exp = 2 ).
+
+  ENDMETHOD.
+
+  METHOD blocks.
+
+" (module
+"   (func (export "blocks") (result i32)
+"     block
+"       block (result i32)
+"         i32.const 1
+"         block
+"         end
+"       end
+"       return
+"     end
+"     i32.const 2
+"   )
+" )
+
+    DATA(lv_wasm) = `AGFzbQEAAAABBQFgAAF/AwIBAAcKAQZibG9ja3MAAAoSARAAAkACf0EBAkALCw8LQQILAAoEbmFtZQIDAQAA`.
+
+    DATA(li_wasm) = zcl_wasm=>create_with_base64( lv_wasm ).
+
+    DATA(lt_values) = li_wasm->execute_function_export( 'blocks' ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lines( lt_values )
+      exp = 1 ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = CAST zcl_wasm_i32( lt_values[ 1 ] )->get_signed( )
+      exp = 1 ).
+
+  ENDMETHOD.
+
+  METHOD blocks_with_br.
+
+" (module
+"   (func (export "blocks") (result i32)
+"     block
+"       block (result i32)
+"         i32.const 1
+"         block
+"         end
+"       end
+"       return
+"     end
+"     i32.const 2
+"   )
+" )
+
+    DATA(lv_wasm) = `AGFzbQEAAAABBQFgAAF/AwIBAAcKAQZibG9ja3MAAAoUARIAAkACf0EBAkAMAAsLDwtBAgsACgRuYW1lAgMBAAA=`.
+
+    DATA(li_wasm) = zcl_wasm=>create_with_base64( lv_wasm ).
+
+    DATA(lt_values) = li_wasm->execute_function_export( 'blocks' ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lines( lt_values )
+      exp = 1 ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = CAST zcl_wasm_i32( lt_values[ 1 ] )->get_signed( )
+      exp = 1 ).
+
+  ENDMETHOD.
+
+  METHOD blocks_with_br_after.
+
+" (module
+"   (func (export "blocks") (result i32)
+"     block
+"       block (result i32)
+"         block
+"           br 0
+"         end
+"         i32.const 1
+"       end
+"       return
+"     end
+"     i32.const 2
+"   )
+" )
+
+    DATA(lv_wasm) = `AGFzbQEAAAABBQFgAAF/AwIBAAcKAQZibG9ja3MAAAoUARIAAkACfwJADAALQQELDwtBAgsACgRuYW1lAgMBAAA=`.
+
+    DATA(li_wasm) = zcl_wasm=>create_with_base64( lv_wasm ).
+
+    DATA(lt_values) = li_wasm->execute_function_export( 'blocks' ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lines( lt_values )
+      exp = 1 ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = CAST zcl_wasm_i32( lt_values[ 1 ] )->get_signed( )
+      exp = 1 ).
+
+  ENDMETHOD.
+
+  METHOD blocks_longer_br.
+
+" (module
+"   (func (export "blocks") (result i32)
+"     block
+"       block (result i32)
+"         block
+"           br 2
+"         end
+"         i32.const 1
+"       end
+"       return
+"     end
+"     i32.const 2
+"   )
+" )
+
+    DATA(lv_wasm) = `AGFzbQEAAAABBQFgAAF/AwIBAAcKAQZibG9ja3MAAAoUARIAAkACfwJADAILQQELDwtBAgsACgRuYW1lAgMBAAA=`.
+
+    DATA(li_wasm) = zcl_wasm=>create_with_base64( lv_wasm ).
+
+    DATA(lt_values) = li_wasm->execute_function_export( 'blocks' ).
 
     cl_abap_unit_assert=>assert_equals(
       act = lines( lt_values )

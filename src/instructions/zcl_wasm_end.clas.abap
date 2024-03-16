@@ -19,6 +19,8 @@ CLASS zcl_wasm_end IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
+    " DATA(lv_len) = io_memory->get_stack( )->get_length( ).
+    " WRITE / '@KERNEL console.dir(lv_len);'.
 * hmm? add a link here?
     RETURN.
   ENDMETHOD.

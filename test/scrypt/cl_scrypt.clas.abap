@@ -58,9 +58,10 @@ CLASS cl_scrypt IMPLEMENTATION.
           iv_offset = CONV #( lv_realptr ) ).
         DATA(lv_expected) = |Hello 636d8985f1148f8a10f9f925f4e3e895b867bdf43a8f796fc8c49926406519fae4a29b2e492f76ce3b0bd96143264b04ee86decf16f9c1396d4de96ea453b8a2|.
         DATA(lv_str) = cl_abap_codepage=>convert_from( zcl_wasm_binary_stream=>reverse_hex( lv_return ) ).
+        WRITE / lv_str.
         ASSERT lv_str = lv_expected.
       CATCH zcx_wasm INTO DATA(lo_exception).
-        WRITE / |Exception: { lo_exception->get_text( ) } |.
+        WRITE / |EXCEPTION: { lo_exception->get_text( ) } |.
     ENDTRY.
 
     GET RUN TIME FIELD lv_end.
