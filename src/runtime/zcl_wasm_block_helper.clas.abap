@@ -93,7 +93,7 @@ CLASS zcl_wasm_block_helper IMPLEMENTATION.
 *      WRITE '@KERNEL throw new Error("block");'.
       RAISE EXCEPTION TYPE zcx_wasm
         EXPORTING
-          text = |block: expected { xstrlen( ms_type-result_types ) } values on stack, { ms_type-result_types }|.
+          text = |block: expected { xstrlen( ms_type-result_types ) } values on stack, { ms_type-result_types }, stack length is { io_memory->get_stack( )->get_length( ) }|.
     ENDIF.
 
     DO xstrlen( ms_type-result_types ) TIMES.

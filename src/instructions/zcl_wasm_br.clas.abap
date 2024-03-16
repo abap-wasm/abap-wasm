@@ -29,6 +29,10 @@ CLASS zcl_wasm_br IMPLEMENTATION.
 
 * https://webassembly.github.io/spec/core/exec/instructions.html#xref-syntax-instructions-syntax-instr-control-mathsf-br-l
 
+    " DATA(lv_len) = io_memory->get_stack( )->get_length( ).
+    " WRITE / '@KERNEL console.dir(lv_len);'.
+    " WRITE / '@KERNEL console.dir(this.mv_labelidx);'.
+
 * yea, using exceptions for branching is probably slow, but will work for now
     RAISE EXCEPTION TYPE zcx_wasm_branch EXPORTING depth = mv_labelidx.
   ENDMETHOD.

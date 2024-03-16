@@ -35,6 +35,7 @@ CLASS zcl_wasm_local_tee IMPLEMENTATION.
     io_memory->get_stack( )->push( lo_val ).
     io_memory->get_stack( )->push( lo_val ).
 
+* todo: optimize
     NEW zcl_wasm_local_set( mv_localidx )->zif_wasm_instruction~execute(
       io_memory = io_memory
       io_module = io_module ).
