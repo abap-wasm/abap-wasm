@@ -23,8 +23,10 @@ CLASS zcl_wasm_i32_rotl IMPLEMENTATION.
   METHOD zif_wasm_instruction~execute.
 * https://webassembly.github.io/spec/core/exec/numerics.html#xref-exec-numerics-op-irotl-mathrm-irotl-n-i-1-i-2
 
-    DATA lv_hex TYPE x LENGTH 4.
-    DATA lv_int TYPE i.
+    DATA lv_hex    TYPE x LENGTH 4.
+    DATA lv_char32 TYPE c LENGTH 32.
+    DATA lv_int    TYPE i.
+    DATA lv_offset TYPE i.
 
     DATA(li_stack) = io_memory->get_stack( ).
     DATA(lv_bits) = li_stack->pop_i32( )->get_signed( ) MOD 32.
@@ -33,19 +35,25 @@ CLASS zcl_wasm_i32_rotl IMPLEMENTATION.
     DATA(lv_bytes) = lv_bits DIV 8.
     lv_bits = lv_bits MOD 8.
 
-    IF lv_bytes > 0.
+    IF lv_bits = 0.
       SHIFT lv_hex LEFT BY lv_bytes PLACES IN BYTE MODE CIRCULAR.
-    ENDIF.
+    ELSE.
+      lv_bits = lv_bits + lv_bytes * 8.
 
-    DO lv_bits TIMES.
-      GET BIT 1 OF lv_hex INTO DATA(lv_set).
       DO 32 TIMES.
-        DATA(lv_offset) = 33 - sy-index.
-        GET BIT lv_offset OF lv_hex INTO DATA(lv_get).
-        SET BIT lv_offset OF lv_hex TO lv_set.
-        lv_set = lv_get.
+        lv_offset = sy-index - 1.
+        GET BIT sy-index OF lv_hex INTO lv_int.
+        lv_char32+lv_offset(1) = lv_int.
       ENDDO.
-    ENDDO.
+
+      SHIFT lv_char32 LEFT BY lv_bits PLACES CIRCULAR.
+
+      DO 32 TIMES.
+        lv_offset = sy-index - 1.
+        lv_int = lv_char32+lv_offset(1).
+        SET BIT sy-index OF lv_hex TO lv_int.
+      ENDDO.
+    ENDIF.
 
     lv_int = lv_hex.
     li_stack->push( zcl_wasm_i32=>from_signed( lv_int ) ).
