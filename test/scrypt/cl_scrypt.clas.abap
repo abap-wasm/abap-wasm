@@ -38,12 +38,9 @@ CLASS cl_scrypt IMPLEMENTATION.
     DATA(lo_retptr) = CAST zcl_wasm_i32( lt_results[ 1 ] ).
 
     TRY.
-        lt_results = li_wasm->execute_function_export(
+        li_wasm->execute_function_export(
           iv_name       = 'run'
           it_parameters = VALUE #( ( lo_retptr ) ) ).
-        LOOP AT lt_results INTO DATA(li_result).
-          WRITE / |{ li_result->get_type( ) }: { li_result->human_readable_value( ) }|.
-        ENDLOOP.
 
         DATA(li_linear) = li_wasm->get_memory( )->get_linear( ).
         DATA(lv_realptr) = li_linear->get(
