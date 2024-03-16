@@ -88,8 +88,8 @@ CLASS zcl_wasm_i64_load IMPLEMENTATION.
       ENDDO.
 
       IF lv_sign = 1.
-        lv_int8 = lv_int8 + 1.
         lv_int8 = lv_int8 * -1.
+        lv_int8 = lv_int8 - 1.
       ENDIF.
     ENDIF.
 
