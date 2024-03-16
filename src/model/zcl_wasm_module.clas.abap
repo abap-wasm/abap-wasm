@@ -377,9 +377,9 @@ CLASS zcl_wasm_module IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD execute_instructions.
-    LOOP AT it_instructions INTO DATA(lo_instruction).
+    LOOP AT it_instructions ASSIGNING FIELD-SYMBOL(<li_instruction>).
 *      WRITE / '@KERNEL console.dir(lo_instruction.get().constructor.name);'.
-      rv_control = lo_instruction->execute(
+      rv_control = <li_instruction>->execute(
         io_memory = mo_memory
         io_module = me ).
 
