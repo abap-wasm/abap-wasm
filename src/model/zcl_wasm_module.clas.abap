@@ -82,7 +82,7 @@ CLASS zcl_wasm_module DEFINITION
       IMPORTING
         !iv_index      TYPE int8
       RETURNING
-        VALUE(rs_code) TYPE ty_code
+        VALUE(rr_code) TYPE REF TO ty_code
       RAISING
         zcx_wasm.
     METHODS get_function_by_index
@@ -241,7 +241,7 @@ CLASS zcl_wasm_module IMPLEMENTATION.
 * index is zero based
     DATA(lv_index) = iv_index + 1.
 
-    READ TABLE mt_codes INDEX lv_index INTO rs_code.
+    READ TABLE mt_codes INDEX lv_index REFERENCE INTO rr_code.
     IF sy-subrc <> 0.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |get_code_by_index: not found, { lv_index }|.
     ENDIF.

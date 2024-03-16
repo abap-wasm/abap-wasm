@@ -62,7 +62,7 @@ CLASS zcl_wasm_call IMPLEMENTATION.
         io_memory->get_stack( )->push( <li_result> ).
       ENDLOOP.
     ELSE.
-      DATA(ls_code) = io_module->get_code_by_index( CONV #( ls_function-codeidx ) ).
+      DATA(lr_code) = io_module->get_code_by_index( CONV #( ls_function-codeidx ) ).
 
 * consume values from stack into locals
       io_memory->push_frame( ).
@@ -72,7 +72,7 @@ CLASS zcl_wasm_call IMPLEMENTATION.
       ENDDO.
 
 * add the locals for the function
-      LOOP AT ls_code-locals ASSIGNING FIELD-SYMBOL(<ls_local>).
+      LOOP AT lr_code->locals ASSIGNING FIELD-SYMBOL(<ls_local>).
         DO <ls_local>-count TIMES.
           CASE <ls_local>-type.
             WHEN zif_wasm_types=>c_value_type-i32.
@@ -90,7 +90,7 @@ CLASS zcl_wasm_call IMPLEMENTATION.
       ENDLOOP.
 
       TRY.
-          io_module->execute_instructions( ls_code-instructions ).
+          io_module->execute_instructions( lr_code->instructions ).
         CATCH zcx_wasm_branch INTO DATA(lx_branch).
           IF lx_branch->depth > 0.
             RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'call(), branching exception, should not happen'.
