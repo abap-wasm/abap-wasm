@@ -101,6 +101,15 @@ CLASS cl_quickjs_env IMPLEMENTATION.
         WRITE / |grow { lv_pages } pages, requested diff { lv_diff }, requested size { lv_input }|.
         mo_memory->get_linear( )->grow( CONV #( lv_pages ) ).
         INSERT zcl_wasm_i32=>from_signed( 1 ) INTO rt_results.
+      WHEN 'emscripten_stack_unwind_buffer'.
+* (param i32 i32 i32) (result i32)
+* hmm
+        INSERT zcl_wasm_i32=>from_signed( 0 ) INTO rt_results.
+      WHEN 'emscripten_stack_snapshot'.
+* (result i32)
+* https://github.com/emscripten-core/emscripten/blob/918e131fae0b5c7b1d05a5c75d7e8e676c377713/src/library.js#L2599
+* hmm
+        INSERT zcl_wasm_i32=>from_signed( 0 ) INTO rt_results.
       WHEN '_emscripten_sanitizer_get_option'.
 * (param i32) (result i32)
 * input: pointer to string?
