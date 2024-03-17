@@ -41,15 +41,15 @@ CLASS zcl_wasm_memory_init IMPLEMENTATION.
     DATA(lv_offset) = li_stack->pop_i32( )->get_unsigned( ).
     DATA(lv_destination) = li_stack->pop_i32( )->get_unsigned( ).
 
+    DATA(lv_bytes) = io_module->get_data_section( )->get_passive( mv_dataidx ).
     DATA(li_linear) = io_memory->get_linear( ).
-    IF lv_length + lv_offset > li_linear->size_in_bytes( )
+
+    IF lv_length + lv_offset > xstrlen( lv_bytes )
         OR lv_destination + lv_length > li_linear->size_in_bytes( ).
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_memory_init: out of bounds memory access'.
     ENDIF.
 
-    DATA(lv_bytes) = io_module->get_data_section( )->get_passive( mv_dataidx ).
     lv_bytes = lv_bytes+lv_offset(lv_length).
-*    lv_bytes = zcl_wasm_binary_stream=>reverse_hex( lv_bytes ).
 
     li_linear->set(
       iv_offset = lv_destination
