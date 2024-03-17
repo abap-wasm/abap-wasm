@@ -98,6 +98,11 @@ CLASS zcl_wasm_call IMPLEMENTATION.
       ENDTRY.
 
 * todo: check the result on the stack are as expected and correct types
+      IF xstrlen( ls_type-result_types ) > io_memory->get_stack( )->get_length( ).
+        RAISE EXCEPTION TYPE zcx_wasm
+          EXPORTING
+            text = |call: too few results got { io_memory->get_stack( )->get_length( ) } expected at least { xstrlen( ls_type-result_types ) }|.
+      ENDIF.
 
       io_memory->pop_frame( ).
     ENDIF.
