@@ -52,7 +52,9 @@ CLASS zcl_wasm_memory_linear IMPLEMENTATION.
 
     DATA(lv_length) = xstrlen( iv_bytes ).
     IF iv_offset + lv_length > lines( mt_pages ) * zif_wasm_memory_linear=>c_page_size.
-      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'linear_set: out of bounds'.
+      RAISE EXCEPTION TYPE zcx_wasm
+        EXPORTING
+          text = |linear_set: out of bounds, { iv_offset }, { lv_length }|.
     ELSEIF iv_offset < 0.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'linear_set: offset is negative'.
     ELSEIF lv_length = 0.

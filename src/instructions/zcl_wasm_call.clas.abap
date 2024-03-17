@@ -41,6 +41,7 @@ CLASS zcl_wasm_call IMPLEMENTATION.
 * https://webassembly.github.io/spec/core/exec/instructions.html#exec-invoke
 
     DATA lt_parameters TYPE zif_wasm_value=>ty_values.
+    DATA lt_results    TYPE STANDARD TABLE OF REF TO zif_wasm_value WITH EMPTY KEY.
 
     DATA(ls_function) = io_module->get_function_by_index( iv_funcidx ).
     DATA(ls_type) = io_module->get_type_by_index( CONV #( ls_function-typeidx ) ).
@@ -89,6 +90,9 @@ CLASS zcl_wasm_call IMPLEMENTATION.
         ENDDO.
       ENDLOOP.
 
+      DATA(li_old_stack) = io_memory->get_stack( ).
+      io_memory->set_stack( CAST zif_wasm_memory_stack( NEW zcl_wasm_memory_stack( ) ) ).
+
       TRY.
           io_module->execute_instructions( lr_code->instructions ).
         CATCH zcx_wasm_branch INTO DATA(lx_branch).
@@ -97,8 +101,32 @@ CLASS zcl_wasm_call IMPLEMENTATION.
           ENDIF.
       ENDTRY.
 
-* todo: check the result on the stack are as expected and correct types
+******************
 
+      IF xstrlen( ls_type-result_types ) > io_memory->get_stack( )->get_length( ).
+        RAISE EXCEPTION TYPE zcx_wasm
+          EXPORTING
+            text = |call: too few results got { io_memory->get_stack( )->get_length( ) } expected at least { xstrlen( ls_type-result_types ) }|.
+      ENDIF.
+
+      DO xstrlen( ls_type-result_types ) TIMES.
+        DATA(lv_offset) = xstrlen( ls_type-result_types ) - sy-index.
+        DATA(li_val) = io_memory->get_stack( )->pop( ).
+
+        IF li_val->get_type( ) <> ls_type-result_types+lv_offset(1).
+          RAISE EXCEPTION TYPE zcx_wasm
+            EXPORTING
+              text = |call result: wrong parameter on stack, got { li_val->get_type( ) } expected { ls_type-result_types+lv_offset(1) }|.
+        ENDIF.
+
+        INSERT li_val INTO lt_results INDEX 1.
+      ENDDO.
+
+      LOOP AT lt_results INTO li_val.
+        li_old_stack->push( li_val ).
+      ENDLOOP.
+
+      io_memory->set_stack( li_old_stack ).
       io_memory->pop_frame( ).
     ENDIF.
 
