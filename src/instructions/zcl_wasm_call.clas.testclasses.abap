@@ -3,6 +3,8 @@ CLASS ltcl_test DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS.
   PRIVATE SECTION.
     METHODS two_results FOR TESTING RAISING cx_static_check.
     METHODS multi_value FOR TESTING RAISING cx_static_check.
+    METHODS call_and_br FOR TESTING RAISING cx_static_check.
+    METHODS call_and_br_after FOR TESTING RAISING cx_static_check.
 
 ENDCLASS.
 
@@ -69,6 +71,66 @@ CLASS ltcl_test IMPLEMENTATION.
     cl_abap_unit_assert=>assert_equals(
       act = CAST zcl_wasm_i32( lt_values[ 1 ] )->get_signed( )
       exp = -7 ).
+
+  ENDMETHOD.
+
+  METHOD call_and_br.
+
+" (module
+"   (func $moo
+"     block (result i32)
+"       i32.const 1
+"       br 1
+"     end
+"     drop)
+"   (func (export "foo") (result i32)
+"     i32.const 123
+"     call $moo)
+" )
+
+    DATA(lv_wasm) = `AGFzbQEAAAABCAJgAABgAAF/AwMCAAEHBwEDZm9vAAEKFAIKAAJ/QQEMAQsaCwcAQfsAEAALABQEbmFtZQEGAQADbW9vAgUCAAABAA==`.
+
+    DATA(li_wasm) = zcl_wasm=>create_with_base64( lv_wasm ).
+
+    DATA(lt_values) = li_wasm->execute_function_export( 'foo' ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lines( lt_values )
+      exp = 1 ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = CAST zcl_wasm_i32( lt_values[ 1 ] )->get_signed( )
+      exp = 123 ).
+
+  ENDMETHOD.
+
+  METHOD call_and_br_after.
+
+" (module
+"   (func $moo
+"     block (result i32)
+"       br 1
+"       i32.const 1
+"     end
+"     drop)
+"   (func (export "foo") (result i32)
+"     i32.const 123
+"     call $moo)
+" )
+
+    DATA(lv_wasm) = `AGFzbQEAAAABCAJgAABgAAF/AwMCAAEHBwEDZm9vAAEKFAIKAAJ/DAFBAQsaCwcAQfsAEAALABQEbmFtZQEGAQADbW9vAgUCAAABAA==`.
+
+    DATA(li_wasm) = zcl_wasm=>create_with_base64( lv_wasm ).
+
+    DATA(lt_values) = li_wasm->execute_function_export( 'foo' ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lines( lt_values )
+      exp = 1 ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = CAST zcl_wasm_i32( lt_values[ 1 ] )->get_signed( )
+      exp = 123 ).
 
   ENDMETHOD.
 
