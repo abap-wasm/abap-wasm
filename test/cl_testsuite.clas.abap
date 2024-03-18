@@ -283,7 +283,10 @@ CLASS cl_testsuite IMPLEMENTATION.
 
 
     READ TABLE it_files WITH KEY filename = |{ iv_folder }.json| ASSIGNING FIELD-SYMBOL(<ls_file>).
-    ASSERT sy-subrc = 0.
+    IF sy-subrc <> 0.
+      WRITE / iv_folder.
+      ASSERT sy-subrc = 0.
+    ENDIF.
 
     WRITE / '@KERNEL const fs = await import("fs");'.
 

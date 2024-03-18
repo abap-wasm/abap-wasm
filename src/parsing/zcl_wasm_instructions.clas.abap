@@ -786,45 +786,50 @@ CLASS zcl_wasm_instructions IMPLEMENTATION.
           WHEN 'FC'.
             DATA(lv_opcodei) = io_body->shift_u32( ).
             CASE lv_opcodei.
-              WHEN zif_wasm_opcodes=>c_opcodes-i32_trunc_sat_f32_s.
+              WHEN zif_wasm_opcodes=>c_fc_opcodes-i32_trunc_sat_f32_s.
                 APPEND zcl_wasm_i32_trunc_sat_f32_s=>parse( io_body ) TO et_instructions.
-              WHEN zif_wasm_opcodes=>c_opcodes-i32_trunc_sat_f32_u.
+              WHEN zif_wasm_opcodes=>c_fc_opcodes-i32_trunc_sat_f32_u.
                 APPEND zcl_wasm_i32_trunc_sat_f32_u=>parse( io_body ) TO et_instructions.
-              WHEN zif_wasm_opcodes=>c_opcodes-i32_trunc_sat_f64_s.
+              WHEN zif_wasm_opcodes=>c_fc_opcodes-i32_trunc_sat_f64_s.
                 APPEND zcl_wasm_i32_trunc_sat_f64_s=>parse( io_body ) TO et_instructions.
-              WHEN zif_wasm_opcodes=>c_opcodes-i32_trunc_sat_f64_u.
+              WHEN zif_wasm_opcodes=>c_fc_opcodes-i32_trunc_sat_f64_u.
                 APPEND zcl_wasm_i32_trunc_sat_f64_u=>parse( io_body ) TO et_instructions.
-              WHEN zif_wasm_opcodes=>c_opcodes-i64_trunc_sat_f32_s.
+              WHEN zif_wasm_opcodes=>c_fc_opcodes-i64_trunc_sat_f32_s.
                 APPEND zcl_wasm_i64_trunc_sat_f32_s=>parse( io_body ) TO et_instructions.
-              WHEN zif_wasm_opcodes=>c_opcodes-i64_trunc_sat_f32_u.
+              WHEN zif_wasm_opcodes=>c_fc_opcodes-i64_trunc_sat_f32_u.
                 APPEND zcl_wasm_i64_trunc_sat_f32_u=>parse( io_body ) TO et_instructions.
-              WHEN zif_wasm_opcodes=>c_opcodes-i64_trunc_sat_f64_s.
+              WHEN zif_wasm_opcodes=>c_fc_opcodes-i64_trunc_sat_f64_s.
                 APPEND zcl_wasm_i64_trunc_sat_f64_s=>parse( io_body ) TO et_instructions.
-              WHEN zif_wasm_opcodes=>c_opcodes-i64_trunc_sat_f64_u.
+              WHEN zif_wasm_opcodes=>c_fc_opcodes-i64_trunc_sat_f64_u.
                 APPEND zcl_wasm_i64_trunc_sat_f64_u=>parse( io_body ) TO et_instructions.
-              WHEN zif_wasm_opcodes=>c_opcodes-memory_init.
+              WHEN zif_wasm_opcodes=>c_fc_opcodes-memory_init.
                 APPEND zcl_wasm_memory_init=>parse( io_body ) TO et_instructions.
-              WHEN zif_wasm_opcodes=>c_opcodes-data_drop.
+              WHEN zif_wasm_opcodes=>c_fc_opcodes-data_drop.
                 APPEND zcl_wasm_data_drop=>parse( io_body ) TO et_instructions.
-              WHEN zif_wasm_opcodes=>c_opcodes-memory_copy.
+              WHEN zif_wasm_opcodes=>c_fc_opcodes-memory_copy.
                 APPEND zcl_wasm_memory_copy=>parse( io_body ) TO et_instructions.
-              WHEN zif_wasm_opcodes=>c_opcodes-memory_fill.
+              WHEN zif_wasm_opcodes=>c_fc_opcodes-memory_fill.
                 APPEND zcl_wasm_memory_fill=>parse( io_body ) TO et_instructions.
-              WHEN zif_wasm_opcodes=>c_opcodes-table_init.
+              WHEN zif_wasm_opcodes=>c_fc_opcodes-table_init.
                 APPEND zcl_wasm_table_init=>parse( io_body ) TO et_instructions.
-              WHEN zif_wasm_opcodes=>c_opcodes-elem_drop.
+              WHEN zif_wasm_opcodes=>c_fc_opcodes-elem_drop.
                 APPEND zcl_wasm_elem_drop=>parse( io_body ) TO et_instructions.
-              WHEN zif_wasm_opcodes=>c_opcodes-table_copy.
+              WHEN zif_wasm_opcodes=>c_fc_opcodes-table_copy.
                 APPEND zcl_wasm_table_copy=>parse( io_body ) TO et_instructions.
-              WHEN zif_wasm_opcodes=>c_opcodes-table_grow.
+              WHEN zif_wasm_opcodes=>c_fc_opcodes-table_grow.
                 APPEND zcl_wasm_table_grow=>parse( io_body ) TO et_instructions.
-              WHEN zif_wasm_opcodes=>c_opcodes-table_size.
+              WHEN zif_wasm_opcodes=>c_fc_opcodes-table_size.
                 APPEND zcl_wasm_table_size=>parse( io_body ) TO et_instructions.
-              WHEN zif_wasm_opcodes=>c_opcodes-table_fill.
+              WHEN zif_wasm_opcodes=>c_fc_opcodes-table_fill.
                 APPEND zcl_wasm_table_fill=>parse( io_body ) TO et_instructions.
               WHEN OTHERS.
                 RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |illegal opcode FC: { lv_opcodei }|.
             ENDCASE.
+          WHEN 'FD'.
+            DATA(lv_simd) = io_body->shift( 1 ).
+            RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |SIMD opcodes not supported, FD{ lv_simd }|.
+          WHEN 'FE'.
+            RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |Threads opcodes not supported, FE{ io_body->shift( 1 ) }|.
           WHEN zif_wasm_opcodes=>c_opcodes-end.
             APPEND zcl_wasm_end=>parse( io_body ) TO et_instructions.
             RETURN.
