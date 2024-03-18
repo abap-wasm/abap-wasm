@@ -36,18 +36,20 @@ CLASS zcl_wasm_memory_init IMPLEMENTATION.
 
 * https://webassembly.github.io/spec/core/exec/instructions.html#xref-syntax-instructions-syntax-instr-memory-mathsf-memory-init-x
 
-    DATA(lv_number) = io_memory->get_stack( )->pop_i32( )->get_unsigned( ).
-    DATA(lv_source) = io_memory->get_stack( )->pop_i32( )->get_unsigned( ).
-    DATA(lv_destination) = io_memory->get_stack( )->pop_i32( )->get_unsigned( ).
-
-    DATA(li_linear) = io_memory->get_linear( ).
-    IF lv_source + lv_number > li_linear->size_in_bytes( )
-        OR lv_destination + lv_number > li_linear->size_in_bytes( ).
-      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_memory_copy: out of bounds memory access'.
-    ENDIF.
+    DATA(li_stack) = io_memory->get_stack( ).
+    DATA(lv_length) = li_stack->pop_i32( )->get_unsigned( ).
+    DATA(lv_offset) = li_stack->pop_i32( )->get_unsigned( ).
+    DATA(lv_destination) = li_stack->pop_i32( )->get_unsigned( ).
 
     DATA(lv_bytes) = io_module->get_data_section( )->get_passive( mv_dataidx ).
-    lv_bytes = lv_bytes(lv_number).
+    DATA(li_linear) = io_memory->get_linear( ).
+
+    IF lv_length + lv_offset > xstrlen( lv_bytes )
+        OR lv_destination + lv_length > li_linear->size_in_bytes( ).
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_memory_init: out of bounds memory access'.
+    ENDIF.
+
+    lv_bytes = lv_bytes+lv_offset(lv_length).
 
     li_linear->set(
       iv_offset = lv_destination
