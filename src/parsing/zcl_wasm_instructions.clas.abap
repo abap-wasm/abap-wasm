@@ -772,7 +772,7 @@ CLASS zcl_wasm_instructions IMPLEMENTATION.
     ASSERT gv_initialized = abap_false.
 
     ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-v128_load.
-    ls_row-name = 'TODO'.
+    ls_row-name = 'ZCL_WASM_V128_LOAD'.
     INSERT ls_row INTO TABLE gt_opcodes_simd.
 
     ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-v128_load8x8_s.
@@ -820,7 +820,7 @@ CLASS zcl_wasm_instructions IMPLEMENTATION.
     INSERT ls_row INTO TABLE gt_opcodes_simd.
 
     ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-v128_const.
-    ls_row-name = 'TODO'.
+    ls_row-name = 'ZCL_WASM_V128_CONST'.
     INSERT ls_row INTO TABLE gt_opcodes_simd.
 
     ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i8x16_shuffle.
@@ -880,7 +880,7 @@ CLASS zcl_wasm_instructions IMPLEMENTATION.
     INSERT ls_row INTO TABLE gt_opcodes_simd.
 
     ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i32x4_extract_lane.
-    ls_row-name = 'TODO'.
+    ls_row-name = 'ZCL_WASM_I32X4_EXTRACT_LANE'.
     INSERT ls_row INTO TABLE gt_opcodes_simd.
 
     ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i32x4_replace_lane.
@@ -912,7 +912,7 @@ CLASS zcl_wasm_instructions IMPLEMENTATION.
     INSERT ls_row INTO TABLE gt_opcodes_simd.
 
     ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i8x16_eq.
-    ls_row-name = 'TODO'.
+    ls_row-name = 'ZCL_WASM_I8X16_EQ'.
     INSERT ls_row INTO TABLE gt_opcodes_simd.
 
     ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i16x8_eq.
@@ -924,7 +924,7 @@ CLASS zcl_wasm_instructions IMPLEMENTATION.
     INSERT ls_row INTO TABLE gt_opcodes_simd.
 
     ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i8x16_ne.
-    ls_row-name = 'TODO'.
+    ls_row-name = 'ZCL_WASM_I8X16_NE'.
     INSERT ls_row INTO TABLE gt_opcodes_simd.
 
     ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i16x8_ne.
@@ -1084,7 +1084,7 @@ CLASS zcl_wasm_instructions IMPLEMENTATION.
     INSERT ls_row INTO TABLE gt_opcodes_simd.
 
     ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-v128_and.
-    ls_row-name = 'TODO'.
+    ls_row-name = 'ZCL_WASM_V128_AND'.
     INSERT ls_row INTO TABLE gt_opcodes_simd.
 
     ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-v128_andnot.
@@ -1100,7 +1100,7 @@ CLASS zcl_wasm_instructions IMPLEMENTATION.
     INSERT ls_row INTO TABLE gt_opcodes_simd.
 
     ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-v128_bitselect.
-    ls_row-name = 'TODO'.
+    ls_row-name = 'ZCL_WASM_V128_BITSELECT'.
     INSERT ls_row INTO TABLE gt_opcodes_simd.
 
     ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-v128_any_true.
@@ -1360,7 +1360,7 @@ CLASS zcl_wasm_instructions IMPLEMENTATION.
     INSERT ls_row INTO TABLE gt_opcodes_simd.
 
     ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i16x8_add.
-    ls_row-name = 'TODO'.
+    ls_row-name = 'ZCL_WASM_I16X8_ADD'.
     INSERT ls_row INTO TABLE gt_opcodes_simd.
 
     ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i32x4_add.
@@ -1388,7 +1388,7 @@ CLASS zcl_wasm_instructions IMPLEMENTATION.
     INSERT ls_row INTO TABLE gt_opcodes_simd.
 
     ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i8x16_sub.
-    ls_row-name = 'TODO'.
+    ls_row-name = 'ZCL_WASM_I8X16_SUB'.
     INSERT ls_row INTO TABLE gt_opcodes_simd.
 
     ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i16x8_sub.
@@ -1548,7 +1548,7 @@ CLASS zcl_wasm_instructions IMPLEMENTATION.
     INSERT ls_row INTO TABLE gt_opcodes_simd.
 
     ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i16x8_extadd_pairwise_i8x16_u.
-    ls_row-name = 'TODO'.
+    ls_row-name = 'ZCL_WASM_SIMD_7D'.
     INSERT ls_row INTO TABLE gt_opcodes_simd.
 
     ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i16x8_extmul_high_i8x16_s.
@@ -1580,7 +1580,7 @@ CLASS zcl_wasm_instructions IMPLEMENTATION.
     INSERT ls_row INTO TABLE gt_opcodes_simd.
 
     ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i32x4_extadd_pairwise_i16x8_u.
-    ls_row-name = 'TODO'.
+    ls_row-name = 'ZCL_WASM_SIMD_7F'.
     INSERT ls_row INTO TABLE gt_opcodes_simd.
 
     ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i16x8_extmul_high_i8x16_u.
