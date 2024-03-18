@@ -826,6 +826,7 @@ CLASS zcl_wasm_instructions IMPLEMENTATION.
                 RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |illegal opcode FC: { lv_opcodei }|.
             ENDCASE.
           WHEN 'FD'.
+
             DATA(lv_simd) = io_body->shift( 1 ).
             RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |SIMD opcodes not supported, FD{ lv_simd }|.
           WHEN 'FE'.
