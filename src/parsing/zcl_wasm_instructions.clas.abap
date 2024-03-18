@@ -1786,10 +1786,15 @@ CLASS zcl_wasm_instructions IMPLEMENTATION.
           WHEN 'FD'.
             lv_opcode = io_body->shift( 1 ).
             READ TABLE gt_opcodes_simd ASSIGNING FIELD-SYMBOL(<ls_opcode_simd>) WITH TABLE KEY opcode = lv_opcode.
-            IF sy-subrc = 0.
-* todo
+            IF sy-subrc = 0 AND <ls_opcode_simd>-name <> 'TODO'.
+              CALL METHOD (<ls_opcode_simd>-name)=>parse
+                EXPORTING
+                  io_body        = io_body
+                RECEIVING
+                  ri_instruction = li_instruction.
+            ELSE.
+              RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |Unknown SIMD instruction, FD{ lv_opcode }|.
             ENDIF.
-            RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |SIMD opcodes not supported, FD{ lv_opcode }|.
           WHEN 'FE'.
             RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |Threads opcodes not supported, FE{ io_body->shift( 1 ) }|.
           WHEN zif_wasm_opcodes=>c_opcodes-end.
