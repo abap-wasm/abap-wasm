@@ -192,28 +192,37 @@ INTERFACE zif_wasm_opcodes PUBLIC.
         ref_null            TYPE ty_opcode VALUE 'D0',
         ref_is_null         TYPE ty_opcode VALUE 'D1',
         ref_func            TYPE ty_opcode VALUE 'D2',
-* FB prefixed = Garbage Collection Proposal + Reference-Typed Strings Proposal
-* FD prefixed = SIMD
+        END OF c_opcodes.
+
+* FB prefixed is Garbage Collection Proposal + Reference-Typed Strings
+* status = propsal
+
+* FD prefixed is SIMD
+* todo
+
+* FC opcodes,
+  CONSTANTS: BEGIN OF c_fc_opcodes,
+               i32_trunc_sat_f32_s TYPE ty_opcodei VALUE 0,
+               i32_trunc_sat_f32_u TYPE ty_opcodei VALUE 1,
+               i32_trunc_sat_f64_s TYPE ty_opcodei VALUE 2,
+               i32_trunc_sat_f64_u TYPE ty_opcodei VALUE 3,
+               i64_trunc_sat_f32_s TYPE ty_opcodei VALUE 4,
+               i64_trunc_sat_f32_u TYPE ty_opcodei VALUE 5,
+               i64_trunc_sat_f64_s TYPE ty_opcodei VALUE 6,
+               i64_trunc_sat_f64_u TYPE ty_opcodei VALUE 7,
+               memory_init         TYPE ty_opcodei VALUE 8,
+               data_drop           TYPE ty_opcodei VALUE 9,
+               memory_copy         TYPE ty_opcodei VALUE 10,
+               memory_fill         TYPE ty_opcodei VALUE 11,
+               table_init          TYPE ty_opcodei VALUE 12,
+               elem_drop           TYPE ty_opcodei VALUE 13,
+               table_copy          TYPE ty_opcodei VALUE 14,
+               table_grow          TYPE ty_opcodei VALUE 15,
+               table_size          TYPE ty_opcodei VALUE 16,
+               table_fill          TYPE ty_opcodei VALUE 17,
+             END OF c_fc_opcodes.
+
 * FE prefixed = Threads
-* FC opcodes:
-        i32_trunc_sat_f32_s TYPE ty_opcodei VALUE 0,
-        i32_trunc_sat_f32_u TYPE ty_opcodei VALUE 1,
-        i32_trunc_sat_f64_s TYPE ty_opcodei VALUE 2,
-        i32_trunc_sat_f64_u TYPE ty_opcodei VALUE 3,
-        i64_trunc_sat_f32_s TYPE ty_opcodei VALUE 4,
-        i64_trunc_sat_f32_u TYPE ty_opcodei VALUE 5,
-        i64_trunc_sat_f64_s TYPE ty_opcodei VALUE 6,
-        i64_trunc_sat_f64_u TYPE ty_opcodei VALUE 7,
-        memory_init         TYPE ty_opcodei VALUE 8,
-        data_drop           TYPE ty_opcodei VALUE 9,
-        memory_copy         TYPE ty_opcodei VALUE 10,
-        memory_fill         TYPE ty_opcodei VALUE 11,
-        table_init          TYPE ty_opcodei VALUE 12,
-        elem_drop           TYPE ty_opcodei VALUE 13,
-        table_copy          TYPE ty_opcodei VALUE 14,
-        table_grow          TYPE ty_opcodei VALUE 15,
-        table_size          TYPE ty_opcodei VALUE 16,
-        table_fill          TYPE ty_opcodei VALUE 17,
-      END OF c_opcodes.
+* status = propsal
 
 ENDINTERFACE.
