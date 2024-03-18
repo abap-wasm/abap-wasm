@@ -192,7 +192,9 @@ INTERFACE zif_wasm_opcodes PUBLIC.
         ref_null            TYPE ty_opcode VALUE 'D0',
         ref_is_null         TYPE ty_opcode VALUE 'D1',
         ref_func            TYPE ty_opcode VALUE 'D2',
+* FB prefixed = Garbage Collection Proposal + Reference-Typed Strings Proposal
 * FD prefixed = SIMD
+* FE prefixed = Threads
 * FC opcodes:
         i32_trunc_sat_f32_s TYPE ty_opcodei VALUE 0,
         i32_trunc_sat_f32_u TYPE ty_opcodei VALUE 1,
