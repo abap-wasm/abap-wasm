@@ -783,6 +783,8 @@ CLASS zcl_wasm_instructions IMPLEMENTATION.
         APPEND li_instruction TO et_instructions.
       ELSE.
         CASE lv_opcode.
+          WHEN 'FD'.
+            RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |SIMD opcodes not supported, FD{ io_body->shift( 1 ) }|.
           WHEN 'FC'.
             DATA(lv_opcodei) = io_body->shift_u32( ).
             CASE lv_opcodei.

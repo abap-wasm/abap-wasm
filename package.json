@@ -6,6 +6,7 @@
     "testsuite": "echo RUNNING TESTSUITE && node test/testsuite.mjs",
     "quickjs": "echo RUNNING QuickJS && node test/quickjs.mjs",
     "scrypt": "echo RUNNING Scrypt-WASM && node test/scrypt.mjs",
+    "jsonschema": "echo RUNNING jsonschema && node test/jsonschema.mjs",
     "sha256": "echo RUNNING SHA256 && node test/sha256.mjs",
     "performance": "echo RUNNING Performance && node test/performance.mjs",
     "unit": "rm -rf output && abap_transpile && echo RUNNING UNIT TEST && node output/index.mjs",
@@ -26,6 +27,7 @@
     "@jitl/quickjs-wasmfile-debug-sync": "^0.29.1",
     "@jitl/quickjs-wasmfile-release-sync": "^0.29.1",
     "0x": "^5.7.0",
+    "@larshp/jsonschema-rs-wasm": "^0.1.2",
     "scrypt-rs-wasm": "=0.1.3",
     "sha256-wasm": "^2.2.2"
   }
