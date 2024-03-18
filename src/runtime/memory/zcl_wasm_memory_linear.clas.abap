@@ -103,7 +103,9 @@ CLASS zcl_wasm_memory_linear IMPLEMENTATION.
     lv_page = lv_page + 1.
     READ TABLE mt_pages INDEX lv_page REFERENCE INTO gv_page.
     IF sy-subrc <> 0.
-      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'linear_get: out of bounds'.
+      RAISE EXCEPTION TYPE zcx_wasm
+        EXPORTING
+          text = |linear_get: out of bounds, getting page { lv_page }|.
     ENDIF.
 
     DATA(lv_offset) = iv_offset MOD zif_wasm_memory_linear=>c_page_size.
@@ -114,7 +116,9 @@ CLASS zcl_wasm_memory_linear IMPLEMENTATION.
         lv_page = lv_page + 1.
         READ TABLE mt_pages INDEX lv_page REFERENCE INTO gv_page.
         IF sy-subrc <> 0.
-          RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'linear_get: out of bounds'.
+          RAISE EXCEPTION TYPE zcx_wasm
+            EXPORTING
+              text = |linear_get: out of bounds, getting page { lv_page }|.
         ENDIF.
         lv_offset = 0.
       ENDIF.

@@ -12,12 +12,16 @@ CLASS zcl_wasm_instructions DEFINITION PUBLIC.
   PROTECTED SECTION.
   PRIVATE SECTION.
     CLASS-METHODS initialize.
+    CLASS-METHODS initialize_simd.
 
     TYPES: BEGIN OF ty_opcodes,
              opcode TYPE x LENGTH 1,
              name   TYPE string,
            END OF ty_opcodes.
     CLASS-DATA gt_opcodes TYPE HASHED TABLE OF ty_opcodes WITH UNIQUE KEY opcode.
+
+    CLASS-DATA gt_opcodes_simd TYPE HASHED TABLE OF ty_opcodes WITH UNIQUE KEY opcode.
+
     CLASS-DATA gv_initialized TYPE abap_bool.
 ENDCLASS.
 
@@ -756,7 +760,961 @@ CLASS zcl_wasm_instructions IMPLEMENTATION.
     ls_row-name = 'ZCL_WASM_DROP'.
     INSERT ls_row INTO TABLE gt_opcodes.
 
+    initialize_simd( ).
+
     gv_initialized = abap_true.
+  ENDMETHOD.
+
+  METHOD initialize_simd.
+
+    DATA ls_row LIKE LINE OF gt_opcodes.
+
+    ASSERT gv_initialized = abap_false.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-v128_load.
+    ls_row-name = 'ZCL_WASM_V128_LOAD'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-v128_load8x8_s.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-v128_load8x8_u.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-v128_load16x4_s.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-v128_load16x4_u.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-v128_load32x2_s.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-v128_load32x2_u.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-v128_load8_splat.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-v128_load16_splat.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-v128_load32_splat.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-v128_load64_splat.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-v128_store.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-v128_const.
+    ls_row-name = 'ZCL_WASM_V128_CONST'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i8x16_shuffle.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i8x16_swizzle.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i8x16_splat.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i16x8_splat.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i32x4_splat.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i64x2_splat.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-f32x4_splat.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-f64x2_splat.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i8x16_extract_lane_s.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i8x16_extract_lane_u.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i8x16_replace_lane.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i16x8_extract_lane_s.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i16x8_extract_lane_u.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i16x8_replace_lane.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i32x4_extract_lane.
+    ls_row-name = 'ZCL_WASM_I32X4_EXTRACT_LANE'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i32x4_replace_lane.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i64x2_extract_lane.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i64x2_replace_lane.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-f32x4_extract_lane.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-f32x4_replace_lane.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-f64x2_extract_lane.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-f64x2_replace_lane.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i8x16_eq.
+    ls_row-name = 'ZCL_WASM_I8X16_EQ'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i16x8_eq.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i32x4_eq.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i8x16_ne.
+    ls_row-name = 'ZCL_WASM_I8X16_NE'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i16x8_ne.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i32x4_ne.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i8x16_lt_s.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i16x8_lt_s.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i32x4_lt_s.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i8x16_lt_u.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i16x8_lt_u.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i32x4_lt_u.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i8x16_gt_s.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i16x8_gt_s.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i32x4_gt_s.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i8x16_gt_u.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i16x8_gt_u.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i32x4_gt_u.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i8x16_le_s.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i16x8_le_s.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i32x4_le_s.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i8x16_le_u.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i16x8_le_u.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i32x4_le_u.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i8x16_ge_s.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i16x8_ge_s.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i32x4_ge_s.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i8x16_ge_u.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i16x8_ge_u.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i32x4_ge_u.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-f32x4_eq.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-f64x2_eq.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-f32x4_ne.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-f64x2_ne.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-f32x4_lt.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-f64x2_lt.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-f32x4_gt.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-f64x2_gt.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-f32x4_le.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-f64x2_le.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-f32x4_ge.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-f64x2_ge.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-v128_not.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-v128_and.
+    ls_row-name = 'ZCL_WASM_V128_AND'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-v128_andnot.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-v128_or.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-v128_xor.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-v128_bitselect.
+    ls_row-name = 'ZCL_WASM_V128_BITSELECT'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-v128_any_true.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-v128_load8_lane.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-v128_load16_lane.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-v128_load32_lane.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-v128_load64_lane.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-v128_store8_lane.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-v128_store16_lane.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-v128_store32_lane.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-v128_store64_lane.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-v128_load32_zero.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-v128_load64_zero.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-f32x4_demote_f64x2_zero.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-f64x2_promote_low_f32x4.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i8x16_abs.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i16x8_abs.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i32x4_abs.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i64x2_abs.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i8x16_neg.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i16x8_neg.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i32x4_neg.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i64x2_neg.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i8x16_popcnt.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i16x8_q15mulr_sat_s.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i8x16_all_true.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i16x8_all_true.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i32x4_all_true.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i64x2_all_true.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i8x16_bitmask.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i16x8_bitmask.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i32x4_bitmask.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i64x2_bitmask.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i8x16_narrow_i16x8_s.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i16x8_narrow_i32x4_s.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i8x16_narrow_i16x8_u.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i16x8_narrow_i32x4_u.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-f32x4_ceil.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i16x8_extend_low_i8x16_s.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i32x4_extend_low_i16x8_s.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i64x2_extend_low_i32x4_s.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-f32x4_floor.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i16x8_extend_high_i8x16_s.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i32x4_extend_high_i16x8_s.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i64x2_extend_high_i32x4_s.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-f32x4_trunc.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i16x8_extend_low_i8x16_u.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i32x4_extend_low_i16x8_u.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i64x2_extend_low_i32x4_u.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-f32x4_nearest.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i16x8_extend_high_i8x16_u.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i32x4_extend_high_i16x8_u.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i64x2_extend_high_i32x4_u.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i8x16_shl.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i16x8_shl.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i32x4_shl.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i64x2_shl.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i8x16_shr_s.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i16x8_shr_s.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i32x4_shr_s.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i64x2_shr_s.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i8x16_shr_u.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i16x8_shr_u.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i32x4_shr_u.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i64x2_shr_u.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i8x16_add.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i16x8_add.
+    ls_row-name = 'ZCL_WASM_I16X8_ADD'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i32x4_add.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i64x2_add.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i8x16_add_sat_s.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i16x8_add_sat_s.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i8x16_add_sat_u.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i16x8_add_sat_u.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i8x16_sub.
+    ls_row-name = 'ZCL_WASM_I8X16_SUB'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i16x8_sub.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i32x4_sub.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i64x2_sub.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i8x16_sub_sat_s.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i16x8_sub_sat_s.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i8x16_sub_sat_u.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i16x8_sub_sat_u.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-f64x2_ceil.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-f64x2_nearest.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-f64x2_floor.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i16x8_mul.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i32x4_mul.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i64x2_mul.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i8x16_min_s.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i16x8_min_s.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i32x4_min_s.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i64x2_eq.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i8x16_min_u.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i16x8_min_u.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i32x4_min_u.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i64x2_ne.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i8x16_max_s.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i16x8_max_s.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i32x4_max_s.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i64x2_lt_s.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i8x16_max_u.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i16x8_max_u.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i32x4_max_u.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i64x2_gt_s.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-f64x2_trunc.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i32x4_dot_i16x8_s.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i64x2_le_s.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i8x16_avgr_u.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i16x8_avgr_u.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i64x2_ge_s.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i16x8_extadd_pairwise_i8x16_s.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i16x8_extmul_low_i8x16_s.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i32x4_extmul_low_i16x8_s.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i64x2_extmul_low_i32x4_s.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i16x8_extadd_pairwise_i8x16_u.
+    ls_row-name = 'ZCL_WASM_SIMD_7D'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i16x8_extmul_high_i8x16_s.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i32x4_extmul_high_i16x8_s.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i64x2_extmul_high_i32x4_s.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i32x4_extadd_pairwise_i16x8_s.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i16x8_extmul_low_i8x16_u.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i32x4_extmul_low_i16x8_u.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i64x2_extmul_low_i32x4_u.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i32x4_extadd_pairwise_i16x8_u.
+    ls_row-name = 'ZCL_WASM_SIMD_7F'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i16x8_extmul_high_i8x16_u.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i32x4_extmul_high_i16x8_u.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i64x2_extmul_high_i32x4_u.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-f32x4_abs.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-f64x2_abs.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-f32x4_neg.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-f64x2_neg.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-f32x4_sqrt.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-f64x2_sqrt.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-f32x4_add.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-f64x2_add.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-f32x4_sub.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-f64x2_sub.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-f32x4_mul.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-f64x2_mul.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-f32x4_div.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-f64x2_div.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-f32x4_min.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-f64x2_min.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-f32x4_max.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-f64x2_max.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-f32x4_pmin.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-f64x2_pmin.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-f32x4_pmax.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-f64x2_pmax.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i32x4_trunc_sat_f32x4_s.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i32x4_trunc_sat_f32x4_u.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-f32x4_convert_i32x4_s.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-f32x4_convert_i32x4_u.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i32x4_trunc_sat_f64x2_s_zero.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i32x4_trunc_sat_f64x2_u_zero.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-f64x2_convert_low_i32x4_s.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
+    ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-f64x2_convert_low_i32x4_u.
+    ls_row-name = 'TODO'.
+    INSERT ls_row INTO TABLE gt_opcodes_simd.
+
   ENDMETHOD.
 
 
@@ -826,8 +1784,17 @@ CLASS zcl_wasm_instructions IMPLEMENTATION.
                 RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |illegal opcode FC: { lv_opcodei }|.
             ENDCASE.
           WHEN 'FD'.
-            DATA(lv_simd) = io_body->shift( 1 ).
-            RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |SIMD opcodes not supported, FD{ lv_simd }|.
+            lv_opcode = io_body->shift( 1 ).
+            READ TABLE gt_opcodes_simd ASSIGNING FIELD-SYMBOL(<ls_opcode_simd>) WITH TABLE KEY opcode = lv_opcode.
+            IF sy-subrc = 0 AND <ls_opcode_simd>-name <> 'TODO'.
+              CALL METHOD (<ls_opcode_simd>-name)=>parse
+                EXPORTING
+                  io_body        = io_body
+                RECEIVING
+                  ri_instruction = li_instruction.
+            ELSE.
+              RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |Unknown SIMD instruction, FD{ lv_opcode }|.
+            ENDIF.
           WHEN 'FE'.
             RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |Threads opcodes not supported, FE{ io_body->shift( 1 ) }|.
           WHEN zif_wasm_opcodes=>c_opcodes-end.
