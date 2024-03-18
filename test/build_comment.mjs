@@ -66,7 +66,7 @@ comment += `| :partying_face: QuickJS Parsing | ${quickjsBefore.runtime}ms | ${q
 comment += `| :money_mouth_face: Scrypt Parsing | ${scryptBefore.parsing}ms | ${scryptAfter.parsing}ms | ${scryptAfter.parsing - scryptBefore.parsing}ms |\n`;
 comment += `| :money_mouth_face: Scrypt Runtime | ${scryptBefore.runtime}s | ${scryptAfter.runtime}s | ${scryptAfter.runtime - scryptBefore.runtime}s |\n`;
 comment += `| :sunglasses: SHA256 | ${sha256Before.runtime}ms | ${sha256After.runtime}ms | ${sha256After.runtime - sha256Before.runtime}ms |\n`;
-comment += `| :dizzy_face: jsonschema Parsing | ${jsonschemaBefore.runtime}ms | ${jsonschemaAfter.runtime}ms | ${jsonschemaAfter.runtime - jsonschemaBefore.runtime}ms |\n`;
+comment += `| :dizzy_face: jsonschema Parsing | ${jsonschemaBefore.parsing}ms | ${jsonschemaAfter.parsing}ms | ${jsonschemaAfter.parsing - jsonschemaBefore.parsing}ms |\n`;
 
 const performanceAfter = JSON.parse(fs.readFileSync(`../after/performance.json`, "utf-8"));
 const performanceBefore = JSON.parse(fs.readFileSync(`../before/performance.json`, "utf-8"));
