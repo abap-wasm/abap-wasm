@@ -22,6 +22,32 @@ CLASS cl_jsonschema IMPLEMENTATION.
 
     rv_json = '{"parsing": "' && lv_parsing && '"}'.
 
+    " DATA(lt_results) = li_wasm->execute_function_export(
+    "   iv_name       = '__wbindgen_add_to_stack_pointer'
+    "   it_parameters = VALUE #( ( zcl_wasm_i32=>from_signed( -16 ) ) ) ).
+    " DATA(lo_retptr) = CAST zcl_wasm_i32( lt_results[ 1 ] ).
+
+    " li_wasm->execute_function_export(
+    "   iv_name       = 'main'
+    "   it_parameters = VALUE #( ( lo_retptr ) ) ).
+
+    " DATA(li_linear) = li_wasm->get_memory( )->get_linear( ).
+    " DATA(lv_realptr) = li_linear->get(
+    "   iv_length = 4
+    "   iv_offset = lo_retptr->get_signed( ) ).
+    " " WRITE / lv_realptr.
+
+    " DATA(lv_reallen) = li_linear->get(
+    "   iv_length = 4
+    "   iv_offset = lo_retptr->get_signed( ) + 4 ).
+    " " WRITE / lv_reallen.
+
+    " DATA(lv_return) = li_linear->get(
+    "   iv_length = CONV #( lv_reallen )
+    "   iv_offset = CONV #( lv_realptr ) ).
+    " DATA(lv_str) = cl_abap_codepage=>convert_from( zcl_wasm_binary_stream=>reverse_hex( lv_return ) ).
+    " WRITE / lv_str.
+
   ENDMETHOD.
 
 ENDCLASS.
