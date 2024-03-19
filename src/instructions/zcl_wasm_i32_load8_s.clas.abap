@@ -41,7 +41,7 @@ CLASS zcl_wasm_i32_load8_s IMPLEMENTATION.
     DATA lv_hex TYPE x LENGTH lc_length.
     DATA lv_int TYPE i.
 
-    DATA(lv_i) = io_memory->get_stack( )->pop_i32( )->get_signed( ).
+    DATA(lv_i) = io_memory->mi_stack->pop_i32( )->get_signed( ).
     IF lv_i < 0.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'load: out of bounds'.
     ENDIF.
@@ -59,7 +59,7 @@ CLASS zcl_wasm_i32_load8_s IMPLEMENTATION.
       lv_int = lv_int - 128.
     ENDIF.
 
-    io_memory->get_stack( )->push( zcl_wasm_i32=>from_signed( lv_int ) ).
+    io_memory->mi_stack->push( zcl_wasm_i32=>from_signed( lv_int ) ).
   ENDMETHOD.
 
 ENDCLASS.

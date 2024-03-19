@@ -148,7 +148,11 @@
     "names_no_dash": true,
     "nesting": false,
     "newline_between_methods": true,
-    "no_public_attributes": true,
+    "no_public_attributes": {
+      "allowReadOnly": true,
+      "ignoreTestClasses": true,
+      "exclude": ["zcl_wasm_memory"]
+    },
     "object_naming": {
       "exclude": ["/test/"],
       "patternKind": "required",

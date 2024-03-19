@@ -23,12 +23,12 @@ CLASS zcl_wasm_memory_grow IMPLEMENTATION.
 
     DATA(lv_sz) = io_memory->get_linear( )->size_in_pages( ).
 
-    DATA(lv_pages) = io_memory->get_stack( )->pop_i32( )->get_unsigned( ).
+    DATA(lv_pages) = io_memory->mi_stack->pop_i32( )->get_unsigned( ).
     " WRITE / |memory.grow { lv_pages } pages|.
 
     io_memory->get_linear( )->grow( lv_pages ).
 
-    io_memory->get_stack( )->push( zcl_wasm_i32=>from_unsigned( lv_sz ) ).
+    io_memory->mi_stack->push( zcl_wasm_i32=>from_unsigned( lv_sz ) ).
 
   ENDMETHOD.
 

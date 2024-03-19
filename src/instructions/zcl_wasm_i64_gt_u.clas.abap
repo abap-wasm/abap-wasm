@@ -23,8 +23,8 @@ CLASS zcl_wasm_i64_gt_u IMPLEMENTATION.
 
     DATA lv_result TYPE abap_bool.
 
-    DATA(lv_val1) = io_memory->get_stack( )->pop_i64( )->get_signed( ).
-    DATA(lv_val2) = io_memory->get_stack( )->pop_i64( )->get_signed( ).
+    DATA(lv_val1) = io_memory->mi_stack->pop_i64( )->get_signed( ).
+    DATA(lv_val2) = io_memory->mi_stack->pop_i64( )->get_signed( ).
 
 * this can probably be done with fewer comparisons
     IF lv_val1 >= 0 AND lv_val2 >= 0.
@@ -38,9 +38,9 @@ CLASS zcl_wasm_i64_gt_u IMPLEMENTATION.
     ENDIF.
 
     IF lv_result = abap_true.
-      io_memory->get_stack( )->push( zcl_wasm_i32=>from_signed( 1 ) ).
+      io_memory->mi_stack->push( zcl_wasm_i32=>from_signed( 1 ) ).
     ELSE.
-      io_memory->get_stack( )->push( zcl_wasm_i32=>from_signed( 0 ) ).
+      io_memory->mi_stack->push( zcl_wasm_i32=>from_signed( 0 ) ).
     ENDIF.
   ENDMETHOD.
 

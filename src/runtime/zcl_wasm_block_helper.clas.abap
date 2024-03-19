@@ -16,9 +16,6 @@ CLASS zcl_wasm_block_helper DEFINITION PUBLIC.
       IMPORTING io_memory TYPE REF TO zcl_wasm_memory
       RAISING zcx_wasm.
 
-    METHODS revert
-      IMPORTING io_memory TYPE REF TO zcl_wasm_memory
-      RAISING zcx_wasm.
   PRIVATE SECTION.
     DATA ms_type TYPE zcl_wasm_module=>ty_type.
     DATA mi_old  TYPE REF TO zif_wasm_memory_stack.
@@ -57,9 +54,9 @@ CLASS zcl_wasm_block_helper IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    mi_old = io_memory->get_stack( ).
+    mi_old = io_memory->mi_stack.
     DATA(li_new) = CAST zif_wasm_memory_stack( NEW zcl_wasm_memory_stack( ) ).
-    io_memory->set_stack( li_new ).
+    io_memory->mi_stack = li_new.
 
     IF xstrlen( ms_type-parameter_types ) > mi_old->get_length( ).
       RAISE EXCEPTION TYPE zcx_wasm
@@ -89,16 +86,16 @@ CLASS zcl_wasm_block_helper IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    IF xstrlen( ms_type-result_types ) > io_memory->get_stack( )->get_length( ).
+    IF xstrlen( ms_type-result_types ) > io_memory->mi_stack->get_length( ).
 *      WRITE '@KERNEL throw new Error("block");'.
       RAISE EXCEPTION TYPE zcx_wasm
         EXPORTING
-          text = |block: expected { xstrlen( ms_type-result_types ) } values on stack, { ms_type-result_types }, stack length is { io_memory->get_stack( )->get_length( ) }|.
+          text = |block: expected { xstrlen( ms_type-result_types ) } values on stack, { ms_type-result_types }, stack length is { io_memory->mi_stack->get_length( ) }|.
     ENDIF.
 
     DO xstrlen( ms_type-result_types ) TIMES.
       DATA(lv_offset) = xstrlen( ms_type-result_types ) - sy-index.
-      DATA(li_val) = io_memory->get_stack( )->pop( ).
+      DATA(li_val) = io_memory->mi_stack->pop( ).
 
       IF li_val->get_type( ) <> ms_type-result_types+lv_offset(1).
         RAISE EXCEPTION TYPE zcx_wasm
@@ -113,11 +110,7 @@ CLASS zcl_wasm_block_helper IMPLEMENTATION.
       mi_old->push( li_val ).
     ENDLOOP.
 
-    revert( io_memory ).
-  ENDMETHOD.
-
-  METHOD revert.
-    io_memory->set_stack( mi_old ).
+    io_memory->mi_stack = mi_old.
   ENDMETHOD.
 
 ENDCLASS.

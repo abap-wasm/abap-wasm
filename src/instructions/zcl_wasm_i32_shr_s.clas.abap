@@ -22,18 +22,18 @@ CLASS zcl_wasm_i32_shr_s IMPLEMENTATION.
 * https://webassembly.github.io/spec/core/exec/numerics.html#xref-exec-numerics-op-ishr-s-mathrm-ishr-s-n-i-1-i-2
 * shift right signed
 
-    DATA(lv_count) = io_memory->get_stack( )->pop_i32( )->get_signed( ) MOD 32.
+    DATA(lv_count) = io_memory->mi_stack->pop_i32( )->get_signed( ) MOD 32.
 
-    DATA(li_val) = io_memory->get_stack( )->pop_i32( ).
+    DATA(li_val) = io_memory->mi_stack->pop_i32( ).
     DATA(lv_int) = li_val->get_signed( ).
 
     IF lv_count = 0.
-      io_memory->get_stack( )->push( li_val ).
+      io_memory->mi_stack->push( li_val ).
     ELSE.
       DO lv_count TIMES.
         lv_int = lv_int DIV 2.
       ENDDO.
-      io_memory->get_stack( )->push( zcl_wasm_i32=>from_signed( lv_int ) ).
+      io_memory->mi_stack->push( zcl_wasm_i32=>from_signed( lv_int ) ).
     ENDIF.
   ENDMETHOD.
 

@@ -30,7 +30,7 @@ CLASS zcl_wasm_local_tee IMPLEMENTATION.
 
 * https://webassembly.github.io/spec/core/exec/instructions.html#xref-syntax-instructions-syntax-instr-variable-mathsf-local-tee-x
 
-    DATA(li_value) = io_memory->get_stack( )->peek( ).
+    DATA(li_value) = io_memory->mi_stack->peek( ).
 
     io_memory->get_frame( )->local_set(
       iv_index = mv_localidx

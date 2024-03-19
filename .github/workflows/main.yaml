@@ -17,6 +17,7 @@ jobs:
     - uses: actions/setup-node@v4
     - run: npm ci
     - run: npm test
+    - run: npm run build-release
     - name: deploy-web
       uses: peaceiris/actions-gh-pages@v3
       if: github.ref == 'refs/heads/main' && github.repository == 'abap-wasm/abap-wasm'
@@ -27,3 +28,13 @@ jobs:
         user_email: 'github-actions[bot]@users.noreply.github.com'
         publish_branch: main
         publish_dir: ./web
+    - name: deploy-release
+      uses: peaceiris/actions-gh-pages@v3
+      if: github.ref == 'refs/heads/main' && github.repository == 'abap-wasm/abap-wasm'
+      with:
+        deploy_key: ${{ secrets.DEPLOY_RELEASE }}
+        external_repository: abap-wasm/abap-wasm-release
+        user_name: 'github-actions[bot]'
+        user_email: 'github-actions[bot]@users.noreply.github.com'
+        publish_branch: main
+        publish_dir: ./dist

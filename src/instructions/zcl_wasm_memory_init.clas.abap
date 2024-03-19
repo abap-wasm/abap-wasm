@@ -36,7 +36,7 @@ CLASS zcl_wasm_memory_init IMPLEMENTATION.
 
 * https://webassembly.github.io/spec/core/exec/instructions.html#xref-syntax-instructions-syntax-instr-memory-mathsf-memory-init-x
 
-    DATA(li_stack) = io_memory->get_stack( ).
+    DATA(li_stack) = io_memory->mi_stack.
     DATA(lv_length) = li_stack->pop_i32( )->get_unsigned( ).
     DATA(lv_offset) = li_stack->pop_i32( )->get_unsigned( ).
     DATA(lv_destination) = li_stack->pop_i32( )->get_unsigned( ).

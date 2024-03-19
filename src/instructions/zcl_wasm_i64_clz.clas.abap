@@ -25,7 +25,7 @@ CLASS zcl_wasm_i64_clz IMPLEMENTATION.
     DATA lv_bit TYPE i.
     DATA lv_zeros TYPE int8.
 
-    DATA(lv_int) = io_memory->get_stack( )->pop_i64( )->get_signed( ).
+    DATA(lv_int) = io_memory->mi_stack->pop_i64( )->get_signed( ).
     lv_hex = lv_int.
 
     lv_zeros = 0.
@@ -38,7 +38,7 @@ CLASS zcl_wasm_i64_clz IMPLEMENTATION.
       ENDIF.
     ENDDO.
 
-    io_memory->get_stack( )->push( zcl_wasm_i64=>from_signed( lv_zeros ) ).
+    io_memory->mi_stack->push( zcl_wasm_i64=>from_signed( lv_zeros ) ).
   ENDMETHOD.
 
 ENDCLASS.

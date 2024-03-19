@@ -11,6 +11,7 @@
     "performance": "echo RUNNING Performance && node test/performance.mjs",
     "unit": "rm -rf output && abap_transpile && echo RUNNING UNIT TEST && node output/index.mjs",
     "lint": "abaplint",
+    "build-release": "node test/build-release.mjs",
     "flame-graph-testsuite": "0x -o test/testsuite.mjs",
     "flame-graph-jsonschema": "0x -o test/jsonschema.mjs",
     "flame-graph-quickjs": "0x -o test/quickjs.mjs",

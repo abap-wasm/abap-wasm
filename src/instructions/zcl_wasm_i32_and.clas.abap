@@ -22,17 +22,17 @@ CLASS zcl_wasm_i32_and IMPLEMENTATION.
     DATA lv_hex1 TYPE x LENGTH 4.
     DATA lv_hex2 TYPE x LENGTH 4.
 
-    ASSERT io_memory->get_stack( )->get_length( ) >= 2.
+    ASSERT io_memory->mi_stack->get_length( ) >= 2.
 
-    DATA(lv_val1) = CAST zcl_wasm_i32( io_memory->get_stack( )->pop( ) )->get_signed( ).
-    DATA(lv_val2) = CAST zcl_wasm_i32( io_memory->get_stack( )->pop( ) )->get_signed( ).
+    DATA(lv_val1) = CAST zcl_wasm_i32( io_memory->mi_stack->pop( ) )->get_signed( ).
+    DATA(lv_val2) = CAST zcl_wasm_i32( io_memory->mi_stack->pop( ) )->get_signed( ).
     lv_hex1 = lv_val1.
     lv_hex2 = lv_val2.
 
     lv_hex1 = lv_hex1 BIT-AND lv_hex2.
     lv_val1 = lv_hex1.
 
-    io_memory->get_stack( )->push( zcl_wasm_i32=>from_signed( lv_val1 ) ).
+    io_memory->mi_stack->push( zcl_wasm_i32=>from_signed( lv_val1 ) ).
   ENDMETHOD.
 
 ENDCLASS.

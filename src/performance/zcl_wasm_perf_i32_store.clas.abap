@@ -22,8 +22,8 @@ CLASS zcl_wasm_perf_i32_store IMPLEMENTATION.
 
     TRY.
         DO lc_iterations TIMES.
-          lo_memory->get_stack( )->push( zcl_wasm_i32=>from_signed( 32 ) ).
-          lo_memory->get_stack( )->push( zcl_wasm_i32=>from_signed( 32 ) ).
+          lo_memory->mi_stack->push( zcl_wasm_i32=>from_signed( 32 ) ).
+          lo_memory->mi_stack->push( zcl_wasm_i32=>from_signed( 32 ) ).
           li_instruction->execute(
             io_memory = lo_memory
             io_module = lo_module ).
