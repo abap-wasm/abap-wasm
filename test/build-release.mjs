@@ -21,3 +21,4 @@ for (const r of fs.readdirSync("src", { withFileTypes: true, recursive: true }))
 
 fs.copyFileSync(".abapgit.xml", FOLDER + path.sep + ".abapgit.xml");
 fs.copyFileSync("LICENSE", FOLDER + path.sep + "LICENSE");
+fs.copyFileSync("abaplint.json", FOLDER + path.sep + "abaplint.json");
