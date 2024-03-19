@@ -26,11 +26,14 @@ CLASS cl_jsonschema IMPLEMENTATION.
 
     rv_json = '{"parsing": "' && lv_parsing && '"}'.
 
+    " WRITE / 'call __wbindgen_add_to_stack_pointer'.
     " DATA(lt_results) = li_wasm->execute_function_export(
     "   iv_name       = '__wbindgen_add_to_stack_pointer'
     "   it_parameters = VALUE #( ( zcl_wasm_i32=>from_signed( -16 ) ) ) ).
     " DATA(lo_retptr) = CAST zcl_wasm_i32( lt_results[ 1 ] ).
+    " WRITE / |retptr: { lo_retptr->get_signed( ) }|.
 
+    " WRITE / 'call main'.
     " li_wasm->execute_function_export(
     "   iv_name       = 'main'
     "   it_parameters = VALUE #( ( lo_retptr ) ) ).

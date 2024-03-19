@@ -36,6 +36,7 @@ CLASS zcl_wasm_element_section IMPLEMENTATION.
 
     TRY.
         LOOP AT mt_elements INTO DATA(ls_element).
+          " WRITE / |element section type: { ls_element-type }|.
           CASE ls_element-type.
             WHEN 0.
               LOOP AT ls_element-expr INTO DATA(lo_instruction).
@@ -44,6 +45,8 @@ CLASS zcl_wasm_element_section IMPLEMENTATION.
                   io_module = NEW zcl_wasm_module( ) ).
               ENDLOOP.
               DATA(lv_offset) = io_memory->mi_stack->pop_i32( )->get_signed( ).
+              " WRITE / |offset: { lv_offset }|.
+              " WRITE / |length: { lines( ls_element-funcidx ) }|.
 
               LOOP AT ls_element-funcidx INTO DATA(lv_funcidx).
                 DATA(lo_ref) = NEW zcl_wasm_funcref( lv_funcidx ).
@@ -82,7 +85,9 @@ CLASS zcl_wasm_element_section IMPLEMENTATION.
           ENDCASE.
         ENDLOOP.
       CATCH cx_static_check INTO DATA(lx_error).
-        RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |instantiate element section, failed to execute instructions: { lx_error->get_text( ) }|.
+        RAISE EXCEPTION TYPE zcx_wasm
+          EXPORTING
+            text = |instantiate element section, failed to execute instructions: { lx_error->get_text( ) }|.
     ENDTRY.
 
   ENDMETHOD.
