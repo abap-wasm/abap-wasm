@@ -1,7 +1,7 @@
 import * as fs from "fs";
 import * as path from "path";
 
-const FOLDER = "dist-fast";
+const FOLDER = "dist";
 
 if (fs.existsSync(FOLDER)) {
   fs.rmSync(FOLDER, { recursive: true });
@@ -20,3 +20,4 @@ for (const r of fs.readdirSync("src", { withFileTypes: true, recursive: true }))
 }
 
 fs.copyFileSync(".abapgit.xml", FOLDER + path.sep + ".abapgit.xml");
+fs.copyFileSync("LICENSE", FOLDER + path.sep + "LICENSE");
