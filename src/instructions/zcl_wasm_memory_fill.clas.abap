@@ -26,14 +26,14 @@ CLASS zcl_wasm_memory_fill IMPLEMENTATION.
     DATA(lv_d) = io_memory->mi_stack->pop_i32( )->get_signed( ).
 
     IF lv_n + lv_d > li_linear->size_in_bytes( ).
-      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'memory_fill: trap'.
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'memory_fill: trap, larger than linear'.
     ELSEIF lv_n < 0.
-      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'memory_fill: trap'.
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'memory_fill: trap, negative'.
     ELSEIF lv_n = 0.
       RETURN.
     ENDIF.
 
-    IF lv_n > 1000.
+    IF lv_n > 70000.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_memory_fill, too many bytes'.
     ENDIF.
 
