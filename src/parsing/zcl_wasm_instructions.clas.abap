@@ -1720,6 +1720,10 @@ CLASS zcl_wasm_instructions IMPLEMENTATION.
 
   METHOD parse.
 
+    CONSTANTS lc_fc TYPE zif_wasm_opcodes=>ty_opcode VALUE 'FC'.
+    CONSTANTS lc_fd TYPE zif_wasm_opcodes=>ty_opcode VALUE 'FD'.
+    CONSTANTS lc_fe TYPE zif_wasm_opcodes=>ty_opcode VALUE 'FE'.
+
     DATA li_instruction TYPE REF TO zif_wasm_instruction.
     DATA lv_opcode      TYPE x LENGTH 1.
 
@@ -1729,7 +1733,6 @@ CLASS zcl_wasm_instructions IMPLEMENTATION.
 
     WHILE io_body->get_length( ) > 0.
       lv_opcode = io_body->shift( 1 ).
-      ev_last_opcode = lv_opcode.
 
       READ TABLE gt_opcodes ASSIGNING FIELD-SYMBOL(<ls_opcode>) WITH TABLE KEY opcode = lv_opcode.
       IF sy-subrc = 0.
@@ -1741,8 +1744,9 @@ CLASS zcl_wasm_instructions IMPLEMENTATION.
         APPEND li_instruction TO et_instructions.
       ELSE.
         CASE lv_opcode.
-          WHEN 'FC'.
+          WHEN lc_fc.
             DATA(lv_opcodei) = io_body->shift_u32( ).
+            " todo, change these to hex? shifting u32 is slow, if possible
             CASE lv_opcodei.
               WHEN zif_wasm_opcodes=>c_fc_opcodes-i32_trunc_sat_f32_s.
                 APPEND zcl_wasm_i32_trunc_sat_f32_s=>parse( io_body ) TO et_instructions.
@@ -1783,9 +1787,9 @@ CLASS zcl_wasm_instructions IMPLEMENTATION.
               WHEN OTHERS.
                 RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |illegal opcode FC: { lv_opcodei }|.
             ENDCASE.
-          WHEN 'FD'.
-            lv_opcode = io_body->shift( 1 ).
-            READ TABLE gt_opcodes_simd ASSIGNING FIELD-SYMBOL(<ls_opcode_simd>) WITH TABLE KEY opcode = lv_opcode.
+          WHEN lc_fd.
+            DATA(lv_opcode_fd) = io_body->shift( 1 ).
+            READ TABLE gt_opcodes_simd ASSIGNING FIELD-SYMBOL(<ls_opcode_simd>) WITH TABLE KEY opcode = lv_opcode_fd.
             IF sy-subrc = 0 AND <ls_opcode_simd>-name <> 'TODO'.
               CALL METHOD (<ls_opcode_simd>-name)=>parse
                 EXPORTING
@@ -1793,20 +1797,26 @@ CLASS zcl_wasm_instructions IMPLEMENTATION.
                 RECEIVING
                   ri_instruction = li_instruction.
             ELSE.
-              RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |Unknown SIMD instruction, FD{ lv_opcode }|.
+              RAISE EXCEPTION TYPE zcx_wasm
+                EXPORTING
+                  text = |Unknown SIMD instruction, FD{ lv_opcode_fd }|.
             ENDIF.
-          WHEN 'FE'.
-            RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |Threads opcodes not supported, FE{ io_body->shift( 1 ) }|.
+          WHEN lc_fe.
+            RAISE EXCEPTION TYPE zcx_wasm
+              EXPORTING
+                text = |Threads opcodes not supported, FE{ io_body->shift( 1 ) }|.
           WHEN zif_wasm_opcodes=>c_opcodes-end.
             APPEND zcl_wasm_end=>parse( io_body ) TO et_instructions.
-            RETURN.
+            EXIT. " current loop
           WHEN zif_wasm_opcodes=>c_opcodes-else_.
-            RETURN.
+            EXIT. " current loop
           WHEN OTHERS.
             RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |illegal opcode: { lv_opcode }|.
         ENDCASE.
       ENDIF.
     ENDWHILE.
+
+    ev_last_opcode = lv_opcode.
 
   ENDMETHOD.
 ENDCLASS.
