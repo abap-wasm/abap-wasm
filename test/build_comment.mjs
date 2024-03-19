@@ -57,8 +57,8 @@ const scryptBefore = JSON.parse(fs.readFileSync(`../before/scrypt.json`, "utf-8"
 const sha256After = JSON.parse(fs.readFileSync(`../after/sha256.json`, "utf-8"));
 const sha256Before = JSON.parse(fs.readFileSync(`../before/sha256.json`, "utf-8"));
 
-// const jsonschemaAfter = JSON.parse(fs.readFileSync(`../after/jsonschema.json`, "utf-8"));
-// const jsonschemaBefore = JSON.parse(fs.readFileSync(`../before/jsonschema.json`, "utf-8"));
+const jsonschemaAfter = JSON.parse(fs.readFileSync(`../after/jsonschema.json`, "utf-8"));
+const jsonschemaBefore = JSON.parse(fs.readFileSync(`../before/jsonschema.json`, "utf-8"));
 comment += "Performance test results:\n";
 comment += "|           | Before | After | Delta |\n";
 comment += "| :---      | ---:   | ---:  | ---:  |\n";
@@ -66,7 +66,7 @@ comment += `| :partying_face: QuickJS Parsing | ${quickjsBefore.runtime}ms | ${q
 comment += `| :money_mouth_face: Scrypt Parsing | ${scryptBefore.parsing}ms | ${scryptAfter.parsing}ms | ${scryptAfter.parsing - scryptBefore.parsing}ms |\n`;
 comment += `| :money_mouth_face: Scrypt Runtime | ${scryptBefore.runtime}s | ${scryptAfter.runtime}s | ${scryptAfter.runtime - scryptBefore.runtime}s |\n`;
 comment += `| :sunglasses: SHA256 | ${sha256Before.runtime}ms | ${sha256After.runtime}ms | ${sha256After.runtime - sha256Before.runtime}ms |\n`;
-// comment += `| :dizzy_face: jsonschema Parsing | ${jsonschemaBefore.runtime}ms | ${jsonschemaAfter.runtime}ms | ${jsonschemaAfter.runtime - jsonschemaBefore.runtime}ms |\n`;
+comment += `| :dizzy_face: jsonschema Parsing | ${jsonschemaBefore.parsing}ms | ${jsonschemaAfter.parsing}ms | ${jsonschemaAfter.parsing - jsonschemaBefore.parsing}ms |\n`;
 
 const performanceAfter = JSON.parse(fs.readFileSync(`../after/performance.json`, "utf-8"));
 const performanceBefore = JSON.parse(fs.readFileSync(`../before/performance.json`, "utf-8"));

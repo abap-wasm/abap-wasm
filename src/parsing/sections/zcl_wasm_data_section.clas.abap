@@ -135,10 +135,12 @@ CLASS zcl_wasm_data_section IMPLEMENTATION.
         RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |instantiate data, no linear memory|.
       ENDIF.
 
+      " WRITE / |active data, offset { lv_offset }|.
       io_memory->get_linear( )->set(
         iv_offset = lv_offset
         iv_bytes  = ls_active-bytes ).
     ENDLOOP.
+    " WRITE / |instantiate data section, done|.
 
   ENDMETHOD.
 
