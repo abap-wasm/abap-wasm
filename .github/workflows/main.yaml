@@ -28,6 +28,9 @@ jobs:
         user_email: 'github-actions[bot]@users.noreply.github.com'
         publish_branch: main
         publish_dir: ./web
+    - name: killall ssh-agent
+      if: github.ref == 'refs/heads/main' && github.repository == 'abap-wasm/abap-wasm'
+      run: killall ssh-agent
     - name: deploy-release
       uses: peaceiris/actions-gh-pages@v3
       if: github.ref == 'refs/heads/main' && github.repository == 'abap-wasm/abap-wasm'
