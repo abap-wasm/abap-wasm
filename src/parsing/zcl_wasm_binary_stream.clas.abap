@@ -10,10 +10,7 @@ CLASS zcl_wasm_binary_stream DEFINITION
 
     METHODS get_length
       RETURNING
-        VALUE(rv_length) TYPE i .
-    METHODS get_data
-      RETURNING
-        VALUE(rv_data) TYPE xstring .
+        VALUE(rv_remaining) TYPE i .
     METHODS peek
       IMPORTING
         !iv_length     TYPE numeric
@@ -59,6 +56,7 @@ CLASS zcl_wasm_binary_stream DEFINITION
   PROTECTED SECTION.
   PRIVATE SECTION.
     DATA mv_data TYPE xstring .
+    DATA mv_pointer TYPE i.
 ENDCLASS.
 
 
@@ -67,38 +65,29 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
 
 
   METHOD constructor.
-
     mv_data = iv_data.
-
-  ENDMETHOD.
-
-
-  METHOD get_data.
-
-    rv_data = mv_data.
-
+    mv_pointer = 0.
   ENDMETHOD.
 
 
   METHOD get_length.
 
-    rv_length = xstrlen( mv_data ).
+    rv_remaining = xstrlen( mv_data ) - mv_pointer.
 
   ENDMETHOD.
 
 
   METHOD peek.
 
-    rv_data = mv_data(iv_length).
+    rv_data = mv_data+mv_pointer(iv_length).
 
   ENDMETHOD.
 
 
   METHOD shift.
 
-    rv_data = peek( iv_length ).
-* todo: optimize, dont mutate mv_data
-    mv_data = mv_data+iv_length.
+    rv_data = mv_data+mv_pointer(iv_length).
+    mv_pointer = mv_pointer + iv_length.
 
   ENDMETHOD.
 
@@ -340,8 +329,9 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
 * https://webassembly.github.io/spec/core/binary/values.html#binary-int
 * https://en.wikipedia.org/wiki/LEB128
 
-    DATA lv_hex   TYPE x LENGTH 1.
-    DATA lv_bit   TYPE c LENGTH 1.
+    CONSTANTS lc_128 TYPE i VALUE 128.
+
+    DATA lv_val   TYPE i.
     DATA lv_shift TYPE int8 VALUE 1.
 
     DO.
@@ -349,20 +339,18 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
         RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'integer representation too long'.
       ENDIF.
 
-      lv_hex = shift( 1 ).
+      lv_val = shift( 1 ).
 
-      GET BIT 1 OF lv_hex INTO lv_bit.
-* performance? dont set bit if not needed?
-      SET BIT 1 OF lv_hex TO 0.
-
-      rv_int = rv_int + CONV i( lv_hex ) * lv_shift.
-
-      IF lv_bit = '0'.
+      IF lv_val >= lc_128.
+* continuation bit is set
+        lv_val = lv_val - lc_128.
+        rv_int = rv_int + lv_val * lv_shift.
+      ELSE.
+        rv_int = rv_int + lv_val * lv_shift.
         RETURN.
       ENDIF.
 
-* performance? keep the shifts in a static internal table?
-      lv_shift = lv_shift * 128.
+      lv_shift = lv_shift * lc_128.
     ENDDO.
 
   ENDMETHOD.

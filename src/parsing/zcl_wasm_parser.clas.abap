@@ -43,8 +43,6 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
       DATA(lv_length) = lo_stream->shift_u32( ).
       DATA(lo_body) = NEW zcl_wasm_binary_stream( lo_stream->shift( lv_length ) ).
 
-      " WRITE: / 'body:', lo_body->get_data( ).
-
       CASE lv_section.
         WHEN zif_wasm_sections=>gc_section_custom.
           zcl_wasm_custom_section=>parse( lo_body ).
