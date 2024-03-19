@@ -40,9 +40,9 @@ CLASS zcl_wasm_f32_store IMPLEMENTATION.
 
     DATA(li_linear) = io_memory->get_linear( ).
 
-    DATA(lv_hex) = CAST zcl_wasm_f32( io_memory->get_stack( )->pop( ) )->to_hex( ).
+    DATA(lv_hex) = CAST zcl_wasm_f32( io_memory->mi_stack->pop( ) )->to_hex( ).
 
-    DATA(lv_i) = io_memory->get_stack( )->pop_i32( )->get_signed( ).
+    DATA(lv_i) = io_memory->mi_stack->pop_i32( )->get_signed( ).
     IF lv_i < 0.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'i32 store: out of bounds'.
     ENDIF.

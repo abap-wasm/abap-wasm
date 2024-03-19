@@ -22,8 +22,8 @@ CLASS zcl_wasm_i64_rotr IMPLEMENTATION.
     DATA lv_hex TYPE x LENGTH 8.
     DATA lv_int TYPE int8.
 
-    DATA(lv_bits) = io_memory->get_stack( )->pop_i64( )->get_signed( ) MOD 64.
-    lv_hex = io_memory->get_stack( )->pop_i64( )->get_signed( ).
+    DATA(lv_bits) = io_memory->mi_stack->pop_i64( )->get_signed( ) MOD 64.
+    lv_hex = io_memory->mi_stack->pop_i64( )->get_signed( ).
 
     DATA(lv_bytes) = lv_bits DIV 8.
     lv_bits = lv_bits MOD 8.
@@ -43,7 +43,7 @@ CLASS zcl_wasm_i64_rotr IMPLEMENTATION.
     ENDDO.
 
     lv_int = lv_hex.
-    io_memory->get_stack( )->push( zcl_wasm_i64=>from_signed( lv_int ) ).
+    io_memory->mi_stack->push( zcl_wasm_i64=>from_signed( lv_int ) ).
   ENDMETHOD.
 
 ENDCLASS.

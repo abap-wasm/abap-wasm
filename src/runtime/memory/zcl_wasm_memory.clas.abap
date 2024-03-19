@@ -12,12 +12,8 @@ CLASS zcl_wasm_memory DEFINITION
     METHODS constructor.
 
 *********** STACK
-    METHODS get_stack
-      RETURNING
-        VALUE(ri_stack) TYPE REF TO zif_wasm_memory_stack.
-    METHODS set_stack
-      IMPORTING
-        ii_stack TYPE REF TO zif_wasm_memory_stack.
+* public for optimizing performance
+    DATA mi_stack TYPE REF TO zif_wasm_memory_stack.
 
 *********** Frames with locals
     METHODS push_frame.
@@ -101,7 +97,6 @@ CLASS zcl_wasm_memory DEFINITION
   PROTECTED SECTION.
     DATA mi_linear TYPE REF TO zif_wasm_memory_linear.
     DATA mi_globals TYPE REF TO zif_wasm_memory_globals.
-    DATA mi_stack TYPE REF TO zif_wasm_memory_stack.
 
     DATA mt_stack  TYPE STANDARD TABLE OF REF TO zif_wasm_value WITH DEFAULT KEY.
     DATA mt_frames TYPE STANDARD TABLE OF REF TO zif_wasm_memory_frame WITH DEFAULT KEY.
@@ -126,14 +121,6 @@ CLASS zcl_wasm_memory IMPLEMENTATION.
 
   METHOD get_globals.
     ri_globals = mi_globals.
-  ENDMETHOD.
-
-  METHOD get_stack.
-    ri_stack = mi_stack.
-  ENDMETHOD.
-
-  METHOD set_stack.
-    mi_stack = ii_stack.
   ENDMETHOD.
 
   METHOD table_get.

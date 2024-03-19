@@ -21,9 +21,9 @@ CLASS zcl_wasm_memory_fill IMPLEMENTATION.
     DATA lv_offset TYPE int8.
     DATA lv_hex TYPE x LENGTH 1.
     DATA(li_linear) = io_memory->get_linear( ).
-    DATA(lv_n) = io_memory->get_stack( )->pop_i32( )->get_signed( ).
-    DATA(lo_val) = io_memory->get_stack( )->pop_i32( ).
-    DATA(lv_d) = io_memory->get_stack( )->pop_i32( )->get_signed( ).
+    DATA(lv_n) = io_memory->mi_stack->pop_i32( )->get_signed( ).
+    DATA(lo_val) = io_memory->mi_stack->pop_i32( ).
+    DATA(lv_d) = io_memory->mi_stack->pop_i32( )->get_signed( ).
 
     IF lv_n + lv_d > li_linear->size_in_bytes( ).
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'memory_fill: trap'.

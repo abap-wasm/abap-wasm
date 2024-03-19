@@ -32,7 +32,7 @@ CLASS zcl_wasm_br_if IMPLEMENTATION.
 
 * https://webassembly.github.io/spec/core/exec/instructions.html#xref-syntax-instructions-syntax-instr-control-mathsf-br-if-l
 
-    DATA(li_value) = io_memory->get_stack( )->pop( ).
+    DATA(li_value) = io_memory->mi_stack->pop( ).
     IF li_value->get_type( ) <> zif_wasm_types=>c_value_type-i32.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |zcl_wasm_br_if: expected i32, got { li_value->get_type( ) }|.
     ENDIF.

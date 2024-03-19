@@ -20,18 +20,18 @@ CLASS zcl_wasm_i64_shr_s IMPLEMENTATION.
 
   METHOD zif_wasm_instruction~execute.
 
-    DATA(lv_count) = io_memory->get_stack( )->pop_i64( )->get_signed( ) MOD 64.
+    DATA(lv_count) = io_memory->mi_stack->pop_i64( )->get_signed( ) MOD 64.
 
-    DATA(li_val) = io_memory->get_stack( )->pop_i64( ).
+    DATA(li_val) = io_memory->mi_stack->pop_i64( ).
     DATA(lv_int) = li_val->get_signed( ).
 
     IF lv_count = 0.
-      io_memory->get_stack( )->push( li_val ).
+      io_memory->mi_stack->push( li_val ).
     ELSE.
       DO lv_count TIMES.
         lv_int = lv_int DIV 2.
       ENDDO.
-      io_memory->get_stack( )->push( zcl_wasm_i64=>from_signed( lv_int ) ).
+      io_memory->mi_stack->push( zcl_wasm_i64=>from_signed( lv_int ) ).
     ENDIF.
   ENDMETHOD.
 

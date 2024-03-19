@@ -24,7 +24,7 @@ CLASS zcl_wasm_i64_ctz IMPLEMENTATION.
     DATA lv_bit TYPE i.
     DATA lv_hex TYPE x LENGTH 8.
 
-    lv_hex = io_memory->get_stack( )->pop_i64( )->get_signed( ).
+    lv_hex = io_memory->mi_stack->pop_i64( )->get_signed( ).
 
     DO 64 TIMES.
       DATA(lv_index) = 64 - sy-index + 1.
@@ -36,7 +36,7 @@ CLASS zcl_wasm_i64_ctz IMPLEMENTATION.
       ENDIF.
     ENDDO.
 
-    io_memory->get_stack( )->push( zcl_wasm_i64=>from_signed( lv_zeros ) ).
+    io_memory->mi_stack->push( zcl_wasm_i64=>from_signed( lv_zeros ) ).
 
   ENDMETHOD.
 

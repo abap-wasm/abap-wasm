@@ -51,7 +51,7 @@ CLASS zcl_wasm_call IMPLEMENTATION.
 
       DO xstrlen( ls_type-parameter_types ) TIMES.
 * todo: check parameters types are correct
-        INSERT io_memory->get_stack( )->pop( ) INTO TABLE lt_parameters.
+        INSERT io_memory->mi_stack->pop( ) INTO TABLE lt_parameters.
       ENDDO.
 
       DATA(lt_result) = li_module->execute_function_export(
@@ -60,7 +60,7 @@ CLASS zcl_wasm_call IMPLEMENTATION.
 
 * todo: check results match expected
       LOOP AT lt_result ASSIGNING FIELD-SYMBOL(<li_result>).
-        io_memory->get_stack( )->push( <li_result> ).
+        io_memory->mi_stack->push( <li_result> ).
       ENDLOOP.
     ELSE.
       DATA(lr_code) = io_module->get_code_by_index( CONV #( ls_function-codeidx ) ).
@@ -69,7 +69,7 @@ CLASS zcl_wasm_call IMPLEMENTATION.
       io_memory->push_frame( ).
       DO xstrlen( ls_type-parameter_types ) TIMES.
 * todo: check parameters types are correct
-        io_memory->get_frame( )->local_push_first( io_memory->get_stack( )->pop( ) ).
+        io_memory->get_frame( )->local_push_first( io_memory->mi_stack->pop( ) ).
       ENDDO.
 
 * add the locals for the function
@@ -90,8 +90,8 @@ CLASS zcl_wasm_call IMPLEMENTATION.
         ENDDO.
       ENDLOOP.
 
-      DATA(li_old_stack) = io_memory->get_stack( ).
-      io_memory->set_stack( CAST zif_wasm_memory_stack( NEW zcl_wasm_memory_stack( ) ) ).
+      DATA(li_old_stack) = io_memory->mi_stack.
+      io_memory->mi_stack = CAST zif_wasm_memory_stack( NEW zcl_wasm_memory_stack( ) ).
 
       TRY.
           io_module->execute_instructions( lr_code->instructions ).
@@ -103,15 +103,15 @@ CLASS zcl_wasm_call IMPLEMENTATION.
 
 ******************
 
-      IF xstrlen( ls_type-result_types ) > io_memory->get_stack( )->get_length( ).
+      IF xstrlen( ls_type-result_types ) > io_memory->mi_stack->get_length( ).
         RAISE EXCEPTION TYPE zcx_wasm
           EXPORTING
-            text = |call: too few results got { io_memory->get_stack( )->get_length( ) } expected at least { xstrlen( ls_type-result_types ) }|.
+            text = |call: too few results got { io_memory->mi_stack->get_length( ) } expected at least { xstrlen( ls_type-result_types ) }|.
       ENDIF.
 
       DO xstrlen( ls_type-result_types ) TIMES.
         DATA(lv_offset) = xstrlen( ls_type-result_types ) - sy-index.
-        DATA(li_val) = io_memory->get_stack( )->pop( ).
+        DATA(li_val) = io_memory->mi_stack->pop( ).
 
         IF li_val->get_type( ) <> ls_type-result_types+lv_offset(1).
           RAISE EXCEPTION TYPE zcx_wasm
@@ -126,7 +126,7 @@ CLASS zcl_wasm_call IMPLEMENTATION.
         li_old_stack->push( li_val ).
       ENDLOOP.
 
-      io_memory->set_stack( li_old_stack ).
+      io_memory->mi_stack = li_old_stack.
       io_memory->pop_frame( ).
     ENDIF.
 

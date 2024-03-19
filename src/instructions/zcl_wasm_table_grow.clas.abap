@@ -30,18 +30,18 @@ CLASS zcl_wasm_table_grow IMPLEMENTATION.
 
     DATA(lv_sz) = io_memory->table_size( CONV #( mv_tableidx ) ).
 
-    DATA(lv_n) = io_memory->get_stack( )->pop_i32( )->get_signed( ).
-    DATA(lv_val) = io_memory->get_stack( )->pop( ).
+    DATA(lv_n) = io_memory->mi_stack->pop_i32( )->get_signed( ).
+    DATA(lv_val) = io_memory->mi_stack->pop( ).
 
     DATA(lv_max) = io_memory->table_get_max( CONV #( mv_tableidx ) ).
     IF lv_max > 0 AND lv_n + io_memory->table_size( CONV #( mv_tableidx ) ) > lv_max.
-      io_memory->get_stack( )->push( zcl_wasm_i32=>from_signed( -1 ) ).
+      io_memory->mi_stack->push( zcl_wasm_i32=>from_signed( -1 ) ).
     ELSE.
       io_memory->table_grow(
         iv_tableidx = CONV #( mv_tableidx )
         iv_count    = lv_n
         ii_value    = lv_val ).
-      io_memory->get_stack( )->push( zcl_wasm_i32=>from_signed( lv_sz ) ).
+      io_memory->mi_stack->push( zcl_wasm_i32=>from_signed( lv_sz ) ).
     ENDIF.
 
   ENDMETHOD.

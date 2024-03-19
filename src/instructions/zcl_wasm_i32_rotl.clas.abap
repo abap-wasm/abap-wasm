@@ -28,7 +28,7 @@ CLASS zcl_wasm_i32_rotl IMPLEMENTATION.
     DATA lv_int    TYPE i.
     DATA lv_offset TYPE i.
 
-    DATA(li_stack) = io_memory->get_stack( ).
+    DATA(li_stack) = io_memory->mi_stack.
     DATA(lv_bits) = li_stack->pop_i32( )->get_signed( ) MOD 32.
     lv_hex = li_stack->pop_i32( )->get_signed( ).
 

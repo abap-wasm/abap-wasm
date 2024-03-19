@@ -19,7 +19,7 @@ CLASS zcl_wasm_drop IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    io_memory->get_stack( )->pop( ).
+    io_memory->mi_stack->pop( ).
   ENDMETHOD.
 
 ENDCLASS.

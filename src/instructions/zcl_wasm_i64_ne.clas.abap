@@ -20,15 +20,15 @@ CLASS zcl_wasm_i64_ne IMPLEMENTATION.
 
   METHOD zif_wasm_instruction~execute.
 
-    ASSERT io_memory->get_stack( )->get_length( ) >= 2.
+    ASSERT io_memory->mi_stack->get_length( ) >= 2.
 
-    DATA(lv_val1) = CAST zcl_wasm_i64( io_memory->get_stack( )->pop( ) )->get_signed( ).
-    DATA(lv_val2) = CAST zcl_wasm_i64( io_memory->get_stack( )->pop( ) )->get_signed( ).
+    DATA(lv_val1) = CAST zcl_wasm_i64( io_memory->mi_stack->pop( ) )->get_signed( ).
+    DATA(lv_val2) = CAST zcl_wasm_i64( io_memory->mi_stack->pop( ) )->get_signed( ).
 
     IF lv_val1 <> lv_val2.
-      io_memory->get_stack( )->push( zcl_wasm_i32=>from_signed( 1 ) ).
+      io_memory->mi_stack->push( zcl_wasm_i32=>from_signed( 1 ) ).
     ELSE.
-      io_memory->get_stack( )->push( zcl_wasm_i32=>from_signed( 0 ) ).
+      io_memory->mi_stack->push( zcl_wasm_i32=>from_signed( 0 ) ).
     ENDIF.
 
   ENDMETHOD.

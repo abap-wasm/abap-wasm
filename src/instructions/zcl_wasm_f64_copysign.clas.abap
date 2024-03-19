@@ -22,22 +22,22 @@ CLASS zcl_wasm_f64_copysign IMPLEMENTATION.
 
 * If z1 and z2 have the same sign, then return z1. Else return z1 with negated sign
 
-    DATA(li_val1) = io_memory->get_stack( )->pop( ).
+    DATA(li_val1) = io_memory->mi_stack->pop( ).
     IF li_val1->get_type( ) <> zif_wasm_types=>c_value_type-f64.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |zcl_wasm_f64_copysign: expected f64, got { li_val1->get_type( ) }|.
     ENDIF.
     DATA(li_z1) = CAST zcl_wasm_f64( li_val1 ).
 
-    DATA(li_val2) = io_memory->get_stack( )->pop( ).
+    DATA(li_val2) = io_memory->mi_stack->pop( ).
     IF li_val2->get_type( ) <> zif_wasm_types=>c_value_type-f64.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |zcl_wasm_f64_copysign: expected f64, got { li_val2->get_type( ) }|.
     ENDIF.
     DATA(li_z2) = CAST zcl_wasm_f64( li_val2 ).
 
     IF li_z1->get_sign( ) = li_z2->get_sign( ).
-      io_memory->get_stack( )->push( li_z1 ).
+      io_memory->mi_stack->push( li_z1 ).
     ELSE.
-      io_memory->get_stack( )->push( zcl_wasm_f64=>from_float( - li_z1->get_value( ) ) ).
+      io_memory->mi_stack->push( zcl_wasm_f64=>from_float( - li_z1->get_value( ) ) ).
     ENDIF.
   ENDMETHOD.
 

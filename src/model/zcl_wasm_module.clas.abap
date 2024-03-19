@@ -356,7 +356,7 @@ CLASS zcl_wasm_module IMPLEMENTATION.
     ENDIF.
 
     LOOP AT it_parameters INTO DATA(li_value).
-      mo_memory->get_stack( )->push( li_value ).
+      mo_memory->mi_stack->push( li_value ).
     ENDLOOP.
 
     TRY.
@@ -371,7 +371,7 @@ CLASS zcl_wasm_module IMPLEMENTATION.
     ENDTRY.
 
     DO xstrlen( ls_type-result_types ) TIMES.
-      INSERT mo_memory->get_stack( )->pop( ) INTO rt_results INDEX 1.
+      INSERT mo_memory->mi_stack->pop( ) INTO rt_results INDEX 1.
     ENDDO.
 
   ENDMETHOD.

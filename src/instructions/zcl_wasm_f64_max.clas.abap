@@ -20,15 +20,15 @@ CLASS zcl_wasm_f64_max IMPLEMENTATION.
 
   METHOD zif_wasm_instruction~execute.
 
-    ASSERT io_memory->get_stack( )->get_length( ) >= 2.
+    ASSERT io_memory->mi_stack->get_length( ) >= 2.
 
-    DATA(lo_val1) = CAST zcl_wasm_f64( io_memory->get_stack( )->pop( ) ).
-    DATA(lo_val2) = CAST zcl_wasm_f64( io_memory->get_stack( )->pop( ) ).
+    DATA(lo_val1) = CAST zcl_wasm_f64( io_memory->mi_stack->pop( ) ).
+    DATA(lo_val2) = CAST zcl_wasm_f64( io_memory->mi_stack->pop( ) ).
 
     IF lo_val1->get_value( ) < lo_val2->get_value( ).
-      io_memory->get_stack( )->push( lo_val2 ).
+      io_memory->mi_stack->push( lo_val2 ).
     ELSE.
-      io_memory->get_stack( )->push( lo_val1 ).
+      io_memory->mi_stack->push( lo_val1 ).
     ENDIF.
 
   ENDMETHOD.
