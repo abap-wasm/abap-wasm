@@ -9,6 +9,7 @@ CLASS ltcl_test DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS.
     METHODS blocks_with_br FOR TESTING RAISING cx_static_check.
     METHODS blocks_with_br_after FOR TESTING RAISING cx_static_check.
     METHODS blocks_longer_br FOR TESTING RAISING cx_static_check.
+    METHODS return_block FOR TESTING RAISING cx_static_check.
 
 ENDCLASS.
 
@@ -242,6 +243,38 @@ CLASS ltcl_test IMPLEMENTATION.
     cl_abap_unit_assert=>assert_equals(
       act = CAST zcl_wasm_i32( lt_values[ 1 ] )->get_signed( )
       exp = 2 ).
+
+  ENDMETHOD.
+
+  METHOD return_block.
+
+"  (module
+"    (func (export "blocks") (result i32)
+"      block
+"        block (result i64)
+"          i32.const 4
+"          return
+"          i64.const 2
+"        end
+"        drop
+"      end
+"      i32.const 1
+"    )
+"  )
+
+    DATA(lv_wasm) = `AGFzbQEAAAABBQFgAAF/AwIBAAcKAQZibG9ja3MAAAoSARAAAkACfkEED0ICCxoLQQELAAoEbmFtZQIDAQAA`.
+
+    DATA(li_wasm) = zcl_wasm=>create_with_base64( lv_wasm ).
+
+    DATA(lt_values) = li_wasm->execute_function_export( 'blocks' ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lines( lt_values )
+      exp = 1 ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = CAST zcl_wasm_i32( lt_values[ 1 ] )->get_signed( )
+      exp = 4 ).
 
   ENDMETHOD.
 
