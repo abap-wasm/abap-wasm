@@ -10,10 +10,7 @@ CLASS zcl_wasm_binary_stream DEFINITION
 
     METHODS get_length
       RETURNING
-        VALUE(rv_length) TYPE i .
-    METHODS get_data
-      RETURNING
-        VALUE(rv_data) TYPE xstring .
+        VALUE(rv_remaining) TYPE i .
     METHODS peek
       IMPORTING
         !iv_length     TYPE numeric
@@ -59,6 +56,7 @@ CLASS zcl_wasm_binary_stream DEFINITION
   PROTECTED SECTION.
   PRIVATE SECTION.
     DATA mv_data TYPE xstring .
+    DATA mv_pointer TYPE i.
 ENDCLASS.
 
 
@@ -67,38 +65,29 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
 
 
   METHOD constructor.
-
     mv_data = iv_data.
-
-  ENDMETHOD.
-
-
-  METHOD get_data.
-
-    rv_data = mv_data.
-
+    mv_pointer = 0.
   ENDMETHOD.
 
 
   METHOD get_length.
 
-    rv_length = xstrlen( mv_data ).
+    rv_remaining = xstrlen( mv_data ) - mv_pointer.
 
   ENDMETHOD.
 
 
   METHOD peek.
 
-    rv_data = mv_data(iv_length).
+    rv_data = mv_data+mv_pointer(iv_length).
 
   ENDMETHOD.
 
 
   METHOD shift.
 
-    rv_data = peek( iv_length ).
-* todo: optimize, dont mutate mv_data
-    mv_data = mv_data+iv_length.
+    rv_data = mv_data+mv_pointer(iv_length).
+    mv_pointer = mv_pointer + iv_length.
 
   ENDMETHOD.
 
