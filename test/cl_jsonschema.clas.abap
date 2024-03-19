@@ -14,7 +14,11 @@ CLASS cl_jsonschema IMPLEMENTATION.
   METHOD run.
 
     GET RUN TIME FIELD DATA(lv_start).
-    DATA(li_wasm) = zcl_wasm=>create_with_wasm( iv_hex ).
+    DATA(li_wasm) = zcl_wasm=>create_with_wasm(
+      iv_wasm    = iv_hex
+      it_imports = VALUE #( (
+        name   = '__wbindgen_placeholder__'
+        module = NEW cl_wbindgen_placeholder( ) ) ) ).
     GET RUN TIME FIELD DATA(lv_end).
 
     DATA(lv_parsing) = lv_end - lv_start.
