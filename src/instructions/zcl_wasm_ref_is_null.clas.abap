@@ -26,10 +26,11 @@ CLASS zcl_wasm_ref_is_null IMPLEMENTATION.
 
     DATA(li_value) = io_memory->mi_stack->pop( ).
 
-    "##feature=debug
+    "##feature-start=debug
     IF li_value IS INITIAL.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |zcl_wasm_ref_is_null: initial value popped|.
     ENDIF.
+    "##feature-end=debug
 
     CASE li_value->get_type( ).
       WHEN zif_wasm_types=>c_reftype-externref.

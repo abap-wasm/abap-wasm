@@ -23,17 +23,19 @@ CLASS zcl_wasm_f64_copysign IMPLEMENTATION.
 * If z1 and z2 have the same sign, then return z1. Else return z1 with negated sign
 
     DATA(li_val1) = io_memory->mi_stack->pop( ).
-    "##feature=debug
+    "##feature-start=debug
     IF li_val1->get_type( ) <> zif_wasm_types=>c_value_type-f64.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |zcl_wasm_f64_copysign: expected f64, got { li_val1->get_type( ) }|.
     ENDIF.
+    "##feature-end=debug
     DATA(li_z1) = CAST zcl_wasm_f64( li_val1 ).
 
     DATA(li_val2) = io_memory->mi_stack->pop( ).
-    "##feature=debug
+    "##feature-start=debug
     IF li_val2->get_type( ) <> zif_wasm_types=>c_value_type-f64.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |zcl_wasm_f64_copysign: expected f64, got { li_val2->get_type( ) }|.
     ENDIF.
+    "##feature-end=debug
     DATA(li_z2) = CAST zcl_wasm_f64( li_val2 ).
 
     IF li_z1->get_sign( ) = li_z2->get_sign( ).

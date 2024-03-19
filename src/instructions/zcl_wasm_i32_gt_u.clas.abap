@@ -19,10 +19,11 @@ CLASS zcl_wasm_i32_gt_u IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    "##feature=debug
+    "##feature-start=debug
     IF io_memory->mi_stack->get_length( ) < 2.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'gt_u, expected two variables on stack'.
     ENDIF.
+    "##feature-end=debug
 
     DATA(lo_val1) = CAST zcl_wasm_i32( io_memory->mi_stack->pop( ) ).
     DATA(lo_val2) = CAST zcl_wasm_i32( io_memory->mi_stack->pop( ) ).

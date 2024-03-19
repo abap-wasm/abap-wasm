@@ -103,23 +103,25 @@ CLASS zcl_wasm_call IMPLEMENTATION.
 
 ******************
 
-      "##feature=debug
+      "##feature-start=debug
       IF xstrlen( ls_type-result_types ) > io_memory->mi_stack->get_length( ).
         RAISE EXCEPTION TYPE zcx_wasm
           EXPORTING
             text = |call: too few results got { io_memory->mi_stack->get_length( ) } expected at least { xstrlen( ls_type-result_types ) }|.
       ENDIF.
+      "##feature-end=debug
 
       DO xstrlen( ls_type-result_types ) TIMES.
         DATA(lv_offset) = xstrlen( ls_type-result_types ) - sy-index.
         DATA(li_val) = io_memory->mi_stack->pop( ).
 
-        "##feature=debug
+        "##feature-start=debug
         IF li_val->get_type( ) <> ls_type-result_types+lv_offset(1).
           RAISE EXCEPTION TYPE zcx_wasm
             EXPORTING
               text = |call result: wrong parameter on stack, got { li_val->get_type( ) } expected { ls_type-result_types+lv_offset(1) }|.
         ENDIF.
+        "##feature-end=debug
 
         INSERT li_val INTO lt_results INDEX 1.
       ENDDO.
