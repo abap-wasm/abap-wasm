@@ -1744,6 +1744,10 @@ CLASS zcl_wasm_instructions IMPLEMENTATION.
         APPEND li_instruction TO et_instructions.
       ELSE.
         CASE lv_opcode.
+          WHEN zif_wasm_opcodes=>c_opcodes-end.
+            EXIT. " current loop
+          WHEN zif_wasm_opcodes=>c_opcodes-else_.
+            EXIT. " current loop
           WHEN lc_fc.
             DATA(lv_opcodei) = io_body->shift_u32( ).
             " todo, change these to hex? shifting u32 is slow, if possible
@@ -1805,11 +1809,6 @@ CLASS zcl_wasm_instructions IMPLEMENTATION.
             RAISE EXCEPTION TYPE zcx_wasm
               EXPORTING
                 text = |Threads opcodes not supported, FE{ io_body->shift( 1 ) }|.
-          WHEN zif_wasm_opcodes=>c_opcodes-end.
-            APPEND zcl_wasm_end=>parse( io_body ) TO et_instructions.
-            EXIT. " current loop
-          WHEN zif_wasm_opcodes=>c_opcodes-else_.
-            EXIT. " current loop
           WHEN OTHERS.
             RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |illegal opcode: { lv_opcode }|.
         ENDCASE.
