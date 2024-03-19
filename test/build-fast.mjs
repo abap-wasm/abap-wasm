@@ -18,3 +18,5 @@ for (const r of fs.readdirSync("src", { withFileTypes: true, recursive: true }))
     fs.mkdirSync(FOLDER + path.sep + r.path + path.sep + r.name);
   }
 }
+
+fs.copyFileSync(".abapgit.xml", FOLDER + path.sep + ".abapgit.xml");
