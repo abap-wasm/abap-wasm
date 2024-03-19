@@ -22,6 +22,7 @@ CLASS zcl_wasm_i64_lt_s IMPLEMENTATION.
 
 * https://webassembly.github.io/spec/core/exec/instructions.html#t-mathsf-xref-syntax-instructions-syntax-relop-mathit-relop
 
+    "##feature=debug
     IF io_memory->mi_stack->get_length( ) < 2.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'lt_s, expected two variables on stack'.
     ENDIF.

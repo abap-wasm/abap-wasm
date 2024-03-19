@@ -19,6 +19,7 @@ CLASS zcl_wasm_i64_le_s IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
+    "##feature=debug
     IF io_memory->mi_stack->get_length( ) < 2.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'le_s, expected two variables on stack'.
     ENDIF.

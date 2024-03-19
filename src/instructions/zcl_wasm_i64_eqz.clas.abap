@@ -25,6 +25,7 @@ CLASS zcl_wasm_i64_eqz IMPLEMENTATION.
 
   METHOD zif_wasm_instruction~execute.
 
+    "##feature=debug
     IF io_memory->mi_stack->get_length( ) < 1.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'i64, eqz, expected value on stack'.
     ENDIF.

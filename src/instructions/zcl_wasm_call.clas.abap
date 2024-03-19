@@ -103,6 +103,7 @@ CLASS zcl_wasm_call IMPLEMENTATION.
 
 ******************
 
+      "##feature=debug
       IF xstrlen( ls_type-result_types ) > io_memory->mi_stack->get_length( ).
         RAISE EXCEPTION TYPE zcx_wasm
           EXPORTING
@@ -113,6 +114,7 @@ CLASS zcl_wasm_call IMPLEMENTATION.
         DATA(lv_offset) = xstrlen( ls_type-result_types ) - sy-index.
         DATA(li_val) = io_memory->mi_stack->pop( ).
 
+        "##feature=debug
         IF li_val->get_type( ) <> ls_type-result_types+lv_offset(1).
           RAISE EXCEPTION TYPE zcx_wasm
             EXPORTING

@@ -19,6 +19,7 @@ CLASS zcl_wasm_i32_ge_u IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
+    "##feature=debug
     IF io_memory->mi_stack->get_length( ) < 2.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'ge_u, expected two variables on stack'.
     ENDIF.

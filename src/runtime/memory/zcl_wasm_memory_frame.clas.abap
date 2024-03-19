@@ -11,10 +11,10 @@ CLASS zcl_wasm_memory_frame IMPLEMENTATION.
 
     DATA(lv_index) = iv_index + 1.
     READ TABLE mt_locals INDEX lv_index INTO ri_value.
-    " this should already be validated on compile time, it knows the locals
-    " IF sy-subrc <> 0.
-    "   RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_memory_frame: not found in local memory, local_get'.
-    " ENDIF.
+    "##feature=debug
+    IF sy-subrc <> 0.
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_memory_frame: not found in local memory, local_get'.
+    ENDIF.
 
   ENDMETHOD.
 
