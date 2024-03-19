@@ -14,8 +14,8 @@ CLASS zcl_wasm_memory_stack IMPLEMENTATION.
   METHOD zif_wasm_memory_stack~pop.
 
     DATA(lv_length) = lines( mt_stack ).
+    "##feature=debug
     IF lv_length = 0.
-*      WRITE '@KERNEL throw new Error("pop");'.
       RAISE EXCEPTION TYPE zcx_wasm
         EXPORTING
           text = |zcl_wasm_memory: nothing to pop|.
@@ -29,6 +29,7 @@ CLASS zcl_wasm_memory_stack IMPLEMENTATION.
   METHOD zif_wasm_memory_stack~peek.
 
     DATA(lv_length) = lines( mt_stack ).
+    "##feature=debug
     ASSERT lv_length > 0.
 
     READ TABLE mt_stack INDEX lv_length INTO ri_value.
@@ -40,6 +41,7 @@ CLASS zcl_wasm_memory_stack IMPLEMENTATION.
 
     DATA(li_pop) = zif_wasm_memory_stack~pop( ).
 
+    "##feature=debug
     IF li_pop->get_type( ) <> zif_wasm_types=>c_value_type-i64.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_memory: pop, expected i64'.
     ENDIF.
@@ -52,6 +54,7 @@ CLASS zcl_wasm_memory_stack IMPLEMENTATION.
 
     DATA(li_pop) = zif_wasm_memory_stack~pop( ).
 
+    "##feature=debug
     IF li_pop->get_type( ) <> zif_wasm_types=>c_value_type-i32.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_memory: pop, expected i32'.
     ENDIF.
