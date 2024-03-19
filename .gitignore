@@ -9,3 +9,4 @@ web
 *.0x
 isolate-*
 comment-regression.txt
+dist-fast
