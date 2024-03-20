@@ -816,7 +816,7 @@ CLASS zcl_wasm_instructions IMPLEMENTATION.
     INSERT ls_row INTO TABLE gt_opcodes_simd.
 
     ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-v128_store.
-    ls_row-name = 'TODO'.
+    ls_row-name = 'ZCL_WASM_V128_STORE'.
     INSERT ls_row INTO TABLE gt_opcodes_simd.
 
     ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-v128_const.
@@ -1212,7 +1212,7 @@ CLASS zcl_wasm_instructions IMPLEMENTATION.
     INSERT ls_row INTO TABLE gt_opcodes_simd.
 
     ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i8x16_bitmask.
-    ls_row-name = 'TODO'.
+    ls_row-name = 'ZCL_WASM_I8X16_BITMASK'.
     INSERT ls_row INTO TABLE gt_opcodes_simd.
 
     ls_row-opcode = zif_wasm_opcodes=>c_fd_opcodes-i16x8_bitmask.

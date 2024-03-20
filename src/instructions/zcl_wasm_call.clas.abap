@@ -44,6 +44,7 @@ CLASS zcl_wasm_call IMPLEMENTATION.
     DATA lt_results    TYPE STANDARD TABLE OF REF TO zif_wasm_value WITH EMPTY KEY.
 
     DATA(ls_function) = io_module->get_function_by_index( iv_funcidx ).
+*    WRITE: / |call funcidx { iv_funcidx }|.
     DATA(ls_type) = io_module->get_type_by_index( CONV #( ls_function-typeidx ) ).
 
     IF ls_function-extern_module IS NOT INITIAL.

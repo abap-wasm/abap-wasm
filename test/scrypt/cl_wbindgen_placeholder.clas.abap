@@ -27,7 +27,7 @@ CLASS cl_wbindgen_placeholder IMPLEMENTATION.
     IF sy-subrc <> 0.
       RAISE EXCEPTION TYPE zcx_wasm
         EXPORTING
-          text = 'cl_wbindgen_placeholder: get_export_by_name'.
+          text = |cl_wbindgen_placeholder: get_export_by_name { iv_name }|.
     ENDIF.
   ENDMETHOD.
 

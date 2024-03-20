@@ -152,6 +152,7 @@ CLASS zcl_wasm_memory IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD table_set.
+*    WRITE / |table set { iv_tableidx }, { iv_offset }|.
     DATA(lv_idx) = iv_tableidx + 1.
     READ TABLE mt_tables INDEX lv_idx ASSIGNING FIELD-SYMBOL(<lt_table>).
     IF sy-subrc <> 0.
@@ -170,7 +171,7 @@ CLASS zcl_wasm_memory IMPLEMENTATION.
 
   METHOD table_add.
     DATA ls_table TYPE ty_table.
-    DATA li_val TYPE REF TO zif_wasm_value.
+    DATA li_val   TYPE REF TO zif_wasm_value.
 
     ls_table-type = is_table.
     INSERT ls_table INTO TABLE mt_tables.
