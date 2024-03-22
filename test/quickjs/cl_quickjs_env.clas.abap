@@ -72,12 +72,25 @@ CLASS cl_quickjs_env IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_module~execute_function_export.
+    CONSTANTS lc_epoch TYPE timestamp VALUE '19700101000000'.
     DATA lv_xstr TYPE xstring.
+    DATA lv_seconds TYPE f.
+    DATA lv_time TYPE timestamp.
+
     DATA(li_linear) = mo_memory->get_linear( ).
 
     WRITE / iv_name.
 
     CASE iv_name.
+      WHEN 'emscripten_date_now'.
+* (result f64)
+* double, clock now in milliseconds
+        GET TIME STAMP FIELD lv_time.
+        lv_seconds = cl_abap_tstmp=>subtract(
+          tstmp1 = lv_time
+          tstmp2 = lc_epoch ).
+        lv_seconds = lv_seconds * 1000.
+        INSERT zcl_wasm_f64=>from_float( lv_seconds ) INTO rt_results.
       WHEN 'emscripten_get_module_name'.
 * (param i32 i32) (result i32)
 * input: pointer + max length
