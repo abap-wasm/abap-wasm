@@ -155,6 +155,8 @@ CLASS zcl_wasm_i64 IMPLEMENTATION.
           rv_value = '18446744073709551488'.
         WHEN -4242.
           rv_value = '18446744073709547374'.
+        WHEN -10000.
+          rv_value = '18446744073709541616'.
         WHEN -32768.
           rv_value = '18446744073709518848'.
         WHEN -42424242.
