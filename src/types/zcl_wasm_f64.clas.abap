@@ -19,6 +19,13 @@ CLASS zcl_wasm_f64 DEFINITION
       RAISING
         zcx_wasm.
 
+    TYPES ty_hex8 TYPE x LENGTH 8.
+    CLASS-METHODS from_hex
+      IMPORTING
+        !iv_hex         TYPE ty_hex8
+      RETURNING
+        VALUE(ro_value) TYPE REF TO zcl_wasm_f64.
+
     CLASS-METHODS gt
       IMPORTING
         !io_memory TYPE REF TO zcl_wasm_memory
@@ -97,6 +104,30 @@ CLASS zcl_wasm_f64 IMPLEMENTATION.
 
   METHOD zif_wasm_value~human_readable_value.
     rv_string = |f64: { mv_value STYLE = SCIENTIFIC }|.
+  ENDMETHOD.
+
+  METHOD from_hex.
+* webassembly is little endian
+* javascript + open-abap is little endian
+
+    DATA lv_f TYPE f.
+    FIELD-SYMBOLS <lv_hex> TYPE x.
+
+
+    ASSIGN lv_f TO <lv_hex> CASTING TYPE x.
+
+    CASE cl_abap_char_utilities=>endian.
+      WHEN 'L'.
+        <lv_hex> = iv_hex.
+      WHEN 'B'.
+        <lv_hex> = zcl_wasm_binary_stream=>reverse_hex( iv_hex ).
+      WHEN OTHERS.
+        RAISE EXCEPTION TYPE zcx_wasm
+          EXPORTING text = |unknown endian { cl_abap_char_utilities=>endian }|.
+    ENDCASE.
+
+    ro_value = from_float( lv_f ).
+
   ENDMETHOD.
 
   METHOD gt.

@@ -54,6 +54,8 @@ CLASS zcl_wasm_f64_load IMPLEMENTATION.
     IF lv_hex = '0000000000000000'.
       io_memory->mi_stack->push( zcl_wasm_f64=>from_float( 0 ) ).
     ELSE.
+*      CL_ABAP_CHAR_UTILITIES=>endian ?
+
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'todo, execute instruction zcl_wasm_f64_load'.
     ENDIF.
 
