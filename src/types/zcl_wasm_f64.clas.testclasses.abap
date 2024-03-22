@@ -8,7 +8,7 @@ ENDCLASS.
 CLASS ltcl_test IMPLEMENTATION.
 
   METHOD from_hex.
-    DATA(lv_float) = zcl_wasm_f64=>from_hex( '0000000000000040' )->get_value( ).
+    DATA(lv_float) = zcl_wasm_f64=>from_hex( '4000000000000000' )->get_value( ).
     cl_abap_unit_assert=>assert_equals(
       act = lv_float
       exp = 2 ).
