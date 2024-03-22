@@ -19,6 +19,14 @@ CLASS zcl_wasm_f64 DEFINITION
       RAISING
         zcx_wasm.
 
+    CLASS-METHODS from_unsigned
+      IMPORTING
+        !iv_value       TYPE string
+      RETURNING
+        VALUE(ro_value) TYPE REF TO zcl_wasm_f64
+      RAISING
+        zcx_wasm.
+
     TYPES ty_hex8 TYPE x LENGTH 8.
     CLASS-METHODS from_hex
       IMPORTING
@@ -104,6 +112,14 @@ CLASS zcl_wasm_f64 IMPLEMENTATION.
 
   METHOD zif_wasm_value~human_readable_value.
     rv_string = |f64: { mv_value STYLE = SCIENTIFIC }|.
+  ENDMETHOD.
+
+  METHOD from_unsigned.
+    DATA lv_int8 TYPE int8.
+    DATA lv_hex8 TYPE x LENGTH 8.
+    lv_int8 = zcl_wasm_i64=>from_unsigned( iv_value )->get_signed( ).
+    lv_hex8 = lv_int8.
+    ro_value = from_hex( lv_hex8 ).
   ENDMETHOD.
 
   METHOD from_hex.
