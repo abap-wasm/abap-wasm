@@ -37,7 +37,22 @@ CLASS zcl_wasm_f64_store IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'todo, execute instruction zcl_wasm_f64_store'.
+
+    DATA lv_hex TYPE x LENGTH 8.
+
+    lv_hex = CAST zcl_wasm_f64( io_memory->mi_stack->pop( ) )->get_hex( ).
+
+    DATA(lv_i) = io_memory->mi_stack->pop_i32( )->get_signed( ).
+    IF lv_i < 0.
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'f64 store: out of bounds'.
+    ENDIF.
+
+    lv_hex = zcl_wasm_binary_stream=>reverse_hex( lv_hex ).
+
+    io_memory->get_linear( )->set(
+      iv_offset = mv_offset + lv_i
+      iv_bytes  = lv_hex ).
+
   ENDMETHOD.
 
 ENDCLASS.

@@ -117,6 +117,10 @@ CLASS zcl_wasm_i64 IMPLEMENTATION.
         ro_value->mv_value = -6067025490386449714.
       WHEN '12370766947463011818'.
         ro_value->mv_value = -6075977126246539798.
+      WHEN '9227875636482146304'.
+        ro_value->mv_value = -9218868437227405312.
+      WHEN '13826050856027422720'.
+        ro_value->mv_value = -4620693217682128896.
     ENDCASE.
 
     IF ro_value->mv_value <> 0.

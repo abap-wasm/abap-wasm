@@ -28,7 +28,7 @@ INTERFACE zif_wasm_memory_linear PUBLIC.
 
   METHODS size_in_pages
     RETURNING
-      VALUE(rv_pages) TYPE int8
+      VALUE(rv_pages) TYPE i
     RAISING
       zcx_wasm.
 
