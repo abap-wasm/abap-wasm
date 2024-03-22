@@ -98,11 +98,6 @@ CLASS zcl_wasm_f64 DEFINITION
       RAISING
         zcx_wasm.
 
-    CLASS-METHODS lt
-      IMPORTING
-        !io_memory TYPE REF TO zcl_wasm_memory
-      RAISING
-        zcx_wasm.
   PROTECTED SECTION.
   PRIVATE SECTION.
     DATA mv_value TYPE f .
@@ -159,23 +154,6 @@ CLASS zcl_wasm_f64 IMPLEMENTATION.
     rv_value = zcl_wasm_i64=>from_signed( lv_int8 )->get_unsigned( ).
   ENDMETHOD.
 
-  METHOD lt.
-
-    IF io_memory->mi_stack->get_length( ) < 2.
-      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'lt, expected two variables on stack'.
-    ENDIF.
-
-    DATA(lo_val1) = CAST zcl_wasm_f64( io_memory->mi_stack->pop( ) ).
-    DATA(lo_val2) = CAST zcl_wasm_f64( io_memory->mi_stack->pop( ) ).
-
-    DATA(lv_result) = 0.
-    IF lo_val1->mv_value > lo_val2->mv_value.
-      lv_result = 1.
-    ENDIF.
-
-    io_memory->mi_stack->push( zcl_wasm_i32=>from_signed( lv_result ) ).
-
-  ENDMETHOD.
 
   METHOD ge.
 
