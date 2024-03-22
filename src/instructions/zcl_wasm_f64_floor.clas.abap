@@ -5,14 +5,14 @@ CLASS zcl_wasm_f64_floor DEFINITION PUBLIC.
     CLASS-METHODS parse
       IMPORTING !io_body TYPE REF TO zcl_wasm_binary_stream
       RETURNING VALUE(ri_instruction) TYPE REF TO zif_wasm_instruction.
-protected section.
+  PROTECTED SECTION.
   PRIVATE SECTION.
     CLASS-DATA gi_singleton TYPE REF TO zif_wasm_instruction.
 ENDCLASS.
 
 
 
-CLASS ZCL_WASM_F64_FLOOR IMPLEMENTATION.
+CLASS zcl_wasm_f64_floor IMPLEMENTATION.
 
 
   METHOD parse.
