@@ -13,12 +13,6 @@ CLASS zcl_wasm_f64 DEFINITION
       RETURNING
         VALUE(ro_value) TYPE REF TO zcl_wasm_f64.
 
-    CLASS-METHODS floor_value
-      IMPORTING
-        !io_memory TYPE REF TO zcl_wasm_memory
-      RAISING
-        zcx_wasm.
-
     CLASS-METHODS from_unsigned
       IMPORTING
         !iv_value       TYPE string
@@ -321,18 +315,6 @@ CLASS zcl_wasm_f64 IMPLEMENTATION.
   METHOD zif_wasm_value~get_type.
 
     rv_type = zif_wasm_types=>c_value_type-f64.
-
-  ENDMETHOD.
-
-  METHOD floor_value.
-
-    IF io_memory->mi_stack->get_length( ) < 1.
-      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'f64 floor, expected at least one variables on stack'.
-    ENDIF.
-
-    DATA(lo_val) = CAST zcl_wasm_f64( io_memory->mi_stack->pop( ) ).
-
-    io_memory->mi_stack->push( from_float( floor( lo_val->mv_value ) ) ).
 
   ENDMETHOD.
 

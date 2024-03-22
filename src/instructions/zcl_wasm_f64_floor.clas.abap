@@ -19,7 +19,15 @@ CLASS zcl_wasm_f64_floor IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    zcl_wasm_f64=>floor_value( io_memory ).
+    "##feature-start=debug
+    IF io_memory->mi_stack->get_length( ) < 1.
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'f64 floor, expected at least one variables on stack'.
+    ENDIF.
+    "##feature-end=debug
+
+    DATA(lo_val) = CAST zcl_wasm_f64( io_memory->mi_stack->pop( ) ).
+
+    io_memory->mi_stack->push( zcl_wasm_f64=>from_float( floor( lo_val->mv_value ) ) ).
   ENDMETHOD.
 
 ENDCLASS.
