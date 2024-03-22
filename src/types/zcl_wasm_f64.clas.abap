@@ -40,24 +40,6 @@ CLASS zcl_wasm_f64 DEFINITION
       RAISING
         zcx_wasm.
 
-    CLASS-METHODS eq
-      IMPORTING
-        !io_memory TYPE REF TO zcl_wasm_memory
-      RAISING
-        zcx_wasm.
-
-    CLASS-METHODS mul
-      IMPORTING
-        !io_memory TYPE REF TO zcl_wasm_memory
-      RAISING
-        zcx_wasm.
-
-    CLASS-METHODS div
-      IMPORTING
-        !io_memory TYPE REF TO zcl_wasm_memory
-      RAISING
-        zcx_wasm.
-
     METHODS get_sign
       RETURNING
         VALUE(rv_negative) TYPE abap_bool.
@@ -65,12 +47,6 @@ CLASS zcl_wasm_f64 DEFINITION
     METHODS get_value
       RETURNING
         VALUE(rv_value) TYPE f
-      RAISING
-        zcx_wasm.
-
-    CLASS-METHODS ne
-      IMPORTING
-        !io_memory TYPE REF TO zcl_wasm_memory
       RAISING
         zcx_wasm.
 
@@ -130,46 +106,6 @@ CLASS zcl_wasm_f64 IMPLEMENTATION.
     rv_value = zcl_wasm_i64=>from_signed( lv_int8 )->get_unsigned( ).
   ENDMETHOD.
 
-  METHOD mul.
-
-    ASSERT io_memory->mi_stack->get_length( ) >= 2.
-
-    DATA(lo_val1) = CAST zcl_wasm_f64( io_memory->mi_stack->pop( ) ).
-    DATA(lo_val2) = CAST zcl_wasm_f64( io_memory->mi_stack->pop( ) ).
-
-    io_memory->mi_stack->push( from_float( lo_val2->get_value( ) * lo_val1->get_value( ) ) ).
-
-  ENDMETHOD.
-
-  METHOD div.
-
-    ASSERT io_memory->mi_stack->get_length( ) >= 2.
-
-    DATA(lo_val1) = CAST zcl_wasm_f64( io_memory->mi_stack->pop( ) ).
-    DATA(lo_val2) = CAST zcl_wasm_f64( io_memory->mi_stack->pop( ) ).
-
-    io_memory->mi_stack->push( from_float( lo_val2->get_value( ) / lo_val1->get_value( ) ) ).
-
-  ENDMETHOD.
-
-  METHOD ne.
-
-    IF io_memory->mi_stack->get_length( ) < 2.
-      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'ne, expected two variables on stack'.
-    ENDIF.
-
-    DATA(lo_val1) = CAST zcl_wasm_f64( io_memory->mi_stack->pop( ) ).
-    DATA(lo_val2) = CAST zcl_wasm_f64( io_memory->mi_stack->pop( ) ).
-
-    DATA(lv_result) = 0.
-    IF lo_val1->mv_value <> lo_val2->mv_value.
-      lv_result = 1.
-    ENDIF.
-
-    io_memory->mi_stack->push( zcl_wasm_i32=>from_signed( lv_result ) ).
-
-  ENDMETHOD.
-
   METHOD get_sign.
     rv_negative = xsdbool( mv_value < 0 ).
   ENDMETHOD.
@@ -189,18 +125,4 @@ CLASS zcl_wasm_f64 IMPLEMENTATION.
 
   ENDMETHOD.
 
-  METHOD eq.
-
-    ASSERT io_memory->mi_stack->get_length( ) >= 2.
-
-    DATA(lv_val1) = CAST zcl_wasm_f64( io_memory->mi_stack->pop( ) )->mv_value.
-    DATA(lv_val2) = CAST zcl_wasm_f64( io_memory->mi_stack->pop( ) )->mv_value.
-
-    IF lv_val1 = lv_val2.
-      io_memory->mi_stack->push( zcl_wasm_i32=>from_signed( 1 ) ).
-    ELSE.
-      io_memory->mi_stack->push( zcl_wasm_i32=>from_signed( 0 ) ).
-    ENDIF.
-
-  ENDMETHOD.
 ENDCLASS.
