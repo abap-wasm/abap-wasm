@@ -47,6 +47,8 @@ CLASS zcl_wasm_f64_store IMPLEMENTATION.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'f64 store: out of bounds'.
     ENDIF.
 
+    lv_hex = zcl_wasm_binary_stream=>reverse_hex( lv_hex ).
+
     io_memory->get_linear( )->set(
       iv_offset = mv_offset + lv_i
       iv_bytes  = lv_hex ).
