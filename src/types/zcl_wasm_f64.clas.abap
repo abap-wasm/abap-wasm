@@ -34,6 +34,18 @@ CLASS zcl_wasm_f64 DEFINITION
       RETURNING
         VALUE(ro_value) TYPE REF TO zcl_wasm_f64.
 
+    METHODS get_unsigned
+      RETURNING
+        VALUE(rv_value) TYPE string
+      RAISING
+        zcx_wasm.
+
+    METHODS get_hex
+      RETURNING
+        VALUE(rv_value) TYPE ty_hex8
+      RAISING
+        zcx_wasm.
+
     CLASS-METHODS gt
       IMPORTING
         !io_memory TYPE REF TO zcl_wasm_memory
@@ -143,6 +155,20 @@ CLASS zcl_wasm_f64 IMPLEMENTATION.
 
     ro_value = from_float( lv_f ).
 
+  ENDMETHOD.
+
+  METHOD get_hex.
+    FIELD-SYMBOLS <lv_hex> TYPE x.
+    ASSIGN mv_value TO <lv_hex> CASTING TYPE x.
+    rv_value = <lv_hex>.
+  ENDMETHOD.
+
+  METHOD get_unsigned.
+    DATA lv_hex  TYPE ty_hex8.
+    DATA lv_int8 TYPE int8.
+    lv_hex = get_hex( ).
+    lv_int8 = lv_hex.
+    rv_value = zcl_wasm_i64=>from_signed( lv_int8 )->get_unsigned( ).
   ENDMETHOD.
 
   METHOD gt.
