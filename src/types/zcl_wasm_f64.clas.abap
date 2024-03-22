@@ -13,51 +13,30 @@ CLASS zcl_wasm_f64 DEFINITION
       RETURNING
         VALUE(ro_value) TYPE REF TO zcl_wasm_f64.
 
-    CLASS-METHODS floor_value
+    CLASS-METHODS from_unsigned
       IMPORTING
-        !io_memory TYPE REF TO zcl_wasm_memory
+        !iv_value       TYPE string
+      RETURNING
+        VALUE(ro_value) TYPE REF TO zcl_wasm_f64
       RAISING
         zcx_wasm.
 
-    CLASS-METHODS gt
+    TYPES ty_hex8 TYPE x LENGTH 8.
+    CLASS-METHODS from_hex
       IMPORTING
-        !io_memory TYPE REF TO zcl_wasm_memory
+        !iv_hex         TYPE ty_hex8
+      RETURNING
+        VALUE(ro_value) TYPE REF TO zcl_wasm_f64.
+
+    METHODS get_unsigned
+      RETURNING
+        VALUE(rv_value) TYPE string
       RAISING
         zcx_wasm.
 
-    CLASS-METHODS ge
-      IMPORTING
-        !io_memory TYPE REF TO zcl_wasm_memory
-      RAISING
-        zcx_wasm.
-
-    CLASS-METHODS eq
-      IMPORTING
-        !io_memory TYPE REF TO zcl_wasm_memory
-      RAISING
-        zcx_wasm.
-
-    CLASS-METHODS add
-      IMPORTING
-        !io_memory TYPE REF TO zcl_wasm_memory
-      RAISING
-        zcx_wasm.
-
-    CLASS-METHODS sub
-      IMPORTING
-        !io_memory TYPE REF TO zcl_wasm_memory
-      RAISING
-        zcx_wasm.
-
-    CLASS-METHODS mul
-      IMPORTING
-        !io_memory TYPE REF TO zcl_wasm_memory
-      RAISING
-        zcx_wasm.
-
-    CLASS-METHODS div
-      IMPORTING
-        !io_memory TYPE REF TO zcl_wasm_memory
+    METHODS get_hex
+      RETURNING
+        VALUE(rv_value) TYPE ty_hex8
       RAISING
         zcx_wasm.
 
@@ -71,23 +50,6 @@ CLASS zcl_wasm_f64 DEFINITION
       RAISING
         zcx_wasm.
 
-    CLASS-METHODS ne
-      IMPORTING
-        !io_memory TYPE REF TO zcl_wasm_memory
-      RAISING
-        zcx_wasm.
-
-    CLASS-METHODS le
-      IMPORTING
-        !io_memory TYPE REF TO zcl_wasm_memory
-      RAISING
-        zcx_wasm.
-
-    CLASS-METHODS lt
-      IMPORTING
-        !io_memory TYPE REF TO zcl_wasm_memory
-      RAISING
-        zcx_wasm.
   PROTECTED SECTION.
   PRIVATE SECTION.
     DATA mv_value TYPE f .
@@ -99,138 +61,49 @@ CLASS zcl_wasm_f64 IMPLEMENTATION.
     rv_string = |f64: { mv_value STYLE = SCIENTIFIC }|.
   ENDMETHOD.
 
-  METHOD gt.
+  METHOD from_unsigned.
+    DATA lv_int8 TYPE int8.
+    DATA lv_hex8 TYPE x LENGTH 8.
+    lv_int8 = zcl_wasm_i64=>from_unsigned( iv_value )->get_signed( ).
+    lv_hex8 = lv_int8.
+    ro_value = from_hex( lv_hex8 ).
+  ENDMETHOD.
 
-    IF io_memory->mi_stack->get_length( ) < 2.
-      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'f64 gt, expected at least two variables on stack'.
-    ENDIF.
+  METHOD from_hex.
+* webassembly is little endian
+* javascript + open-abap is little endian
 
-    DATA(lo_val1) = CAST zcl_wasm_f64( io_memory->mi_stack->pop( ) ).
-    DATA(lo_val2) = CAST zcl_wasm_f64( io_memory->mi_stack->pop( ) ).
+    DATA lv_f TYPE f.
+    FIELD-SYMBOLS <lv_hex> TYPE x.
 
-    DATA(lv_result) = 0.
-    IF lo_val1->get_value( ) > lo_val2->get_value( ).
-      lv_result = 1.
-    ENDIF.
 
-    io_memory->mi_stack->push( zcl_wasm_i32=>from_signed( lv_result ) ).
+    ASSIGN lv_f TO <lv_hex> CASTING TYPE x.
+
+    CASE cl_abap_char_utilities=>endian.
+      WHEN 'L'.
+        <lv_hex> = iv_hex.
+      WHEN 'B'.
+        <lv_hex> = zcl_wasm_binary_stream=>reverse_hex( iv_hex ).
+      WHEN OTHERS.
+        ASSERT 1 = 2.
+    ENDCASE.
+
+    ro_value = from_float( lv_f ).
 
   ENDMETHOD.
 
-  METHOD lt.
-
-    IF io_memory->mi_stack->get_length( ) < 2.
-      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'lt, expected two variables on stack'.
-    ENDIF.
-
-    DATA(lo_val1) = CAST zcl_wasm_f64( io_memory->mi_stack->pop( ) ).
-    DATA(lo_val2) = CAST zcl_wasm_f64( io_memory->mi_stack->pop( ) ).
-
-    DATA(lv_result) = 0.
-    IF lo_val1->mv_value > lo_val2->mv_value.
-      lv_result = 1.
-    ENDIF.
-
-    io_memory->mi_stack->push( zcl_wasm_i32=>from_signed( lv_result ) ).
-
+  METHOD get_hex.
+    FIELD-SYMBOLS <lv_hex> TYPE x.
+    ASSIGN mv_value TO <lv_hex> CASTING TYPE x.
+    rv_value = <lv_hex>.
   ENDMETHOD.
 
-  METHOD ge.
-
-    IF io_memory->mi_stack->get_length( ) < 2.
-      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'f64 gt, expected at least two variables on stack'.
-    ENDIF.
-
-    DATA(lo_val1) = CAST zcl_wasm_f64( io_memory->mi_stack->pop( ) ).
-    DATA(lo_val2) = CAST zcl_wasm_f64( io_memory->mi_stack->pop( ) ).
-
-    DATA(lv_result) = 0.
-    IF lo_val1->get_value( ) >= lo_val2->get_value( ).
-      lv_result = 1.
-    ENDIF.
-
-    io_memory->mi_stack->push( zcl_wasm_i32=>from_signed( lv_result ) ).
-
-  ENDMETHOD.
-
-  METHOD le.
-
-    IF io_memory->mi_stack->get_length( ) < 2.
-      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'le, expected two variables on stack'.
-    ENDIF.
-
-    DATA(lo_val1) = CAST zcl_wasm_f64( io_memory->mi_stack->pop( ) ).
-    DATA(lo_val2) = CAST zcl_wasm_f64( io_memory->mi_stack->pop( ) ).
-
-    DATA(lv_result) = 0.
-    IF lo_val1->mv_value >= lo_val2->mv_value.
-      lv_result = 1.
-    ENDIF.
-
-    io_memory->mi_stack->push( zcl_wasm_i32=>from_signed( lv_result ) ).
-
-  ENDMETHOD.
-
-  METHOD add.
-
-    ASSERT io_memory->mi_stack->get_length( ) >= 2.
-
-    DATA(lo_val1) = CAST zcl_wasm_f64( io_memory->mi_stack->pop( ) ).
-    DATA(lo_val2) = CAST zcl_wasm_f64( io_memory->mi_stack->pop( ) ).
-
-    io_memory->mi_stack->push( from_float( lo_val1->get_value( ) + lo_val2->get_value( ) ) ).
-
-  ENDMETHOD.
-
-  METHOD sub.
-
-    ASSERT io_memory->mi_stack->get_length( ) >= 2.
-
-    DATA(lo_val1) = CAST zcl_wasm_f64( io_memory->mi_stack->pop( ) ).
-    DATA(lo_val2) = CAST zcl_wasm_f64( io_memory->mi_stack->pop( ) ).
-
-    io_memory->mi_stack->push( from_float( lo_val2->get_value( ) - lo_val1->get_value( ) ) ).
-
-  ENDMETHOD.
-
-  METHOD mul.
-
-    ASSERT io_memory->mi_stack->get_length( ) >= 2.
-
-    DATA(lo_val1) = CAST zcl_wasm_f64( io_memory->mi_stack->pop( ) ).
-    DATA(lo_val2) = CAST zcl_wasm_f64( io_memory->mi_stack->pop( ) ).
-
-    io_memory->mi_stack->push( from_float( lo_val2->get_value( ) * lo_val1->get_value( ) ) ).
-
-  ENDMETHOD.
-
-  METHOD div.
-
-    ASSERT io_memory->mi_stack->get_length( ) >= 2.
-
-    DATA(lo_val1) = CAST zcl_wasm_f64( io_memory->mi_stack->pop( ) ).
-    DATA(lo_val2) = CAST zcl_wasm_f64( io_memory->mi_stack->pop( ) ).
-
-    io_memory->mi_stack->push( from_float( lo_val2->get_value( ) / lo_val1->get_value( ) ) ).
-
-  ENDMETHOD.
-
-  METHOD ne.
-
-    IF io_memory->mi_stack->get_length( ) < 2.
-      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'ne, expected two variables on stack'.
-    ENDIF.
-
-    DATA(lo_val1) = CAST zcl_wasm_f64( io_memory->mi_stack->pop( ) ).
-    DATA(lo_val2) = CAST zcl_wasm_f64( io_memory->mi_stack->pop( ) ).
-
-    DATA(lv_result) = 0.
-    IF lo_val1->mv_value <> lo_val2->mv_value.
-      lv_result = 1.
-    ENDIF.
-
-    io_memory->mi_stack->push( zcl_wasm_i32=>from_signed( lv_result ) ).
-
+  METHOD get_unsigned.
+    DATA lv_hex  TYPE ty_hex8.
+    DATA lv_int8 TYPE int8.
+    lv_hex = get_hex( ).
+    lv_int8 = lv_hex.
+    rv_value = zcl_wasm_i64=>from_signed( lv_int8 )->get_unsigned( ).
   ENDMETHOD.
 
   METHOD get_sign.
@@ -252,30 +125,4 @@ CLASS zcl_wasm_f64 IMPLEMENTATION.
 
   ENDMETHOD.
 
-  METHOD floor_value.
-
-    IF io_memory->mi_stack->get_length( ) < 1.
-      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'f64 floor, expected at least one variables on stack'.
-    ENDIF.
-
-    DATA(lo_val) = CAST zcl_wasm_f64( io_memory->mi_stack->pop( ) ).
-
-    io_memory->mi_stack->push( from_float( floor( lo_val->mv_value ) ) ).
-
-  ENDMETHOD.
-
-  METHOD eq.
-
-    ASSERT io_memory->mi_stack->get_length( ) >= 2.
-
-    DATA(lv_val1) = CAST zcl_wasm_f64( io_memory->mi_stack->pop( ) )->mv_value.
-    DATA(lv_val2) = CAST zcl_wasm_f64( io_memory->mi_stack->pop( ) )->mv_value.
-
-    IF lv_val1 = lv_val2.
-      io_memory->mi_stack->push( zcl_wasm_i32=>from_signed( 1 ) ).
-    ELSE.
-      io_memory->mi_stack->push( zcl_wasm_i32=>from_signed( 0 ) ).
-    ENDIF.
-
-  ENDMETHOD.
 ENDCLASS.

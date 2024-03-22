@@ -36,12 +36,20 @@ CLASS cl_quickjs IMPLEMENTATION.
 * https://github.com/justjake/quickjs-emscripten/blob/main/c/interface.c
 
 * JSRuntime *QTS_NewRuntime() {
-*    DATA(lt_result) = li_wasm->execute_function_export( 'QTS_NewRuntime' ).
+* (result i32)
+    " DATA(lt_result) = li_wasm->execute_function_export( 'QTS_NewRuntime' ).
 
+* IntrinsicsFlags = https://github.com/justjake/quickjs-emscripten/blob/cc9b624930dfb319a0198587386c405b86af4740/packages/quickjs-emscripten-core/src/types.ts#L145
 * JSContext *QTS_NewContext(JSRuntime *rt, IntrinsicsFlags intrinsics) {
-* todo
+* (param i32 i32) (result i32)
+    " lt_result = li_wasm->execute_function_export(
+    "   iv_name       = 'QTS_NewContext'
+    "   it_parameters = VALUE #(
+    "     ( lt_result[ 1 ] )
+    "     ( zcl_wasm_i32=>from_signed( 0 ) ) ) ).
 
 * MaybeAsync(JSValue *) QTS_Eval(JSContext *ctx, BorrowedHeapChar *js_code, size_t js_code_length, const char *filename, EvalDetectModule detectModule, EvalFlags evalFlags) {
+* (param i32 i32 i32 i32 i32 i32) (result i32)
     " li_wasm->execute_function_export(
     "   iv_name       = 'QTS_Eval'
     "   it_parameters = VALUE #(

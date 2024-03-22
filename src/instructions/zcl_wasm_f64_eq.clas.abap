@@ -19,7 +19,18 @@ CLASS zcl_wasm_f64_eq IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    zcl_wasm_f64=>eq( io_memory ).
+    "##feature-start=debug
+    ASSERT io_memory->mi_stack->get_length( ) >= 2.
+    "##feature-end=debug
+
+    DATA(lv_val1) = CAST zcl_wasm_f64( io_memory->mi_stack->pop( ) )->mv_value.
+    DATA(lv_val2) = CAST zcl_wasm_f64( io_memory->mi_stack->pop( ) )->mv_value.
+
+    IF lv_val1 = lv_val2.
+      io_memory->mi_stack->push( zcl_wasm_i32=>from_signed( 1 ) ).
+    ELSE.
+      io_memory->mi_stack->push( zcl_wasm_i32=>from_signed( 0 ) ).
+    ENDIF.
   ENDMETHOD.
 
 ENDCLASS.

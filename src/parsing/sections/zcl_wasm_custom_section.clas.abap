@@ -34,8 +34,9 @@ CLASS zcl_wasm_custom_section IMPLEMENTATION.
 
           DATA(lv_len) = io_body->shift_u32( ).
           DO lv_len TIMES.
-            io_body->shift_u32( ).
-            io_body->shift_utf8( ).
+            DATA(lv_idx) = io_body->shift_u32( ).
+            DATA(lv_name) = io_body->shift_utf8( ).
+*            WRITE / |function { lv_idx }: { lv_name }|.
           ENDDO.
         WHEN '02'.
 * local names

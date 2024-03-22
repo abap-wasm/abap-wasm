@@ -19,7 +19,21 @@ CLASS zcl_wasm_f64_le IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    zcl_wasm_f64=>le( io_memory ).
+    "##feature-start=debug
+    IF io_memory->mi_stack->get_length( ) < 2.
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'le, expected two variables on stack'.
+    ENDIF.
+    "##feature-end=debug
+
+    DATA(lo_val1) = CAST zcl_wasm_f64( io_memory->mi_stack->pop( ) ).
+    DATA(lo_val2) = CAST zcl_wasm_f64( io_memory->mi_stack->pop( ) ).
+
+    DATA(lv_result) = 0.
+    IF lo_val1->mv_value >= lo_val2->mv_value.
+      lv_result = 1.
+    ENDIF.
+
+    io_memory->mi_stack->push( zcl_wasm_i32=>from_signed( lv_result ) ).
   ENDMETHOD.
 
 ENDCLASS.

@@ -20,6 +20,8 @@ ENDCLASS.
 CLASS cl_quickjs_env IMPLEMENTATION.
 
   METHOD constructor.
+* https://github.com/emscripten-core/emscripten/blob/main/src/library.js
+
     INSERT '__assert_fail' INTO TABLE mt_functions.
     INSERT '__syscall_dup' INTO TABLE mt_functions.
     INSERT '__syscall_mkdirat' INTO TABLE mt_functions.
@@ -102,6 +104,7 @@ CLASS cl_quickjs_env IMPLEMENTATION.
         mo_memory->get_linear( )->grow( CONV #( lv_pages ) ).
         INSERT zcl_wasm_i32=>from_signed( 1 ) INTO rt_results.
       WHEN 'emscripten_stack_unwind_buffer'.
+* https://github.com/emscripten-core/emscripten/blob/faee8d3e40ec8b0905ed26d31b1d5e332509519c/src/library_stack_trace.js#L238
 * (param i32 i32 i32) (result i32)
 * hmm
         INSERT zcl_wasm_i32=>from_signed( 0 ) INTO rt_results.
