@@ -122,8 +122,7 @@ CLASS zcl_wasm_f64 IMPLEMENTATION.
       WHEN 'B'.
         <lv_hex> = zcl_wasm_binary_stream=>reverse_hex( iv_hex ).
       WHEN OTHERS.
-        RAISE EXCEPTION TYPE zcx_wasm
-          EXPORTING text = |unknown endian { cl_abap_char_utilities=>endian }|.
+        ASSERT 1 = 2.
     ENDCASE.
 
     ro_value = from_float( lv_f ).
