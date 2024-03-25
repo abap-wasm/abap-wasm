@@ -53,7 +53,9 @@ CLASS zcl_wasm_i64_load IMPLEMENTATION.
 
     DATA(lv_i) = io_memory->mi_stack->pop_i32( )->get_signed( ).
     IF lv_i < 0.
-      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'load: out of bounds'.
+      RAISE EXCEPTION TYPE zcx_wasm
+        EXPORTING
+          text = |zcl_wasm_i64_load: out of bounds { lv_i }|.
     ENDIF.
 
     lv_hex = io_memory->get_linear( )->get(

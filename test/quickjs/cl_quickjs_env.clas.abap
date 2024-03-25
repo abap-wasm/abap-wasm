@@ -80,6 +80,20 @@ CLASS cl_quickjs_env IMPLEMENTATION.
     DATA(li_linear) = mo_memory->get_linear( ).
 
     CASE iv_name.
+      WHEN 'emscripten_memcpy_js'.
+* (param i32 i32 i32)
+        DATA(lv_n) = CAST zcl_wasm_i32( it_parameters[ 1 ] )->get_signed( ).
+        DATA(lv_src) = CAST zcl_wasm_i32( it_parameters[ 2 ] )->get_signed( ).
+        DATA(lv_dest) = CAST zcl_wasm_i32( it_parameters[ 3 ] )->get_signed( ).
+        WRITE / |emscripten_memcpy_js: { lv_n }, { lv_src }, { lv_dest }|.
+
+        lv_xstr = li_linear->get(
+          iv_length = CONV #( lv_n )
+          iv_offset = CONV #( lv_src ) ).
+        lv_xstr = zcl_wasm_binary_stream=>reverse_hex( lv_xstr ).
+        li_linear->set(
+          iv_bytes  = lv_xstr
+          iv_offset = CONV #( lv_dest ) ).
       WHEN 'emscripten_date_now'.
 * (result f64)
 * double, clock now in milliseconds
