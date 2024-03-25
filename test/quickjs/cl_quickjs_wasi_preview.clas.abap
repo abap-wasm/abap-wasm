@@ -20,7 +20,11 @@ CLASS cl_quickjs_wasi_preview IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_module~execute_function_export.
-    DATA lv_xstr TYPE xstring.
+    DATA lv_xstr    TYPE xstring.
+    DATA lv_pointer TYPE i.
+    DATA lv_length  TYPE i.
+    DATA lv_written TYPE i.
+    DATA lv_hex4    TYPE x LENGTH 4.
     DATA(li_linear) = mo_memory->get_linear( ).
 
     CASE iv_name.
@@ -31,22 +35,42 @@ CLASS cl_quickjs_wasi_preview IMPLEMENTATION.
         DATA(lv_size) = CAST zcl_wasm_i32( it_parameters[ 2 ] ).
         DATA(lv_iovs) = CAST zcl_wasm_i32( it_parameters[ 3 ] ).
         DATA(lv_fd) = CAST zcl_wasm_i32( it_parameters[ 4 ] ).
-        WRITE / |fd, { lv_fd->get_signed( ) }|.
-        WRITE / |iovs, { lv_iovs->get_signed( ) }|.
-        WRITE / |size, { lv_size->get_signed( ) }|.
-        WRITE / |nwritten, { lv_nwritten->get_signed( ) }|.
+        " WRITE / |fd, { lv_fd->get_signed( ) }|.
+        " WRITE / |iovs, { lv_iovs->get_signed( ) }|.
+        " WRITE / |size, { lv_size->get_signed( ) }|.
+        " WRITE / |nwritten, { lv_nwritten->get_signed( ) }|.
 
-        DO lv_size TIMES.
-          DATA(lv_ptr) = lv_iovs + 8 * ( sy-index - 1 ).
-          DATA(lv_len) = lv_iovs + 4 + 8 * ( sy-index - 1 ).
+        DO lv_size->get_signed( ) TIMES.
+          DATA(lv_index) = sy-index - 1.
+
+          lv_pointer = li_linear->get(
+            iv_length = 4
+            iv_offset = lv_iovs->get_signed( ) + ( 8 * lv_index ) ).
+
+          lv_length = li_linear->get(
+            iv_length = 4
+            iv_offset = lv_iovs->get_signed( ) + 4 + ( 8 * lv_index ) ).
+          " WRITE / lv_pointer.
+          " WRITE / lv_length.
+          IF lv_length = 0.
+            CONTINUE.
+          ENDIF.
 
           lv_xstr = li_linear->get(
-            iv_length = lv_len
-            iv_offset = lv_ptr ).
-          WRITE / cl_abap_codepage=>convert_from( lv_xstr ).
+            iv_length = CONV #( lv_length )
+            iv_offset = CONV #( lv_pointer ) ).
+          DATA(lv_text) = cl_abap_codepage=>convert_from( zcl_wasm_binary_stream=>reverse_hex( lv_xstr ) ).
+          WRITE / lv_text.
+          lv_written = lv_written + strlen( lv_text ).
         ENDDO.
 
-        ASSERT 1 = 2.
+        " WRITE / |real written, { lv_written }|.
+        lv_hex4 = lv_written.
+        li_linear->set(
+          iv_bytes  = zcl_wasm_binary_stream=>reverse_hex( lv_hex4 )
+          iv_offset = lv_nwritten->get_signed( ) ).
+
+        INSERT zcl_wasm_i32=>from_signed( 0 ) INTO rt_results.
       WHEN OTHERS.
         RAISE EXCEPTION TYPE zcx_wasm
           EXPORTING
