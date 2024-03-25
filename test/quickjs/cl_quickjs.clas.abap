@@ -86,6 +86,7 @@ CLASS cl_quickjs IMPLEMENTATION.
         ( zcl_wasm_i32=>from_signed( 0 ) )
         ( zcl_wasm_i32=>from_signed( 0 ) ) ) ).
     DATA(lv_result_ptr) = lt_result[ 1 ].
+* todo: check for exception
 
     lt_result = gi_wasm->execute_function_export(
       iv_name       = 'QTS_Dump'
@@ -93,7 +94,6 @@ CLASS cl_quickjs IMPLEMENTATION.
         ( lv_context_ptr )
         ( lv_result_ptr ) ) ).
     DATA(lv_char_ptr) = CAST zcl_wasm_i32( lt_result[ 1 ] ).
-*    WRITE / |char ptr: { lv_char_ptr->get_signed( ) }|.
 
     WRITE / |Result: { string_from_vm( lv_char_ptr ) }|.
 
