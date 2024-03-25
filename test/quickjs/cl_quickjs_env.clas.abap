@@ -73,9 +73,9 @@ CLASS cl_quickjs_env IMPLEMENTATION.
 
   METHOD zif_wasm_module~execute_function_export.
     CONSTANTS lc_epoch TYPE timestamp VALUE '19700101000000'.
-    DATA lv_xstr TYPE xstring.
-    DATA lv_seconds TYPE f.
-    DATA lv_time TYPE timestamp.
+    DATA lv_xstr       TYPE xstring.
+    DATA lv_seconds    TYPE f.
+    DATA lv_time       TYPE timestamp.
 
     DATA(li_linear) = mo_memory->get_linear( ).
 
