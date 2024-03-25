@@ -3,7 +3,8 @@ import * as fs from "fs";
 import {initializeABAP} from "../output/init.mjs";
 await initializeABAP();
 
-const hex = fs.readFileSync("./node_modules/@jitl/quickjs-wasmfile-debug-sync/dist/emscripten-module.wasm").toString("hex").toUpperCase();
+// const hex = fs.readFileSync("./node_modules/@jitl/quickjs-wasmfile-debug-sync/dist/emscripten-module.wasm").toString("hex").toUpperCase();
+const hex = fs.readFileSync("./test/quickjs.wasm").toString("hex").toUpperCase();
 const xstr = new abap.types.XString();
 xstr.set(hex);
 
