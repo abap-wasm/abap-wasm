@@ -53,28 +53,29 @@ CLASS cl_quickjs IMPLEMENTATION.
 * IntrinsicsFlags = https://github.com/justjake/quickjs-emscripten/blob/cc9b624930dfb319a0198587386c405b86af4740/packages/quickjs-emscripten-core/src/types.ts#L145
 * JSContext *QTS_NewContext(JSRuntime *rt, IntrinsicsFlags intrinsics) {
 * (param i32 i32) (result i32)
-    lt_result = gi_wasm->execute_function_export(
-      iv_name       = 'QTS_NewContext'
-      it_parameters = VALUE #(
-        ( lv_runtime_ptr )
-        ( zcl_wasm_i32=>from_signed( 0 ) ) ) ).
-    DATA(lv_context_ptr) = lt_result[ 1 ].
+    " lt_result = gi_wasm->execute_function_export(
+    "   iv_name       = 'QTS_NewContext'
+    "   it_parameters = VALUE #(
+    "     ( lv_runtime_ptr )
+    "     ( zcl_wasm_i32=>from_signed( 0 ) ) ) ).
+    " DATA(lv_context_ptr) = lt_result[ 1 ].
 
 * MaybeAsync(JSValue *) QTS_Eval(JSContext *ctx, BorrowedHeapChar *js_code, size_t js_code_length, const char *filename, EvalDetectModule detectModule, EvalFlags evalFlags) {
 * EvalDetectModule is 0 or 1
 * EvalFlags see https://github.com/justjake/quickjs-emscripten/blob/cc9b624930dfb319a0198587386c405b86af4740/packages/quickjs-emscripten-core/src/types.ts#L266
 * (param i32 i32 i32 i32 i32 i32) (result i32)
-    DATA(lv_code) = |1 + 5|.
-    DATA(lv_filename) = |test.js|.
-    gi_wasm->execute_function_export(
-      iv_name       = 'QTS_Eval'
-      it_parameters = VALUE #(
-        ( lv_context_ptr )
-        ( zcl_wasm_i32=>from_signed( 0 ) ) "  todo, jscode
-        ( zcl_wasm_i32=>from_signed( strlen( lv_code ) ) )
-        ( zcl_wasm_i32=>from_signed( 0 ) ) " todo, filename
-        ( zcl_wasm_i32=>from_signed( 0 ) )
-        ( zcl_wasm_i32=>from_signed( 0 ) ) ) ).
+    " DATA(lv_code) = |1 + 5|.
+    " DATA(lo_code_ptr) = string_to_vm( lv_code ).
+    " DATA(lo_filename_ptr) = string_to_vm( |test.js| ).
+    " gi_wasm->execute_function_export(
+    "   iv_name       = 'QTS_Eval'
+    "   it_parameters = VALUE #(
+    "     ( lv_context_ptr )
+    "     ( lo_code_ptr )
+    "     ( zcl_wasm_i32=>from_signed( strlen( lv_code ) ) )
+    "     ( lo_filename_ptr )
+    "     ( zcl_wasm_i32=>from_signed( 0 ) )
+    "     ( zcl_wasm_i32=>from_signed( 0 ) ) ) ).
 
   ENDMETHOD.
 

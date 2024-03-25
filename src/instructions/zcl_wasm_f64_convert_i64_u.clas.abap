@@ -19,7 +19,11 @@ CLASS zcl_wasm_f64_convert_i64_u IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'todo, execute instruction zcl_wasm_f64_convert_i64_u'.
+    DATA lv_float TYPE f.
+
+    lv_float = CAST zcl_wasm_i64( io_memory->mi_stack->pop( ) )->get_unsigned( ).
+
+    io_memory->mi_stack->push( zcl_wasm_f64=>from_float( lv_float ) ).
   ENDMETHOD.
 
 ENDCLASS.
