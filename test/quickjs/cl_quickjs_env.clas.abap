@@ -79,8 +79,6 @@ CLASS cl_quickjs_env IMPLEMENTATION.
 
     DATA(li_linear) = mo_memory->get_linear( ).
 
-    WRITE / iv_name.
-
     CASE iv_name.
       WHEN 'emscripten_date_now'.
 * (result f64)
@@ -113,7 +111,7 @@ CLASS cl_quickjs_env IMPLEMENTATION.
         DATA(lv_input) = CAST zcl_wasm_i32( it_parameters[ 1 ] )->get_signed( ).
         DATA(lv_diff) = lv_input - mo_memory->get_linear( )->size_in_bytes( ).
         DATA(lv_pages) = ceil( lv_diff / 65536 ) + 1.
-        WRITE / |grow { lv_pages } pages, requested diff { lv_diff }, requested size { lv_input }|.
+        WRITE / |emscripten_resize_heap: grow { lv_pages } pages, requested diff { lv_diff }, requested size { lv_input }|.
         mo_memory->get_linear( )->grow( CONV #( lv_pages ) ).
         INSERT zcl_wasm_i32=>from_signed( 1 ) INTO rt_results.
       WHEN 'emscripten_stack_unwind_buffer'.
