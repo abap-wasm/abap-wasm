@@ -47,8 +47,8 @@ CLASS cl_quickjs IMPLEMENTATION.
 
 * JSRuntime *QTS_NewRuntime() {
 * (result i32)
-    DATA(lt_result) = gi_wasm->execute_function_export( 'QTS_NewRuntime' ).
-    DATA(lv_runtime_ptr) = lt_result[ 1 ].
+    " DATA(lt_result) = gi_wasm->execute_function_export( 'QTS_NewRuntime' ).
+    " DATA(lv_runtime_ptr) = lt_result[ 1 ].
 
 * IntrinsicsFlags = https://github.com/justjake/quickjs-emscripten/blob/cc9b624930dfb319a0198587386c405b86af4740/packages/quickjs-emscripten-core/src/types.ts#L145
 * JSContext *QTS_NewContext(JSRuntime *rt, IntrinsicsFlags intrinsics) {
