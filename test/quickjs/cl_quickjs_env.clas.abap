@@ -95,7 +95,6 @@ CLASS cl_quickjs_env IMPLEMENTATION.
 * return: bytes written to pointer?
         DATA(lv_max) = CAST zcl_wasm_i32( it_parameters[ 1 ] )->get_signed( ).
         DATA(lv_pointer) = CAST zcl_wasm_i32( it_parameters[ 2 ] )->get_signed( ).
-        WRITE / lv_pointer.
 
         lv_xstr = cl_abap_codepage=>convert_to( 'hello.wasm' ).
         CONCATENATE lv_xstr gc_null INTO lv_xstr IN BYTE MODE.
@@ -130,7 +129,7 @@ CLASS cl_quickjs_env IMPLEMENTATION.
 * output: pointer to string?
         lv_pointer = CAST zcl_wasm_i32( it_parameters[ 1 ] )->get_signed( ).
         DATA(lv_str) = read_string( CONV #( lv_pointer ) ).
-        WRITE / lv_str.
+        WRITE / |emscripten_sanitizer_get_option: { lv_str }|.
 * todo, return malloc'ed string pointer? by calling the malloc inside the wasm?
 * ya, https://github.com/emscripten-core/emscripten/blob/d0c4878b899c6b597c2291ce6ff2734bb9136a8d/src/library_strings.js#L479
         INSERT zcl_wasm_i32=>from_signed( 0 ) INTO rt_results.

@@ -60,7 +60,7 @@ CLASS cl_quickjs_wasi_preview IMPLEMENTATION.
             iv_length = CONV #( lv_length )
             iv_offset = CONV #( lv_pointer ) ).
           DATA(lv_text) = cl_abap_codepage=>convert_from( zcl_wasm_binary_stream=>reverse_hex( lv_xstr ) ).
-          WRITE / lv_text.
+          WRITE lv_text.
           lv_written = lv_written + strlen( lv_text ).
         ENDDO.
 
