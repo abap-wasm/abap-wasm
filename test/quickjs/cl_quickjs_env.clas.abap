@@ -72,19 +72,29 @@ CLASS cl_quickjs_env IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_module~execute_function_export.
-    DATA lv_xstr TYPE xstring.
+    CONSTANTS lc_epoch TYPE timestamp VALUE '19700101000000'.
+    DATA lv_xstr       TYPE xstring.
+    DATA lv_seconds    TYPE f.
+    DATA lv_time       TYPE timestamp.
+
     DATA(li_linear) = mo_memory->get_linear( ).
 
-    WRITE / iv_name.
-
     CASE iv_name.
+      WHEN 'emscripten_date_now'.
+* (result f64)
+* double, clock now in milliseconds
+        GET TIME STAMP FIELD lv_time.
+        lv_seconds = cl_abap_tstmp=>subtract(
+          tstmp1 = lv_time
+          tstmp2 = lc_epoch ).
+        lv_seconds = lv_seconds * 1000.
+        INSERT zcl_wasm_f64=>from_float( lv_seconds ) INTO rt_results.
       WHEN 'emscripten_get_module_name'.
 * (param i32 i32) (result i32)
 * input: pointer + max length
 * return: bytes written to pointer?
         DATA(lv_max) = CAST zcl_wasm_i32( it_parameters[ 1 ] )->get_signed( ).
         DATA(lv_pointer) = CAST zcl_wasm_i32( it_parameters[ 2 ] )->get_signed( ).
-        WRITE / lv_pointer.
 
         lv_xstr = cl_abap_codepage=>convert_to( 'hello.wasm' ).
         CONCATENATE lv_xstr gc_null INTO lv_xstr IN BYTE MODE.
@@ -100,7 +110,7 @@ CLASS cl_quickjs_env IMPLEMENTATION.
         DATA(lv_input) = CAST zcl_wasm_i32( it_parameters[ 1 ] )->get_signed( ).
         DATA(lv_diff) = lv_input - mo_memory->get_linear( )->size_in_bytes( ).
         DATA(lv_pages) = ceil( lv_diff / 65536 ) + 1.
-        WRITE / |grow { lv_pages } pages, requested diff { lv_diff }, requested size { lv_input }|.
+        WRITE / |emscripten_resize_heap: grow { lv_pages } pages, requested diff { lv_diff }, requested size { lv_input }|.
         mo_memory->get_linear( )->grow( CONV #( lv_pages ) ).
         INSERT zcl_wasm_i32=>from_signed( 1 ) INTO rt_results.
       WHEN 'emscripten_stack_unwind_buffer'.
@@ -119,7 +129,7 @@ CLASS cl_quickjs_env IMPLEMENTATION.
 * output: pointer to string?
         lv_pointer = CAST zcl_wasm_i32( it_parameters[ 1 ] )->get_signed( ).
         DATA(lv_str) = read_string( CONV #( lv_pointer ) ).
-        WRITE / lv_str.
+        WRITE / |emscripten_sanitizer_get_option: { lv_str }|.
 * todo, return malloc'ed string pointer? by calling the malloc inside the wasm?
 * ya, https://github.com/emscripten-core/emscripten/blob/d0c4878b899c6b597c2291ce6ff2734bb9136a8d/src/library_strings.js#L479
         INSERT zcl_wasm_i32=>from_signed( 0 ) INTO rt_results.

@@ -19,7 +19,8 @@ CLASS zcl_wasm_i64_trunc_f64_s IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'todo, execute instruction zcl_wasm_i64_trunc_f64_s'.
+    DATA(lv_float) = CAST zcl_wasm_f64( io_memory->mi_stack->pop( ) )->get_value( ).
+    io_memory->mi_stack->push( zcl_wasm_i64=>from_signed( trunc( lv_float ) ) ).
   ENDMETHOD.
 
 ENDCLASS.

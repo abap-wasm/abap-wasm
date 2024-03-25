@@ -19,7 +19,11 @@ CLASS zcl_wasm_i32_trunc_f64_s IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'todo, execute instruction zcl_wasm_i32_trunc_f64_s'.
+* f64 to i32
+    DATA lv_int TYPE i.
+    DATA(lv_float) = CAST zcl_wasm_f64( io_memory->mi_stack->pop( ) )->get_value( ).
+    lv_int = lv_float. " todo, this will overflow/break/fail?
+    io_memory->mi_stack->push( zcl_wasm_i32=>from_signed( lv_int ) ).
   ENDMETHOD.
 
 ENDCLASS.

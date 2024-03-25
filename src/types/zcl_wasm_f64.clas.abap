@@ -9,7 +9,7 @@ CLASS zcl_wasm_f64 DEFINITION
 
     CLASS-METHODS from_float
       IMPORTING
-        !iv_float TYPE f
+        !iv_float       TYPE f
       RETURNING
         VALUE(ro_value) TYPE REF TO zcl_wasm_f64.
 

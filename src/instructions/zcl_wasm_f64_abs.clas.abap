@@ -19,7 +19,8 @@ CLASS zcl_wasm_f64_abs IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'todo, execute instruction zcl_wasm_f64_abs'.
+    DATA(lo_val1) = CAST zcl_wasm_f64( io_memory->mi_stack->pop( ) ).
+    io_memory->mi_stack->push( zcl_wasm_f64=>from_float( abs( lo_val1->get_value( ) ) ) ).
   ENDMETHOD.
 
 ENDCLASS.
