@@ -73,7 +73,7 @@ CLASS cl_quickjs IMPLEMENTATION.
 * EvalDetectModule is 0 or 1
 * EvalFlags see https://github.com/justjake/quickjs-emscripten/blob/cc9b624930dfb319a0198587386c405b86af4740/packages/quickjs-emscripten-core/src/types.ts#L266
 * (param i32 i32 i32 i32 i32 i32) (result i32)
-    DATA(lv_code) = |1 + 3|.
+    DATA(lv_code) = |6 + 1|.
     DATA(lo_code_ptr) = string_to_vm( lv_code ).
     DATA(lo_filename_ptr) = string_to_vm( |test.js| ).
     lt_result = gi_wasm->execute_function_export(
@@ -86,16 +86,27 @@ CLASS cl_quickjs IMPLEMENTATION.
         ( zcl_wasm_i32=>from_signed( 0 ) )
         ( zcl_wasm_i32=>from_signed( 0 ) ) ) ).
     DATA(lv_result_ptr) = lt_result[ 1 ].
-* todo: check for exception
 
+* (param i32 i32) (result i32)
     lt_result = gi_wasm->execute_function_export(
-      iv_name       = 'QTS_Dump'
+      iv_name       = 'QTS_ResolveException'
       it_parameters = VALUE #(
         ( lv_context_ptr )
         ( lv_result_ptr ) ) ).
-    DATA(lv_char_ptr) = CAST zcl_wasm_i32( lt_result[ 1 ] ).
+    DATA(lv_exception_ptr) = CAST zcl_wasm_i32( lt_result[ 1 ] ).
+    IF lv_exception_ptr->get_signed( ) > 0.
+      WRITE / |Exception: { lv_exception_ptr->get_signed( ) }|.
+    ELSE.
+* (param i32 i32) (result i32)
+      lt_result = gi_wasm->execute_function_export(
+        iv_name       = 'QTS_Dump'
+        it_parameters = VALUE #(
+          ( lv_context_ptr )
+          ( lv_result_ptr ) ) ).
+      DATA(lv_char_ptr) = CAST zcl_wasm_i32( lt_result[ 1 ] ).
 
-    WRITE / |Result: { string_from_vm( lv_char_ptr ) }|.
+      WRITE / |Result: { string_from_vm( lv_char_ptr ) }|.
+    ENDIF.
 
   ENDMETHOD.
 
