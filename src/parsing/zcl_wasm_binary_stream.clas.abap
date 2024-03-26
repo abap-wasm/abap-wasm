@@ -62,7 +62,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_WASM_BINARY_STREAM IMPLEMENTATION.
+CLASS zcl_wasm_binary_stream IMPLEMENTATION.
 
 
   METHOD constructor.
@@ -196,15 +196,15 @@ CLASS ZCL_WASM_BINARY_STREAM IMPLEMENTATION.
     lv_hex = reverse_hex( lv_hex ).
     " WRITE: / 'reversed:', lv_hex.
 
-    IF lv_hex = '7FF0000000000000'.
+    IF lv_hex = zcl_wasm_f64=>gc_special_hex-positive_infinity.
 * positive infinity
       ro_float = zcl_wasm_f64=>get_positive_infinity( ).
       RETURN.
-    ELSEIF lv_hex = 'FFF0000000000000'.
+    ELSEIF lv_hex = zcl_wasm_f64=>gc_special_hex-negative_infinity.
 * negative infinity
       ro_float = zcl_wasm_f64=>get_negative_infinity( ).
       RETURN.
-    ELSEIF lv_hex = '7FF8000000000000'.
+    ELSEIF lv_hex = zcl_wasm_f64=>gc_special_hex-nan.
 * NaN
       ro_float = zcl_wasm_f64=>get_nan( ).
       RETURN.

@@ -60,6 +60,12 @@ CLASS zcl_wasm_f64 DEFINITION
       RAISING
         zcx_wasm.
 
+    CONSTANTS: BEGIN OF gc_special_hex,
+                 positive_infinity TYPE ty_hex8 VALUE '7FF0000000000000',
+                 negative_infinity TYPE ty_hex8 VALUE 'FFF0000000000000',
+                 nan               TYPE ty_hex8 VALUE '7FF8000000000000',
+               END OF gc_special_hex.
+
     TYPES ty_special TYPE i.
     CONSTANTS: BEGIN OF gc_special,
                  positive_infinity TYPE ty_special VALUE 1,
@@ -94,6 +100,17 @@ CLASS zcl_wasm_f64 IMPLEMENTATION.
     FIELD-SYMBOLS <lv_hex> TYPE x.
 
 
+    IF iv_hex = gc_special_hex-positive_infinity.
+      ro_value = get_positive_infinity( ).
+      RETURN.
+    ELSEIF iv_hex = gc_special_hex-negative_infinity.
+      ro_value = get_negative_infinity( ).
+      RETURN.
+    ELSEIF iv_hex = gc_special_hex-nan.
+      ro_value = get_nan( ).
+      RETURN.
+    ENDIF.
+
     ASSIGN lv_f TO <lv_hex> CASTING TYPE x.
 
     CASE cl_abap_char_utilities=>endian.
@@ -125,11 +142,11 @@ CLASS zcl_wasm_f64 IMPLEMENTATION.
     IF mv_special <> 0.
       CASE mv_special.
         WHEN gc_special-positive_infinity.
-          rv_value = '7FF0000000000000'.
+          rv_value = gc_special_hex-positive_infinity.
         WHEN gc_special-negative_infinity.
-          rv_value = 'FFF0000000000000'.
+          rv_value = gc_special_hex-negative_infinity.
         WHEN gc_special-nan.
-          rv_value = '7FF8000000000000'.
+          rv_value = gc_special_hex-nan.
         WHEN OTHERS.
           ASSERT 1 = 2.
       ENDCASE.

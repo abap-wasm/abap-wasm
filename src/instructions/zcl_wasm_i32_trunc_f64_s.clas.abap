@@ -21,7 +21,15 @@ CLASS zcl_wasm_i32_trunc_f64_s IMPLEMENTATION.
   METHOD zif_wasm_instruction~execute.
 * f64 to i32
     DATA lv_int TYPE i.
-    DATA(lv_float) = CAST zcl_wasm_f64( io_memory->mi_stack->pop( ) )->get_value( ).
+
+    DATA(lo_f64) = CAST zcl_wasm_f64( io_memory->mi_stack->pop( ) ).
+    IF lo_f64->get_special( ) IS NOT INITIAL.
+      RAISE EXCEPTION TYPE zcx_wasm
+        EXPORTING
+          text = 'i32.trunc_f64_s: todo special value'.
+    ENDIF.
+
+    DATA(lv_float) = lo_f64->get_value( ).
     lv_int = lv_float. " todo, this will overflow/break/fail?
     io_memory->mi_stack->push( zcl_wasm_i32=>from_signed( lv_int ) ).
   ENDMETHOD.

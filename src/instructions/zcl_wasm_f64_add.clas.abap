@@ -26,7 +26,13 @@ CLASS zcl_wasm_f64_add IMPLEMENTATION.
     DATA(lo_val1) = CAST zcl_wasm_f64( io_memory->mi_stack->pop( ) ).
     DATA(lo_val2) = CAST zcl_wasm_f64( io_memory->mi_stack->pop( ) ).
 
-    io_memory->mi_stack->push( zcl_wasm_f64=>from_float( lo_val1->get_value( ) + lo_val2->get_value( ) ) ).
+    IF lo_val1->get_special( ) IS INITIAL AND lo_val2->get_special( ) IS INITIAL.
+      io_memory->mi_stack->push( zcl_wasm_f64=>from_float( lo_val1->get_value( ) + lo_val2->get_value( ) ) ).
+    ELSE.
+      RAISE EXCEPTION TYPE zcx_wasm
+        EXPORTING
+          text = 'f64.add: todo one of the values is a special value'.
+    ENDIF.
   ENDMETHOD.
 
 ENDCLASS.
