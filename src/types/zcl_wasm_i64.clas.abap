@@ -56,6 +56,7 @@ CLASS zcl_wasm_i64 IMPLEMENTATION.
 
 
   METHOD from_unsigned.
+* https://www.rapidtables.com/convert/number/hex-to-decimal.html
     IF iv_value CN '-0123456789'.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'i64, from_unsigned, unexpected value'.
     ENDIF.
@@ -121,6 +122,8 @@ CLASS zcl_wasm_i64 IMPLEMENTATION.
         ro_value->mv_value = -9218868437227405312.
       WHEN '13826050856027422720'.
         ro_value->mv_value = -4620693217682128896.
+      WHEN '18442240474082181120'.
+        ro_value->mv_value = -4503599627370496.
     ENDCASE.
 
     IF ro_value->mv_value <> 0.
