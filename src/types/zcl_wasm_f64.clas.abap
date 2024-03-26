@@ -159,18 +159,21 @@ CLASS zcl_wasm_f64 IMPLEMENTATION.
 
 
   METHOD get_nan.
+* todo, singleton?
     ro_value = NEW #( ).
     ro_value->mv_special = gc_special-nan.
   ENDMETHOD.
 
 
   METHOD get_negative_infinity.
+* todo, singleton?
     ro_value = NEW #( ).
     ro_value->mv_special = gc_special-negative_infinity.
   ENDMETHOD.
 
 
   METHOD get_positive_infinity.
+* todo, singleton?
     ro_value = NEW #( ).
     ro_value->mv_special = gc_special-positive_infinity.
   ENDMETHOD.

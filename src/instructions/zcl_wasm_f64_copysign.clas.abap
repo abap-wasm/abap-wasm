@@ -41,6 +41,11 @@ CLASS zcl_wasm_f64_copysign IMPLEMENTATION.
     IF li_z1->get_sign( ) = li_z2->get_sign( ).
       io_memory->mi_stack->push( li_z1 ).
     ELSE.
+      "##feature-start=debug
+      IF li_z1->get_special( ) IS NOT INITIAL.
+        RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |zcl_wasm_f64_copysign: todo, handle special|.
+      ENDIF.
+      "##feature-end=debug
       io_memory->mi_stack->push( zcl_wasm_f64=>from_float( - li_z1->get_value( ) ) ).
     ENDIF.
   ENDMETHOD.
