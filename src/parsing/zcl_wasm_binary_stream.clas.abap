@@ -264,9 +264,11 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
     DATA lv_int   TYPE int8.
 
     DO.
+      "##feature-start=debug
       IF sy-index > 5.
         RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'integer representation too long'.
       ENDIF.
+      "##feature-end=debug
 
       lv_hex = shift( 1 ).
 
@@ -357,9 +359,11 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
     DATA lv_shift TYPE int8 VALUE 1.
 
     DO.
+      "##feature-start=debug
       IF sy-index > 5.
         RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'integer representation too long'.
       ENDIF.
+      "##feature-end=debug
 
       lv_val = shift( 1 ).
 
