@@ -200,7 +200,7 @@ CLASS ZCL_WASM_BINARY_STREAM IMPLEMENTATION.
 * negative infinity
       BREAK-POINT.
     ELSEIF lv_hex = '7FF8000000000000'.
-* nan
+* NaN
       BREAK-POINT.
     ENDIF.
 
