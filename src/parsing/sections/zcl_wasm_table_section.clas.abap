@@ -37,7 +37,8 @@ CLASS zcl_wasm_table_section IMPLEMENTATION.
 
     ro_section = NEW zcl_wasm_table_section( ).
 
-    DO io_body->shift_u32( ) TIMES.
+    DATA(lv_times) = io_body->shift_u32( ).
+    DO lv_times TIMES.
       CLEAR ls_table.
       ls_table-reftype = io_body->shift( 1 ).
 

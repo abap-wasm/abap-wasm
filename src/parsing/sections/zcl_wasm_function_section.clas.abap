@@ -16,7 +16,8 @@ CLASS zcl_wasm_function_section IMPLEMENTATION.
 * https://webassembly.github.io/spec/core/binary/modules.html#binary-funcsec
 
     DATA(lv_codeidx) = 0.
-    DO io_body->shift_u32( ) TIMES.
+    DATA(lv_times) = io_body->shift_u32( ).
+    DO lv_times TIMES.
       APPEND VALUE #(
         typeidx = io_body->shift_u32( )
         codeidx = lv_codeidx ) TO ct_functions.

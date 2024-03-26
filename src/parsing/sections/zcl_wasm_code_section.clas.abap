@@ -19,7 +19,8 @@ CLASS zcl_wasm_code_section IMPLEMENTATION.
     DATA lt_locals TYPE zcl_wasm_module=>ty_locals.
     DATA lt_instructions TYPE zif_wasm_instruction=>ty_list.
 
-    DO io_body->shift_u32( ) TIMES.
+    DATA(lv_times) = io_body->shift_u32( ).
+    DO lv_times TIMES.
 
       DATA(lv_code_size) = io_body->shift_u32( ).
 

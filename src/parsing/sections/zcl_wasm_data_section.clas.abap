@@ -58,7 +58,8 @@ CLASS zcl_wasm_data_section IMPLEMENTATION.
 
     ro_data = NEW zcl_wasm_data_section( ).
 
-    DO io_body->shift_u32( ) TIMES.
+    DATA(lv_times) = io_body->shift_u32( ).
+    DO lv_times TIMES.
       DATA(lv_index) = sy-index - 1.
       DATA(lv_type) = io_body->shift_u32( ).
       CLEAR lt_instructions.
