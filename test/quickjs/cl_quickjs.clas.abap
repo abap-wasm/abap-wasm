@@ -13,7 +13,7 @@ CLASS cl_quickjs DEFINITION PUBLIC.
 
     CLASS-METHODS string_to_vm
       IMPORTING
-        iv_string TYPE string
+        iv_string         TYPE string
       RETURNING
         VALUE(ro_pointer) TYPE REF TO zcl_wasm_i32
       RAISING
@@ -21,7 +21,7 @@ CLASS cl_quickjs DEFINITION PUBLIC.
 
     CLASS-METHODS string_from_vm
       IMPORTING
-        io_pointer TYPE REF TO zcl_wasm_i32
+        io_pointer       TYPE REF TO zcl_wasm_i32
       RETURNING
         VALUE(rv_string) TYPE string
       RAISING
@@ -47,12 +47,12 @@ CLASS cl_quickjs IMPLEMENTATION.
         ( name = 'wasi_snapshot_preview1' module = lo_wasi ) ) ).
     GET RUN TIME FIELD DATA(lv_end).
 
-    DATA(lv_runtime) = lv_end - lv_start.
-    WRITE / |{ lv_runtime }ms parsing QuickJS|.
-
-    rv_json = '{"runtime": "' && lv_runtime && '"}'.
+    DATA(lv_parsing) = lv_end - lv_start.
+    WRITE / |{ lv_parsing }ms parsing QuickJS|.
 
 * https://github.com/justjake/quickjs-emscripten/blob/main/c/interface.c
+
+    GET RUN TIME FIELD lv_start.
 
 * JSRuntime *QTS_NewRuntime() {
 * (result i32)
@@ -108,6 +108,11 @@ CLASS cl_quickjs IMPLEMENTATION.
     DATA(lv_char_ptr) = CAST zcl_wasm_i32( lt_result[ 1 ] ).
 
     WRITE / |Result: { string_from_vm( lv_char_ptr ) }|.
+
+    GET RUN TIME FIELD lv_end.
+    DATA(lv_runtime) = ( lv_end - lv_start ) / 1000.
+    WRITE / |{ lv_runtime }s running QuickJS|.
+    rv_json = '{"parsing": "' && lv_parsing && '", "runtime": "' && lv_runtime && '"}'.
 
   ENDMETHOD.
 
