@@ -43,9 +43,11 @@ CLASS zcl_wasm_block IMPLEMENTATION.
         ev_last_opcode  = DATA(lv_last_opcode)
         et_instructions = DATA(lt_instructions) ).
 
+    "##feature-start=debug
     IF lv_last_opcode <> zif_wasm_opcodes=>c_opcodes-end.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |block, expected end|.
     ENDIF.
+    "##feature-end=debug
 
     ri_instruction = NEW zcl_wasm_block(
       iv_block_type   = lv_block_type
