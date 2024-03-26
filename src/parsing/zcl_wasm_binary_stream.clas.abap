@@ -198,13 +198,16 @@ CLASS ZCL_WASM_BINARY_STREAM IMPLEMENTATION.
 
     IF lv_hex = '7FF0000000000000'.
 * positive infinity
-      BREAK-POINT.
+      ro_float = zcl_wasm_f64=>get_positive_infinity( ).
+      RETURN.
     ELSEIF lv_hex = 'FFF0000000000000'.
 * negative infinity
-      BREAK-POINT.
+      ro_float = zcl_wasm_f64=>get_negative_infinity( ).
+      RETURN.
     ELSEIF lv_hex = '7FF8000000000000'.
 * NaN
-      BREAK-POINT.
+      ro_float = zcl_wasm_f64=>get_nan( ).
+      RETURN.
     ENDIF.
 
     GET BIT 1 OF lv_hex INTO lv_bit.
