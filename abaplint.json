@@ -156,9 +156,7 @@
     "object_naming": {
       "exclude": ["/test/"],
       "patternKind": "required",
-      "ignoreNames": [],
-      "ignorePatterns": [],
-      "clas": "^ZC(L|X)\\_WAS?(T|M)",
+      "clas": "^ZC(L|X)\\_WASM",
       "intf": "^ZIF\\_WASM",
       "prog": "^ZWASM",
       "fugr": "^ZWASM",

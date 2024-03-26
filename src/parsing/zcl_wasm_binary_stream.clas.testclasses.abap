@@ -83,7 +83,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
     DATA(lo_stream) = NEW zcl_wasm_binary_stream( CONV xstring( |0000000000000000| ) ).
     cl_abap_unit_assert=>assert_equals(
-      act = lo_stream->shift_f64( )
+      act = lo_stream->shift_f64( )->get_value( )
       exp = 0 ).
 
   ENDMETHOD.
@@ -92,7 +92,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
     DATA(lo_stream) = NEW zcl_wasm_binary_stream( CONV xstring( |000000000000F03F| ) ).
     cl_abap_unit_assert=>assert_equals(
-      act = lo_stream->shift_f64( )
+      act = lo_stream->shift_f64( )->get_value( )
       exp = 1 ).
 
   ENDMETHOD.
@@ -101,7 +101,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
     DATA(lo_stream) = NEW zcl_wasm_binary_stream( CONV xstring( |0000000000000840| ) ).
     cl_abap_unit_assert=>assert_equals(
-      act = lo_stream->shift_f64( )
+      act = lo_stream->shift_f64( )->get_value( )
       exp = 3 ).
 
   ENDMETHOD.

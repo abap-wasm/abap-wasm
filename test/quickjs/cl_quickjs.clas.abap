@@ -54,6 +54,7 @@ CLASS cl_quickjs IMPLEMENTATION.
 
     GET RUN TIME FIELD lv_start.
 
+
 * JSRuntime *QTS_NewRuntime() {
 * (result i32)
     DATA(lt_result) = gi_wasm->execute_function_export( 'QTS_NewRuntime' ).

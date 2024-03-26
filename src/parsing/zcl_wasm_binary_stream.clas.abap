@@ -32,7 +32,7 @@ CLASS zcl_wasm_binary_stream DEFINITION
         VALUE(rv_f) TYPE f .
     METHODS shift_f64
       RETURNING
-        VALUE(rv_f) TYPE f .
+        VALUE(ro_float) TYPE REF TO zcl_wasm_f64 .
     METHODS shift_i64
       RETURNING
         VALUE(rv_int) TYPE int8
@@ -46,7 +46,8 @@ CLASS zcl_wasm_binary_stream DEFINITION
     METHODS shift_utf8
       RETURNING
         VALUE(rv_name) TYPE string
-      RAISING zcx_wasm.
+      RAISING
+        zcx_wasm.
 
     CLASS-METHODS reverse_hex
       IMPORTING
@@ -61,7 +62,7 @@ ENDCLASS.
 
 
 
-CLASS zcl_wasm_binary_stream IMPLEMENTATION.
+CLASS ZCL_WASM_BINARY_STREAM IMPLEMENTATION.
 
 
   METHOD constructor.
@@ -80,6 +81,23 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
   METHOD peek.
 
     rv_data = mv_data+mv_pointer(iv_length).
+
+  ENDMETHOD.
+
+
+  METHOD reverse_hex.
+* todo, will CHANGING make this method faster?
+    DATA lv_hex    TYPE x LENGTH 1.
+    DATA lv_char   TYPE c LENGTH 1.
+    DATA lv_len    TYPE i.
+    DATA lv_offset TYPE i.
+
+    lv_len = xstrlen( iv_hex ).
+    DO lv_len TIMES.
+      lv_offset = lv_len - sy-index.
+      lv_hex = iv_hex+lv_offset(1).
+      CONCATENATE rv_hex lv_hex INTO rv_hex IN BYTE MODE.
+    ENDDO.
 
   ENDMETHOD.
 
@@ -154,25 +172,11 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
 
   ENDMETHOD.
 
-  METHOD reverse_hex.
-* todo, will CHANGING make this method faster?
-    DATA lv_hex    TYPE x LENGTH 1.
-    DATA lv_char   TYPE c LENGTH 1.
-    DATA lv_len    TYPE i.
-    DATA lv_offset TYPE i.
-
-    lv_len = xstrlen( iv_hex ).
-    DO lv_len TIMES.
-      lv_offset = lv_len - sy-index.
-      lv_hex = iv_hex+lv_offset(1).
-      CONCATENATE rv_hex lv_hex INTO rv_hex IN BYTE MODE.
-    ENDDO.
-
-  ENDMETHOD.
 
   METHOD shift_f64.
 * in little endian order
 * https://en.wikipedia.org/wiki/Double-precision_floating-point_format
+* https://people.astro.umass.edu/~weinberg/a732/notes07_01.pdf
 
     DATA lv_exponentx TYPE x LENGTH 2. " 11 bits
     DATA lv_exponent  TYPE i.
@@ -180,15 +184,31 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
     DATA lv_index     TYPE i.
     DATA lv_half      TYPE f VALUE 1.
     DATA lv_bit       TYPE c LENGTH 1.
+    DATA lv_f         TYPE f.
 
     DATA lv_hex TYPE x LENGTH 8.
     lv_hex = shift( 8 ).
     IF lv_hex = '0000000000000000'.
+      ro_float = zcl_wasm_f64=>from_float( 0 ).
       RETURN.
     ENDIF.
 
     lv_hex = reverse_hex( lv_hex ).
     " WRITE: / 'reversed:', lv_hex.
+
+    IF lv_hex = '7FF0000000000000'.
+* positive infinity
+      ro_float = zcl_wasm_f64=>get_positive_infinity( ).
+      RETURN.
+    ELSEIF lv_hex = 'FFF0000000000000'.
+* negative infinity
+      ro_float = zcl_wasm_f64=>get_negative_infinity( ).
+      RETURN.
+    ELSEIF lv_hex = '7FF8000000000000'.
+* NaN
+      ro_float = zcl_wasm_f64=>get_nan( ).
+      RETURN.
+    ENDIF.
 
     GET BIT 1 OF lv_hex INTO lv_bit.
     DATA(lv_sign) = lv_bit.
@@ -216,16 +236,58 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
     DO 24 TIMES.
       GET BIT sy-index OF lv_fractionx INTO lv_bit.
       IF lv_bit = '1'.
-        rv_f = rv_f + lv_half.
+        lv_f = lv_f + lv_half.
       ENDIF.
       lv_half = lv_half / 2.
     ENDDO.
 
-    rv_f = rv_f * ( 2 ** lv_exponent ).
+    lv_f = lv_f * ( 2 ** lv_exponent ).
 
     IF lv_sign > 0.
-      rv_f = 0 - rv_f.
+      lv_f = 0 - lv_f.
     ENDIF.
+
+    ro_float = zcl_wasm_f64=>from_float( lv_f ).
+
+  ENDMETHOD.
+
+
+  METHOD shift_i32.
+
+* https://webassembly.github.io/spec/core/binary/values.html#binary-int
+
+* https://en.wikipedia.org/wiki/LEB128
+
+    DATA lv_hex   TYPE x LENGTH 1.
+    DATA lv_bit   TYPE c LENGTH 1.
+    DATA lv_shift TYPE int8 VALUE 1.
+    DATA lv_int   TYPE int8.
+
+    DO.
+      IF sy-index > 5.
+        RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'integer representation too long'.
+      ENDIF.
+
+      lv_hex = shift( 1 ).
+
+      GET BIT 1 OF lv_hex INTO lv_bit.
+      SET BIT 1 OF lv_hex TO 0.
+
+      lv_int = lv_int + CONV i( lv_hex ) * lv_shift.
+
+      IF lv_bit = '0'.
+        GET BIT 2 OF lv_hex INTO lv_bit.
+        IF lv_bit = '1'.
+          lv_int = lv_int - lv_shift * 128.
+        ENDIF.
+        rv_int = lv_int.
+        RETURN.
+      ENDIF.
+
+      lv_shift = lv_shift * 128.
+    ENDDO.
+
+    rv_int = lv_int.
 
   ENDMETHOD.
 
@@ -280,46 +342,6 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
     ENDDO.
 
     ASSERT 1 = 'not possible'.
-
-  ENDMETHOD.
-
-
-  METHOD shift_i32.
-
-* https://webassembly.github.io/spec/core/binary/values.html#binary-int
-
-* https://en.wikipedia.org/wiki/LEB128
-
-    DATA lv_hex   TYPE x LENGTH 1.
-    DATA lv_bit   TYPE c LENGTH 1.
-    DATA lv_shift TYPE int8 VALUE 1.
-    DATA lv_int   TYPE int8.
-
-    DO.
-      IF sy-index > 5.
-        RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'integer representation too long'.
-      ENDIF.
-
-      lv_hex = shift( 1 ).
-
-      GET BIT 1 OF lv_hex INTO lv_bit.
-      SET BIT 1 OF lv_hex TO 0.
-
-      lv_int = lv_int + CONV i( lv_hex ) * lv_shift.
-
-      IF lv_bit = '0'.
-        GET BIT 2 OF lv_hex INTO lv_bit.
-        IF lv_bit = '1'.
-          lv_int = lv_int - lv_shift * 128.
-        ENDIF.
-        rv_int = lv_int.
-        RETURN.
-      ENDIF.
-
-      lv_shift = lv_shift * 128.
-    ENDDO.
-
-    rv_int = lv_int.
 
   ENDMETHOD.
 

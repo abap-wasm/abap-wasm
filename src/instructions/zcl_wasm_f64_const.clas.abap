@@ -4,27 +4,34 @@ CLASS zcl_wasm_f64_const DEFINITION PUBLIC.
 
     METHODS constructor
       IMPORTING
-        !iv_float TYPE f.
+        !io_float TYPE REF TO zcl_wasm_f64.
 
     CLASS-METHODS parse
-      IMPORTING !io_body TYPE REF TO zcl_wasm_binary_stream
-      RETURNING VALUE(ri_instruction) TYPE REF TO zif_wasm_instruction.
+      IMPORTING
+        !io_body              TYPE REF TO zcl_wasm_binary_stream
+      RETURNING
+        VALUE(ri_instruction) TYPE REF TO zif_wasm_instruction.
+  PROTECTED SECTION.
   PRIVATE SECTION.
-    DATA mv_value TYPE f.
+    DATA mo_value TYPE REF TO zcl_wasm_f64.
 ENDCLASS.
 
-CLASS zcl_wasm_f64_const IMPLEMENTATION.
+
+
+CLASS ZCL_WASM_F64_CONST IMPLEMENTATION.
+
 
   METHOD constructor.
-    mv_value = iv_float.
+    mo_value = io_float.
   ENDMETHOD.
+
 
   METHOD parse.
     ri_instruction = NEW zcl_wasm_f64_const( io_body->shift_f64( ) ).
   ENDMETHOD.
 
-  METHOD zif_wasm_instruction~execute.
-    io_memory->mi_stack->push( zcl_wasm_f64=>from_float( mv_value ) ).
-  ENDMETHOD.
 
+  METHOD zif_wasm_instruction~execute.
+    io_memory->mi_stack->push( mo_value ).
+  ENDMETHOD.
 ENDCLASS.
