@@ -8,9 +8,8 @@ ENDCLASS.
 CLASS zcl_wasm_memory_frame IMPLEMENTATION.
 
   METHOD zif_wasm_memory_frame~local_get.
-
-    DATA(lv_index) = iv_index + 1.
-    READ TABLE mt_locals INDEX lv_index INTO ri_value.
+* the caller must translate the index to ABAP index
+    READ TABLE mt_locals INDEX iv_index INTO ri_value.
     "##feature-start=debug
     IF sy-subrc <> 0.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_memory_frame: not found in local memory, local_get'.

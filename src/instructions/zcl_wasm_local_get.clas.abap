@@ -11,9 +11,12 @@ CLASS zcl_wasm_local_get DEFINITION
         !iv_localidx TYPE int8.
 
     CLASS-METHODS parse
-      IMPORTING !io_body TYPE REF TO zcl_wasm_binary_stream
-      RETURNING VALUE(ri_instruction) TYPE REF TO zif_wasm_instruction
-      RAISING zcx_wasm.
+      IMPORTING
+        !io_body TYPE REF TO zcl_wasm_binary_stream
+      RETURNING
+        VALUE(ri_instruction) TYPE REF TO zif_wasm_instruction
+      RAISING
+        zcx_wasm.
 
   PROTECTED SECTION.
   PRIVATE SECTION.
@@ -29,7 +32,7 @@ CLASS zcl_wasm_local_get IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD parse.
-    ri_instruction = NEW zcl_wasm_local_get( io_body->shift_u32( ) ).
+    ri_instruction = NEW zcl_wasm_local_get( io_body->shift_u32( ) + 1 ).
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
