@@ -65,10 +65,8 @@ CLASS cl_scrypt IMPLEMENTATION.
     ENDTRY.
 
     GET RUN TIME FIELD lv_end.
-
     DATA(lv_runtime) = ( lv_end - lv_start ) / 1000.
     WRITE / |{ lv_runtime }s running Scrypt-WASM|.
-
     rv_json = '{"parsing": "' && lv_parsing && '", "runtime": "' && lv_runtime && '"}'.
 
 * running optimized version:

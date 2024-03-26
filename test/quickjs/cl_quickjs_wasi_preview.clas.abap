@@ -15,6 +15,8 @@ CLASS cl_quickjs_wasi_preview IMPLEMENTATION.
     INSERT 'fd_write' INTO TABLE mt_functions.
     INSERT 'proc_exit' INTO TABLE mt_functions.
     INSERT 'fd_seek' INTO TABLE mt_functions.
+    INSERT 'environ_sizes_get' INTO TABLE mt_functions.
+    INSERT 'environ_get' INTO TABLE mt_functions.
 
     mo_memory = io_memory.
   ENDMETHOD.
@@ -28,6 +30,24 @@ CLASS cl_quickjs_wasi_preview IMPLEMENTATION.
     DATA(li_linear) = mo_memory->get_linear( ).
 
     CASE iv_name.
+      WHEN 'environ_get'.
+* https://wasix.org/docs/api-reference/wasi/environ_get
+        INSERT zcl_wasm_i32=>from_signed( 0 ) INTO rt_results.
+      WHEN 'environ_sizes_get'.
+* https://wasix.org/docs/api-reference/wasi/environ_sizes_get
+* (param i32 i32) (result i32)
+        DATA(lo_ptr1) = CAST zcl_wasm_i32( it_parameters[ 1 ] ).
+        DATA(lo_ptr2) = CAST zcl_wasm_i32( it_parameters[ 2 ] ).
+
+        li_linear->set(
+          iv_bytes  = '00000000'
+          iv_offset = lo_ptr1->get_signed( ) ).
+
+        li_linear->set(
+          iv_bytes  = '00000000'
+          iv_offset = lo_ptr2->get_signed( ) ).
+
+        INSERT zcl_wasm_i32=>from_signed( 0 ) INTO rt_results.
       WHEN 'fd_write'.
 * https://github.com/tinygo-org/tinygo/blob/6384ecace093df2d0b93915886954abfc4ecfe01/targets/wasm_exec.js#L242
 * (param i32 i32 i32 i32) (result i32)

@@ -19,7 +19,10 @@ CLASS zcl_wasm_i64_reinterpret_f64 IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'todo, execute instruction zcl_wasm_i64_reinterpret_f64'.
+    DATA lv_int8 TYPE int8.
+    DATA(lv_hex) = CAST zcl_wasm_f64( io_memory->mi_stack->pop( ) )->get_hex( ).
+    lv_int8 = lv_hex.
+    io_memory->mi_stack->push( zcl_wasm_i64=>from_signed( lv_int8 ) ).
   ENDMETHOD.
 
 ENDCLASS.
