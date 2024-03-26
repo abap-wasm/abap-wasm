@@ -19,7 +19,14 @@ CLASS zcl_wasm_i64_trunc_f64_s IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    DATA(lv_float) = CAST zcl_wasm_f64( io_memory->mi_stack->pop( ) )->get_value( ).
+    DATA(lo_f64) = CAST zcl_wasm_f64( io_memory->mi_stack->pop( ) ).
+    IF lo_f64->get_special( ) IS NOT INITIAL.
+      RAISE EXCEPTION TYPE zcx_wasm
+        EXPORTING
+          text = 'i64.trunc_f64_s: todo special value'.
+    ENDIF.
+
+    DATA(lv_float) = lo_f64->get_value( ).
     io_memory->mi_stack->push( zcl_wasm_i64=>from_signed( trunc( lv_float ) ) ).
   ENDMETHOD.
 

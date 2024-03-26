@@ -16,11 +16,8 @@ CLASS zcl_wasm_memory DEFINITION
     DATA mi_stack TYPE REF TO zif_wasm_memory_stack.
 
 *********** Frames with locals
+    DATA mi_frame TYPE REF TO zif_wasm_memory_frame.
     METHODS push_frame.
-    METHODS get_frame
-      RETURNING
-        VALUE(ri_frame) TYPE REF TO zif_wasm_memory_frame
-      RAISING zcx_wasm.
     METHODS pop_frame
       RAISING zcx_wasm.
 
@@ -225,8 +222,8 @@ CLASS zcl_wasm_memory IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD push_frame.
-    DATA(lo_frame) = NEW zcl_wasm_memory_frame( ).
-    APPEND lo_frame TO mt_frames.
+    APPEND mi_frame TO mt_frames.
+    mi_frame ?= NEW zcl_wasm_memory_frame( ).
   ENDMETHOD.
 
   METHOD pop_frame.
@@ -237,18 +234,9 @@ CLASS zcl_wasm_memory IMPLEMENTATION.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_memory: no frames, pop'.
     ENDIF.
     "##feature-end=debug
-    DELETE mt_frames INDEX lv_last.
-  ENDMETHOD.
 
-  METHOD get_frame.
-    DATA lv_last TYPE i.
-    lv_last = lines( mt_frames ).
-    READ TABLE mt_frames INDEX lv_last INTO ri_frame.
-    "##feature-start=debug
-    IF sy-subrc <> 0.
-      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_memory: no frames, get'.
-    ENDIF.
-    "##feature-end=debug
+    READ TABLE mt_frames INTO mi_frame INDEX lv_last.
+    DELETE mt_frames INDEX lv_last.
   ENDMETHOD.
 
   METHOD get_linear.

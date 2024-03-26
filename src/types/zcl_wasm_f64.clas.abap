@@ -60,6 +60,12 @@ CLASS zcl_wasm_f64 DEFINITION
       RAISING
         zcx_wasm.
 
+    CONSTANTS: BEGIN OF gc_special_hex,
+                 positive_infinity TYPE ty_hex8 VALUE '7FF0000000000000',
+                 negative_infinity TYPE ty_hex8 VALUE 'FFF0000000000000',
+                 nan               TYPE ty_hex8 VALUE '7FF8000000000000',
+               END OF gc_special_hex.
+
     TYPES ty_special TYPE i.
     CONSTANTS: BEGIN OF gc_special,
                  positive_infinity TYPE ty_special VALUE 1,
@@ -77,7 +83,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_WASM_F64 IMPLEMENTATION.
+CLASS zcl_wasm_f64 IMPLEMENTATION.
 
 
   METHOD from_float.
@@ -93,6 +99,17 @@ CLASS ZCL_WASM_F64 IMPLEMENTATION.
     DATA lv_f TYPE f.
     FIELD-SYMBOLS <lv_hex> TYPE x.
 
+
+    IF iv_hex = gc_special_hex-positive_infinity.
+      ro_value = get_positive_infinity( ).
+      RETURN.
+    ELSEIF iv_hex = gc_special_hex-negative_infinity.
+      ro_value = get_negative_infinity( ).
+      RETURN.
+    ELSEIF iv_hex = gc_special_hex-nan.
+      ro_value = get_nan( ).
+      RETURN.
+    ENDIF.
 
     ASSIGN lv_f TO <lv_hex> CASTING TYPE x.
 
@@ -121,24 +138,42 @@ CLASS ZCL_WASM_F64 IMPLEMENTATION.
 
   METHOD get_hex.
     FIELD-SYMBOLS <lv_hex> TYPE x.
+
+    IF mv_special <> 0.
+      CASE mv_special.
+        WHEN gc_special-positive_infinity.
+          rv_value = gc_special_hex-positive_infinity.
+        WHEN gc_special-negative_infinity.
+          rv_value = gc_special_hex-negative_infinity.
+        WHEN gc_special-nan.
+          rv_value = gc_special_hex-nan.
+        WHEN OTHERS.
+          ASSERT 1 = 2.
+      ENDCASE.
+      RETURN.
+    ENDIF.
+
     ASSIGN mv_value TO <lv_hex> CASTING TYPE x.
     rv_value = <lv_hex>.
   ENDMETHOD.
 
 
   METHOD get_nan.
+* todo, singleton?
     ro_value = NEW #( ).
     ro_value->mv_special = gc_special-nan.
   ENDMETHOD.
 
 
   METHOD get_negative_infinity.
+* todo, singleton?
     ro_value = NEW #( ).
     ro_value->mv_special = gc_special-negative_infinity.
   ENDMETHOD.
 
 
   METHOD get_positive_infinity.
+* todo, singleton?
     ro_value = NEW #( ).
     ro_value->mv_special = gc_special-positive_infinity.
   ENDMETHOD.
@@ -168,7 +203,12 @@ CLASS ZCL_WASM_F64 IMPLEMENTATION.
 
 
   METHOD get_value.
-    ASSERT mv_special IS INITIAL.
+    IF mv_special IS NOT INITIAL.
+      RAISE EXCEPTION TYPE zcx_wasm
+        EXPORTING
+          text = 'f64: error trying to get value for special'.
+    ENDIF.
+
     rv_value = mv_value.
   ENDMETHOD.
 
