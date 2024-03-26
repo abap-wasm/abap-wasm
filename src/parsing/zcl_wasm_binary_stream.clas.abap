@@ -57,23 +57,25 @@ CLASS zcl_wasm_binary_stream DEFINITION
   PROTECTED SECTION.
   PRIVATE SECTION.
     DATA mv_data TYPE xstring .
+    DATA mv_xstrlen TYPE i.
     DATA mv_pointer TYPE i.
 ENDCLASS.
 
 
 
-CLASS zcl_wasm_binary_stream IMPLEMENTATION.
+CLASS ZCL_WASM_BINARY_STREAM IMPLEMENTATION.
 
 
   METHOD constructor.
     mv_data = iv_data.
     mv_pointer = 0.
+    mv_xstrlen = xstrlen( mv_data ).
   ENDMETHOD.
 
 
   METHOD get_length.
 
-    rv_remaining = xstrlen( mv_data ) - mv_pointer.
+    rv_remaining = mv_xstrlen - mv_pointer.
 
   ENDMETHOD.
 
@@ -264,9 +266,11 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
     DATA lv_int   TYPE int8.
 
     DO.
+      "##feature-start=debug
       IF sy-index > 5.
         RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'integer representation too long'.
       ENDIF.
+      "##feature-end=debug
 
       lv_hex = shift( 1 ).
 
@@ -357,9 +361,11 @@ CLASS zcl_wasm_binary_stream IMPLEMENTATION.
     DATA lv_shift TYPE int8 VALUE 1.
 
     DO.
+      "##feature-start=debug
       IF sy-index > 5.
         RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'integer representation too long'.
       ENDIF.
+      "##feature-end=debug
 
       lv_val = shift( 1 ).
 
