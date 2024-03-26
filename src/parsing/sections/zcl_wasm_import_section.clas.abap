@@ -70,7 +70,8 @@ CLASS zcl_wasm_import_section IMPLEMENTATION.
     DATA lt_imports TYPE ty_imports_tt.
     DATA ls_import LIKE LINE OF lt_imports.
 
-    DO io_body->shift_u32( ) TIMES.
+    DATA(lv_times) = io_body->shift_u32( ).
+    DO lv_times TIMES.
       CLEAR ls_import.
 
       ls_import-module = io_body->shift_utf8( ).

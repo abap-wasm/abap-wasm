@@ -96,7 +96,8 @@ CLASS zcl_wasm_global_section IMPLEMENTATION.
     DATA lt_globals TYPE ty_globals.
     DATA ls_global  LIKE LINE OF lt_globals.
 
-    DO io_body->shift_u32( ) TIMES.
+    DATA(lv_times) = io_body->shift_u32( ).
+    DO lv_times TIMES.
       CLEAR ls_global.
       ls_global-type = io_body->shift( 1 ).
       ls_global-mut = io_body->shift( 1 ).

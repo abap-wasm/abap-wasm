@@ -11,7 +11,8 @@ ENDCLASS.
 CLASS zcl_wasm_select_star IMPLEMENTATION.
 
   METHOD parse.
-    DO io_body->shift_u32( ) TIMES.
+    DATA(lv_times) = io_body->shift_u32( ).
+    DO lv_times TIMES.
       io_body->shift( 1 ).
     ENDDO.
 * todo, pass types to constructor
