@@ -32,7 +32,7 @@ CLASS zcl_wasm_binary_stream DEFINITION
         VALUE(rv_f) TYPE f .
     METHODS shift_f64
       RETURNING
-        VALUE(rv_f) TYPE f .
+        VALUE(ro_float) TYPE REF TO zcl_wasm_f64 .
     METHODS shift_i64
       RETURNING
         VALUE(rv_int) TYPE int8
@@ -46,7 +46,8 @@ CLASS zcl_wasm_binary_stream DEFINITION
     METHODS shift_utf8
       RETURNING
         VALUE(rv_name) TYPE string
-      RAISING zcx_wasm.
+      RAISING
+        zcx_wasm.
 
     CLASS-METHODS reverse_hex
       IMPORTING
@@ -183,10 +184,12 @@ CLASS ZCL_WASM_BINARY_STREAM IMPLEMENTATION.
     DATA lv_index     TYPE i.
     DATA lv_half      TYPE f VALUE 1.
     DATA lv_bit       TYPE c LENGTH 1.
+    DATA lv_f         TYPE f.
 
     DATA lv_hex TYPE x LENGTH 8.
     lv_hex = shift( 8 ).
     IF lv_hex = '0000000000000000'.
+      ro_float = zcl_wasm_f64=>from_float( 0 ).
       RETURN.
     ENDIF.
 
@@ -230,16 +233,18 @@ CLASS ZCL_WASM_BINARY_STREAM IMPLEMENTATION.
     DO 24 TIMES.
       GET BIT sy-index OF lv_fractionx INTO lv_bit.
       IF lv_bit = '1'.
-        rv_f = rv_f + lv_half.
+        lv_f = lv_f + lv_half.
       ENDIF.
       lv_half = lv_half / 2.
     ENDDO.
 
-    rv_f = rv_f * ( 2 ** lv_exponent ).
+    lv_f = lv_f * ( 2 ** lv_exponent ).
 
     IF lv_sign > 0.
-      rv_f = 0 - rv_f.
+      lv_f = 0 - lv_f.
     ENDIF.
+
+    ro_float = zcl_wasm_f64=>from_float( lv_f ).
 
   ENDMETHOD.
 
