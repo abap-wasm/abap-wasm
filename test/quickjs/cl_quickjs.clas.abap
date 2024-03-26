@@ -66,14 +66,14 @@ CLASS cl_quickjs IMPLEMENTATION.
       iv_name       = 'QTS_NewContext'
       it_parameters = VALUE #(
         ( lv_runtime_ptr )
-        ( zcl_wasm_i32=>from_signed( 0 ) ) ) ).
+        ( zcl_wasm_i32=>from_signed( 1023 ) ) ) ).
     DATA(lv_context_ptr) = lt_result[ 1 ].
 
 * MaybeAsync(JSValue *) QTS_Eval(JSContext *ctx, BorrowedHeapChar *js_code, size_t js_code_length, const char *filename, EvalDetectModule detectModule, EvalFlags evalFlags) {
 * EvalDetectModule is 0 or 1
 * EvalFlags see https://github.com/justjake/quickjs-emscripten/blob/cc9b624930dfb319a0198587386c405b86af4740/packages/quickjs-emscripten-core/src/types.ts#L266
 * (param i32 i32 i32 i32 i32 i32) (result i32)
-    DATA(lv_code) = |1 + 2|.
+    DATA(lv_code) = |2 + 2|.
     DATA(lo_code_ptr) = string_to_vm( lv_code ).
     DATA(lo_filename_ptr) = string_to_vm( |test.js| ).
     lt_result = gi_wasm->execute_function_export(
