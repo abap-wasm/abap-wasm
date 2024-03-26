@@ -36,7 +36,7 @@ CLASS zcl_wasm_local_get IMPLEMENTATION.
 
 * https://webassembly.github.io/spec/core/exec/instructions.html#xref-syntax-instructions-syntax-instr-variable-mathsf-local-get-x
 
-    io_memory->mi_stack->push( io_memory->get_frame( )->local_get( mv_localidx ) ).
+    io_memory->mi_stack->push( io_memory->mi_frame->local_get( mv_localidx ) ).
 
   ENDMETHOD.
 ENDCLASS.

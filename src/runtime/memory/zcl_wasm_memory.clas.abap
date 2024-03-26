@@ -18,10 +18,6 @@ CLASS zcl_wasm_memory DEFINITION
 *********** Frames with locals
     DATA mi_frame TYPE REF TO zif_wasm_memory_frame.
     METHODS push_frame.
-    METHODS get_frame
-      RETURNING
-        VALUE(ri_frame) TYPE REF TO zif_wasm_memory_frame
-      RAISING zcx_wasm.
     METHODS pop_frame
       RAISING zcx_wasm.
 
@@ -241,16 +237,6 @@ CLASS zcl_wasm_memory IMPLEMENTATION.
 
     READ TABLE mt_frames INTO mi_frame INDEX lv_last.
     DELETE mt_frames INDEX lv_last.
-  ENDMETHOD.
-
-  METHOD get_frame.
-    "##feature-start=debug
-    IF mi_frame IS INITIAL.
-      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_memory: no frames, get'.
-    ENDIF.
-    "##feature-end=debug
-
-    ri_frame = mi_frame.
   ENDMETHOD.
 
   METHOD get_linear.
