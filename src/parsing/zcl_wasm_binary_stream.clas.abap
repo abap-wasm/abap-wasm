@@ -57,23 +57,25 @@ CLASS zcl_wasm_binary_stream DEFINITION
   PROTECTED SECTION.
   PRIVATE SECTION.
     DATA mv_data TYPE xstring .
+    DATA mv_xstrlen TYPE i.
     DATA mv_pointer TYPE i.
 ENDCLASS.
 
 
 
-CLASS zcl_wasm_binary_stream IMPLEMENTATION.
+CLASS ZCL_WASM_BINARY_STREAM IMPLEMENTATION.
 
 
   METHOD constructor.
     mv_data = iv_data.
     mv_pointer = 0.
+    mv_xstrlen = xstrlen( mv_data ).
   ENDMETHOD.
 
 
   METHOD get_length.
 
-    rv_remaining = xstrlen( mv_data ) - mv_pointer.
+    rv_remaining = mv_xstrlen - mv_pointer.
 
   ENDMETHOD.
 
