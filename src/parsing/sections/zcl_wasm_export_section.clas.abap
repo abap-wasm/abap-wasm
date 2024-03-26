@@ -21,7 +21,7 @@ CLASS zcl_wasm_export_section IMPLEMENTATION.
 
     DO lv_count TIMES.
       ls_result-name = io_body->shift_utf8( ).
-      ls_result-type = io_body->shift( 1 ).
+      ls_result-type = io_body->shift_one_byte( ).
 
       ASSERT ls_result-type = zif_wasm_types=>c_export_type-func
         OR ls_result-type = zif_wasm_types=>c_export_type-table

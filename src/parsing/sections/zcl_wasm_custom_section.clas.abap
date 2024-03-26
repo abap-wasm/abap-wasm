@@ -23,7 +23,7 @@ CLASS zcl_wasm_custom_section IMPLEMENTATION.
     ENDIF.
 
     WHILE io_body->get_length( ) > 0.
-      DATA(lv_byte) = io_body->shift( 1 ).
+      DATA(lv_byte) = io_body->shift_one_byte( ).
       CASE lv_byte.
         WHEN '00'.
 * module name

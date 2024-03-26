@@ -27,7 +27,7 @@ CLASS zcl_wasm_memory_init IMPLEMENTATION.
 
   METHOD parse.
     ri_instruction = NEW zcl_wasm_memory_init( io_body->shift_u32( ) ).
-    ASSERT io_body->shift( 1 ) = '00'.
+    ASSERT io_body->shift_one_byte( ) = '00'.
   ENDMETHOD.
 
 

@@ -40,11 +40,11 @@ CLASS zcl_wasm_table_section IMPLEMENTATION.
     DATA(lv_times) = io_body->shift_u32( ).
     DO lv_times TIMES.
       CLEAR ls_table.
-      ls_table-reftype = io_body->shift( 1 ).
+      ls_table-reftype = io_body->shift_one_byte( ).
 
       CASE ls_table-reftype.
         WHEN zif_wasm_types=>c_reftype-funcref OR zif_wasm_types=>c_reftype-externref.
-          CASE io_body->shift( 1 ).
+          CASE io_body->shift_one_byte( ).
             WHEN zif_wasm_types=>c_limit-min.
               ls_table-limit-min = io_body->shift_u32( ).
               ls_table-limit-max = 0.

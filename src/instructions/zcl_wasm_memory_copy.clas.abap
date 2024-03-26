@@ -11,8 +11,8 @@ CLASS zcl_wasm_memory_copy IMPLEMENTATION.
 
   METHOD parse.
     ri_instruction = NEW zcl_wasm_memory_copy( ).
-    ASSERT io_body->shift( 1 ) = '00'.
-    ASSERT io_body->shift( 1 ) = '00'.
+    ASSERT io_body->shift_one_byte( ) = '00'.
+    ASSERT io_body->shift_one_byte( ) = '00'.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.

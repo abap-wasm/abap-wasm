@@ -39,7 +39,7 @@ CLASS zcl_wasm_parser IMPLEMENTATION.
 
     WHILE lo_stream->get_length( ) > 0.
 * https://webassembly.github.io/spec/core/binary/modules.html#sections
-      DATA(lv_section) = lo_stream->shift( 1 ).
+      DATA(lv_section) = lo_stream->shift_one_byte( ).
       DATA(lv_length) = lo_stream->shift_u32( ).
       DATA(lo_body) = NEW zcl_wasm_binary_stream( lo_stream->shift( lv_length ) ).
 

@@ -10,7 +10,7 @@ ENDCLASS.
 CLASS zcl_wasm_i32x4_extract_lane IMPLEMENTATION.
 
   METHOD parse.
-    io_body->shift( 1 ).
+    io_body->shift_one_byte( ).
     ri_instruction = NEW zcl_wasm_i32x4_extract_lane( ).
   ENDMETHOD.
 

@@ -4,14 +4,14 @@ CLASS zcl_wasm_ref_null DEFINITION PUBLIC.
 
     METHODS constructor
       IMPORTING
-        iv_ref_type TYPE xstring.
+        iv_ref_type TYPE zif_wasm_types=>ty_type.
 
     CLASS-METHODS parse
       IMPORTING !io_body TYPE REF TO zcl_wasm_binary_stream
       RETURNING VALUE(ri_instruction) TYPE REF TO zif_wasm_instruction.
 
   PRIVATE SECTION.
-    DATA mv_ref_type TYPE xstring.
+    DATA mv_ref_type TYPE zif_wasm_types=>ty_type.
 ENDCLASS.
 
 CLASS zcl_wasm_ref_null IMPLEMENTATION.
@@ -21,7 +21,7 @@ CLASS zcl_wasm_ref_null IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD parse.
-    ri_instruction = NEW zcl_wasm_ref_null( io_body->shift( 1 ) ).
+    ri_instruction = NEW zcl_wasm_ref_null( io_body->shift_one_byte( ) ).
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.

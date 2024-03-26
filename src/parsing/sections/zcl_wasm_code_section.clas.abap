@@ -30,7 +30,7 @@ CLASS zcl_wasm_code_section IMPLEMENTATION.
       DATA(lv_locals_count) = lo_code->shift_u32( ).
       DO lv_locals_count TIMES.
         DATA(lv_count) = lo_code->shift_u32( ).
-        DATA(lv_locals_type) = lo_code->shift( 1 ).
+        DATA(lv_locals_type) = lo_code->shift_one_byte( ).
         APPEND VALUE #(
           count = lv_count
           type  = lv_locals_type ) TO lt_locals.

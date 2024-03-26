@@ -13,7 +13,7 @@ CLASS zcl_wasm_select_star IMPLEMENTATION.
   METHOD parse.
     DATA(lv_times) = io_body->shift_u32( ).
     DO lv_times TIMES.
-      io_body->shift( 1 ).
+      io_body->shift_one_byte( ).
     ENDDO.
 * todo, pass types to constructor
     ri_instruction = NEW zcl_wasm_select_star( ).

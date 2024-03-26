@@ -11,7 +11,7 @@ ENDCLASS.
 CLASS zcl_wasm_memory_grow IMPLEMENTATION.
 
   METHOD parse.
-    IF io_body->shift( 1 ) <> '00'.
+    IF io_body->shift_one_byte( ) <> '00'.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |zcl_wasm_memory_grow->parse()|.
     ENDIF.
     ri_instruction = NEW zcl_wasm_memory_grow( ).

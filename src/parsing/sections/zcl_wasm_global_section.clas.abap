@@ -99,8 +99,8 @@ CLASS zcl_wasm_global_section IMPLEMENTATION.
     DATA(lv_times) = io_body->shift_u32( ).
     DO lv_times TIMES.
       CLEAR ls_global.
-      ls_global-type = io_body->shift( 1 ).
-      ls_global-mut = io_body->shift( 1 ).
+      ls_global-type = io_body->shift_one_byte( ).
+      ls_global-mut = io_body->shift_one_byte( ).
 
       zcl_wasm_instructions=>parse(
         EXPORTING

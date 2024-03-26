@@ -4,7 +4,7 @@ CLASS zcl_wasm_loop DEFINITION PUBLIC.
 
     METHODS constructor
       IMPORTING
-        iv_block_type TYPE xstring
+        iv_block_type TYPE zif_wasm_types=>ty_type
         it_in         TYPE zif_wasm_instruction=>ty_list.
 
     CLASS-METHODS parse
@@ -13,7 +13,7 @@ CLASS zcl_wasm_loop DEFINITION PUBLIC.
       RAISING zcx_wasm.
 
   PRIVATE SECTION.
-    DATA mv_block_type   TYPE xstring.
+    DATA mv_block_type   TYPE zif_wasm_types=>ty_type.
     DATA mt_instructions TYPE zif_wasm_instruction=>ty_list.
 ENDCLASS.
 
@@ -26,7 +26,7 @@ CLASS zcl_wasm_loop IMPLEMENTATION.
 
   METHOD parse.
 
-    DATA(lv_block_type) = io_body->shift( 1 ).
+    DATA(lv_block_type) = io_body->shift_one_byte( ).
     DATA(lo_parser) = NEW zcl_wasm_parser( ).
 
     zcl_wasm_instructions=>parse(

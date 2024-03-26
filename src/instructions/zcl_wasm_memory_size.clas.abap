@@ -14,7 +14,7 @@ ENDCLASS.
 CLASS zcl_wasm_memory_size IMPLEMENTATION.
 
   METHOD parse.
-    IF io_body->shift( 1 ) <> '00'.
+    IF io_body->shift_one_byte( ) <> '00'.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |zero byte expected|.
     ENDIF.
 

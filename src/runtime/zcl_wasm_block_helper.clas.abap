@@ -3,7 +3,7 @@ CLASS zcl_wasm_block_helper DEFINITION PUBLIC.
 
     METHODS constructor
       IMPORTING
-        iv_block_type TYPE xstring
+        iv_block_type TYPE zif_wasm_types=>ty_type
         io_module     TYPE REF TO zcl_wasm_module
       RAISING
         zcx_wasm.

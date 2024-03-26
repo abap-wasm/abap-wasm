@@ -17,7 +17,7 @@ CLASS zcl_wasm_type_section IMPLEMENTATION.
 
     DATA(lv_times) = io_body->shift_u32( ).
     DO lv_times TIMES.
-      IF io_body->shift( 1 ) <> zif_wasm_types=>c_function_type.
+      IF io_body->shift_one_byte( ) <> zif_wasm_types=>c_function_type.
         RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |parse type section, expected function type|.
       ENDIF.
 

@@ -126,7 +126,7 @@ CLASS zcl_wasm_element_section IMPLEMENTATION.
             INSERT io_body->shift_u32( ) INTO TABLE ls_element-funcidx.
           ENDDO.
         WHEN 1.
-          ls_element-elemkind = io_body->shift( 1 ).
+          ls_element-elemkind = io_body->shift_one_byte( ).
 
           lv_times = io_body->shift_u32( ).
           DO lv_times TIMES.
@@ -145,14 +145,14 @@ CLASS zcl_wasm_element_section IMPLEMENTATION.
             RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |parse_element: expected end|.
           ENDIF.
 
-          ls_element-elemkind = io_body->shift( 1 ).
+          ls_element-elemkind = io_body->shift_one_byte( ).
 
           lv_times = io_body->shift_u32( ).
           DO lv_times TIMES.
             INSERT io_body->shift_u32( ) INTO TABLE ls_element-funcidx.
           ENDDO.
         WHEN 3.
-          ls_element-elemkind = io_body->shift( 1 ).
+          ls_element-elemkind = io_body->shift_one_byte( ).
 
           lv_times = io_body->shift_u32( ).
           DO lv_times TIMES.
@@ -186,7 +186,7 @@ CLASS zcl_wasm_element_section IMPLEMENTATION.
             ENDIF.
           ENDDO.
         WHEN 5.
-          ls_element-elemkind = io_body->shift( 1 ).
+          ls_element-elemkind = io_body->shift_one_byte( ).
 
           lv_times = io_body->shift_u32( ).
           DO lv_times TIMES.
@@ -214,7 +214,7 @@ CLASS zcl_wasm_element_section IMPLEMENTATION.
             RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |parse_element: expected end|.
           ENDIF.
 
-          ls_element-elemkind = io_body->shift( 1 ).
+          ls_element-elemkind = io_body->shift_one_byte( ).
 
           lv_times = io_body->shift_u32( ).
           DO lv_times TIMES.
@@ -230,7 +230,7 @@ CLASS zcl_wasm_element_section IMPLEMENTATION.
             ENDIF.
           ENDDO.
         WHEN 7.
-          ls_element-elemkind = io_body->shift( 1 ).
+          ls_element-elemkind = io_body->shift_one_byte( ).
 
           lv_times = io_body->shift_u32( ).
           DO lv_times TIMES.

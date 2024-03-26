@@ -38,7 +38,7 @@ CLASS ltcl_test IMPLEMENTATION.
       act = lo_stream->peek( 1 )
       exp = |11| ).
 
-    lo_stream->shift( 1 ).
+    lo_stream->shift_one_byte( ).
 
     cl_abap_unit_assert=>assert_equals(
       act = lo_stream->get_length( )

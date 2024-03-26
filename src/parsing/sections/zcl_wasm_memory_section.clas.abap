@@ -49,7 +49,7 @@ CLASS zcl_wasm_memory_section IMPLEMENTATION.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |not just one memory|.
     ENDIF.
 
-    DATA(lv_limit) = io_body->shift( 1 ).
+    DATA(lv_limit) = io_body->shift_one_byte( ).
 
     CASE lv_limit.
       WHEN '00'.

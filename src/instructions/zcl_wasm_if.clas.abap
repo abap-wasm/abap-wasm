@@ -4,7 +4,7 @@ CLASS zcl_wasm_if DEFINITION PUBLIC.
 
     METHODS constructor
       IMPORTING
-        iv_block_type TYPE xstring
+        iv_block_type TYPE zif_wasm_types=>ty_type
         it_in1        TYPE zif_wasm_instruction=>ty_list
         it_in2        TYPE zif_wasm_instruction=>ty_list.
 
@@ -16,7 +16,7 @@ CLASS zcl_wasm_if DEFINITION PUBLIC.
       RAISING
         zcx_wasm.
   PRIVATE SECTION.
-    DATA mv_block_type TYPE xstring.
+    DATA mv_block_type TYPE zif_wasm_types=>ty_type.
     DATA mt_in1        TYPE zif_wasm_instruction=>ty_list.
     DATA mt_in2        TYPE zif_wasm_instruction=>ty_list.
 ENDCLASS.
@@ -31,7 +31,7 @@ CLASS zcl_wasm_if IMPLEMENTATION.
 
   METHOD parse.
 
-    DATA(lv_block_type) = io_body->shift( 1 ).
+    DATA(lv_block_type) = io_body->shift_one_byte( ).
 
     zcl_wasm_instructions=>parse(
       EXPORTING

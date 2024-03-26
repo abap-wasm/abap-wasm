@@ -17,6 +17,10 @@ CLASS zcl_wasm_binary_stream DEFINITION
       RETURNING
         VALUE(rv_data) TYPE xstring .
 
+    TYPES ty_hex1 TYPE x LENGTH 1.
+    METHODS shift_one_byte
+      RETURNING
+        VALUE(rv_data) TYPE ty_hex1 .
     METHODS shift
       IMPORTING
         !iv_length     TYPE numeric
@@ -63,7 +67,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_WASM_BINARY_STREAM IMPLEMENTATION.
+CLASS zcl_wasm_binary_stream IMPLEMENTATION.
 
 
   METHOD constructor.
@@ -103,6 +107,13 @@ CLASS ZCL_WASM_BINARY_STREAM IMPLEMENTATION.
 
   ENDMETHOD.
 
+
+  METHOD shift_one_byte.
+
+    rv_data = mv_data+mv_pointer(1).
+    mv_pointer = mv_pointer + 1.
+
+  ENDMETHOD.
 
   METHOD shift.
 
@@ -272,7 +283,7 @@ CLASS ZCL_WASM_BINARY_STREAM IMPLEMENTATION.
       ENDIF.
       "##feature-end=debug
 
-      lv_hex = shift( 1 ).
+      lv_hex = shift_one_byte( ).
 
       GET BIT 1 OF lv_hex INTO lv_bit.
       SET BIT 1 OF lv_hex TO 0.
@@ -312,7 +323,7 @@ CLASS ZCL_WASM_BINARY_STREAM IMPLEMENTATION.
         RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'integer representation too long'.
       ENDIF.
 
-      lv_hex = shift( 1 ).
+      lv_hex = shift_one_byte( ).
 
       GET BIT 1 OF lv_hex INTO DATA(lv_continuation).
       IF lv_continuation = 0.
@@ -367,7 +378,7 @@ CLASS ZCL_WASM_BINARY_STREAM IMPLEMENTATION.
       ENDIF.
       "##feature-end=debug
 
-      lv_val = shift( 1 ).
+      lv_val = shift_one_byte( ).
 
       IF lv_val >= lc_128.
 * continuation bit is set

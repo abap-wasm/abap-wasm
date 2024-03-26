@@ -1732,7 +1732,7 @@ CLASS zcl_wasm_instructions IMPLEMENTATION.
     ENDIF.
 
     WHILE io_body->get_length( ) > 0.
-      lv_opcode = io_body->shift( 1 ).
+      lv_opcode = io_body->shift_one_byte( ).
 
       READ TABLE gt_opcodes ASSIGNING FIELD-SYMBOL(<ls_opcode>) WITH TABLE KEY opcode = lv_opcode.
       IF sy-subrc = 0.
@@ -1792,7 +1792,7 @@ CLASS zcl_wasm_instructions IMPLEMENTATION.
                 RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |illegal opcode FC: { lv_opcodei }|.
             ENDCASE.
           WHEN lc_fd.
-            DATA(lv_opcode_fd) = io_body->shift( 1 ).
+            DATA(lv_opcode_fd) = io_body->shift_one_byte( ).
             READ TABLE gt_opcodes_simd ASSIGNING FIELD-SYMBOL(<ls_opcode_simd>) WITH TABLE KEY opcode = lv_opcode_fd.
             IF sy-subrc = 0 AND <ls_opcode_simd>-name <> 'TODO'.
               CALL METHOD (<ls_opcode_simd>-name)=>parse
@@ -1808,7 +1808,7 @@ CLASS zcl_wasm_instructions IMPLEMENTATION.
           WHEN lc_fe.
             RAISE EXCEPTION TYPE zcx_wasm
               EXPORTING
-                text = |Threads opcodes not supported, FE{ io_body->shift( 1 ) }|.
+                text = |Threads opcodes not supported, FE{ io_body->shift_one_byte( ) }|.
           WHEN OTHERS.
             RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |illegal opcode: { lv_opcode }|.
         ENDCASE.

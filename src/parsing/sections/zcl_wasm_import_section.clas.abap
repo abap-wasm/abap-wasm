@@ -76,7 +76,7 @@ CLASS zcl_wasm_import_section IMPLEMENTATION.
 
       ls_import-module = io_body->shift_utf8( ).
       ls_import-name = io_body->shift_utf8( ).
-      ls_import-type = io_body->shift( 1 ).
+      ls_import-type = io_body->shift_one_byte( ).
 
       CASE ls_import-type.
         WHEN c_importdesc-func.
@@ -87,8 +87,8 @@ CLASS zcl_wasm_import_section IMPLEMENTATION.
             extern_module = ls_import-module
             extern_name   = ls_import-name ) INTO TABLE ct_functions.
         WHEN c_importdesc-table.
-          ls_import-table-reftype = io_body->shift( 1 ).
-          ls_import-table-limit = io_body->shift( 1 ).
+          ls_import-table-reftype = io_body->shift_one_byte( ).
+          ls_import-table-limit = io_body->shift_one_byte( ).
           ls_import-table-min = io_body->shift_u32( ).
           CASE ls_import-table-limit.
             WHEN '00'.
@@ -99,7 +99,7 @@ CLASS zcl_wasm_import_section IMPLEMENTATION.
               RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |parse_import: malformed import kind|.
           ENDCASE.
         WHEN c_importdesc-mem.
-          ls_import-mem-limit = io_body->shift( 1 ).
+          ls_import-mem-limit = io_body->shift_one_byte( ).
           ls_import-mem-min = io_body->shift_u32( ).
           CASE ls_import-mem-limit.
             WHEN '00'.
@@ -110,8 +110,8 @@ CLASS zcl_wasm_import_section IMPLEMENTATION.
               RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |parse_import: malformed import kind|.
           ENDCASE.
         WHEN c_importdesc-global.
-          ls_import-global-valtype = io_body->shift( 1 ).
-          ls_import-global-mut = io_body->shift( 1 ).
+          ls_import-global-valtype = io_body->shift_one_byte( ).
+          ls_import-global-mut = io_body->shift_one_byte( ).
         WHEN OTHERS.
           RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |parse_import: malformed import kind|.
       ENDCASE.

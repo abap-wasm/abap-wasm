@@ -4,7 +4,7 @@ CLASS zcl_wasm_block DEFINITION PUBLIC.
 
     METHODS constructor
       IMPORTING
-        iv_block_type   TYPE xstring
+        iv_block_type   TYPE zif_wasm_types=>ty_type
         it_instructions TYPE zif_wasm_instruction=>ty_list.
 
     CLASS-METHODS parse
@@ -16,7 +16,7 @@ CLASS zcl_wasm_block DEFINITION PUBLIC.
         zcx_wasm.
 
   PRIVATE SECTION.
-    DATA mv_block_type   TYPE xstring.
+    DATA mv_block_type   TYPE zif_wasm_types=>ty_type.
     DATA mt_instructions TYPE zif_wasm_instruction=>ty_list.
 
 ENDCLASS.
@@ -34,7 +34,7 @@ CLASS zcl_wasm_block IMPLEMENTATION.
 * Block types are encoded in special compressed form, by either the byte
 * indicating the empty type, as a single value type, or as a type index
 * encoded as a positive signed integer.
-    DATA(lv_block_type) = io_body->shift( 1 ).
+    DATA(lv_block_type) = io_body->shift_one_byte( ).
 
     zcl_wasm_instructions=>parse(
       EXPORTING
