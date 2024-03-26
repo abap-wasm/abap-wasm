@@ -77,7 +77,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_WASM_F64 IMPLEMENTATION.
+CLASS zcl_wasm_f64 IMPLEMENTATION.
 
 
   METHOD from_float.
@@ -121,6 +121,21 @@ CLASS ZCL_WASM_F64 IMPLEMENTATION.
 
   METHOD get_hex.
     FIELD-SYMBOLS <lv_hex> TYPE x.
+
+    IF mv_special <> 0.
+      CASE mv_special.
+        WHEN gc_special-positive_infinity.
+          rv_value = '7FF0000000000000'.
+        WHEN gc_special-negative_infinity.
+          rv_value = 'FFF0000000000000'.
+        WHEN gc_special-nan.
+          rv_value = '7FF8000000000000'.
+        WHEN OTHERS.
+          ASSERT 1 = 2.
+      ENDCASE.
+      RETURN.
+    ENDIF.
+
     ASSIGN mv_value TO <lv_hex> CASTING TYPE x.
     rv_value = <lv_hex>.
   ENDMETHOD.

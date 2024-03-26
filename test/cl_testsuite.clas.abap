@@ -105,7 +105,6 @@ CLASS cl_testsuite IMPLEMENTATION.
 
     DATA lt_values TYPE zif_wasm_value=>ty_values.
 
-
     IF io_wasm IS INITIAL.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |assert_return: nothing loaded|.
     ENDIF.
