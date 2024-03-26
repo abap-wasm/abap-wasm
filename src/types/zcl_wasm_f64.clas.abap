@@ -200,7 +200,12 @@ CLASS zcl_wasm_f64 IMPLEMENTATION.
 
 
   METHOD get_value.
-    ASSERT mv_special IS INITIAL.
+    IF mv_special IS NOT INITIAL.
+      RAISE EXCEPTION TYPE zcx_wasm
+        EXPORTING
+          text = 'f64: error trying to get value for special'.
+    ENDIF.
+
     rv_value = mv_value.
   ENDMETHOD.
 
