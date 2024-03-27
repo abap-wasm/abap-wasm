@@ -43,7 +43,7 @@ CLASS zcl_wasm_global_section IMPLEMENTATION.
 
   METHOD instantiate.
 
-    DATA lv_control TYPE zif_wasm_instruction=>ty_control.
+    DATA ls_control TYPE zif_wasm_instruction=>ty_control.
 
     LOOP AT mt_globals INTO DATA(ls_global).
       TRY.
@@ -53,7 +53,7 @@ CLASS zcl_wasm_global_section IMPLEMENTATION.
                 io_memory  = io_memory
                 io_module  = NEW zcl_wasm_module( )
               CHANGING
-                cv_control = lv_control ).
+                cs_control = ls_control ).
           ENDLOOP.
         CATCH cx_static_check INTO DATA(lx_error).
           RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |instantiate_global, failed to execute instructions: { lx_error->get_text( ) }|.

@@ -69,9 +69,9 @@ CLASS zcl_wasm_block IMPLEMENTATION.
           EXPORTING
             it_instructions = mt_instructions
           CHANGING
-            cv_control      = cv_control ).
+            cs_control      = cs_control ).
 
-        IF cv_control = zif_wasm_instruction=>c_control-return_.
+        IF cs_control-control = zif_wasm_instruction=>c_control-return_.
           RETURN.
         ENDIF.
       CATCH zcx_wasm_branch INTO DATA(lx_branch).

@@ -22,7 +22,7 @@ CLASS zcl_wasm_return IMPLEMENTATION.
 
 * https://webassembly.github.io/spec/core/exec/instructions.html#xref-syntax-instructions-syntax-instr-control-mathsf-return
 
-    cv_control = zif_wasm_instruction=>c_control-return_.
+    cs_control-control = zif_wasm_instruction=>c_control-return_.
   ENDMETHOD.
 
 ENDCLASS.

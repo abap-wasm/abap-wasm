@@ -82,16 +82,16 @@ CLASS zcl_wasm_if IMPLEMENTATION.
             EXPORTING
               it_instructions = mt_in1
             CHANGING
-              cv_control      = cv_control ).
+              cs_control      = cs_control ).
         ELSE.
           io_module->execute_instructions(
             EXPORTING
               it_instructions = mt_in2
             CHANGING
-              cv_control      = cv_control ).
+              cs_control      = cs_control ).
         ENDIF.
 
-        IF cv_control = zif_wasm_instruction=>c_control-return_.
+        IF cs_control-control = zif_wasm_instruction=>c_control-return_.
           RETURN.
         ENDIF.
       CATCH zcx_wasm_branch INTO DATA(lx_branch).
