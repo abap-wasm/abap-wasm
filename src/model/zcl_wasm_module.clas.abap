@@ -103,8 +103,8 @@ CLASS zcl_wasm_module DEFINITION
     METHODS execute_instructions
       IMPORTING
         !it_instructions TYPE zif_wasm_instruction=>ty_list
-      RETURNING
-        VALUE(rv_control) TYPE zif_wasm_instruction=>ty_control
+      CHANGING
+        cv_control TYPE zif_wasm_instruction=>ty_control
       RAISING
         zcx_wasm
         zcx_wasm_branch.
@@ -384,9 +384,9 @@ CLASS zcl_wasm_module IMPLEMENTATION.
           io_memory  = mo_memory
           io_module  = me
         CHANGING
-          cv_control = rv_control ).
+          cv_control = cv_control ).
 
-      IF rv_control = zif_wasm_instruction=>c_control-return_.
+      IF cv_control = zif_wasm_instruction=>c_control-return_.
         RETURN.
       ENDIF.
     ENDLOOP.

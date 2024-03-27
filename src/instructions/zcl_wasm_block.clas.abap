@@ -65,7 +65,11 @@ CLASS zcl_wasm_block IMPLEMENTATION.
     lo_block->start( io_memory ).
 
     TRY.
-        cv_control = io_module->execute_instructions( mt_instructions ).
+        io_module->execute_instructions(
+          EXPORTING
+            it_instructions = mt_instructions
+          CHANGING
+            cv_control      = cv_control ).
 
         IF cv_control = zif_wasm_instruction=>c_control-return_.
           RETURN.
