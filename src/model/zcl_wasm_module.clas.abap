@@ -379,8 +379,7 @@ CLASS zcl_wasm_module IMPLEMENTATION.
         CHANGING
           cs_control = cs_control ).
 
-      IF cs_control-control = zif_wasm_instruction=>c_control-return_
-          OR cs_control-control = zif_wasm_instruction=>c_control-branch.
+      IF cs_control-control IS NOT INITIAL.
         RETURN.
       ENDIF.
     ENDLOOP.
