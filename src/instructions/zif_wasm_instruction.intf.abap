@@ -4,11 +4,12 @@ INTERFACE zif_wasm_instruction PUBLIC.
 
   TYPES: BEGIN OF ty_control,
            control TYPE string,
-           branch  TYPE i,
+           depth   TYPE i,
          END OF ty_control.
 
   CONSTANTS: BEGIN OF c_control,
                return_ TYPE string VALUE 'RETURN',
+               branch  TYPE string VALUE 'BRANCH',
              END OF c_control.
 
   METHODS execute
@@ -18,7 +19,6 @@ INTERFACE zif_wasm_instruction PUBLIC.
     CHANGING
       cs_control TYPE ty_control
     RAISING
-      zcx_wasm
-      zcx_wasm_branch.
+      zcx_wasm.
 
 ENDINTERFACE.

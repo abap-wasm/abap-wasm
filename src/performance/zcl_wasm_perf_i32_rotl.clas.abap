@@ -16,21 +16,17 @@ CLASS zcl_wasm_perf_i32_rotl IMPLEMENTATION.
 
     DATA(lo_memory) = NEW zcl_wasm_memory( ).
 
-    TRY.
-        DO lc_iterations TIMES.
-          lo_memory->mi_stack->push( zcl_wasm_i32=>from_signed( 10 ) ).
-          lo_memory->mi_stack->push( zcl_wasm_i32=>from_signed( 10 ) ).
-          li_instruction->execute(
+    DO lc_iterations TIMES.
+      lo_memory->mi_stack->push( zcl_wasm_i32=>from_signed( 10 ) ).
+      lo_memory->mi_stack->push( zcl_wasm_i32=>from_signed( 10 ) ).
+      li_instruction->execute(
             EXPORTING
               io_memory  = lo_memory
               io_module  = lo_module
             CHANGING
               cs_control = ls_control ).
-          lo_memory->mi_stack->pop( ).
-        ENDDO.
-      CATCH zcx_wasm_branch.
-        ASSERT 1 = 2.
-    ENDTRY.
+      lo_memory->mi_stack->pop( ).
+    ENDDO.
 
   ENDMETHOD.
 

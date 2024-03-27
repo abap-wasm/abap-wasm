@@ -21,20 +21,16 @@ CLASS zcl_wasm_perf_i32_store IMPLEMENTATION.
       iv_min = 1
       iv_max = 1 ) ) ).
 
-    TRY.
-        DO lc_iterations TIMES.
-          lo_memory->mi_stack->push( zcl_wasm_i32=>from_signed( 32 ) ).
-          lo_memory->mi_stack->push( zcl_wasm_i32=>from_signed( 32 ) ).
-          li_instruction->execute(
+    DO lc_iterations TIMES.
+      lo_memory->mi_stack->push( zcl_wasm_i32=>from_signed( 32 ) ).
+      lo_memory->mi_stack->push( zcl_wasm_i32=>from_signed( 32 ) ).
+      li_instruction->execute(
             EXPORTING
               io_memory  = lo_memory
               io_module  = lo_module
             CHANGING
               cs_control = ls_control ).
-        ENDDO.
-      CATCH zcx_wasm_branch.
-        ASSERT 1 = 2.
-    ENDTRY.
+    ENDDO.
 
   ENDMETHOD.
 

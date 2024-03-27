@@ -65,7 +65,8 @@ CLASS zcl_wasm_br_table IMPLEMENTATION.
       lv_branch = mv_default.
     ENDIF.
 
-    RAISE EXCEPTION TYPE zcx_wasm_branch EXPORTING depth = lv_branch.
+    cs_control-control = zif_wasm_instruction=>c_control-branch.
+    cs_control-depth = lv_branch.
   ENDMETHOD.
 
 ENDCLASS.

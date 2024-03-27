@@ -33,8 +33,8 @@ CLASS zcl_wasm_br IMPLEMENTATION.
     " WRITE / '@KERNEL console.dir(lv_len);'.
     " WRITE / '@KERNEL console.dir(this.mv_labelidx);'.
 
-* yea, using exceptions for branching is probably slow, but will work for now
-    RAISE EXCEPTION TYPE zcx_wasm_branch EXPORTING depth = mv_labelidx.
+    cs_control-control = zif_wasm_instruction=>c_control-branch.
+    cs_control-depth = mv_labelidx.
   ENDMETHOD.
 
 ENDCLASS.

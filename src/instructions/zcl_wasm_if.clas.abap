@@ -75,30 +75,31 @@ CLASS zcl_wasm_if IMPLEMENTATION.
       io_module     = io_module ).
     lo_block->start( io_memory ).
 
-    TRY.
 * If c is non-zero, then enter
-        IF lv_value <> 0.
-          io_module->execute_instructions(
+    IF lv_value <> 0.
+      io_module->execute_instructions(
             EXPORTING
               it_instructions = mt_in1
             CHANGING
               cs_control      = cs_control ).
-        ELSE.
-          io_module->execute_instructions(
+    ELSE.
+      io_module->execute_instructions(
             EXPORTING
               it_instructions = mt_in2
             CHANGING
               cs_control      = cs_control ).
-        ENDIF.
+    ENDIF.
 
-        IF cs_control-control = zif_wasm_instruction=>c_control-return_.
-          RETURN.
-        ENDIF.
-      CATCH zcx_wasm_branch INTO DATA(lx_branch).
-        IF lx_branch->depth > 0.
-          RAISE EXCEPTION TYPE zcx_wasm_branch EXPORTING depth = lx_branch->depth - 1.
-        ENDIF.
-    ENDTRY.
+    IF cs_control-control = zif_wasm_instruction=>c_control-return_.
+      RETURN.
+    ELSEIF cs_control-control = zif_wasm_instruction=>c_control-branch.
+      IF cs_control-depth > 0.
+        cs_control-depth = cs_control-depth - 1.
+        RETURN.
+      ELSE.
+        CLEAR cs_control-control.
+      ENDIF.
+    ENDIF.
 
     lo_block->end( io_memory ).
 
