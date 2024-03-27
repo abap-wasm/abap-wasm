@@ -78,11 +78,12 @@ CLASS zcl_wasm_if IMPLEMENTATION.
     TRY.
 * If c is non-zero, then enter
         IF lv_value <> 0.
-          rv_control = io_module->execute_instructions( mt_in1 ).
+          cv_control = io_module->execute_instructions( mt_in1 ).
         ELSE.
-          rv_control = io_module->execute_instructions( mt_in2 ).
+          cv_control = io_module->execute_instructions( mt_in2 ).
         ENDIF.
-        IF rv_control = zif_wasm_instruction=>c_control-return_.
+
+        IF cv_control = zif_wasm_instruction=>c_control-return_.
           RETURN.
         ENDIF.
       CATCH zcx_wasm_branch INTO DATA(lx_branch).

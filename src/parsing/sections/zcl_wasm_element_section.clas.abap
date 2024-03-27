@@ -33,6 +33,7 @@ CLASS zcl_wasm_element_section IMPLEMENTATION.
 * type = 0 + 2 + 4 + 6 is active
 
     DATA li_value TYPE REF TO zif_wasm_value.
+    DATA lv_control TYPE zif_wasm_instruction=>ty_control.
 
     TRY.
         LOOP AT mt_elements INTO DATA(ls_element).
@@ -41,8 +42,11 @@ CLASS zcl_wasm_element_section IMPLEMENTATION.
             WHEN 0.
               LOOP AT ls_element-expr INTO DATA(lo_instruction).
                 lo_instruction->execute(
-                  io_memory = io_memory
-                  io_module = NEW zcl_wasm_module( ) ).
+                  EXPORTING
+                    io_memory  = io_memory
+                    io_module  = NEW zcl_wasm_module( )
+                  CHANGING
+                    cv_control = lv_control ).
               ENDLOOP.
               DATA(lv_offset) = io_memory->mi_stack->pop_i32( )->get_signed( ).
               " WRITE / |offset: { lv_offset }|.
@@ -59,8 +63,11 @@ CLASS zcl_wasm_element_section IMPLEMENTATION.
             WHEN 2.
               LOOP AT ls_element-expr INTO lo_instruction.
                 lo_instruction->execute(
-                  io_memory = io_memory
-                  io_module = NEW zcl_wasm_module( ) ).
+                  EXPORTING
+                    io_memory  = io_memory
+                    io_module  = NEW zcl_wasm_module( )
+                  CHANGING
+                    cv_control = lv_control ).
               ENDLOOP.
               lv_offset = io_memory->mi_stack->pop_i32( )->get_signed( ).
 

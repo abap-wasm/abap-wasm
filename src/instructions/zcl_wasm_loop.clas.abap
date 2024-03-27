@@ -58,9 +58,9 @@ CLASS zcl_wasm_loop IMPLEMENTATION.
 
     DO.
       TRY.
-          rv_control = io_module->execute_instructions( mt_instructions ).
+          cv_control = io_module->execute_instructions( mt_instructions ).
 
-          IF rv_control = zif_wasm_instruction=>c_control-return_.
+          IF cv_control = zif_wasm_instruction=>c_control-return_.
             RETURN.
           ENDIF.
         CATCH zcx_wasm_branch INTO DATA(lx_branch).
