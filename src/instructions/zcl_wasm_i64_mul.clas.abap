@@ -25,6 +25,8 @@ CLASS zcl_wasm_i64_mul IMPLEMENTATION.
     DATA(lo_val1) = CAST zcl_wasm_i64( io_memory->mi_stack->pop( ) ).
     DATA(lo_val2) = CAST zcl_wasm_i64( io_memory->mi_stack->pop( ) ).
 
+* todo, avoid overflow,
+* https://madformath.com/calculators/digital-systems/hexadecimal-arithmetic/hexadecimal-multiplication-calculator-with-steps/hexadecimal-multiplication-calculator-with-steps
     io_memory->mi_stack->push( zcl_wasm_i64=>from_signed( lo_val1->get_signed( ) * lo_val2->get_signed( ) ) ).
 
   ENDMETHOD.

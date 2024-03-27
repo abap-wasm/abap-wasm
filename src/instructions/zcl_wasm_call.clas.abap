@@ -42,6 +42,7 @@ CLASS zcl_wasm_call IMPLEMENTATION.
 
     DATA lt_parameters TYPE zif_wasm_value=>ty_values.
     DATA lt_results    TYPE STANDARD TABLE OF REF TO zif_wasm_value WITH EMPTY KEY.
+    DATA lv_control    TYPE zif_wasm_instruction=>ty_control.
 
     DATA(ls_function) = io_module->get_function_by_index( iv_funcidx ).
 *    WRITE: / |call funcidx { iv_funcidx }|.
@@ -95,7 +96,11 @@ CLASS zcl_wasm_call IMPLEMENTATION.
       io_memory->mi_stack = CAST zif_wasm_memory_stack( NEW zcl_wasm_memory_stack( ) ).
 
       TRY.
-          io_module->execute_instructions( lr_code->instructions ).
+          io_module->execute_instructions(
+            EXPORTING
+              it_instructions = lr_code->instructions
+            CHANGING
+              cv_control      = lv_control ).
         CATCH zcx_wasm_branch INTO DATA(lx_branch).
           IF lx_branch->depth > 0.
             RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'call(), branching exception, should not happen'.

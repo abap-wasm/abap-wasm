@@ -10,10 +10,10 @@ INTERFACE zif_wasm_instruction PUBLIC.
 
   METHODS execute
     IMPORTING
-      io_memory         TYPE REF TO zcl_wasm_memory
-      io_module         TYPE REF TO zcl_wasm_module
-    RETURNING
-      VALUE(rv_control) TYPE ty_control
+      io_memory  TYPE REF TO zcl_wasm_memory
+      io_module  TYPE REF TO zcl_wasm_module
+    CHANGING
+      cv_control TYPE ty_control
     RAISING
       zcx_wasm
       zcx_wasm_branch.

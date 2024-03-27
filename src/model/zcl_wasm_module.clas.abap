@@ -103,8 +103,8 @@ CLASS zcl_wasm_module DEFINITION
     METHODS execute_instructions
       IMPORTING
         !it_instructions TYPE zif_wasm_instruction=>ty_list
-      RETURNING
-        VALUE(rv_control) TYPE zif_wasm_instruction=>ty_control
+      CHANGING
+        cv_control TYPE zif_wasm_instruction=>ty_control
       RAISING
         zcx_wasm
         zcx_wasm_branch.
@@ -379,11 +379,14 @@ CLASS zcl_wasm_module IMPLEMENTATION.
   METHOD execute_instructions.
     LOOP AT it_instructions ASSIGNING FIELD-SYMBOL(<li_instruction>).
       " WRITE / '@KERNEL console.dir(fs_li_instruction_.get().constructor.name);'.
-      rv_control = <li_instruction>->execute(
-        io_memory = mo_memory
-        io_module = me ).
+      <li_instruction>->execute(
+        EXPORTING
+          io_memory  = mo_memory
+          io_module  = me
+        CHANGING
+          cv_control = cv_control ).
 
-      IF rv_control = zif_wasm_instruction=>c_control-return_.
+      IF cv_control = zif_wasm_instruction=>c_control-return_.
         RETURN.
       ENDIF.
     ENDLOOP.
