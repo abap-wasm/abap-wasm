@@ -17,9 +17,9 @@ CLASS zcl_wasm_perf_i32_load IMPLEMENTATION.
       iv_offset = 32 ) ).
 
     DATA(lo_memory) = NEW zcl_wasm_memory( ).
-    lo_memory->set_linear( CAST zif_wasm_memory_linear( NEW zcl_wasm_memory_linear(
+    lo_memory->mi_linear = NEW zcl_wasm_memory_linear(
       iv_min = 1
-      iv_max = 1 ) ) ).
+      iv_max = 1 ).
 
     DO lc_iterations TIMES.
       lo_memory->mi_stack->push( zcl_wasm_i32=>gc_zero ).

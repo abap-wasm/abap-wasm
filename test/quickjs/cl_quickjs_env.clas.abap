@@ -57,7 +57,7 @@ CLASS cl_quickjs_env IMPLEMENTATION.
     DATA lv_xstr TYPE xstring.
     DATA lv_hex  TYPE x LENGTH 1 VALUE '01'.
 
-    DATA(li_linear) = mo_memory->get_linear( ).
+    DATA(li_linear) = mo_memory->mi_linear.
     DATA(lv_pointer) = iv_pointer.
 
     WHILE lv_hex <> gc_null.
@@ -77,7 +77,7 @@ CLASS cl_quickjs_env IMPLEMENTATION.
     DATA lv_seconds    TYPE f.
     DATA lv_time       TYPE timestamp.
 
-    DATA(li_linear) = mo_memory->get_linear( ).
+    DATA(li_linear) = mo_memory->mi_linear.
 
     CASE iv_name.
       WHEN 'emscripten_memcpy_js'.
@@ -122,10 +122,10 @@ CLASS cl_quickjs_env IMPLEMENTATION.
 * (param i32) (result i32)
 * return: 1 = success, 0 = failure?
         DATA(lv_input) = CAST zcl_wasm_i32( it_parameters[ 1 ] )->mv_value.
-        DATA(lv_diff) = lv_input - mo_memory->get_linear( )->size_in_bytes( ).
+        DATA(lv_diff) = lv_input - mo_memory->mi_linear->size_in_bytes( ).
         DATA(lv_pages) = ceil( lv_diff / 65536 ) + 1.
         WRITE / |emscripten_resize_heap: grow { lv_pages } pages, requested diff { lv_diff }, requested size { lv_input }|.
-        mo_memory->get_linear( )->grow( CONV #( lv_pages ) ).
+        mo_memory->mi_linear->grow( CONV #( lv_pages ) ).
         INSERT zcl_wasm_i32=>from_signed( 1 ) INTO rt_results.
       WHEN 'emscripten_stack_unwind_buffer'.
 * https://github.com/emscripten-core/emscripten/blob/faee8d3e40ec8b0905ed26d31b1d5e332509519c/src/library_stack_trace.js#L238
@@ -166,9 +166,9 @@ CLASS cl_quickjs_env IMPLEMENTATION.
   METHOD zif_wasm_module~instantiate.
     mo_memory = NEW zcl_wasm_memory( ).
 * initial memory in JS is 16mb = 256 pages
-    mo_memory->set_linear( NEW zcl_wasm_memory_linear(
+    mo_memory->mi_linear = NEW zcl_wasm_memory_linear(
       iv_min = 256 " todo, can this be reduced?
-      iv_max = 1000 ) ).
+      iv_max = 1000 ).
     ri_module ?= me.
   ENDMETHOD.
 

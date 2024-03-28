@@ -54,7 +54,7 @@ CLASS zcl_wasm_i32_store IMPLEMENTATION.
 * convert to little endian
     CONCATENATE lv_hex+3 lv_hex+2(1) lv_hex+1(1) lv_hex(1) INTO lv_hex IN BYTE MODE.
 
-    io_memory->get_linear( )->set(
+    io_memory->mi_linear->set(
       iv_offset = mv_offset + lv_i
       iv_bytes  = lv_hex ).
 

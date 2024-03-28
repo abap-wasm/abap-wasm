@@ -31,19 +31,7 @@ CLASS zcl_wasm_memory DEFINITION
         zcx_wasm.
 
 *********** DEFAULT LINEAR
-    METHODS get_linear
-      RETURNING
-        VALUE(ri_linear) TYPE REF TO zif_wasm_memory_linear
-      RAISING
-        zcx_wasm.
-
-    METHODS set_linear
-      IMPORTING
-        ii_linear TYPE REF TO zif_wasm_memory_linear.
-
-    METHODS has_linear
-      RETURNING
-        VALUE(rv_exists) TYPE abap_bool.
+    DATA mi_linear TYPE REF TO zcl_wasm_memory_linear.
 
 ************* TABLES
     METHODS table_add
@@ -94,7 +82,6 @@ CLASS zcl_wasm_memory DEFINITION
         zcx_wasm.
 
   PROTECTED SECTION.
-    DATA mi_linear TYPE REF TO zif_wasm_memory_linear.
     DATA mi_globals TYPE REF TO zif_wasm_memory_globals.
 
     DATA mt_stack  TYPE STANDARD TABLE OF REF TO zif_wasm_value WITH DEFAULT KEY.
@@ -239,24 +226,6 @@ CLASS zcl_wasm_memory IMPLEMENTATION.
 
     READ TABLE mt_frames INTO mt_locals INDEX lv_last.
     DELETE mt_frames INDEX lv_last.
-  ENDMETHOD.
-
-  METHOD get_linear.
-    "##feature-start=debug
-    IF mi_linear IS INITIAL.
-      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_memory: no linear memory'.
-    ENDIF.
-    "##feature-end=debug
-
-    ri_linear = mi_linear.
-  ENDMETHOD.
-
-  METHOD has_linear.
-    rv_exists = xsdbool( mi_linear IS NOT INITIAL ).
-  ENDMETHOD.
-
-  METHOD set_linear.
-    mi_linear = ii_linear.
   ENDMETHOD.
 
 ENDCLASS.

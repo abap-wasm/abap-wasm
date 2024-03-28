@@ -12,9 +12,9 @@ CLASS zcl_wasm_perf_memory_write IMPLEMENTATION.
     DATA lv_bytes2 TYPE x LENGTH 4.
 
 * this is around 6mb of memory
-    DATA(li_linear) = CAST zif_wasm_memory_linear( NEW zcl_wasm_memory_linear(
+    DATA(li_linear) = NEW zcl_wasm_memory_linear(
       iv_min = 100
-      iv_max = 100 ) ).
+      iv_max = 100 ).
 
     lv_bytes1 = '11111111'.
     lv_bytes2 = '22222222'.

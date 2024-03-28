@@ -43,7 +43,7 @@ CLASS zcl_wasm_i64_store8 IMPLEMENTATION.
     CONSTANTS lc_length TYPE int8 VALUE 1.
     DATA lv_hex TYPE x LENGTH lc_length.
 
-    DATA(li_linear) = io_memory->get_linear( ).
+    DATA(li_linear) = io_memory->mi_linear.
 
     DATA(lv_c) = io_memory->mi_stack->pop( ).
     "##feature-start=debug

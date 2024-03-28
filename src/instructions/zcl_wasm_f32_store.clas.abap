@@ -40,7 +40,7 @@ CLASS zcl_wasm_f32_store IMPLEMENTATION.
 
   METHOD zif_wasm_instruction~execute.
 
-    DATA(li_linear) = io_memory->get_linear( ).
+    DATA(li_linear) = io_memory->mi_linear.
 
     DATA(lv_hex) = CAST zcl_wasm_f32( io_memory->mi_stack->pop( ) )->to_hex( ).
 

@@ -137,12 +137,12 @@ CLASS zcl_wasm_data_section IMPLEMENTATION.
 
       DATA(lv_offset) = io_memory->mi_stack->pop_i32( )->get_unsigned( ).
 
-      IF io_memory->has_linear( ) = abap_false.
+      IF io_memory->mi_linear IS INITIAL.
         RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |instantiate data, no linear memory|.
       ENDIF.
 
       " WRITE / |active data, offset { lv_offset }|.
-      io_memory->get_linear( )->set(
+      io_memory->mi_linear->set(
         iv_offset = lv_offset
         iv_bytes  = ls_active-bytes ).
     ENDLOOP.

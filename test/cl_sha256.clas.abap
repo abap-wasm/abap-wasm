@@ -38,7 +38,7 @@ CLASS cl_sha256 IMPLEMENTATION.
 
     li_wasm->instantiate( ).
 
-    DATA(li_linear) = li_wasm->get_memory( )->get_linear( ).
+    DATA(li_linear) = li_wasm->get_memory( )->mi_linear.
     li_linear->set(
       iv_bytes  = cl_abap_codepage=>convert_to( lv_input )
       iv_offset = lc_input_offset ).

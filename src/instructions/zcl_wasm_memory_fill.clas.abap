@@ -20,7 +20,7 @@ CLASS zcl_wasm_memory_fill IMPLEMENTATION.
 
     DATA lv_offset TYPE int8.
     DATA lv_hex TYPE x LENGTH 1.
-    DATA(li_linear) = io_memory->get_linear( ).
+    DATA(li_linear) = io_memory->mi_linear.
     DATA(lv_n) = io_memory->mi_stack->pop_i32( )->mv_value.
     DATA(lo_val) = io_memory->mi_stack->pop_i32( ).
     DATA(lv_d) = io_memory->mi_stack->pop_i32( )->mv_value.

@@ -27,7 +27,7 @@ CLASS cl_quickjs_wasi_preview IMPLEMENTATION.
     DATA lv_length  TYPE i.
     DATA lv_written TYPE i.
     DATA lv_hex4    TYPE x LENGTH 4.
-    DATA(li_linear) = mo_memory->get_linear( ).
+    DATA(li_linear) = mo_memory->mi_linear.
 
     CASE iv_name.
       WHEN 'environ_get'.

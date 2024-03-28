@@ -342,13 +342,14 @@ CLASS cl_quickjs IMPLEMENTATION.
   METHOD string_from_vm.
 
     DATA lv_offset TYPE int8.
-    DATA lv_hex TYPE x LENGTH 1.
-    DATA lv_xstr TYPE xstring.
+    DATA lv_hex    TYPE x LENGTH 1.
+    DATA lv_xstr   TYPE xstring.
 
     lv_offset = io_pointer->mv_value.
 
+    DATA(lo_memory) = gi_wasm->get_memory( ).
     DO.
-      lv_hex = gi_wasm->get_memory( )->get_linear( )->get(
+      lv_hex = lo_memory->mi_linear->get(
         iv_offset = lv_offset
         iv_length = 1 ).
 
@@ -379,7 +380,8 @@ CLASS cl_quickjs IMPLEMENTATION.
     lv_xstr = cl_abap_codepage=>convert_to( iv_string ).
     CONCATENATE lv_xstr gc_null INTO lv_xstr IN BYTE MODE.
 
-    gi_wasm->get_memory( )->get_linear( )->set(
+    DATA(lo_memory) = gi_wasm->get_memory( ).
+    lo_memory->mi_linear->set(
       iv_offset = CONV #( ro_pointer->mv_value )
       iv_bytes  = lv_xstr ).
 
