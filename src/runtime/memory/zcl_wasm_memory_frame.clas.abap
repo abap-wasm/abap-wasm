@@ -2,7 +2,8 @@ CLASS zcl_wasm_memory_frame DEFINITION PUBLIC.
   PUBLIC SECTION.
     INTERFACES zif_wasm_memory_frame.
   PRIVATE SECTION.
-    DATA mt_locals TYPE STANDARD TABLE OF REF TO zif_wasm_value WITH DEFAULT KEY.
+    TYPES ty_locals TYPE STANDARD TABLE OF REF TO zif_wasm_value WITH DEFAULT KEY.
+    DATA mt_locals TYPE ty_locals.
 ENDCLASS.
 
 CLASS zcl_wasm_memory_frame IMPLEMENTATION.
