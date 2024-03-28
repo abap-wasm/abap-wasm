@@ -24,8 +24,8 @@ CLASS zcl_wasm_i32_rotr IMPLEMENTATION.
     DATA lv_hex TYPE x LENGTH 4.
     DATA lv_int TYPE i.
 
-    DATA(lv_bits) = io_memory->mi_stack->pop_i32( )->get_signed( ) MOD 32.
-    lv_hex = io_memory->mi_stack->pop_i32( )->get_signed( ).
+    DATA(lv_bits) = io_memory->mi_stack->pop_i32( )->mv_value MOD 32.
+    lv_hex = io_memory->mi_stack->pop_i32( )->mv_value.
 
     DATA(lv_bytes) = lv_bits DIV 8.
     lv_bits = lv_bits MOD 8.

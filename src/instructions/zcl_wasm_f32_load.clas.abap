@@ -49,7 +49,7 @@ CLASS zcl_wasm_f32_load IMPLEMENTATION.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_f32_load: expected i32'.
     ENDIF.
 
-    DATA(lv_i) = CAST zcl_wasm_i32( li_value )->get_signed( ).
+    DATA(lv_i) = CAST zcl_wasm_i32( li_value )->mv_value.
     IF lv_i < 0.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'load: out of bounds'.
     ENDIF.

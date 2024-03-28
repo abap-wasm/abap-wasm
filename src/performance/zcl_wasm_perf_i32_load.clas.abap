@@ -22,7 +22,7 @@ CLASS zcl_wasm_perf_i32_load IMPLEMENTATION.
       iv_max = 1 ) ) ).
 
     DO lc_iterations TIMES.
-      lo_memory->mi_stack->push( zcl_wasm_i32=>from_signed( 0 ) ).
+      lo_memory->mi_stack->push( zcl_wasm_i32=>gc_zero ).
       li_instruction->execute(
             EXPORTING
               io_memory  = lo_memory

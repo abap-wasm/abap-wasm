@@ -22,7 +22,14 @@ CLASS zcl_wasm_i32_const IMPLEMENTATION.
 
   METHOD constructor.
 * the value objects are immutable, so we can reuse them
-    mi_value = zcl_wasm_i32=>from_signed( iv_value ).
+    CASE iv_value.
+      WHEN 0.
+        mi_value = zcl_wasm_i32=>gc_zero.
+      WHEN 1.
+        mi_value = zcl_wasm_i32=>gc_one.
+      WHEN OTHERS.
+        mi_value = zcl_wasm_i32=>from_signed( iv_value ).
+    ENDCASE.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.

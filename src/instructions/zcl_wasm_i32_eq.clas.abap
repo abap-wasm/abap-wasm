@@ -21,13 +21,13 @@ CLASS zcl_wasm_i32_eq IMPLEMENTATION.
   METHOD zif_wasm_instruction~execute.
     ASSERT io_memory->mi_stack->get_length( ) >= 2.
 
-    DATA(lv_val1) = CAST zcl_wasm_i32( io_memory->mi_stack->pop( ) )->get_signed( ).
-    DATA(lv_val2) = CAST zcl_wasm_i32( io_memory->mi_stack->pop( ) )->get_signed( ).
+    DATA(lv_val1) = CAST zcl_wasm_i32( io_memory->mi_stack->pop( ) )->mv_value.
+    DATA(lv_val2) = CAST zcl_wasm_i32( io_memory->mi_stack->pop( ) )->mv_value.
 
     IF lv_val1 = lv_val2.
-      io_memory->mi_stack->push( zcl_wasm_i32=>from_signed( 1 ) ).
+      io_memory->mi_stack->push( zcl_wasm_i32=>gc_one ).
     ELSE.
-      io_memory->mi_stack->push( zcl_wasm_i32=>from_signed( 0 ) ).
+      io_memory->mi_stack->push( zcl_wasm_i32=>gc_zero ).
     ENDIF.
   ENDMETHOD.
 

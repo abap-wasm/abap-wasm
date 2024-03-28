@@ -25,7 +25,7 @@ CLASS zcl_wasm_i32_extend8_s IMPLEMENTATION.
     DATA lv_hex     TYPE x LENGTH 4.
     DATA lv_overlay TYPE x LENGTH 4 VALUE 'FFFFFF00'.
 
-    lv_hex = io_memory->mi_stack->pop_i32( )->get_signed( ).
+    lv_hex = io_memory->mi_stack->pop_i32( )->mv_value.
 
     GET BIT 25 OF lv_hex INTO DATA(lv_sign).
     IF lv_sign = 1.

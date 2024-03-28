@@ -21,7 +21,7 @@ CLASS zcl_wasm_f64_convert_i32_s IMPLEMENTATION.
   METHOD zif_wasm_instruction~execute.
     DATA lv_float TYPE f.
 
-    lv_float = CAST zcl_wasm_i32( io_memory->mi_stack->pop( ) )->get_signed( ).
+    lv_float = CAST zcl_wasm_i32( io_memory->mi_stack->pop( ) )->mv_value.
 
     io_memory->mi_stack->push( zcl_wasm_f64=>from_float( lv_float ) ).
   ENDMETHOD.

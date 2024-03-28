@@ -242,7 +242,7 @@ CLASS zcl_wasm_f32 IMPLEMENTATION.
 
   METHOD from_unsigned_i32.
     DATA lv_hex TYPE x LENGTH 4.
-    DATA(lv_int) = zcl_wasm_i32=>from_unsigned( iv_value )->get_signed( ).
+    DATA(lv_int) = zcl_wasm_i32=>from_unsigned( iv_value )->mv_value.
     lv_hex = lv_int.
     ro_value = NEW #( ).
     lv_hex = zcl_wasm_binary_stream=>reverse_hex( lv_hex ).
@@ -409,9 +409,9 @@ CLASS zcl_wasm_f32 IMPLEMENTATION.
     DATA(lv_val2) = CAST zcl_wasm_f32( io_memory->mi_stack->pop( ) )->mv_value.
 
     IF lv_val1 = lv_val2.
-      io_memory->mi_stack->push( zcl_wasm_i32=>from_signed( 1 ) ).
+      io_memory->mi_stack->push( zcl_wasm_i32=>gc_one ).
     ELSE.
-      io_memory->mi_stack->push( zcl_wasm_i32=>from_signed( 0 ) ).
+      io_memory->mi_stack->push( zcl_wasm_i32=>gc_zero ).
     ENDIF.
 
   ENDMETHOD.

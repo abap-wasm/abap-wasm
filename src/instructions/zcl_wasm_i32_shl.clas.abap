@@ -24,8 +24,8 @@ CLASS zcl_wasm_i32_shl IMPLEMENTATION.
     DATA lv_hex TYPE x LENGTH 4.
     DATA lv_int TYPE i.
 
-    DATA(lv_bits) = CAST zcl_wasm_i32( io_memory->mi_stack->pop( ) )->get_signed( ) MOD 32.
-    lv_hex = CAST zcl_wasm_i32( io_memory->mi_stack->pop( ) )->get_signed( ).
+    DATA(lv_bits) = CAST zcl_wasm_i32( io_memory->mi_stack->pop( ) )->mv_value MOD 32.
+    lv_hex = CAST zcl_wasm_i32( io_memory->mi_stack->pop( ) )->mv_value.
 
     DATA(lv_bytes) = lv_bits DIV 8.
     lv_bits = lv_bits MOD 8.

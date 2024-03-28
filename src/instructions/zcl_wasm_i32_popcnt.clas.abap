@@ -25,7 +25,7 @@ CLASS zcl_wasm_i32_popcnt IMPLEMENTATION.
     DATA lv_hex TYPE x LENGTH 4.
     DATA lv_bit TYPE i.
 
-    DATA(lv_int) = io_memory->mi_stack->pop_i32( )->get_signed( ).
+    DATA(lv_int) = io_memory->mi_stack->pop_i32( )->mv_value.
     lv_hex = lv_int.
 
     DATA(lv_count) = 0.

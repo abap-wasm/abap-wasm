@@ -41,8 +41,8 @@ CLASS zcl_wasm_i32_store IMPLEMENTATION.
 
     DATA lv_hex TYPE x LENGTH gc_length.
 
-    lv_hex = io_memory->mi_stack->pop_i32( )->get_signed( ).
-    DATA(lv_i) = io_memory->mi_stack->pop_i32( )->get_signed( ).
+    lv_hex = io_memory->mi_stack->pop_i32( )->mv_value.
+    DATA(lv_i) = io_memory->mi_stack->pop_i32( )->mv_value.
     IF lv_i < 0.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'i32 store: out of bounds'.
     ENDIF.

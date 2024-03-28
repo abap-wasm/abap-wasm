@@ -42,9 +42,9 @@ CLASS zcl_wasm_ref_is_null IMPLEMENTATION.
     ENDCASE.
 
     IF lv_null = abap_true.
-      io_memory->mi_stack->push( zcl_wasm_i32=>from_signed( 1 ) ).
+      io_memory->mi_stack->push( zcl_wasm_i32=>gc_one ).
     ELSE.
-      io_memory->mi_stack->push( zcl_wasm_i32=>from_signed( 0 ) ).
+      io_memory->mi_stack->push( zcl_wasm_i32=>gc_zero ).
     ENDIF.
 
   ENDMETHOD.

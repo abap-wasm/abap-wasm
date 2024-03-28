@@ -5,7 +5,12 @@ CLASS zcl_wasm_i32 DEFINITION
 
   PUBLIC SECTION.
 
+    CLASS-DATA gc_zero TYPE REF TO zcl_wasm_i32.
+    CLASS-DATA gc_one TYPE REF TO zcl_wasm_i32.
+
     INTERFACES zif_wasm_value .
+
+    CLASS-METHODS class_constructor.
 
     CLASS-METHODS from_signed
       IMPORTING
@@ -19,25 +24,24 @@ CLASS zcl_wasm_i32 DEFINITION
       RETURNING
         VALUE(ro_value) TYPE REF TO zcl_wasm_i32.
 
-    METHODS get_signed
-      RETURNING
-        VALUE(rv_value) TYPE i .
     METHODS get_unsigned
       RETURNING
         VALUE(rv_value) TYPE int8 .
 
+    DATA mv_value TYPE i READ-ONLY.
+
   PROTECTED SECTION.
   PRIVATE SECTION.
-* https://webassembly.github.io/spec/core/syntax/types.html
-* "Integers are not inherently signed or unsigned, their interpretation is determined by individual operations."
-
-* the internal representation is signed in abap-wasm,
-    DATA mv_value TYPE i .
 ENDCLASS.
 
 
 
 CLASS zcl_wasm_i32 IMPLEMENTATION.
+
+  METHOD class_constructor.
+    gc_zero = from_signed( 0 ).
+    gc_one = from_signed( 1 ).
+  ENDMETHOD.
 
   METHOD zif_wasm_value~human_readable_value.
     rv_string = |i32: { mv_value }|.
@@ -65,14 +69,8 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
     ENDIF.
   ENDMETHOD.
 
-  METHOD get_signed.
-    rv_value = mv_value.
-  ENDMETHOD.
-
   METHOD zif_wasm_value~get_type.
-
     rv_type = zif_wasm_types=>c_value_type-i32.
-
   ENDMETHOD.
 
 ENDCLASS.

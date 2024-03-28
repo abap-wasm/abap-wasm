@@ -28,12 +28,12 @@ CLASS zcl_wasm_i32_le_u IMPLEMENTATION.
     DATA(lo_val1) = CAST zcl_wasm_i32( io_memory->mi_stack->pop( ) ).
     DATA(lo_val2) = CAST zcl_wasm_i32( io_memory->mi_stack->pop( ) ).
 
-    DATA(lv_result) = 0.
     IF lo_val1->get_unsigned( ) >= lo_val2->get_unsigned( ).
-      lv_result = 1.
+      io_memory->mi_stack->push( zcl_wasm_i32=>gc_one ).
+    ELSE.
+      io_memory->mi_stack->push( zcl_wasm_i32=>gc_zero ).
     ENDIF.
 
-    io_memory->mi_stack->push( zcl_wasm_i32=>from_signed( lv_result ) ).
   ENDMETHOD.
 
 ENDCLASS.

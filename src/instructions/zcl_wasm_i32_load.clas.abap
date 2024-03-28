@@ -45,7 +45,7 @@ CLASS zcl_wasm_i32_load IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-    gv_i = io_memory->mi_stack->pop_i32( )->get_signed( ).
+    gv_i = io_memory->mi_stack->pop_i32( )->mv_value.
     "##feature-start=debug
     IF gv_i < 0.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'load: out of bounds'.

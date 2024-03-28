@@ -28,7 +28,7 @@ CLASS ltcl_test IMPLEMENTATION.
       exp = 1 ).
 
     cl_abap_unit_assert=>assert_equals(
-      act = mo_memory->mi_stack->pop_i32( )->get_signed( )
+      act = mo_memory->mi_stack->pop_i32( )->mv_value
       exp = iv_value ).
 
   ENDMETHOD.
@@ -38,7 +38,7 @@ CLASS ltcl_test IMPLEMENTATION.
     DATA(lo_int) = zcl_wasm_i32=>from_unsigned( 4294967294 ).
 
     cl_abap_unit_assert=>assert_equals(
-      act = lo_int->get_signed( )
+      act = lo_int->mv_value
       exp = -2 ).
 
     cl_abap_unit_assert=>assert_equals(
@@ -52,7 +52,7 @@ CLASS ltcl_test IMPLEMENTATION.
     DATA(lo_int) = zcl_wasm_i32=>from_unsigned( 4294967289 ).
 
     cl_abap_unit_assert=>assert_equals(
-      act = lo_int->get_signed( )
+      act = lo_int->mv_value
       exp = -7 ).
 
     cl_abap_unit_assert=>assert_equals(
@@ -66,7 +66,7 @@ CLASS ltcl_test IMPLEMENTATION.
     DATA(lo_int) = zcl_wasm_i32=>from_unsigned( 0 ).
 
     cl_abap_unit_assert=>assert_equals(
-      act = lo_int->get_signed( )
+      act = lo_int->mv_value
       exp = 0 ).
 
   ENDMETHOD.
@@ -76,7 +76,7 @@ CLASS ltcl_test IMPLEMENTATION.
     DATA(lo_int) = zcl_wasm_i32=>from_unsigned( 1 ).
 
     cl_abap_unit_assert=>assert_equals(
-      act = lo_int->get_signed( )
+      act = lo_int->mv_value
       exp = 1 ).
 
     cl_abap_unit_assert=>assert_equals(
@@ -90,7 +90,7 @@ CLASS ltcl_test IMPLEMENTATION.
     DATA(lo_int) = zcl_wasm_i32=>from_unsigned( 2147483647 ).
 
     cl_abap_unit_assert=>assert_equals(
-      act = lo_int->get_signed( )
+      act = lo_int->mv_value
       exp = 2147483647 ).
 
     cl_abap_unit_assert=>assert_equals(

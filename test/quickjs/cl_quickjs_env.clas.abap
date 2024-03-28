@@ -82,9 +82,9 @@ CLASS cl_quickjs_env IMPLEMENTATION.
     CASE iv_name.
       WHEN 'emscripten_memcpy_js'.
 * (param i32 i32 i32)
-        DATA(lv_n) = CAST zcl_wasm_i32( it_parameters[ 1 ] )->get_signed( ).
-        DATA(lv_src) = CAST zcl_wasm_i32( it_parameters[ 2 ] )->get_signed( ).
-        DATA(lv_dest) = CAST zcl_wasm_i32( it_parameters[ 3 ] )->get_signed( ).
+        DATA(lv_n) = CAST zcl_wasm_i32( it_parameters[ 1 ] )->mv_value.
+        DATA(lv_src) = CAST zcl_wasm_i32( it_parameters[ 2 ] )->mv_value.
+        DATA(lv_dest) = CAST zcl_wasm_i32( it_parameters[ 3 ] )->mv_value.
         WRITE / |emscripten_memcpy_js: { lv_n }, { lv_src }, { lv_dest }|.
 
         lv_xstr = li_linear->get(
@@ -107,8 +107,8 @@ CLASS cl_quickjs_env IMPLEMENTATION.
 * (param i32 i32) (result i32)
 * input: pointer + max length
 * return: bytes written to pointer?
-        DATA(lv_max) = CAST zcl_wasm_i32( it_parameters[ 1 ] )->get_signed( ).
-        DATA(lv_pointer) = CAST zcl_wasm_i32( it_parameters[ 2 ] )->get_signed( ).
+        DATA(lv_max) = CAST zcl_wasm_i32( it_parameters[ 1 ] )->mv_value.
+        DATA(lv_pointer) = CAST zcl_wasm_i32( it_parameters[ 2 ] )->mv_value.
 
         lv_xstr = cl_abap_codepage=>convert_to( 'hello.wasm' ).
         CONCATENATE lv_xstr gc_null INTO lv_xstr IN BYTE MODE.
@@ -121,7 +121,7 @@ CLASS cl_quickjs_env IMPLEMENTATION.
 * https://github.com/emscripten-core/emscripten/blob/918e131fae0b5c7b1d05a5c75d7e8e676c377713/system/lib/standalone/standalone.c#L152
 * (param i32) (result i32)
 * return: 1 = success, 0 = failure?
-        DATA(lv_input) = CAST zcl_wasm_i32( it_parameters[ 1 ] )->get_signed( ).
+        DATA(lv_input) = CAST zcl_wasm_i32( it_parameters[ 1 ] )->mv_value.
         DATA(lv_diff) = lv_input - mo_memory->get_linear( )->size_in_bytes( ).
         DATA(lv_pages) = ceil( lv_diff / 65536 ) + 1.
         WRITE / |emscripten_resize_heap: grow { lv_pages } pages, requested diff { lv_diff }, requested size { lv_input }|.
@@ -141,7 +141,7 @@ CLASS cl_quickjs_env IMPLEMENTATION.
 * (param i32) (result i32)
 * input: pointer to string?
 * output: pointer to string?
-        lv_pointer = CAST zcl_wasm_i32( it_parameters[ 1 ] )->get_signed( ).
+        lv_pointer = CAST zcl_wasm_i32( it_parameters[ 1 ] )->mv_value.
         DATA(lv_str) = read_string( CONV #( lv_pointer ) ).
         WRITE / |emscripten_sanitizer_get_option: { lv_str }|.
 * todo, return malloc'ed string pointer? by calling the malloc inside the wasm?

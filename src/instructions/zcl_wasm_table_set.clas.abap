@@ -35,7 +35,7 @@ CLASS zcl_wasm_table_set IMPLEMENTATION.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_table_set: expected reference type'.
     ENDIF.
 
-    DATA(lv_i) = io_memory->mi_stack->pop_i32( )->get_signed( ).
+    DATA(lv_i) = io_memory->mi_stack->pop_i32( )->mv_value.
     IF lv_i < 0.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_table_set: negative index'.
     ENDIF.

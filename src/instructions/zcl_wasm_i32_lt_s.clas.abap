@@ -34,12 +34,12 @@ CLASS zcl_wasm_i32_lt_s IMPLEMENTATION.
         RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'lt_s, wrong types on stack'.
     ENDTRY.
 
-    DATA(lv_result) = 0.
-    IF lo_val1->get_signed( ) > lo_val2->get_signed( ).
-      lv_result = 1.
+    IF lo_val1->mv_value > lo_val2->mv_value.
+      io_memory->mi_stack->push( zcl_wasm_i32=>gc_one ).
+    ELSE.
+      io_memory->mi_stack->push( zcl_wasm_i32=>gc_zero ).
     ENDIF.
 
-    io_memory->mi_stack->push( zcl_wasm_i32=>from_signed( lv_result ) ).
   ENDMETHOD.
 
 ENDCLASS.

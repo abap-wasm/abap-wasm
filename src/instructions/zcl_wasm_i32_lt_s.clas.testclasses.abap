@@ -28,7 +28,7 @@ CLASS ltcl_test IMPLEMENTATION.
       iv_name       = 'no_fold_cmp_s_offset'
       it_parameters = VALUE #(
         ( zcl_wasm_i32=>from_signed( 2147483647 ) )
-        ( zcl_wasm_i32=>from_signed( 0 ) ) ) ).
+        ( zcl_wasm_i32=>gc_zero ) ) ).
 
     cl_abap_unit_assert=>assert_equals(
       act = lines( lt_values )
@@ -37,7 +37,7 @@ CLASS ltcl_test IMPLEMENTATION.
     DATA(lo_value) = CAST zcl_wasm_i32( lt_values[ 1 ] ).
 
     cl_abap_unit_assert=>assert_equals(
-      act = lo_value->get_signed( )
+      act = lo_value->mv_value
       exp = 1 ).
   ENDMETHOD.
 

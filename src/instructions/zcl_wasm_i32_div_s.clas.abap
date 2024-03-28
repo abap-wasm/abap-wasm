@@ -21,8 +21,8 @@ CLASS zcl_wasm_i32_div_s IMPLEMENTATION.
   METHOD zif_wasm_instruction~execute.
     ASSERT io_memory->mi_stack->get_length( ) >= 2.
 
-    DATA(lv_val1) = CAST zcl_wasm_i32( io_memory->mi_stack->pop( ) )->get_signed( ).
-    DATA(lv_val2) = CAST zcl_wasm_i32( io_memory->mi_stack->pop( ) )->get_signed( ).
+    DATA(lv_val1) = CAST zcl_wasm_i32( io_memory->mi_stack->pop( ) )->mv_value.
+    DATA(lv_val2) = CAST zcl_wasm_i32( io_memory->mi_stack->pop( ) )->mv_value.
 
     IF lv_val1 = 0.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'i32.div_s, division by zero'.

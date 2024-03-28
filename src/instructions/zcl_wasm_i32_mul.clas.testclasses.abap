@@ -33,7 +33,7 @@ CLASS ltcl_test IMPLEMENTATION.
     DATA(lo_value) = CAST zcl_wasm_i32( lt_values[ 1 ] ).
 
     cl_abap_unit_assert=>assert_equals(
-      act = lo_value->get_signed( )
+      act = lo_value->mv_value
       exp = 0 ).
   ENDMETHOD.
 
@@ -58,7 +58,7 @@ CLASS ltcl_test IMPLEMENTATION.
     DATA(lo_value) = CAST zcl_wasm_i32( lt_values[ 1 ] ).
 
     cl_abap_unit_assert=>assert_equals(
-      act = lo_value->get_signed( )
+      act = lo_value->mv_value
       exp = 367002308 ).
 
   ENDMETHOD.
@@ -84,7 +84,7 @@ CLASS ltcl_test IMPLEMENTATION.
     DATA(lo_value) = CAST zcl_wasm_i32( lt_values[ 1 ] ).
 
     cl_abap_unit_assert=>assert_equals(
-      act = lo_value->get_signed( )
+      act = lo_value->mv_value
       exp = -1644248628 ).
 
   ENDMETHOD.
@@ -110,7 +110,7 @@ CLASS ltcl_test IMPLEMENTATION.
     DATA(lo_value) = CAST zcl_wasm_i32( lt_values[ 1 ] ).
 
     cl_abap_unit_assert=>assert_equals(
-      act = lo_value->get_signed( )
+      act = lo_value->mv_value
       exp = 1 ).
 
   ENDMETHOD.
@@ -136,7 +136,7 @@ CLASS ltcl_test IMPLEMENTATION.
     DATA(lo_value) = CAST zcl_wasm_i32( lt_values[ 1 ] ).
 
     cl_abap_unit_assert=>assert_equals(
-      act = lo_value->get_signed( )
+      act = lo_value->mv_value
       exp = -2147483646 ).
 
   ENDMETHOD.

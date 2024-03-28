@@ -39,7 +39,7 @@ CLASS zcl_wasm_br_if IMPLEMENTATION.
     ENDIF.
     "##feature-end=debug
 
-    IF CAST zcl_wasm_i32( li_value )->get_signed( ) = 0.
+    IF CAST zcl_wasm_i32( li_value )->mv_value = 0.
       RETURN.
     ENDIF.
 

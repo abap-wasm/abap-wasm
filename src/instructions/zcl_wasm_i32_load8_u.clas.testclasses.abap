@@ -28,7 +28,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
     DATA(lt_values) = li_wasm->execute_function_export(
       iv_name       = 'load8_u'
-      it_parameters = VALUE #( ( zcl_wasm_i32=>from_signed( 0 ) ) ) ).
+      it_parameters = VALUE #( ( zcl_wasm_i32=>gc_zero ) ) ).
 
     cl_abap_unit_assert=>assert_equals(
       act = lines( lt_values )
@@ -37,7 +37,7 @@ CLASS ltcl_test IMPLEMENTATION.
     DATA(lo_value) = CAST zcl_wasm_i32( lt_values[ 1 ] ).
 
     cl_abap_unit_assert=>assert_equals(
-      act = lo_value->get_signed( )
+      act = lo_value->mv_value
       exp = 0 ).
   ENDMETHOD.
 
@@ -66,7 +66,7 @@ CLASS ltcl_test IMPLEMENTATION.
     DATA(lo_value) = CAST zcl_wasm_i32( lt_values[ 1 ] ).
 
     cl_abap_unit_assert=>assert_equals(
-      act = lo_value->get_signed( )
+      act = lo_value->mv_value
       exp = 255 ).
 
   ENDMETHOD.
