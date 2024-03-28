@@ -15,7 +15,6 @@ CLASS zcl_wasm_memory_frame IMPLEMENTATION.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_memory_frame: not found in local memory, local_get'.
     ENDIF.
     "##feature-end=debug
-
   ENDMETHOD.
 
 
@@ -33,9 +32,8 @@ CLASS zcl_wasm_memory_frame IMPLEMENTATION.
 
 
   METHOD zif_wasm_memory_frame~local_set.
-
-    DATA(lv_index) = iv_index + 1.
-    MODIFY mt_locals INDEX lv_index FROM ii_value.
+* the caller must translate the index to ABAP index
+    MODIFY mt_locals INDEX iv_index FROM ii_value.
     "##feature-start=debug
     IF sy-subrc <> 0.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_memory_frame: not found in local memory, local_set'.

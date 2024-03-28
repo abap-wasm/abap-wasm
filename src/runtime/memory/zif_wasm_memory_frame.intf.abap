@@ -10,7 +10,7 @@ INTERFACE zif_wasm_memory_frame PUBLIC.
 
   METHODS local_get
     IMPORTING
-      !iv_index       TYPE int8
+      !iv_index       TYPE i
     RETURNING
       VALUE(ri_value) TYPE REF TO zif_wasm_value
     RAISING
@@ -18,7 +18,7 @@ INTERFACE zif_wasm_memory_frame PUBLIC.
 
   METHODS local_set
     IMPORTING
-      iv_index TYPE int8
+      iv_index TYPE i
       ii_value TYPE REF TO zif_wasm_value
     RAISING
       zcx_wasm.

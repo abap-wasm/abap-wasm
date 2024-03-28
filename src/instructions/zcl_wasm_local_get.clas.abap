@@ -10,7 +10,7 @@ CLASS zcl_wasm_local_get DEFINITION
 
     METHODS constructor
       IMPORTING
-        !iv_localidx TYPE int8.
+        !iv_localidx TYPE i.
 
     CLASS-METHODS parse
       IMPORTING
@@ -22,7 +22,7 @@ CLASS zcl_wasm_local_get DEFINITION
 
   PROTECTED SECTION.
   PRIVATE SECTION.
-    DATA mv_localidx TYPE int8.
+    DATA mv_localidx TYPE i.
     CLASS-DATA gt_singletons TYPE STANDARD TABLE OF REF TO zcl_wasm_local_get WITH DEFAULT KEY.
 ENDCLASS.
 
@@ -36,13 +36,13 @@ CLASS zcl_wasm_local_get IMPLEMENTATION.
 
   METHOD class_constructor.
     DO 100 TIMES.
-      DATA(lo_get) = NEW zcl_wasm_local_get( CONV #( sy-index ) ).
+      DATA(lo_get) = NEW zcl_wasm_local_get( sy-index ).
       INSERT lo_get INTO TABLE gt_singletons.
     ENDDO.
   ENDMETHOD.
 
   METHOD parse.
-    DATA lv_idx TYPE int8.
+    DATA lv_idx TYPE i.
     lv_idx = io_body->shift_u32( ) + 1.
     READ TABLE gt_singletons INDEX lv_idx INTO ri_instruction.
     IF sy-subrc <> 0.
