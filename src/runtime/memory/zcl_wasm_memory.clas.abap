@@ -15,12 +15,12 @@ CLASS zcl_wasm_memory DEFINITION
 * public for optimizing performance
     DATA mi_stack TYPE REF TO zif_wasm_memory_stack.
 
-*********** Frames with locals
+*********** LOCALS
     TYPES ty_locals TYPE STANDARD TABLE OF REF TO zif_wasm_value WITH DEFAULT KEY.
     DATA mt_locals TYPE ty_locals.
 
-    METHODS push_frame.
-    METHODS pop_frame
+    METHODS push_locals.
+    METHODS pop_locals
       RAISING zcx_wasm.
 
 *********** GLOBAL
@@ -223,12 +223,12 @@ CLASS zcl_wasm_memory IMPLEMENTATION.
 
   ENDMETHOD.
 
-  METHOD push_frame.
+  METHOD push_locals.
     APPEND mt_locals TO mt_frames.
     CLEAR mt_locals.
   ENDMETHOD.
 
-  METHOD pop_frame.
+  METHOD pop_locals.
     DATA lv_last TYPE i.
     lv_last = lines( mt_frames ).
     "##feature-start=debug

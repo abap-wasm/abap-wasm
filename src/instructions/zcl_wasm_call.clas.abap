@@ -68,7 +68,7 @@ CLASS zcl_wasm_call IMPLEMENTATION.
       DATA(lr_code) = io_module->get_code_by_index( CONV #( ls_function-codeidx ) ).
 
 * consume values from stack into locals
-      io_memory->push_frame( ).
+      io_memory->push_locals( ).
       DO xstrlen( ls_type-parameter_types ) TIMES.
 * todo: check parameters types are correct
         INSERT io_memory->mi_stack->pop( ) INTO io_memory->mt_locals INDEX 1.
@@ -134,7 +134,7 @@ CLASS zcl_wasm_call IMPLEMENTATION.
       ENDLOOP.
 
       io_memory->mi_stack = li_old_stack.
-      io_memory->pop_frame( ).
+      io_memory->pop_locals( ).
     ENDIF.
 
   ENDMETHOD.
