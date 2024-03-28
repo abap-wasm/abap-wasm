@@ -25,9 +25,9 @@ CLASS zcl_wasm_i32_ne IMPLEMENTATION.
     DATA(lv_val2) = CAST zcl_wasm_i32( io_memory->mi_stack->pop( ) )->get_signed( ).
 
     IF lv_val1 <> lv_val2.
-      io_memory->mi_stack->push( zcl_wasm_i32=>from_signed( 1 ) ).
+      io_memory->mi_stack->push( zcl_wasm_i32=>gc_one ).
     ELSE.
-      io_memory->mi_stack->push( zcl_wasm_i32=>from_signed( 0 ) ).
+      io_memory->mi_stack->push( zcl_wasm_i32=>gc_zero ).
     ENDIF.
   ENDMETHOD.
 

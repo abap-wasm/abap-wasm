@@ -5,7 +5,12 @@ CLASS zcl_wasm_i32 DEFINITION
 
   PUBLIC SECTION.
 
+    CLASS-DATA gc_zero TYPE REF TO zcl_wasm_i32.
+    CLASS-DATA gc_one TYPE REF TO zcl_wasm_i32.
+
     INTERFACES zif_wasm_value .
+
+    CLASS-METHODS class_constructor.
 
     CLASS-METHODS from_signed
       IMPORTING
@@ -38,6 +43,11 @@ ENDCLASS.
 
 
 CLASS zcl_wasm_i32 IMPLEMENTATION.
+
+  METHOD class_constructor.
+    gc_zero = from_signed( 0 ).
+    gc_one = from_signed( 1 ).
+  ENDMETHOD.
 
   METHOD zif_wasm_value~human_readable_value.
     rv_string = |i32: { mv_value }|.

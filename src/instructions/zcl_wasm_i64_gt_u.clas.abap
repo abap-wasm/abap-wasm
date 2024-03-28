@@ -38,9 +38,9 @@ CLASS zcl_wasm_i64_gt_u IMPLEMENTATION.
     ENDIF.
 
     IF lv_result = abap_true.
-      io_memory->mi_stack->push( zcl_wasm_i32=>from_signed( 1 ) ).
+      io_memory->mi_stack->push( zcl_wasm_i32=>gc_one ).
     ELSE.
-      io_memory->mi_stack->push( zcl_wasm_i32=>from_signed( 0 ) ).
+      io_memory->mi_stack->push( zcl_wasm_i32=>gc_zero ).
     ENDIF.
   ENDMETHOD.
 
