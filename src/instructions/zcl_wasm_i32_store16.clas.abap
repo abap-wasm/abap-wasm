@@ -22,9 +22,11 @@ ENDCLASS.
 CLASS zcl_wasm_i32_store16 IMPLEMENTATION.
 
   METHOD constructor.
+    "##feature-start=debug
     IF iv_align > zcl_wasm_memory=>c_alignment_16bit.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'alignment must not be larger than natural'.
     ENDIF.
+    "##feature-end=debug
 
     mv_align  = iv_align.
     mv_offset = iv_offset.

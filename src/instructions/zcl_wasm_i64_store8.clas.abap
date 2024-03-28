@@ -22,9 +22,11 @@ ENDCLASS.
 CLASS zcl_wasm_i64_store8 IMPLEMENTATION.
 
   METHOD constructor.
+    "##feature-start=debug
     IF iv_align > zcl_wasm_memory=>c_alignment_8bit.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'alignment must not be larger than natural'.
     ENDIF.
+    "##feature-end=debug
 
     mv_align  = iv_align.
     mv_offset = iv_offset.
@@ -44,14 +46,18 @@ CLASS zcl_wasm_i64_store8 IMPLEMENTATION.
     DATA(li_linear) = io_memory->get_linear( ).
 
     DATA(lv_c) = io_memory->mi_stack->pop( ).
+    "##feature-start=debug
     IF lv_c->get_type( ) <> zif_wasm_types=>c_value_type-i64.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'i64 store8: expected i64'.
     ENDIF.
+    "##feature-end=debug
 
     DATA(lv_i) = io_memory->mi_stack->pop_i32( )->mv_value.
+    "##feature-start=debug
     IF lv_i < 0.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'i64 store8: out of bounds'.
     ENDIF.
+    "##feature-end=debug
 
     lv_hex = CAST zcl_wasm_i64( lv_c )->get_signed( ).
 

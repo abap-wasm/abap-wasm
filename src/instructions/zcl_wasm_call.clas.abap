@@ -68,10 +68,10 @@ CLASS zcl_wasm_call IMPLEMENTATION.
       DATA(lr_code) = io_module->get_code_by_index( CONV #( ls_function-codeidx ) ).
 
 * consume values from stack into locals
-      io_memory->push_frame( ).
+      io_memory->push_locals( ).
       DO xstrlen( ls_type-parameter_types ) TIMES.
 * todo: check parameters types are correct
-        io_memory->mi_frame->local_push_first( io_memory->mi_stack->pop( ) ).
+        INSERT io_memory->mi_stack->pop( ) INTO io_memory->mt_locals INDEX 1.
       ENDDO.
 
 * add the locals for the function
@@ -79,13 +79,13 @@ CLASS zcl_wasm_call IMPLEMENTATION.
         DO <ls_local>-count TIMES.
           CASE <ls_local>-type.
             WHEN zif_wasm_types=>c_value_type-i32.
-              io_memory->mi_frame->local_push_last( NEW zcl_wasm_i32( ) ).
+              INSERT NEW zcl_wasm_i32( ) INTO TABLE io_memory->mt_locals.
             WHEN zif_wasm_types=>c_value_type-i64.
-              io_memory->mi_frame->local_push_last( NEW zcl_wasm_i64( ) ).
+              INSERT NEW zcl_wasm_i64( ) INTO TABLE io_memory->mt_locals.
             WHEN zif_wasm_types=>c_value_type-f32.
-              io_memory->mi_frame->local_push_last( NEW zcl_wasm_f32( ) ).
+              INSERT NEW zcl_wasm_f32( ) INTO TABLE io_memory->mt_locals.
             WHEN zif_wasm_types=>c_value_type-f64.
-              io_memory->mi_frame->local_push_last( NEW zcl_wasm_f64( ) ).
+              INSERT NEW zcl_wasm_f64( ) INTO TABLE io_memory->mt_locals.
             WHEN OTHERS.
               RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |call: unknown type|.
           ENDCASE.
@@ -134,7 +134,7 @@ CLASS zcl_wasm_call IMPLEMENTATION.
       ENDLOOP.
 
       io_memory->mi_stack = li_old_stack.
-      io_memory->pop_frame( ).
+      io_memory->pop_locals( ).
     ENDIF.
 
   ENDMETHOD.
