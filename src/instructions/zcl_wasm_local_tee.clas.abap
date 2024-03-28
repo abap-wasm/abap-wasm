@@ -28,7 +28,7 @@ CLASS zcl_wasm_local_tee IMPLEMENTATION.
 
   METHOD class_constructor.
     DO 100 TIMES.
-      DATA(lo_get) = NEW zcl_wasm_local_tee( CONV #( sy-index ) ).
+      DATA(lo_get) = NEW zcl_wasm_local_tee( sy-index ).
       INSERT lo_get INTO TABLE gt_singletons.
     ENDDO.
   ENDMETHOD.
