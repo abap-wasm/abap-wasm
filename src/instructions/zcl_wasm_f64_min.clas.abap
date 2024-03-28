@@ -19,8 +19,9 @@ CLASS zcl_wasm_f64_min IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
-
+    "##feature-start=debug
     ASSERT io_memory->mi_stack->get_length( ) >= 2.
+    "##feature-end=debug
 
     DATA(lo_val1) = CAST zcl_wasm_f64( io_memory->mi_stack->pop( ) ).
     DATA(lo_val2) = CAST zcl_wasm_f64( io_memory->mi_stack->pop( ) ).
