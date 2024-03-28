@@ -116,25 +116,30 @@ CLASS zcl_wasm_memory_linear IMPLEMENTATION.
 
     DATA(lv_offset) = iv_offset MOD zif_wasm_memory_linear=>c_page_size.
 
+    IF lv_offset + iv_length <= zif_wasm_memory_linear=>c_page_size.
+      rv_bytes = gv_page->*+lv_offset(iv_length).
+      rv_bytes = zcl_wasm_binary_stream=>reverse_hex( rv_bytes ).
+    ELSE.
 * return multiple bytes in endian order
-    DO iv_length TIMES.
-      IF lv_offset = zif_wasm_memory_linear=>c_page_size.
-        lv_page = lv_page + 1.
-        READ TABLE mt_pages INDEX lv_page REFERENCE INTO gv_page.
-        "##feature-start=debug
-        IF sy-subrc <> 0.
-          RAISE EXCEPTION TYPE zcx_wasm
-            EXPORTING
-              text = |linear_get: out of bounds, getting page { lv_page }|.
+      DO iv_length TIMES.
+        IF lv_offset = zif_wasm_memory_linear=>c_page_size.
+          lv_page = lv_page + 1.
+          READ TABLE mt_pages INDEX lv_page REFERENCE INTO gv_page.
+          "##feature-start=debug
+          IF sy-subrc <> 0.
+            RAISE EXCEPTION TYPE zcx_wasm
+              EXPORTING
+                text = |linear_get: out of bounds, getting page { lv_page }|.
+          ENDIF.
+          "##feature-end=debug
+          lv_offset = 0.
         ENDIF.
-        "##feature-end=debug
-        lv_offset = 0.
-      ENDIF.
 
-      lv_byte = gv_page->*+lv_offset(1).
-      CONCATENATE lv_byte rv_bytes INTO rv_bytes IN BYTE MODE.
-      lv_offset = lv_offset + 1.
-    ENDDO.
+        lv_byte = gv_page->*+lv_offset(1).
+        CONCATENATE lv_byte rv_bytes INTO rv_bytes IN BYTE MODE.
+        lv_offset = lv_offset + 1.
+      ENDDO.
+    ENDIF.
 
   ENDMETHOD.
 
