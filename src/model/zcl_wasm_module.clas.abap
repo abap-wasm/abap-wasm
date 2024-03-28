@@ -104,10 +104,9 @@ CLASS zcl_wasm_module DEFINITION
       IMPORTING
         !it_instructions TYPE zif_wasm_instruction=>ty_list
       CHANGING
-        cv_control TYPE zif_wasm_instruction=>ty_control
+        cs_control TYPE zif_wasm_instruction=>ty_control
       RAISING
-        zcx_wasm
-        zcx_wasm_branch.
+        zcx_wasm.
 
     METHODS register_imports
       IMPORTING
@@ -359,16 +358,10 @@ CLASS zcl_wasm_module IMPLEMENTATION.
       mo_memory->mi_stack->push( li_value ).
     ENDLOOP.
 
-    TRY.
-        zcl_wasm_call=>invoke(
-          iv_funcidx = ls_export-index
-          io_memory  = mo_memory
-          io_module  = me ).
-      CATCH zcx_wasm_branch.
-        RAISE EXCEPTION TYPE zcx_wasm
-          EXPORTING
-            text = 'call(), branching exception, should not happen'.
-    ENDTRY.
+    zcl_wasm_call=>invoke(
+      iv_funcidx = ls_export-index
+      io_memory  = mo_memory
+      io_module  = me ).
 
     DO xstrlen( ls_type-result_types ) TIMES.
       INSERT mo_memory->mi_stack->pop( ) INTO rt_results INDEX 1.
@@ -384,9 +377,9 @@ CLASS zcl_wasm_module IMPLEMENTATION.
           io_memory  = mo_memory
           io_module  = me
         CHANGING
-          cv_control = cv_control ).
+          cs_control = cs_control ).
 
-      IF cv_control = zif_wasm_instruction=>c_control-return_.
+      IF cs_control-control IS NOT INITIAL.
         RETURN.
       ENDIF.
     ENDLOOP.

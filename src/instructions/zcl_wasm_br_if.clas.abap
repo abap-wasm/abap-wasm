@@ -43,8 +43,8 @@ CLASS zcl_wasm_br_if IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-* yea, using exceptions for branching is probably slow, but will work for now
-    RAISE EXCEPTION TYPE zcx_wasm_branch EXPORTING depth = mv_labelidx.
+    cs_control-control = zif_wasm_instruction=>c_control-branch.
+    cs_control-depth = mv_labelidx.
   ENDMETHOD.
 
 ENDCLASS.

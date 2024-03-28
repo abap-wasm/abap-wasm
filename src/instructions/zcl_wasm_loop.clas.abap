@@ -57,22 +57,23 @@ CLASS zcl_wasm_loop IMPLEMENTATION.
     lo_block->start( io_memory ).
 
     DO.
-      TRY.
-          io_module->execute_instructions(
+      io_module->execute_instructions(
             EXPORTING
               it_instructions = mt_instructions
             CHANGING
-              cv_control      = cv_control ).
+              cs_control      = cs_control ).
 
-          IF cv_control = zif_wasm_instruction=>c_control-return_.
-            RETURN.
-          ENDIF.
-        CATCH zcx_wasm_branch INTO DATA(lx_branch).
-          IF lx_branch->depth = 0.
-            CONTINUE.
-          ENDIF.
-          RAISE EXCEPTION TYPE zcx_wasm_branch EXPORTING depth = lx_branch->depth - 1.
-      ENDTRY.
+      IF cs_control-control = zif_wasm_instruction=>c_control-return_.
+        RETURN.
+      ELSEIF cs_control-control = zif_wasm_instruction=>c_control-branch.
+        IF cs_control-depth > 0.
+          cs_control-depth = cs_control-depth - 1.
+          RETURN.
+        ELSE.
+          CLEAR cs_control-control.
+          CONTINUE.
+        ENDIF.
+      ENDIF.
 
       EXIT.
     ENDDO.
