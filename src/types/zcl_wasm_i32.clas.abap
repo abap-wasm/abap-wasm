@@ -24,20 +24,14 @@ CLASS zcl_wasm_i32 DEFINITION
       RETURNING
         VALUE(ro_value) TYPE REF TO zcl_wasm_i32.
 
-    METHODS get_signed
-      RETURNING
-        VALUE(rv_value) TYPE i .
     METHODS get_unsigned
       RETURNING
         VALUE(rv_value) TYPE int8 .
 
+    DATA mv_value TYPE i READ-ONLY.
+
   PROTECTED SECTION.
   PRIVATE SECTION.
-* https://webassembly.github.io/spec/core/syntax/types.html
-* "Integers are not inherently signed or unsigned, their interpretation is determined by individual operations."
-
-* the internal representation is signed in abap-wasm,
-    DATA mv_value TYPE i .
 ENDCLASS.
 
 
@@ -75,14 +69,8 @@ CLASS zcl_wasm_i32 IMPLEMENTATION.
     ENDIF.
   ENDMETHOD.
 
-  METHOD get_signed.
-    rv_value = mv_value.
-  ENDMETHOD.
-
   METHOD zif_wasm_value~get_type.
-
     rv_type = zif_wasm_types=>c_value_type-i32.
-
   ENDMETHOD.
 
 ENDCLASS.

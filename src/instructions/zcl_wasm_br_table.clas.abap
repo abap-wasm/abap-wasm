@@ -57,7 +57,7 @@ CLASS zcl_wasm_br_table IMPLEMENTATION.
     "##feature-end=debug
 
 * todo, this has to be get_unsigned() ?
-    DATA(lv_i) = CAST zcl_wasm_i32( li_value )->get_signed( ).
+    DATA(lv_i) = CAST zcl_wasm_i32( li_value )->mv_value.
     lv_i = lv_i + 1.
 
     READ TABLE mt_branches INDEX lv_i INTO DATA(lv_branch).

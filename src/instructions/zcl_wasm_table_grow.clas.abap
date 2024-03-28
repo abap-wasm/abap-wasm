@@ -30,7 +30,7 @@ CLASS zcl_wasm_table_grow IMPLEMENTATION.
 
     DATA(lv_sz) = io_memory->table_size( CONV #( mv_tableidx ) ).
 
-    DATA(lv_n) = io_memory->mi_stack->pop_i32( )->get_signed( ).
+    DATA(lv_n) = io_memory->mi_stack->pop_i32( )->mv_value.
     DATA(lv_val) = io_memory->mi_stack->pop( ).
 
     DATA(lv_max) = io_memory->table_get_max( CONV #( mv_tableidx ) ).

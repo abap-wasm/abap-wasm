@@ -24,8 +24,8 @@ CLASS zcl_wasm_i32_xor IMPLEMENTATION.
     DATA lv_int  TYPE i.
 
     DATA(li_stack) = io_memory->mi_stack.
-    lv_hex1 = CAST zcl_wasm_i32( li_stack->pop( ) )->get_signed( ).
-    lv_hex2 = CAST zcl_wasm_i32( li_stack->pop( ) )->get_signed( ).
+    lv_hex1 = CAST zcl_wasm_i32( li_stack->pop( ) )->mv_value.
+    lv_hex2 = CAST zcl_wasm_i32( li_stack->pop( ) )->mv_value.
 
     lv_hex1 = lv_hex1 BIT-XOR lv_hex2.
     lv_int = lv_hex1.

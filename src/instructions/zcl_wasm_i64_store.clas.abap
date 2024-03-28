@@ -48,7 +48,7 @@ CLASS zcl_wasm_i64_store IMPLEMENTATION.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'i64 store: expected i64'.
     ENDIF.
 
-    DATA(lv_i) = io_memory->mi_stack->pop_i32( )->get_signed( ).
+    DATA(lv_i) = io_memory->mi_stack->pop_i32( )->mv_value.
     IF lv_i < 0.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'i64 store: out of bounds'.
     ENDIF.

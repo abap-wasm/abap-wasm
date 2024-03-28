@@ -22,7 +22,7 @@ CLASS zcl_wasm_i32_shr_u IMPLEMENTATION.
 * https://webassembly.github.io/spec/core/exec/numerics.html#xref-exec-numerics-op-ishr-u-mathrm-ishr-u-n-i-1-i-2
 * shift right unsigned
 
-    DATA(lv_count) = io_memory->mi_stack->pop_i32( )->get_signed( ) MOD 32.
+    DATA(lv_count) = io_memory->mi_stack->pop_i32( )->mv_value MOD 32.
 
     DATA(li_val) = io_memory->mi_stack->pop_i32( ).
     DATA(lv_int) = li_val->get_unsigned( ).

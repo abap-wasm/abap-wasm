@@ -20,7 +20,7 @@ CLASS zcl_wasm_i64_extend_i32_s IMPLEMENTATION.
 
   METHOD zif_wasm_instruction~execute.
     DATA lv_val TYPE int8.
-    lv_val = io_memory->mi_stack->pop_i32( )->get_signed( ).
+    lv_val = io_memory->mi_stack->pop_i32( )->mv_value.
     io_memory->mi_stack->push( zcl_wasm_i64=>from_signed( lv_val ) ).
   ENDMETHOD.
 

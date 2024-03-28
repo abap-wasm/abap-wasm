@@ -43,10 +43,10 @@ CLASS zcl_wasm_i32_store8 IMPLEMENTATION.
     CONSTANTS lc_length TYPE int8 VALUE 1.
     DATA lv_hex TYPE x LENGTH lc_length.
 
-    DATA(lv_c) = io_memory->mi_stack->pop_i32( )->get_signed( ).
+    DATA(lv_c) = io_memory->mi_stack->pop_i32( )->mv_value.
     lv_hex = lv_c.
 
-    DATA(lv_i) = io_memory->mi_stack->pop_i32( )->get_signed( ).
+    DATA(lv_i) = io_memory->mi_stack->pop_i32( )->mv_value.
 
     io_memory->get_linear( )->set(
       iv_offset = mv_offset + lv_i

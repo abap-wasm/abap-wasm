@@ -35,7 +35,7 @@ CLASS zcl_wasm_i32_lt_s IMPLEMENTATION.
     ENDTRY.
 
     DATA(lv_result) = 0.
-    IF lo_val1->get_signed( ) > lo_val2->get_signed( ).
+    IF lo_val1->mv_value > lo_val2->mv_value.
       lv_result = 1.
     ENDIF.
 

@@ -48,12 +48,12 @@ CLASS zcl_wasm_i64_store8 IMPLEMENTATION.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'i64 store8: expected i64'.
     ENDIF.
 
-    DATA(lv_i) = io_memory->mi_stack->pop_i32( )->get_signed( ).
+    DATA(lv_i) = io_memory->mi_stack->pop_i32( )->mv_value.
     IF lv_i < 0.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'i64 store8: out of bounds'.
     ENDIF.
 
-    lv_hex = CAST zcl_wasm_i64( lv_c )->get_signed( ).
+    lv_hex = CAST zcl_wasm_i64( lv_c )->mv_value.
 
     li_linear->set(
       iv_offset = mv_offset + lv_i

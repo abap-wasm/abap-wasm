@@ -30,7 +30,7 @@ CLASS zcl_wasm_select IMPLEMENTATION.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'select: expected same type'.
     ENDIF.
 
-    IF lo_c->get_signed( ) = 0.
+    IF lo_c->mv_value = 0.
       io_memory->mi_stack->push( lo_val1 ).
     ELSE.
       io_memory->mi_stack->push( lo_val2 ).

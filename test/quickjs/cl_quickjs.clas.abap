@@ -317,8 +317,8 @@ CLASS cl_quickjs IMPLEMENTATION.
         ( lv_context_ptr )
         ( lv_result_ptr ) ) ).
     DATA(lv_exception_ptr) = CAST zcl_wasm_i32( lt_result[ 1 ] ).
-    IF lv_exception_ptr->get_signed( ) > 0.
-      WRITE / |Exception: { lv_exception_ptr->get_signed( ) }|.
+    IF lv_exception_ptr->mv_value > 0.
+      WRITE / |Exception: { lv_exception_ptr->mv_value }|.
       lv_result_ptr = lv_exception_ptr.
     ENDIF.
 
@@ -345,7 +345,7 @@ CLASS cl_quickjs IMPLEMENTATION.
     DATA lv_hex TYPE x LENGTH 1.
     DATA lv_xstr TYPE xstring.
 
-    lv_offset = io_pointer->get_signed( ).
+    lv_offset = io_pointer->mv_value.
 
     DO.
       lv_hex = gi_wasm->get_memory( )->get_linear( )->get(
@@ -380,7 +380,7 @@ CLASS cl_quickjs IMPLEMENTATION.
     CONCATENATE lv_xstr gc_null INTO lv_xstr IN BYTE MODE.
 
     gi_wasm->get_memory( )->get_linear( )->set(
-      iv_offset = ro_pointer->get_signed( )
+      iv_offset = CONV #( ro_pointer->mv_value )
       iv_bytes  = lv_xstr ).
 
   ENDMETHOD.

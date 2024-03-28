@@ -45,12 +45,12 @@ CLASS cl_scrypt IMPLEMENTATION.
         DATA(li_linear) = li_wasm->get_memory( )->get_linear( ).
         DATA(lv_realptr) = li_linear->get(
           iv_length = 4
-          iv_offset = lo_retptr->get_signed( ) ).
+          iv_offset = CONV #( lo_retptr->mv_value ) ).
         " WRITE / lv_realptr.
 
         DATA(lv_reallen) = li_linear->get(
           iv_length = 4
-          iv_offset = lo_retptr->get_signed( ) + 4 ).
+          iv_offset = lo_retptr->mv_value + 4 ).
         " WRITE / lv_reallen.
 
         DATA(lv_return) = li_linear->get(

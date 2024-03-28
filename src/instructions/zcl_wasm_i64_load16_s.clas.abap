@@ -42,7 +42,7 @@ CLASS zcl_wasm_i64_load16_s IMPLEMENTATION.
     DATA lv_int TYPE i.
     DATA lv_int8 TYPE int8.
 
-    DATA(lv_i) = io_memory->mi_stack->pop_i32( )->get_signed( ).
+    DATA(lv_i) = io_memory->mi_stack->pop_i32( )->mv_value.
     IF lv_i < 0.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'load: out of bounds'.
     ENDIF.

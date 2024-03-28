@@ -40,7 +40,7 @@ CLASS zcl_wasm_call_indirect IMPLEMENTATION.
 * https://webassembly.github.io/spec/core/exec/instructions.html#xref-syntax-instructions-syntax-instr-control-mathsf-call-indirect-x-y
 * https://coinexsmartchain.medium.com/wasm-introduction-part-6-table-indirect-call-65ad0404b003
 
-    DATA(lv_i) = io_memory->mi_stack->pop_i32( )->get_signed( ).
+    DATA(lv_i) = io_memory->mi_stack->pop_i32( )->mv_value.
 
     DATA(li_value) = io_memory->table_get(
       iv_tableidx = CONV #( mv_tableidx )

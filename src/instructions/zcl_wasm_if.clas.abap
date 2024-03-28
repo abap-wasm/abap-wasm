@@ -68,7 +68,7 @@ CLASS zcl_wasm_if IMPLEMENTATION.
 * https://webassembly.github.io/spec/core/binary/instructions.html#control-instructions
 * https://webassembly.github.io/spec/core/binary/instructions.html#binary-blocktype
 
-    DATA(lv_value) = io_memory->mi_stack->pop_i32( )->get_signed( ).
+    DATA(lv_value) = io_memory->mi_stack->pop_i32( )->mv_value.
 
     DATA(lo_block) = NEW zcl_wasm_block_helper(
       iv_block_type = mv_block_type

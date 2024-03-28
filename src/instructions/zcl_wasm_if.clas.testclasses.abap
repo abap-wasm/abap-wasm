@@ -37,7 +37,7 @@ CLASS ltcl_test IMPLEMENTATION.
       exp = zif_wasm_types=>c_value_type-i32 ).
 
     cl_abap_unit_assert=>assert_equals(
-      act = CAST zcl_wasm_i32( lt_values[ 1 ] )->get_signed( )
+      act = CAST zcl_wasm_i32( lt_values[ 1 ] )->mv_value
       exp = 2 ).
 
   ENDMETHOD.

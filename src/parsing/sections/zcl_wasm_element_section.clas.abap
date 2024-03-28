@@ -48,7 +48,7 @@ CLASS zcl_wasm_element_section IMPLEMENTATION.
                   CHANGING
                     cs_control = ls_control ).
               ENDLOOP.
-              DATA(lv_offset) = io_memory->mi_stack->pop_i32( )->get_signed( ).
+              DATA(lv_offset) = io_memory->mi_stack->pop_i32( )->mv_value.
               " WRITE / |offset: { lv_offset }|.
               " WRITE / |length: { lines( ls_element-funcidx ) }|.
 
@@ -69,7 +69,7 @@ CLASS zcl_wasm_element_section IMPLEMENTATION.
                   CHANGING
                     cs_control = ls_control ).
               ENDLOOP.
-              lv_offset = io_memory->mi_stack->pop_i32( )->get_signed( ).
+              lv_offset = io_memory->mi_stack->pop_i32( )->mv_value.
 
               LOOP AT ls_element-funcidx INTO lv_funcidx.
 * todo, is the type derived from the table? elemkind seems wrong?
