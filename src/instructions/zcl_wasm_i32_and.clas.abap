@@ -21,13 +21,14 @@ CLASS zcl_wasm_i32_and IMPLEMENTATION.
   METHOD zif_wasm_instruction~execute.
     DATA lv_hex1 TYPE x LENGTH 4.
     DATA lv_hex2 TYPE x LENGTH 4.
+    DATA lv_val1 TYPE i.
 
+    "##feature-start=debug
     ASSERT io_memory->mi_stack->get_length( ) >= 2.
+    "##feature-end=debug
 
-    DATA(lv_val1) = CAST zcl_wasm_i32( io_memory->mi_stack->pop( ) )->mv_value.
-    DATA(lv_val2) = CAST zcl_wasm_i32( io_memory->mi_stack->pop( ) )->mv_value.
-    lv_hex1 = lv_val1.
-    lv_hex2 = lv_val2.
+    lv_hex1 = CAST zcl_wasm_i32( io_memory->mi_stack->pop( ) )->mv_value.
+    lv_hex2 = CAST zcl_wasm_i32( io_memory->mi_stack->pop( ) )->mv_value.
 
     lv_hex1 = lv_hex1 BIT-AND lv_hex2.
     lv_val1 = lv_hex1.

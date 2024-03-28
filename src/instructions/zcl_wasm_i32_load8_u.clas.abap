@@ -42,9 +42,12 @@ CLASS zcl_wasm_i32_load8_u IMPLEMENTATION.
     DATA lv_int TYPE i.
 
     DATA(lv_i) = io_memory->mi_stack->pop_i32( )->mv_value.
+    "##feature-start=debug
     IF lv_i < 0.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'load: out of bounds'.
     ENDIF.
+    "##feature-end=debug
+
     lv_hex = io_memory->get_linear( )->get(
       iv_length = lc_length
       iv_align  = mv_align
