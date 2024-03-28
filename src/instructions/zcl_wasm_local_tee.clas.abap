@@ -48,9 +48,12 @@ CLASS zcl_wasm_local_tee IMPLEMENTATION.
 
     DATA(li_value) = io_memory->mi_stack->peek( ).
 
-    io_memory->mi_frame->local_set(
-      iv_index = mv_localidx
-      ii_value = li_value ).
+    MODIFY io_memory->mt_locals INDEX mv_localidx FROM li_value.
+    "##feature-start=debug
+    IF sy-subrc <> 0.
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_memory_frame: not found in local memory, local_set'.
+    ENDIF.
+    "##feature-end=debug
 
   ENDMETHOD.
 

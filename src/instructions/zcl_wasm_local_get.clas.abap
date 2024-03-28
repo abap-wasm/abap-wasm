@@ -54,7 +54,14 @@ CLASS zcl_wasm_local_get IMPLEMENTATION.
 
 * https://webassembly.github.io/spec/core/exec/instructions.html#xref-syntax-instructions-syntax-instr-variable-mathsf-local-get-x
 
-    io_memory->mi_stack->push( io_memory->mi_frame->local_get( mv_localidx ) ).
+    READ TABLE io_memory->mt_locals INDEX mv_localidx INTO DATA(li_value).
+    "##feature-start=debug
+    IF sy-subrc <> 0.
+      RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_memory_frame: not found in local memory, local_get'.
+    ENDIF.
+    "##feature-end=debug
+
+    io_memory->mi_stack->push( li_value ).
 
   ENDMETHOD.
 ENDCLASS.

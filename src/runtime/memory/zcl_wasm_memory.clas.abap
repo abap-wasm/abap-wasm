@@ -16,7 +16,9 @@ CLASS zcl_wasm_memory DEFINITION
     DATA mi_stack TYPE REF TO zif_wasm_memory_stack.
 
 *********** Frames with locals
-    DATA mi_frame TYPE REF TO zif_wasm_memory_frame.
+    TYPES ty_locals TYPE STANDARD TABLE OF REF TO zif_wasm_value WITH DEFAULT KEY.
+    DATA mt_locals TYPE ty_locals.
+
     METHODS push_frame.
     METHODS pop_frame
       RAISING zcx_wasm.
@@ -96,7 +98,7 @@ CLASS zcl_wasm_memory DEFINITION
     DATA mi_globals TYPE REF TO zif_wasm_memory_globals.
 
     DATA mt_stack  TYPE STANDARD TABLE OF REF TO zif_wasm_value WITH DEFAULT KEY.
-    DATA mt_frames TYPE STANDARD TABLE OF REF TO zif_wasm_memory_frame WITH DEFAULT KEY.
+    DATA mt_frames TYPE STANDARD TABLE OF ty_locals WITH DEFAULT KEY.
 
     TYPES: BEGIN OF ty_table,
              type     TYPE zcl_wasm_table_section=>ty_table,
@@ -222,8 +224,8 @@ CLASS zcl_wasm_memory IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD push_frame.
-    APPEND mi_frame TO mt_frames.
-    mi_frame ?= NEW zcl_wasm_memory_frame( ).
+    APPEND mt_locals TO mt_frames.
+    CLEAR mt_locals.
   ENDMETHOD.
 
   METHOD pop_frame.
@@ -235,7 +237,7 @@ CLASS zcl_wasm_memory IMPLEMENTATION.
     ENDIF.
     "##feature-end=debug
 
-    READ TABLE mt_frames INTO mi_frame INDEX lv_last.
+    READ TABLE mt_frames INTO mt_locals INDEX lv_last.
     DELETE mt_frames INDEX lv_last.
   ENDMETHOD.
 
