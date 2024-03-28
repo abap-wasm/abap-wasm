@@ -50,7 +50,7 @@ CLASS zcl_wasm_i32_store8 IMPLEMENTATION.
 
     DATA(lv_i) = io_memory->mi_stack->pop_i32( )->mv_value.
 
-    io_memory->get_linear( )->set(
+    io_memory->mi_linear->set(
       iv_offset = mv_offset + lv_i
       iv_bytes  = lv_hex ).
 

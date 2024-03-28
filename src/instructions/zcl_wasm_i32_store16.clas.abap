@@ -43,7 +43,7 @@ CLASS zcl_wasm_i32_store16 IMPLEMENTATION.
     CONSTANTS lc_length TYPE int8 VALUE 2.
     DATA lv_hex TYPE x LENGTH lc_length.
 
-    DATA(li_linear) = io_memory->get_linear( ).
+    DATA(li_linear) = io_memory->mi_linear.
 
     DATA(lv_c) = io_memory->mi_stack->pop_i32( )->mv_value.
     lv_hex = lv_c.
@@ -52,7 +52,7 @@ CLASS zcl_wasm_i32_store16 IMPLEMENTATION.
 * convert to little endian
     CONCATENATE lv_hex+1 lv_hex(1) INTO lv_hex IN BYTE MODE.
 
-    io_memory->get_linear( )->set(
+    io_memory->mi_linear->set(
       iv_offset = mv_offset + lv_i
       iv_bytes  = lv_hex ).
 

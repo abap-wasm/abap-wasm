@@ -149,16 +149,16 @@ CLASS zcl_wasm_import_section IMPLEMENTATION.
         WHEN c_importdesc-table.
 * todo
         WHEN c_importdesc-mem.
-          IF io_memory->has_linear( ) = abap_true.
+          IF io_memory->mi_linear IS NOT INITIAL.
             RAISE EXCEPTION TYPE zcx_wasm
               EXPORTING
                 text = |import section: memory already instantiated|.
-          ELSEIF ls_import-module->get_memory( )->has_linear( ) = abap_false.
+          ELSEIF ls_import-module->get_memory( )->mi_linear IS INITIAL.
             RAISE EXCEPTION TYPE zcx_wasm
               EXPORTING
                 text = |import section: imported module doesnt have linear memory|.
           ENDIF.
-          io_memory->set_linear( ls_import-module->get_memory( )->get_linear( ) ).
+          io_memory->mi_linear = ls_import-module->get_memory( )->mi_linear.
         WHEN c_importdesc-global.
 * todo, handle ls_import-global-mut
 * todo: verify it exists in the registered imports

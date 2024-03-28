@@ -1,6 +1,7 @@
 CLASS zcl_wasm_memory_linear DEFINITION PUBLIC.
   PUBLIC SECTION.
-    INTERFACES zif_wasm_memory_linear.
+    CONSTANTS c_page_size TYPE i VALUE 65536.
+    CONSTANTS c_max_pages TYPE i VALUE 65536.
 
     METHODS constructor
       IMPORTING
@@ -8,8 +9,43 @@ CLASS zcl_wasm_memory_linear DEFINITION PUBLIC.
         iv_min TYPE int8
       RAISING
         zcx_wasm.
+
+    METHODS set
+      IMPORTING
+        iv_offset TYPE int8 OPTIONAL
+        iv_bytes  TYPE xsequence
+      RAISING
+        zcx_wasm.
+
+    METHODS get
+      IMPORTING
+        iv_length       TYPE int8 OPTIONAL
+        iv_offset       TYPE int8 OPTIONAL
+        iv_align        TYPE int8 OPTIONAL
+      RETURNING
+        VALUE(rv_bytes) TYPE xstring
+      RAISING
+        zcx_wasm.
+
+    METHODS grow
+      IMPORTING
+        iv_pages TYPE int8
+      RAISING
+        zcx_wasm.
+
+    METHODS size_in_pages
+      RETURNING
+        VALUE(rv_pages) TYPE i
+      RAISING
+        zcx_wasm.
+
+    METHODS size_in_bytes
+      RETURNING
+        VALUE(rv_bytes) TYPE int8
+      RAISING
+        zcx_wasm.
   PRIVATE SECTION.
-    TYPES ty_page TYPE x LENGTH zif_wasm_memory_linear=>c_page_size.
+    TYPES ty_page TYPE x LENGTH c_page_size.
 
     CLASS-DATA gv_page TYPE REF TO ty_page.
     DATA mt_pages TYPE STANDARD TABLE OF ty_page WITH DEFAULT KEY.
@@ -23,35 +59,39 @@ CLASS zcl_wasm_memory_linear IMPLEMENTATION.
     mv_min = iv_min.
     mv_max = iv_max.
 
-    zif_wasm_memory_linear~grow( mv_min ).
+    grow( mv_min ).
   ENDMETHOD.
 
-  METHOD zif_wasm_memory_linear~grow.
+  METHOD grow.
+    "##feature-start=debug
     IF iv_pages < 0.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_memory: linear_grow, negative pages'.
-    ELSEIF zif_wasm_memory_linear~size_in_pages( ) + iv_pages >= zif_wasm_memory_linear=>c_max_pages.
+    ELSEIF size_in_pages( ) + iv_pages >= c_max_pages.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_memory: linear_grow, max pages reached'.
     ELSEIF iv_pages >= 1000.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_memory: todo, its too slow, and will crash node anyhow'.
     ENDIF.
+    "##feature-end=debug
 
     DO iv_pages TIMES.
       INSERT INITIAL LINE INTO TABLE mt_pages.
     ENDDO.
   ENDMETHOD.
 
-  METHOD zif_wasm_memory_linear~size_in_pages.
+  METHOD size_in_pages.
     rv_pages = lines( mt_pages ).
   ENDMETHOD.
 
-  METHOD zif_wasm_memory_linear~size_in_bytes.
-    rv_bytes = lines( mt_pages ) * zif_wasm_memory_linear=>c_page_size.
+  METHOD size_in_bytes.
+    rv_bytes = lines( mt_pages ) * c_page_size.
   ENDMETHOD.
 
-  METHOD zif_wasm_memory_linear~set.
+  METHOD set.
 
     DATA(lv_length) = xstrlen( iv_bytes ).
-    IF iv_offset + lv_length > lines( mt_pages ) * zif_wasm_memory_linear=>c_page_size.
+
+    "##feature-start=debug
+    IF iv_offset + lv_length > lines( mt_pages ) * c_page_size.
       RAISE EXCEPTION TYPE zcx_wasm
         EXPORTING
           text = |linear_set: out of bounds, { iv_offset }, { lv_length }|.
@@ -59,20 +99,23 @@ CLASS zcl_wasm_memory_linear IMPLEMENTATION.
       RAISE EXCEPTION TYPE zcx_wasm
         EXPORTING
           text = 'linear_set: offset is negative'.
-    ELSEIF lv_length = 0.
+    ENDIF.
+    "##feature-end=debug
+
+    IF lv_length = 0.
       RETURN.
     ENDIF.
 
-    DATA(lv_page) = iv_offset DIV zif_wasm_memory_linear=>c_page_size.
+    DATA(lv_page) = iv_offset DIV c_page_size.
     lv_page = lv_page + 1.
     READ TABLE mt_pages INDEX lv_page REFERENCE INTO gv_page ##SUBRC_OK.
 
-    DATA(lv_offset) = iv_offset MOD zif_wasm_memory_linear=>c_page_size.
+    DATA(lv_offset) = iv_offset MOD c_page_size.
 
-    IF lv_offset + lv_length <= zif_wasm_memory_linear=>c_page_size.
+    IF lv_offset + lv_length <= c_page_size.
       gv_page->*+lv_offset(lv_length) = iv_bytes.
     ELSE.
-      DATA(lv_written) = zif_wasm_memory_linear=>c_page_size - lv_offset.
+      DATA(lv_written) = c_page_size - lv_offset.
       gv_page->*+lv_offset(lv_written) = iv_bytes(lv_written).
 
       WHILE lv_written < lv_length.
@@ -81,14 +124,14 @@ CLASS zcl_wasm_memory_linear IMPLEMENTATION.
         lv_length = lv_length - lv_written.
         lv_length = nmin(
           val1 = lv_length
-          val2 = zif_wasm_memory_linear=>c_page_size ).
+          val2 = c_page_size ).
         gv_page->*(lv_length) = iv_bytes+lv_written(lv_length).
         lv_written = lv_written + lv_length.
       ENDWHILE.
     ENDIF.
   ENDMETHOD.
 
-  METHOD zif_wasm_memory_linear~get.
+  METHOD get.
 * https://rsms.me/wasm-intro#addressing-memory
 
 * todo: refactor this to CHANGING as the caller always knows the length, then allocating an extra
@@ -103,7 +146,7 @@ CLASS zcl_wasm_memory_linear IMPLEMENTATION.
     ENDIF.
     "##feature-end=debug
 
-    DATA(lv_page) = iv_offset DIV zif_wasm_memory_linear=>c_page_size.
+    DATA(lv_page) = iv_offset DIV c_page_size.
     lv_page = lv_page + 1.
     READ TABLE mt_pages INDEX lv_page REFERENCE INTO gv_page.
     "##feature-start=debug
@@ -114,15 +157,15 @@ CLASS zcl_wasm_memory_linear IMPLEMENTATION.
     ENDIF.
     "##feature-end=debug
 
-    DATA(lv_offset) = iv_offset MOD zif_wasm_memory_linear=>c_page_size.
+    DATA(lv_offset) = iv_offset MOD c_page_size.
 
-    IF lv_offset + iv_length <= zif_wasm_memory_linear=>c_page_size.
+    IF lv_offset + iv_length <= c_page_size.
       rv_bytes = gv_page->*+lv_offset(iv_length).
       rv_bytes = zcl_wasm_binary_stream=>reverse_hex( rv_bytes ).
     ELSE.
 * return multiple bytes in endian order
       DO iv_length TIMES.
-        IF lv_offset = zif_wasm_memory_linear=>c_page_size.
+        IF lv_offset = c_page_size.
           lv_page = lv_page + 1.
           READ TABLE mt_pages INDEX lv_page REFERENCE INTO gv_page.
           "##feature-start=debug

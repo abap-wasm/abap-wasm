@@ -50,7 +50,7 @@ CLASS zcl_wasm_i32_load8_u IMPLEMENTATION.
     ENDIF.
     "##feature-end=debug
 
-    lv_hex = io_memory->get_linear( )->get(
+    lv_hex = io_memory->mi_linear->get(
       iv_length = lc_length
       iv_align  = mv_align
       iv_offset = mv_offset + lv_i ).

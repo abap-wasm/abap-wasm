@@ -53,7 +53,7 @@ CLASS zcl_wasm_f64_store IMPLEMENTATION.
 
     lv_hex = zcl_wasm_binary_stream=>reverse_hex( lv_hex ).
 
-    io_memory->get_linear( )->set(
+    io_memory->mi_linear->set(
       iv_offset = mv_offset + lv_i
       iv_bytes  = lv_hex ).
 

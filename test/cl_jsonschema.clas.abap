@@ -38,7 +38,7 @@ CLASS cl_jsonschema IMPLEMENTATION.
     "   iv_name       = 'main'
     "   it_parameters = VALUE #( ( lo_retptr ) ) ).
 
-    " DATA(li_linear) = li_wasm->get_memory( )->get_linear( ).
+    " DATA(li_linear) = li_wasm->get_memory( )->mi_linear.
     " DATA(lv_realptr) = li_linear->get(
     "   iv_length = 4
     "   iv_offset = lo_retptr->get_signed( ) ).

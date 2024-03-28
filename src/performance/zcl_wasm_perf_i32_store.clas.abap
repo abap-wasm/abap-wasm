@@ -17,19 +17,19 @@ CLASS zcl_wasm_perf_i32_store IMPLEMENTATION.
       iv_offset = 32 ) ).
 
     DATA(lo_memory) = NEW zcl_wasm_memory( ).
-    lo_memory->set_linear( CAST zif_wasm_memory_linear( NEW zcl_wasm_memory_linear(
+    lo_memory->mi_linear = NEW zcl_wasm_memory_linear(
       iv_min = 1
-      iv_max = 1 ) ) ).
+      iv_max = 1 ).
 
     DO lc_iterations TIMES.
       lo_memory->mi_stack->push( zcl_wasm_i32=>from_signed( 32 ) ).
       lo_memory->mi_stack->push( zcl_wasm_i32=>from_signed( 32 ) ).
       li_instruction->execute(
-            EXPORTING
-              io_memory  = lo_memory
-              io_module  = lo_module
-            CHANGING
-              cs_control = ls_control ).
+        EXPORTING
+          io_memory  = lo_memory
+          io_module  = lo_module
+        CHANGING
+          cs_control = ls_control ).
     ENDDO.
 
   ENDMETHOD.

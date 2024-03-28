@@ -21,12 +21,12 @@ CLASS zcl_wasm_memory_grow IMPLEMENTATION.
 
 * https://webassembly.github.io/spec/core/exec/instructions.html#xref-syntax-instructions-syntax-instr-memory-mathsf-memory-grow
 
-    DATA(lv_sz) = io_memory->get_linear( )->size_in_pages( ).
+    DATA(lv_sz) = io_memory->mi_linear->size_in_pages( ).
 
     DATA(lv_pages) = io_memory->mi_stack->pop_i32( )->get_unsigned( ).
     " WRITE / |memory.grow { lv_pages } pages|.
 
-    io_memory->get_linear( )->grow( lv_pages ).
+    io_memory->mi_linear->grow( lv_pages ).
 
     io_memory->mi_stack->push( zcl_wasm_i32=>from_signed( lv_sz ) ).
 

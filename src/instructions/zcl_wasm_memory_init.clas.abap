@@ -42,7 +42,7 @@ CLASS zcl_wasm_memory_init IMPLEMENTATION.
     DATA(lv_destination) = li_stack->pop_i32( )->get_unsigned( ).
 
     DATA(lv_bytes) = io_module->get_data_section( )->get_passive( mv_dataidx ).
-    DATA(li_linear) = io_memory->get_linear( ).
+    DATA(li_linear) = io_memory->mi_linear.
 
     IF lv_length + lv_offset > xstrlen( lv_bytes )
         OR lv_destination + lv_length > li_linear->size_in_bytes( ).
