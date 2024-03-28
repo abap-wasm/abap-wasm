@@ -22,9 +22,11 @@ ENDCLASS.
 CLASS zcl_wasm_i64_load32_u IMPLEMENTATION.
 
   METHOD constructor.
+    "##feature-start=debug
     IF iv_align > zcl_wasm_memory=>c_alignment_32bit.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'alignment must not be larger than natural'.
     ENDIF.
+    "##feature-end=debug
 
     mv_align  = iv_align.
     mv_offset = iv_offset.
@@ -44,9 +46,12 @@ CLASS zcl_wasm_i64_load32_u IMPLEMENTATION.
     DATA lv_int8 TYPE int8.
 
     DATA(lv_i) = io_memory->mi_stack->pop_i32( )->mv_value.
+    "##feature-start=debug
     IF lv_i < 0.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'load: out of bounds'.
     ENDIF.
+    "##feature-end=debug
+
     lv_hex4 = io_memory->get_linear( )->get(
       iv_length = lc_length
       iv_align  = mv_align

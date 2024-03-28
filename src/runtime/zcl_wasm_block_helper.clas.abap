@@ -40,9 +40,11 @@ CLASS zcl_wasm_block_helper IMPLEMENTATION.
         ms_type-result_types = iv_block_type.
       WHEN OTHERS.
         lv_int8 = iv_block_type.
+        "##feature-start=debug
         IF lv_int8 < 0.
           RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |block: expected positive function type index|.
         ENDIF.
+        "##feature-end=debug
         ms_type = io_module->get_type_by_index( lv_int8 ).
     ENDCASE.
 
@@ -58,21 +60,25 @@ CLASS zcl_wasm_block_helper IMPLEMENTATION.
     DATA(li_new) = CAST zif_wasm_memory_stack( NEW zcl_wasm_memory_stack( ) ).
     io_memory->mi_stack = li_new.
 
+    "##feature-start=debug
     IF xstrlen( ms_type-parameter_types ) > mi_old->get_length( ).
       RAISE EXCEPTION TYPE zcx_wasm
         EXPORTING
           text = |block: consume parameters expected at least { xstrlen( ms_type-parameter_types ) }|.
     ENDIF.
+    "##feature-end=debug
 
     DO xstrlen( ms_type-parameter_types ) TIMES.
       DATA(lv_offset) = xstrlen( ms_type-parameter_types ) - sy-index.
       DATA(li_val) = mi_old->pop( ).
 
+      "##feature-start=debug
       IF li_val->get_type( ) <> ms_type-parameter_types+lv_offset(1).
         RAISE EXCEPTION TYPE zcx_wasm
           EXPORTING
             text = |block parameter: wrong parameter on stack, got { li_val->get_type( ) } expected { ms_type-parameter_types+lv_offset(1) }|.
       ENDIF.
+      "##feature-end=debug
 
       li_new->push( li_val ).
     ENDDO.
@@ -86,22 +92,26 @@ CLASS zcl_wasm_block_helper IMPLEMENTATION.
       RETURN.
     ENDIF.
 
+    "##feature-start=debug
     IF xstrlen( ms_type-result_types ) > io_memory->mi_stack->get_length( ).
 *      WRITE '@KERNEL throw new Error("block");'.
       RAISE EXCEPTION TYPE zcx_wasm
         EXPORTING
           text = |block: expected { xstrlen( ms_type-result_types ) } values on stack, { ms_type-result_types }, stack length is { io_memory->mi_stack->get_length( ) }|.
     ENDIF.
+    "##feature-end=debug
 
     DO xstrlen( ms_type-result_types ) TIMES.
       DATA(lv_offset) = xstrlen( ms_type-result_types ) - sy-index.
       DATA(li_val) = io_memory->mi_stack->pop( ).
 
+      "##feature-start=debug
       IF li_val->get_type( ) <> ms_type-result_types+lv_offset(1).
         RAISE EXCEPTION TYPE zcx_wasm
           EXPORTING
             text = |block result: wrong parameter on stack, got { li_val->get_type( ) } expected { ms_type-result_types+lv_offset(1) }|.
       ENDIF.
+      "##feature-end=debug
 
       INSERT li_val INTO lt_results INDEX 1.
     ENDDO.
