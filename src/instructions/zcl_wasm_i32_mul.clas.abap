@@ -22,7 +22,7 @@ CLASS zcl_wasm_i32_mul IMPLEMENTATION.
 
     DATA lv_long1 TYPE int8.
     DATA lv_long2 TYPE int8.
-    DATA lv_int TYPE i.
+    DATA lv_int   TYPE i.
 
     lv_long1 = io_memory->mi_stack->pop_i32( )->mv_value.
     lv_long2 = io_memory->mi_stack->pop_i32( )->mv_value.

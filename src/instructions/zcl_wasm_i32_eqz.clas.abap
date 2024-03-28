@@ -19,7 +19,9 @@ CLASS zcl_wasm_i32_eqz IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_wasm_instruction~execute.
+    "##feature-start=debug
     ASSERT io_memory->mi_stack->get_length( ) >= 1.
+    "##feature-end=debug
 
     DATA(lv_val1) = CAST zcl_wasm_i32( io_memory->mi_stack->pop( ) )->mv_value.
 

@@ -27,12 +27,8 @@ CLASS zcl_wasm_i32_lt_s IMPLEMENTATION.
     ENDIF.
     "##feature-end=debug
 
-    TRY.
-        DATA(lo_val1) = CAST zcl_wasm_i32( io_memory->mi_stack->pop( ) ).
-        DATA(lo_val2) = CAST zcl_wasm_i32( io_memory->mi_stack->pop( ) ).
-      CATCH cx_sy_move_cast_error.
-        RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'lt_s, wrong types on stack'.
-    ENDTRY.
+    DATA(lo_val1) = CAST zcl_wasm_i32( io_memory->mi_stack->pop( ) ).
+    DATA(lo_val2) = CAST zcl_wasm_i32( io_memory->mi_stack->pop( ) ).
 
     IF lo_val1->mv_value > lo_val2->mv_value.
       io_memory->mi_stack->push( zcl_wasm_i32=>gc_one ).

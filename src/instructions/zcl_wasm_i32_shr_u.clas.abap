@@ -26,7 +26,6 @@ CLASS zcl_wasm_i32_shr_u IMPLEMENTATION.
 
     DATA(li_val) = io_memory->mi_stack->pop_i32( ).
     DATA(lv_int) = li_val->get_unsigned( ).
-*    WRITE / |i32.shr_u { lv_int }, { lv_count }|.
 
     IF lv_count = 0.
       io_memory->mi_stack->push( li_val ).
@@ -34,7 +33,6 @@ CLASS zcl_wasm_i32_shr_u IMPLEMENTATION.
       DO lv_count TIMES.
         lv_int = lv_int DIV 2.
       ENDDO.
-*      WRITE / |i32.shr_u result { lv_int }|.
       io_memory->mi_stack->push( zcl_wasm_i32=>from_unsigned( lv_int ) ).
     ENDIF.
 
