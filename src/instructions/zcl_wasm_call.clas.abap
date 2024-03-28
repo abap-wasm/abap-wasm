@@ -87,7 +87,9 @@ CLASS zcl_wasm_call IMPLEMENTATION.
             WHEN zif_wasm_types=>c_value_type-f64.
               io_memory->mi_frame->local_push_last( NEW zcl_wasm_f64( ) ).
             WHEN OTHERS.
-              RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |call: unknown type|.
+              RAISE EXCEPTION TYPE zcx_wasm
+                EXPORTING
+                  text = |call: unknown type|.
           ENDCASE.
         ENDDO.
       ENDLOOP.
@@ -96,12 +98,14 @@ CLASS zcl_wasm_call IMPLEMENTATION.
       io_memory->mi_stack = CAST zif_wasm_memory_stack( NEW zcl_wasm_memory_stack( ) ).
 
       io_module->execute_instructions(
-            EXPORTING
-              it_instructions = lr_code->instructions
-            CHANGING
-              cs_control      = ls_control ).
+        EXPORTING
+          it_instructions = lr_code->instructions
+        CHANGING
+          cs_control      = ls_control ).
       IF ls_control-depth > 0.
-        RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'call(), branching, should not happen'.
+        RAISE EXCEPTION TYPE zcx_wasm
+          EXPORTING
+            text = 'call(), branching, should not happen'.
       ENDIF.
 
 ******************
