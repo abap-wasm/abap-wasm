@@ -12,7 +12,6 @@ CLASS zcl_wasm_memory DEFINITION
     METHODS constructor.
 
 *********** STACK
-* public for optimizing performance
     DATA mi_stack TYPE REF TO zif_wasm_memory_stack.
 
 *********** LOCALS
@@ -20,6 +19,7 @@ CLASS zcl_wasm_memory DEFINITION
     DATA mt_locals TYPE ty_locals.
 
     METHODS push_locals.
+
     METHODS pop_locals
       RAISING zcx_wasm.
 
@@ -62,7 +62,7 @@ CLASS zcl_wasm_memory DEFINITION
 
     METHODS table_size
       IMPORTING
-        iv_tableidx TYPE i
+        iv_tableidx    TYPE i
       RETURNING
         VALUE(rv_size) TYPE i
       RAISING
@@ -70,10 +70,10 @@ CLASS zcl_wasm_memory DEFINITION
 
     METHODS table_get
       IMPORTING
-        iv_tableidx TYPE i
-        iv_offset   TYPE i
+        iv_tableidx     TYPE i
+        iv_offset       TYPE i
       RETURNING
-        VALUE(ri_value)    TYPE REF TO zif_wasm_value
+        VALUE(ri_value) TYPE REF TO zif_wasm_value
       RAISING
         zcx_wasm.
 
@@ -87,7 +87,7 @@ CLASS zcl_wasm_memory DEFINITION
 
     METHODS table_get_max
       IMPORTING
-        iv_tableidx TYPE i
+        iv_tableidx   TYPE i
       RETURNING
         VALUE(rv_max) TYPE i
       RAISING
