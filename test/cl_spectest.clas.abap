@@ -11,13 +11,13 @@ ENDCLASS.
 CLASS cl_spectest IMPLEMENTATION.
 
   METHOD constructor.
-    INSERT 'print' INTO TABLE mt_functions.
-    INSERT 'print_i32' INTO TABLE mt_functions.
-    INSERT 'print_i64' INTO TABLE mt_functions.
-    INSERT 'print_f32' INTO TABLE mt_functions.
-    INSERT 'print_f64' INTO TABLE mt_functions.
-    INSERT 'print_i32_f32' INTO TABLE mt_functions.
-    INSERT 'print_f64_f64' INTO TABLE mt_functions.
+    INSERT |print| INTO TABLE mt_functions.
+    INSERT |print_i32| INTO TABLE mt_functions.
+    INSERT |print_i64| INTO TABLE mt_functions.
+    INSERT |print_f32| INTO TABLE mt_functions.
+    INSERT |print_f64| INTO TABLE mt_functions.
+    INSERT |print_i32_f32| INTO TABLE mt_functions.
+    INSERT |print_f64_f64| INTO TABLE mt_functions.
 
     mo_memory = NEW #( ).
     mo_memory->mi_linear = NEW zcl_wasm_memory_linear(

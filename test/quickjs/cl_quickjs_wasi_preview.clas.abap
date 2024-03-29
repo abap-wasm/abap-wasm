@@ -10,13 +10,13 @@ ENDCLASS.
 CLASS cl_quickjs_wasi_preview IMPLEMENTATION.
 
   METHOD constructor.
-    INSERT 'fd_close' INTO TABLE mt_functions.
-    INSERT 'fd_read' INTO TABLE mt_functions.
-    INSERT 'fd_write' INTO TABLE mt_functions.
-    INSERT 'proc_exit' INTO TABLE mt_functions.
-    INSERT 'fd_seek' INTO TABLE mt_functions.
-    INSERT 'environ_sizes_get' INTO TABLE mt_functions.
-    INSERT 'environ_get' INTO TABLE mt_functions.
+    INSERT |fd_close| INTO TABLE mt_functions.
+    INSERT |fd_read| INTO TABLE mt_functions.
+    INSERT |fd_write| INTO TABLE mt_functions.
+    INSERT |proc_exit| INTO TABLE mt_functions.
+    INSERT |fd_seek| INTO TABLE mt_functions.
+    INSERT |environ_sizes_get| INTO TABLE mt_functions.
+    INSERT |environ_get| INTO TABLE mt_functions.
 
     mo_memory = io_memory.
   ENDMETHOD.
