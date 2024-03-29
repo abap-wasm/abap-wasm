@@ -9,11 +9,11 @@ ENDCLASS.
 CLASS cl_wbindgen_placeholder IMPLEMENTATION.
 
   METHOD constructor.
-    INSERT '__wbg_error_f851667af71bcfc6' INTO TABLE mt_functions.
-    INSERT '__wbg_new_abda76e883ba8a5f' INTO TABLE mt_functions.
-    INSERT '__wbg_stack_658279fe44541cf6' INTO TABLE mt_functions.
-    INSERT '__wbindgen_object_drop_ref' INTO TABLE mt_functions.
-    INSERT '__wbindgen_throw' INTO TABLE mt_functions.
+    INSERT |__wbg_error_f851667af71bcfc6| INTO TABLE mt_functions.
+    INSERT |__wbg_new_abda76e883ba8a5f| INTO TABLE mt_functions.
+    INSERT |__wbg_stack_658279fe44541cf6| INTO TABLE mt_functions.
+    INSERT |__wbindgen_object_drop_ref| INTO TABLE mt_functions.
+    INSERT |__wbindgen_throw| INTO TABLE mt_functions.
   ENDMETHOD.
 
   METHOD zif_wasm_module~execute_function_export.
