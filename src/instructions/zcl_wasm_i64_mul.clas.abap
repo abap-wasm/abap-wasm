@@ -28,8 +28,8 @@ CLASS zcl_wasm_i64_mul IMPLEMENTATION.
     DATA lv_word2_1 TYPE int8.
     DATA lv_word2_2 TYPE int8.
 
-    DATA lv_result TYPE int8.
-    DATA lv_sub    TYPE int8.
+    DATA lv_result  TYPE int8.
+    DATA lv_sub     TYPE int8.
 
     lv_hex1 = io_memory->mi_stack->pop_i64( )->get_signed( ).
     lv_hex2 = io_memory->mi_stack->pop_i64( )->get_signed( ).
