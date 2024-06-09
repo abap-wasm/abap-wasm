@@ -10,7 +10,7 @@ CLASS cl_quickjs_env DEFINITION PUBLIC.
 
     METHODS read_string
       IMPORTING
-        iv_pointer TYPE int8
+        iv_pointer       TYPE int8
       RETURNING
         VALUE(rv_string) TYPE string
       RAISING
