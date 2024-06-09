@@ -8,7 +8,7 @@ CLASS zcl_wasm_loop DEFINITION PUBLIC.
         it_in         TYPE zif_wasm_instruction=>ty_list.
 
     CLASS-METHODS parse
-      IMPORTING io_body TYPE REF TO zcl_wasm_binary_stream
+      IMPORTING io_body               TYPE REF TO zcl_wasm_binary_stream
       RETURNING VALUE(ri_instruction) TYPE REF TO zif_wasm_instruction
       RAISING zcx_wasm.
 

@@ -14,7 +14,7 @@ CLASS cl_testsuite DEFINITION PUBLIC CREATE PUBLIC.
     TYPES ty_files TYPE STANDARD TABLE OF ty_file WITH DEFAULT KEY.
 
     TYPES: BEGIN OF ty_type_value,
-             type TYPE string,
+             type  TYPE string,
              value TYPE string,
            END OF ty_type_value.
 
@@ -59,8 +59,8 @@ CLASS cl_testsuite DEFINITION PUBLIC CREATE PUBLIC.
 
     CLASS-METHODS invoke
       IMPORTING
-        is_command TYPE ty_json_commands
-        io_wasm    TYPE REF TO zif_wasm_module
+        is_command        TYPE ty_json_commands
+        io_wasm           TYPE REF TO zif_wasm_module
       RETURNING
         VALUE(rs_results) TYPE ty_results
       RAISING

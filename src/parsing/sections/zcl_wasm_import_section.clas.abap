@@ -2,11 +2,11 @@ CLASS zcl_wasm_import_section DEFINITION PUBLIC.
   PUBLIC SECTION.
     CLASS-METHODS parse
       IMPORTING
-        !io_body  TYPE REF TO zcl_wasm_binary_stream
+        !io_body          TYPE REF TO zcl_wasm_binary_stream
       EXPORTING
         eo_import_section TYPE REF TO zcl_wasm_import_section
       CHANGING
-        ct_functions TYPE zcl_wasm_module=>ty_functions
+        ct_functions      TYPE zcl_wasm_module=>ty_functions
       RAISING
         zcx_wasm.
 

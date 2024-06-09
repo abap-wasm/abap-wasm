@@ -20,6 +20,9 @@
   "rules": {
     "dynpro_checks": true,
     "easy_to_find_messages": true,
+    "align_pseudo_comments": false,
+    "align_type_expressions": true,
+    "unused_macros": true,
     "no_prefixes": false,
     "prefer_pragmas": true,
     "reduce_procedural_code": true,

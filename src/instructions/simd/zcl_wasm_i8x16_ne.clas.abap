@@ -3,7 +3,7 @@ CLASS zcl_wasm_i8x16_ne DEFINITION PUBLIC.
     INTERFACES zif_wasm_instruction.
 
     CLASS-METHODS parse
-      IMPORTING !io_body TYPE REF TO zcl_wasm_binary_stream
+      IMPORTING !io_body              TYPE REF TO zcl_wasm_binary_stream
       RETURNING VALUE(ri_instruction) TYPE REF TO zif_wasm_instruction.
   PRIVATE SECTION.
     CLASS-DATA gi_singleton TYPE REF TO zif_wasm_instruction.
