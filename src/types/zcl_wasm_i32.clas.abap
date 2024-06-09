@@ -14,13 +14,13 @@ CLASS zcl_wasm_i32 DEFINITION
 
     CLASS-METHODS from_signed
       IMPORTING
-        !iv_value TYPE i
+        !iv_value       TYPE i
       RETURNING
         VALUE(ro_value) TYPE REF TO zcl_wasm_i32.
 
     CLASS-METHODS from_unsigned
       IMPORTING
-        !iv_value TYPE int8
+        !iv_value       TYPE int8
       RETURNING
         VALUE(ro_value) TYPE REF TO zcl_wasm_i32.
 

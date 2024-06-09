@@ -10,7 +10,7 @@ CLASS zcl_wasm_local_set DEFINITION PUBLIC.
         !iv_localidx TYPE i.
 
     CLASS-METHODS parse
-      IMPORTING !io_body TYPE REF TO zcl_wasm_binary_stream
+      IMPORTING !io_body              TYPE REF TO zcl_wasm_binary_stream
       RETURNING VALUE(ri_instruction) TYPE REF TO zif_wasm_instruction
       RAISING zcx_wasm.
 
@@ -53,7 +53,7 @@ CLASS zcl_wasm_local_set IMPLEMENTATION.
     IF sy-subrc <> 0.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_memory_frame: not found in local memory, local_set'.
     ENDIF.
-    "##feature-end=debug
+                                                   "##feature-end=debug
 
   ENDMETHOD.
 

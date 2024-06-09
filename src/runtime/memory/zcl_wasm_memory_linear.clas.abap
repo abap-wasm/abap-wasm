@@ -63,7 +63,7 @@ CLASS zcl_wasm_memory_linear IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD grow.
-    "##feature-start=debug
+                                                 "##feature-start=debug
     IF iv_pages < 0.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_memory: linear_grow, negative pages'.
     ELSEIF size_in_pages( ) + iv_pages >= c_max_pages.
@@ -71,7 +71,7 @@ CLASS zcl_wasm_memory_linear IMPLEMENTATION.
     ELSEIF iv_pages >= 1000.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_memory: todo, its too slow, and will crash node anyhow'.
     ENDIF.
-    "##feature-end=debug
+                                                   "##feature-end=debug
 
     DO iv_pages TIMES.
       INSERT INITIAL LINE INTO TABLE mt_pages.
@@ -90,7 +90,7 @@ CLASS zcl_wasm_memory_linear IMPLEMENTATION.
 
     DATA(lv_length) = xstrlen( iv_bytes ).
 
-    "##feature-start=debug
+                                                 "##feature-start=debug
     IF iv_offset + lv_length > lines( mt_pages ) * c_page_size.
       RAISE EXCEPTION TYPE zcx_wasm
         EXPORTING
@@ -100,7 +100,7 @@ CLASS zcl_wasm_memory_linear IMPLEMENTATION.
         EXPORTING
           text = 'linear_set: offset is negative'.
     ENDIF.
-    "##feature-end=debug
+                                                   "##feature-end=debug
 
     IF lv_length = 0.
       RETURN.
@@ -138,13 +138,13 @@ CLASS zcl_wasm_memory_linear IMPLEMENTATION.
 * value is not required, plus the CONCATENATE can be replaced with direct writing into the CHANGING
     DATA lv_byte TYPE x LENGTH 1.
 
-    "##feature-start=debug
+                                                 "##feature-start=debug
     IF iv_length <= 0.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'linear_get: negative or zero length'.
     ELSEIF iv_offset < 0.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'linear_get: negative offset'.
     ENDIF.
-    "##feature-end=debug
+                                                   "##feature-end=debug
 
     DATA(lv_page) = iv_offset DIV c_page_size.
     lv_page = lv_page + 1.
@@ -155,7 +155,7 @@ CLASS zcl_wasm_memory_linear IMPLEMENTATION.
         EXPORTING
           text = |linear_get: out of bounds, getting page { lv_page }, { iv_offset }|.
     ENDIF.
-    "##feature-end=debug
+                                                   "##feature-end=debug
 
     DATA(lv_offset) = iv_offset MOD c_page_size.
 
@@ -174,7 +174,7 @@ CLASS zcl_wasm_memory_linear IMPLEMENTATION.
               EXPORTING
                 text = |linear_get: out of bounds, getting page { lv_page }|.
           ENDIF.
-          "##feature-end=debug
+                                                   "##feature-end=debug
           lv_offset = 0.
         ENDIF.
 

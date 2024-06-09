@@ -9,7 +9,7 @@ CLASS zcl_wasm_block DEFINITION PUBLIC.
 
     CLASS-METHODS parse
       IMPORTING
-        io_body TYPE REF TO zcl_wasm_binary_stream
+        io_body               TYPE REF TO zcl_wasm_binary_stream
       RETURNING
         VALUE(ri_instruction) TYPE REF TO zif_wasm_instruction
       RAISING
@@ -47,7 +47,7 @@ CLASS zcl_wasm_block IMPLEMENTATION.
     IF lv_last_opcode <> zif_wasm_opcodes=>c_opcodes-end.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |block, expected end|.
     ENDIF.
-    "##feature-end=debug
+                                                   "##feature-end=debug
 
     ri_instruction = NEW zcl_wasm_block(
       iv_block_type   = lv_block_type

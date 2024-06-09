@@ -3,7 +3,7 @@ CLASS zcl_wasm_f64_floor DEFINITION PUBLIC.
     INTERFACES zif_wasm_instruction.
 
     CLASS-METHODS parse
-      IMPORTING !io_body TYPE REF TO zcl_wasm_binary_stream
+      IMPORTING !io_body              TYPE REF TO zcl_wasm_binary_stream
       RETURNING VALUE(ri_instruction) TYPE REF TO zif_wasm_instruction.
   PROTECTED SECTION.
   PRIVATE SECTION.
@@ -24,11 +24,11 @@ CLASS zcl_wasm_f64_floor IMPLEMENTATION.
 
 
   METHOD zif_wasm_instruction~execute.
-    "##feature-start=debug
+                                                 "##feature-start=debug
     IF io_memory->mi_stack->get_length( ) < 1.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'f64 floor, expected at least one variables on stack'.
     ENDIF.
-    "##feature-end=debug
+                                                   "##feature-end=debug
 
     DATA(lo_val) = CAST zcl_wasm_f64( io_memory->mi_stack->pop( ) ).
 

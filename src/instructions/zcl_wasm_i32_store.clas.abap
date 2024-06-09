@@ -10,7 +10,7 @@ CLASS zcl_wasm_i32_store DEFINITION PUBLIC.
         zcx_wasm.
 
     CLASS-METHODS parse
-      IMPORTING !io_body TYPE REF TO zcl_wasm_binary_stream
+      IMPORTING !io_body              TYPE REF TO zcl_wasm_binary_stream
       RETURNING VALUE(ri_instruction) TYPE REF TO zif_wasm_instruction
       RAISING zcx_wasm.
 
@@ -23,11 +23,11 @@ ENDCLASS.
 CLASS zcl_wasm_i32_store IMPLEMENTATION.
 
   METHOD constructor.
-    "##feature-start=debug
+                                                 "##feature-start=debug
     IF iv_align > zcl_wasm_memory=>c_alignment_32bit.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'alignment must not be larger than natural'.
     ENDIF.
-    "##feature-end=debug
+                                                   "##feature-end=debug
 
     mv_align  = iv_align.
     mv_offset = iv_offset.
@@ -49,7 +49,7 @@ CLASS zcl_wasm_i32_store IMPLEMENTATION.
     IF lv_i < 0.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'i32 store: out of bounds'.
     ENDIF.
-    "##feature-end=debug
+                                                   "##feature-end=debug
 
 * convert to little endian
     CONCATENATE lv_hex+3 lv_hex+2(1) lv_hex+1(1) lv_hex(1) INTO lv_hex IN BYTE MODE.

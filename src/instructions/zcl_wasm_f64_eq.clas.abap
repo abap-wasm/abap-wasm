@@ -3,7 +3,7 @@ CLASS zcl_wasm_f64_eq DEFINITION PUBLIC.
     INTERFACES zif_wasm_instruction.
 
     CLASS-METHODS parse
-      IMPORTING !io_body TYPE REF TO zcl_wasm_binary_stream
+      IMPORTING !io_body              TYPE REF TO zcl_wasm_binary_stream
       RETURNING VALUE(ri_instruction) TYPE REF TO zif_wasm_instruction.
   PROTECTED SECTION.
   PRIVATE SECTION.
@@ -24,7 +24,7 @@ CLASS zcl_wasm_f64_eq IMPLEMENTATION.
 
 
   METHOD zif_wasm_instruction~execute.
-    "##feature-start=debug
+                                                 "##feature-start=debug
     ASSERT io_memory->mi_stack->get_length( ) >= 2.
     "##feature-end=debug
 

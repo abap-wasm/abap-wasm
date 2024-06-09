@@ -11,7 +11,7 @@ CLASS zcl_wasm_i32_load DEFINITION PUBLIC.
 
     CLASS-METHODS parse
       IMPORTING
-        !io_body TYPE REF TO zcl_wasm_binary_stream
+        !io_body              TYPE REF TO zcl_wasm_binary_stream
       RETURNING
         VALUE(ri_instruction) TYPE REF TO zif_wasm_instruction
       RAISING
@@ -30,11 +30,11 @@ ENDCLASS.
 CLASS zcl_wasm_i32_load IMPLEMENTATION.
 
   METHOD constructor.
-    "##feature-start=debug
+                                                 "##feature-start=debug
     IF iv_align > zcl_wasm_memory=>c_alignment_32bit.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'alignment must not be larger than natural'.
     ENDIF.
-    "##feature-end=debug
+                                                   "##feature-end=debug
 
     mv_align  = iv_align.
     mv_offset = iv_offset.
@@ -52,7 +52,7 @@ CLASS zcl_wasm_i32_load IMPLEMENTATION.
     IF gv_i < 0.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'load: out of bounds'.
     ENDIF.
-    "##feature-end=debug
+                                                   "##feature-end=debug
 
     gv_hex = io_memory->mi_linear->get(
       iv_length = gc_length

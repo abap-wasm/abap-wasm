@@ -3,7 +3,7 @@ CLASS zcl_wasm_f32_copysign DEFINITION PUBLIC.
     INTERFACES zif_wasm_instruction.
 
     CLASS-METHODS parse
-      IMPORTING !io_body TYPE REF TO zcl_wasm_binary_stream
+      IMPORTING !io_body              TYPE REF TO zcl_wasm_binary_stream
       RETURNING VALUE(ri_instruction) TYPE REF TO zif_wasm_instruction.
   PRIVATE SECTION.
     CLASS-DATA gi_singleton TYPE REF TO zif_wasm_instruction.
@@ -25,19 +25,19 @@ CLASS zcl_wasm_f32_copysign IMPLEMENTATION.
 * If z1 and z2 have the same sign, then return z1. Else return z1 with negated sign
 
     DATA(li_val1) = io_memory->mi_stack->pop( ).
-    "##feature-start=debug
+                                                 "##feature-start=debug
     IF li_val1->get_type( ) <> zif_wasm_types=>c_value_type-f32.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |zcl_wasm_f32_copysign: expected f32, got { li_val1->get_type( ) }|.
     ENDIF.
-    "##feature-end=debug
+                                                   "##feature-end=debug
     DATA(li_z1) = CAST zcl_wasm_f32( li_val1 ).
 
     DATA(li_val2) = io_memory->mi_stack->pop( ).
-    "##feature-start=debug
+                                                 "##feature-start=debug
     IF li_val2->get_type( ) <> zif_wasm_types=>c_value_type-f32.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = |zcl_wasm_f32_copysign: expected f32, got { li_val2->get_type( ) }|.
     ENDIF.
-    "##feature-end=debug
+                                                   "##feature-end=debug
     DATA(li_z2) = CAST zcl_wasm_f32( li_val2 ).
 
     IF li_z1->get_sign( ) = li_z2->get_sign( ).

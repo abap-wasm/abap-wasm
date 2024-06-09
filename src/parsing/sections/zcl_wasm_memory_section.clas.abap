@@ -2,7 +2,7 @@ CLASS zcl_wasm_memory_section DEFINITION PUBLIC.
   PUBLIC SECTION.
     CLASS-METHODS parse
       IMPORTING
-        !io_body          TYPE REF TO zcl_wasm_binary_stream
+        !io_body         TYPE REF TO zcl_wasm_binary_stream
       RETURNING
         VALUE(ro_memory) TYPE REF TO zcl_wasm_memory_section
       RAISING
@@ -11,8 +11,8 @@ CLASS zcl_wasm_memory_section DEFINITION PUBLIC.
     METHODS constructor
       IMPORTING
         iv_has_memory TYPE abap_bool OPTIONAL
-        iv_min TYPE int8 OPTIONAL
-        iv_max TYPE int8 OPTIONAL.
+        iv_min        TYPE int8 OPTIONAL
+        iv_max        TYPE int8 OPTIONAL.
 
     METHODS instantiate
       IMPORTING

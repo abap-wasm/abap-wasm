@@ -7,7 +7,7 @@ CLASS zcl_wasm_f32_const DEFINITION PUBLIC.
         !iv_float TYPE f.
 
     CLASS-METHODS parse
-      IMPORTING !io_body TYPE REF TO zcl_wasm_binary_stream
+      IMPORTING !io_body              TYPE REF TO zcl_wasm_binary_stream
       RETURNING VALUE(ri_instruction) TYPE REF TO zif_wasm_instruction.
   PRIVATE SECTION.
     DATA mv_value TYPE f.

@@ -218,11 +218,11 @@ CLASS zcl_wasm_memory IMPLEMENTATION.
   METHOD pop_locals.
     DATA lv_last TYPE i.
     lv_last = lines( mt_frames ).
-    "##feature-start=debug
+                                                 "##feature-start=debug
     IF lv_last = 0.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'zcl_wasm_memory: no frames, pop'.
     ENDIF.
-    "##feature-end=debug
+                                                   "##feature-end=debug
 
     READ TABLE mt_frames INTO mt_locals INDEX lv_last.
     DELETE mt_frames INDEX lv_last.

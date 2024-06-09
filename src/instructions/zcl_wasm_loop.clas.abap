@@ -8,7 +8,7 @@ CLASS zcl_wasm_loop DEFINITION PUBLIC.
         it_in         TYPE zif_wasm_instruction=>ty_list.
 
     CLASS-METHODS parse
-      IMPORTING io_body TYPE REF TO zcl_wasm_binary_stream
+      IMPORTING io_body               TYPE REF TO zcl_wasm_binary_stream
       RETURNING VALUE(ri_instruction) TYPE REF TO zif_wasm_instruction
       RAISING zcx_wasm.
 
@@ -40,7 +40,7 @@ CLASS zcl_wasm_loop IMPLEMENTATION.
     IF lv_last_opcode <> zif_wasm_opcodes=>c_opcodes-end.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'loop: expected end opcode'.
     ENDIF.
-    "##feature-end=debug
+                                                   "##feature-end=debug
 
     ri_instruction = NEW zcl_wasm_loop(
       iv_block_type = lv_block_type

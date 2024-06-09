@@ -10,7 +10,7 @@ CLASS zcl_wasm_i64_load8_s DEFINITION PUBLIC.
         zcx_wasm.
 
     CLASS-METHODS parse
-      IMPORTING !io_body TYPE REF TO zcl_wasm_binary_stream
+      IMPORTING !io_body              TYPE REF TO zcl_wasm_binary_stream
       RETURNING VALUE(ri_instruction) TYPE REF TO zif_wasm_instruction
       RAISING zcx_wasm.
 
@@ -22,11 +22,11 @@ ENDCLASS.
 CLASS zcl_wasm_i64_load8_s IMPLEMENTATION.
 
   METHOD constructor.
-    "##feature-start=debug
+                                                 "##feature-start=debug
     IF iv_align > zcl_wasm_memory=>c_alignment_8bit.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'alignment must not be larger than natural'.
     ENDIF.
-    "##feature-end=debug
+                                                   "##feature-end=debug
 
     mv_align  = iv_align.
     mv_offset = iv_offset.

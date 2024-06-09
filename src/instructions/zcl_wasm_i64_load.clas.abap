@@ -29,11 +29,11 @@ CLASS zcl_wasm_i64_load IMPLEMENTATION.
 
 
   METHOD constructor.
-    "##feature-start=debug
+                                                 "##feature-start=debug
     IF iv_align > zcl_wasm_memory=>c_alignment_64bit.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'alignment must not be larger than natural'.
     ENDIF.
-    "##feature-end=debug
+                                                   "##feature-end=debug
 
     mv_align  = iv_align.
     mv_offset = iv_offset.
@@ -60,7 +60,7 @@ CLASS zcl_wasm_i64_load IMPLEMENTATION.
         EXPORTING
           text = |zcl_wasm_i64_load: out of bounds { lv_i }|.
     ENDIF.
-    "##feature-end=debug
+                                                   "##feature-end=debug
 
     lv_hex = io_memory->mi_linear->get(
       iv_length = gc_length

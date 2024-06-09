@@ -10,7 +10,7 @@ CLASS zcl_wasm_f64_store DEFINITION PUBLIC.
         zcx_wasm.
 
     CLASS-METHODS parse
-      IMPORTING !io_body TYPE REF TO zcl_wasm_binary_stream
+      IMPORTING !io_body              TYPE REF TO zcl_wasm_binary_stream
       RETURNING VALUE(ri_instruction) TYPE REF TO zif_wasm_instruction
       RAISING zcx_wasm.
 
@@ -22,11 +22,11 @@ ENDCLASS.
 CLASS zcl_wasm_f64_store IMPLEMENTATION.
 
   METHOD constructor.
-    "##feature-start=debug
+                                                 "##feature-start=debug
     IF iv_align > zcl_wasm_memory=>c_alignment_64bit.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'alignment must not be larger than natural'.
     ENDIF.
-    "##feature-end=debug
+                                                   "##feature-end=debug
 
     mv_align  = iv_align.
     mv_offset = iv_offset.
@@ -49,7 +49,7 @@ CLASS zcl_wasm_f64_store IMPLEMENTATION.
     IF lv_i < 0.
       RAISE EXCEPTION TYPE zcx_wasm EXPORTING text = 'f64 store: out of bounds'.
     ENDIF.
-    "##feature-end=debug
+                                                   "##feature-end=debug
 
     lv_hex = zcl_wasm_binary_stream=>reverse_hex( lv_hex ).
 

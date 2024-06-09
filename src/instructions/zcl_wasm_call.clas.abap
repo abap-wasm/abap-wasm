@@ -9,7 +9,7 @@ CLASS zcl_wasm_call DEFINITION PUBLIC.
 
     CLASS-METHODS parse
       IMPORTING
-        !io_body TYPE REF TO zcl_wasm_binary_stream
+        !io_body              TYPE REF TO zcl_wasm_binary_stream
       RETURNING
         VALUE(ri_instruction) TYPE REF TO zif_wasm_instruction
       RAISING
@@ -106,13 +106,13 @@ CLASS zcl_wasm_call IMPLEMENTATION.
 
 ******************
 
-      "##feature-start=debug
+                                                 "##feature-start=debug
       IF xstrlen( ls_type-result_types ) > io_memory->mi_stack->get_length( ).
         RAISE EXCEPTION TYPE zcx_wasm
           EXPORTING
             text = |call: too few results got { io_memory->mi_stack->get_length( ) } expected at least { xstrlen( ls_type-result_types ) }|.
       ENDIF.
-      "##feature-end=debug
+                                                   "##feature-end=debug
 
       DO xstrlen( ls_type-result_types ) TIMES.
         DATA(lv_offset) = xstrlen( ls_type-result_types ) - sy-index.
@@ -124,7 +124,7 @@ CLASS zcl_wasm_call IMPLEMENTATION.
             EXPORTING
               text = |call result: wrong parameter on stack, got { li_val->get_type( ) } expected { ls_type-result_types+lv_offset(1) }|.
         ENDIF.
-        "##feature-end=debug
+                                                   "##feature-end=debug
 
         INSERT li_val INTO lt_results INDEX 1.
       ENDDO.
