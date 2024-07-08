@@ -15,7 +15,7 @@ CLASS zcl_wasm_module DEFINITION
       ty_types TYPE STANDARD TABLE OF ty_type WITH DEFAULT KEY .
     TYPES: BEGIN OF ty_local,
               count TYPE i,
-              type TYPE zif_wasm_types=>ty_valtype ,
+              type  TYPE zif_wasm_types=>ty_valtype ,
            END OF ty_local.
     TYPES: ty_locals TYPE STANDARD TABLE OF ty_local WITH DEFAULT KEY.
 
@@ -104,7 +104,7 @@ CLASS zcl_wasm_module DEFINITION
       IMPORTING
         !it_instructions TYPE zif_wasm_instruction=>ty_list
       CHANGING
-        cs_control TYPE zif_wasm_instruction=>ty_control
+        cs_control       TYPE zif_wasm_instruction=>ty_control
       RAISING
         zcx_wasm.
 
@@ -114,7 +114,7 @@ CLASS zcl_wasm_module DEFINITION
 * throws if not found
     METHODS get_import_by_module_name
       IMPORTING
-        !iv_module_name TYPE string
+        !iv_module_name  TYPE string
       RETURNING
         VALUE(ri_module) TYPE REF TO zif_wasm_module
       RAISING
