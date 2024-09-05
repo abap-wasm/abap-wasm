@@ -20,6 +20,11 @@
   "rules": {
     "dynpro_checks": true,
     "easy_to_find_messages": true,
+    "add_test_attributes": true,
+    "empty_event": true,
+    "implicit_start_of_selection": true,
+    "macro_naming": true,
+    "tables_declared_locally": true,
     "align_pseudo_comments": false,
     "align_type_expressions": true,
     "unused_macros": true,
