@@ -24,10 +24,10 @@
   "author": "Lars Hvam Petersen",
   "license": "MIT",
   "dependencies": {
-    "@abaplint/cli": "^2.113.110",
-    "@abaplint/runtime": "^2.10.49",
+    "@abaplint/cli": "^2.113.135",
+    "@abaplint/runtime": "^2.10.61",
     "0x": "^5.8.0",
-    "@abaplint/transpiler-cli": "^2.10.49"
+    "@abaplint/transpiler-cli": "^2.10.61"
   },
   "devDependencies": {
     "@jitl/quickjs-wasmfile-debug-sync": "=0.29.2",
