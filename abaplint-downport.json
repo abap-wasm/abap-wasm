@@ -14,7 +14,7 @@
     }
   ],
   "syntax": {
-    "version": "v702",
+    "version": "open-abap",
     "errorNamespace": ""
   },
   "rules": {
@@ -22,7 +22,7 @@
     "check_syntax": true,
     "keyword_case": true,
     "indentation": true,
-    "definitions_top": true,
+    "definitions_top": false,
     "whitespace_end": true,
     "line_break_multiple_parameters": true,
     "parser_error": true
