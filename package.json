@@ -25,9 +25,9 @@
   "license": "MIT",
   "dependencies": {
     "@abaplint/cli": "^2.113.200",
-    "@abaplint/runtime": "^2.11.90",
+    "@abaplint/runtime": "^2.11.91",
     "0x": "^6.0.0",
-    "@abaplint/transpiler-cli": "^2.11.90"
+    "@abaplint/transpiler-cli": "^2.11.91"
   },
   "devDependencies": {
     "@jitl/quickjs-wasmfile-debug-sync": "=0.29.2",
