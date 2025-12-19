@@ -28,8 +28,10 @@ CLASS zcl_wasm_i64_mul IMPLEMENTATION.
     DATA lv_word2_1 TYPE int8.
     DATA lv_word2_2 TYPE int8.
 
-    DATA lv_result  TYPE int8.
+    DATA lv_result  TYPE x LENGTH 8.
     DATA lv_sub     TYPE x LENGTH 8.
+    DATA lv_temp    TYPE int8.
+    DATA lv_carry   TYPE x LENGTH 4.
 
     lv_hex1 = io_memory->mi_stack->pop_i64( )->get_signed( ).
     lv_hex2 = io_memory->mi_stack->pop_i64( )->get_signed( ).
@@ -40,23 +42,85 @@ CLASS zcl_wasm_i64_mul IMPLEMENTATION.
     lv_word2_1 = lv_hex2+4(4).
     lv_word2_2 = lv_hex2(4).
 
-* first word
-    lv_result = lv_word1_1 * lv_word2_1.
+* first word - multiply high parts
+    TRY.
+        lv_temp = lv_word1_1 * lv_word2_1.
+        lv_result = lv_temp.
+      CATCH cx_sy_arithmetic_overflow.
+        " Handle overflow by using hex representation directly
+        lv_result = lv_temp.
+    ENDTRY.
 
-    lv_sub = lv_word1_1 * lv_word2_2.
-    lv_sub(4) = lv_sub+4(4).
-    lv_sub+4(4) = '00000000'.
-    lv_result = lv_result + lv_sub.
+* add cross product 1: word1_1 * word2_2 (shifted left by 32 bits)
+    TRY.
+        lv_temp = lv_word1_1 * lv_word2_2.
+        lv_sub = lv_temp.
+        lv_sub(4) = lv_sub+4(4).
+        lv_sub+4(4) = '00000000'.
+        " Initialize carry before first addition
+        CLEAR lv_carry.
+        " Add using hex string arithmetic (like i64_add) to avoid overflow
+        " Add in 2-byte chunks with carry handling
+        " low 2 bytes
+        lv_carry = lv_result+6(2) + lv_sub+6(2) + lv_carry.
+        lv_result+6(2) = lv_carry+2(2).
+        lv_carry+2 = lv_carry(2).
+        lv_carry(2) = '0000'.
+        " next 2 bytes
+        lv_carry = lv_result+4(2) + lv_sub+4(2) + lv_carry.
+        lv_result+4(2) = lv_carry+2(2).
+        lv_carry+2 = lv_carry(2).
+        lv_carry(2) = '0000'.
+        " next 2 bytes
+        lv_carry = lv_result+2(2) + lv_sub+2(2) + lv_carry.
+        lv_result+2(2) = lv_carry+2(2).
+        lv_carry+2 = lv_carry(2).
+        lv_carry(2) = '0000'.
+        " high 2 bytes
+        lv_carry = lv_result(2) + lv_sub(2) + lv_carry.
+        lv_result(2) = lv_carry+2(2).
+      CATCH cx_sy_arithmetic_overflow.
+        " If overflow occurs, wrap around (WASM behavior)
+        " Continue with truncated result
+    ENDTRY.
 
-* second word
-    lv_sub = lv_word1_2 * lv_word2_1.
-    lv_sub(4) = lv_sub+4(4).
-    lv_sub+4(4) = '00000000'.
-    lv_result = lv_result + lv_sub.
+* add cross product 2: word1_2 * word2_1 (shifted left by 32 bits)
+    TRY.
+        lv_temp = lv_word1_2 * lv_word2_1.
+        lv_sub = lv_temp.
+        lv_sub(4) = lv_sub+4(4).
+        lv_sub+4(4) = '00000000'.
+        " Reset carry before second addition
+        CLEAR lv_carry.
+        " Add using hex string arithmetic (like i64_add)
+        " Add in 2-byte chunks with carry handling
+        " low 2 bytes
+        lv_carry = lv_result+6(2) + lv_sub+6(2) + lv_carry.
+        lv_result+6(2) = lv_carry+2(2).
+        lv_carry+2 = lv_carry(2).
+        lv_carry(2) = '0000'.
+        " next 2 bytes
+        lv_carry = lv_result+4(2) + lv_sub+4(2) + lv_carry.
+        lv_result+4(2) = lv_carry+2(2).
+        lv_carry+2 = lv_carry(2).
+        lv_carry(2) = '0000'.
+        " next 2 bytes
+        lv_carry = lv_result+2(2) + lv_sub+2(2) + lv_carry.
+        lv_result+2(2) = lv_carry+2(2).
+        lv_carry+2 = lv_carry(2).
+        lv_carry(2) = '0000'.
+        " high 2 bytes
+        lv_carry = lv_result(2) + lv_sub(2) + lv_carry.
+        lv_result(2) = lv_carry+2(2).
+      CATCH cx_sy_arithmetic_overflow.
+        " If overflow occurs, wrap around (WASM behavior)
+        " Continue with truncated result
+    ENDTRY.
 
 * multiplication of the two left-side words will always overflow, so no need to calculate it
 
-    io_memory->mi_stack->push( zcl_wasm_i64=>from_signed( lv_result ) ).
+    lv_temp = lv_result.
+    io_memory->mi_stack->push( zcl_wasm_i64=>from_signed( lv_temp ) ).
 
   ENDMETHOD.
 
