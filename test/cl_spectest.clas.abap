@@ -2,7 +2,7 @@ CLASS cl_spectest DEFINITION PUBLIC.
   PUBLIC SECTION.
 * https://github.com/WebAssembly/spec/blob/main/interpreter/README.md#spectest-host-module
     INTERFACES zif_wasm_module.
-    METHODS constructor.
+    METHODS constructor RAISING zcx_wasm.
   PRIVATE SECTION.
     DATA mt_functions TYPE STANDARD TABLE OF string WITH EMPTY KEY.
     DATA mo_memory TYPE REF TO zcl_wasm_memory.
