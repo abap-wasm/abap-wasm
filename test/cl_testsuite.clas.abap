@@ -4,7 +4,9 @@ CLASS cl_testsuite DEFINITION PUBLIC CREATE PUBLIC.
       IMPORTING
         iv_folder      TYPE string
       RETURNING
-        VALUE(ro_html) TYPE REF TO cl_result.
+        VALUE(ro_html) TYPE REF TO cl_result
+      RAISING
+        zcx_wasm.
 
   PRIVATE SECTION.
     TYPES: BEGIN OF ty_file,
@@ -43,7 +45,9 @@ CLASS cl_testsuite DEFINITION PUBLIC CREATE PUBLIC.
       IMPORTING
         iv_folder TYPE string
         iv_wast   TYPE string
-        it_files  TYPE ty_files.
+        it_files  TYPE ty_files
+      RAISING
+        zcx_wasm.
 
     CLASS-METHODS assert_return
       IMPORTING
